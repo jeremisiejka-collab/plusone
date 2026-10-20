@@ -82,6 +82,7 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 .h2{font:600 26px/1.08 var(--d);letter-spacing:-.025em}
 .h3{font:600 20px/1.1 var(--d);letter-spacing:-.02em}
 .h4{font:600 15px/1.2 var(--d);letter-spacing:-.01em}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .body{font:400 14px/1.5 var(--d);color:var(--t2)}
 .mono{font:400 11px/1.3 var(--m);color:var(--t3);letter-spacing:.02em}
 
@@ -291,6 +292,55 @@ const EVENTS = [
    poolEnds: 20*3600}
 ];
 
+/* ---------------- prawdziwe wydarzenia ----------------
+   data/events.json generuje pipeline (pipeline/run.mjs) co 4h przez GitHub Actions.
+   Mocki powyżej zostają dla demo biletów, portfela i zaproszeń. */
+const CAT_PL = {Clubs:'Kluby', Concerts:'Koncerty', Festivals:'Festiwale', Theatre:'Teatr', Comedy:'Stand-up',
+  Culture:'Kultura', Sport:'Sport', Family:'Dzieci', Other:'Inne'};
+const SRC_PL = {going:'Going.', ebilet:'eBilet', ra:'Resident Advisor'};
+const LIVE = {state:'loading', updatedAt:null, cities:{}};
+const DNI = ['nd','pon','wt','śr','czw','pt','sob'];
+const MIES = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+const MIES_D = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+
+const localDay = (d=new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const addDays = n => { const d=new Date(); d.setDate(d.getDate()+n); return localDay(d); };
+
+function liveEvent(x){
+  let [day, hm] = x.start.split('T'); const d = new Date(day+'T12:00');
+  const time = hm && hm!=='00:00' ? hm : '';
+  const multi = !!x.end && x.end.slice(0,10)!==day;
+  const endD = multi && new Date(x.end.slice(0,10)+'T12:00');
+  // wydarzenia wielodniowe, które już trwają: pokazujemy jako "dziś", z datą końca
+  const ongoing = multi && day < localDay();
+  if(ongoing) day = localDay();
+  const rel = ongoing ? `trwa do ${endD.getDate()} ${MIES[endD.getMonth()]}`
+    : day===localDay() ? 'dziś' : day===addDays(1) ? 'jutro'
+    : `${DNI[d.getDay()]} ${d.getDate()} ${MIES[d.getMonth()]}`;
+  return {
+    id:x.id, real:true, multi, name:x.title, cat:x.category, city:x.city,
+    venue:x.venue||x.city, address:x.address, start:x.start, day,
+    when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
+    badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
+    from:x.priceFrom, lineup:x.artists||[], tags:x.tags||[], desc:x.description||'',
+    image:x.image, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
+    hue: [...x.id].reduce((a,c)=>(a*31+c.charCodeAt(0))%360, 7), sold:null
+  };
+}
+
+async function loadLive(){
+  try{
+    const r = await fetch('/data/events.json', {cache:'no-cache'});
+    if(!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    for(let i=EVENTS.length-1;i>=0;i--) if(EVENTS[i].real) EVENTS.splice(i,1);
+    EVENTS.push(...d.events.map(liveEvent));
+    LIVE.cities = d.cities; LIVE.updatedAt = d.updatedAt; LIVE.state = 'ok';
+    if(!LIVE.cities[S.city]) S.city = 'Warszawa';
+  }catch(e){ LIVE.state = 'error'; }
+  render();
+}
+
 /* zaproszenia przychodzące — symulacja linków */
 const INVITES = [
   {ev:'dom47', from:'Kaja Wrona', code:'9F3K2', left:46*60+12}
@@ -332,7 +382,8 @@ const S = {
   pm:'blik', recipient:null,
   balance:240, topupAmount:100,
   sector:null, seats:[], taken:{},
-  cat:'Wszystko', query:'',
+  cat:'Wszystko', query:'', city:(()=>{try{return localStorage.getItem('city')||'Warszawa'}catch(e){return 'Warszawa'}})(),
+  when:'all', limit:40,
   blik:{digits:'', target:null, left:120},
   owned:[{id:'unsound', type:'REGULAR', qty:2},{id:'taaki', type:'GENERAL ADMISSION', qty:1}],
   ticketIdx:0, scanned:{ok:12, bad:1}, barCart:{},
@@ -529,7 +580,10 @@ function poster(e){
 
 const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
-const artBox = e => `<div style="position:absolute;inset:0">${art(e)}</div>`;
+const artBox = e => e.image
+  ? `<div style="position:absolute;inset:0;background:hsl(${e.hue} 34% 8%)"><img src="${esc(e.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+      onerror="this.remove()" style="width:100%;height:100%;object-fit:cover;display:block"></div>`
+  : `<div style="position:absolute;inset:0">${art(e)}</div>`;
 const cover = e => `background:hsl(${e.hue} 34% 8%)`;
 
 /* ===== IKONY — monoline SVG, zero systemowych emoji ===== */
@@ -623,21 +677,54 @@ const scBlik = () => {
 };
 
 /* ---- HOME ---- */
+/* najbliższy weekend (pt–nd); w weekend — od dziś do niedzieli */
+function weekendDays(){
+  const out=[];
+  for(let i=0;i<7;i++){ const d=new Date(); d.setDate(d.getDate()+i); const w=d.getDay();
+    if(w===5||w===6||w===0) out.push(localDay(d)); if(w===0) break; }
+  return out;
+}
+const WHEN = [['all','Kiedykolwiek'],['today','Dziś'],['tomorrow','Jutro'],['weekend','Weekend'],['week','7 dni']];
+function okWhen(e){
+  if(S.when==='today') return e.day===localDay();
+  if(S.when==='tomorrow') return e.day===addDays(1);
+  if(S.when==='weekend') return weekendDays().includes(e.day);
+  if(S.when==='week') return e.day<=addDays(6);
+  return true;
+}
+const fold = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l');
+function inCity(){ return EVENTS.filter(e=>e.real && e.city===S.city && e.day>=localDay()); }
 function filtered(){
-  return EVENTS.filter(e=>{
-    if(e.secret) return false;            // tajne eventy nie istnieją w wyszukiwarce
+  const q = fold(S.query.trim());
+  return inCity().filter(e=>{
     const okCat = S.cat==='Wszystko' || e.cat===S.cat;
-    const q = S.query.trim().toLowerCase();
-    const okQ = !q || (e.name+' '+e.venue+' '+e.lineup.join(' ')+' '+e.cat).toLowerCase().includes(q);
-    return okCat && okQ;
+    const okQ = !q || fold(e.name+' '+e.venue+' '+e.lineup.join(' ')+' '+(CAT_PL[e.cat]||'')+' '+e.tags.join(' ')).includes(q);
+    return okCat && okQ && okWhen(e);
   });
 }
 function sorted(arr){
   const a=[...arr];
-  if(S.sort==='price')   a.sort((x,y)=>x.from-y.from);
-  if(S.sort==='popular') a.sort((x,y)=>y.sold-x.sold);
+  if(S.sort==='price') a.sort((x,y)=>(x.from??1e9)-(y.from??1e9));
   return a;
 }
+/* kategorie obecne w danym mieście, od najliczniejszej */
+function catList(){
+  const n={}; for(const e of inCity()) n[e.cat]=(n[e.cat]||0)+1;
+  return ['Wszystko', ...Object.keys(CAT_PL).filter(c=>n[c]).sort((a,b)=>n[b]-n[a])];
+}
+const catLabel = c => c==='Wszystko' ? 'Wszystko' : CAT_PL[c]||c;
+const price = e => e.from==null ? 'ceny u sprzedawcy' : e.from===0 ? 'wstęp wolny' : 'od '+zl(e.from);
+const loadingBox = () => LIVE.state==='error' ? `
+    <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
+      <span class="h3">Nie udało się pobrać wydarzeń</span>
+      <span class="body">Sprawdź połączenie i spróbuj ponownie.</span>
+      <button class="chip on" data-act="reload" style="margin-top:6px">Spróbuj ponownie</button>
+    </div>` : `
+    <div class="pad col" style="gap:14px;padding-top:8px">
+      ${[0,1,2,3].map(()=>`<div style="display:flex;gap:12px"><div class="sk" style="width:66px;height:66px;border-radius:14px"></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px;justify-content:center">
+        <div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:10px;width:45%"></div></div></div>`).join('')}
+    </div>`;
 const bigCard = e => `
 <div data-act="ev:${e.id}" style="flex:none;width:270px;scroll-snap-align:start">
   <div style="position:relative;height:330px;border-radius:20px;overflow:hidden;background:var(--surface-2)">
@@ -646,11 +733,11 @@ const bigCard = e => `
     <div style="position:absolute;top:12px;left:12px;padding:6px 10px;border-radius:8px;background:${PINK};color:#000;
       font:700 10px/1 var(--m);letter-spacing:.08em">${esc(e.badge)}</div>
     <div style="position:absolute;top:12px;right:12px;padding:6px 9px;border-radius:8px;background:rgba(0,0,0,.55);
-      backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${Math.round(e.sold*100)}% sprzedane</div>
+      backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${e.sold!=null?Math.round(e.sold*100)+'% sprzedane':esc(CAT_PL[e.cat]||'')}</div>
     <div style="position:absolute;bottom:14px;left:14px;right:14px" class="col">
-      <span style="font:600 21px/1.1 var(--d);letter-spacing:-.02em">${esc(e.name)}</span>
-      <span class="mono" style="color:rgba(255,255,255,.7);margin-top:6px">${esc(e.when)} · ${esc(e.venue)}</span>
-      <span style="font:600 13px/1 var(--d);color:${PINK};margin-top:6px">od ${zl(e.from)}</span>
+      <span class="clamp2" style="font:600 21px/1.1 var(--d);letter-spacing:-.02em">${esc(e.name)}</span>
+      <span class="mono" style="color:rgba(255,255,255,.7);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
+      <span style="font:600 13px/1 var(--d);color:${PINK};margin-top:6px">${price(e)}</span>
     </div>
   </div>
 </div>`;
@@ -660,16 +747,15 @@ const listRow = e => `
   <div style="flex:none;width:66px;height:66px;border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2)">
     ${artBox(e)}</div>
   <div style="flex:1;min-width:0" class="col">
-    <span class="h4">${esc(e.name)}</span>
-    <span class="mono" style="margin-top:4px">${esc(e.when)} · ${esc(e.venue)}</span>
-    <span style="font:500 12px/1 var(--d);color:rgba(255,255,255,.75);margin-top:5px">od ${zl(e.from)}</span>
+    <span class="h4 clamp2">${esc(e.name)}</span>
+    <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
+    <span style="font:500 12px/1 var(--d);color:rgba(255,255,255,.75);margin-top:5px">${price(e)}</span>
   </div>
   <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
 </div>`;
 
 const scHome = () => {
   const f = filtered();
-  const cats = ['Wszystko','Clubs','Concerts','Festivals','Parties','Comedy'];
   return `
 <div class="pg" style="padding:64px 0 112px">
   <div id="ptr" style="height:0;overflow:hidden;transition:height .2s">
@@ -685,7 +771,7 @@ const scHome = () => {
   <div class="row pad" style="justify-content:space-between;padding-bottom:18px">
     <div class="col" style="gap:2px">
       <span class="eyebrow">Lokalizacja</span>
-      <span style="font:600 19px/1.1 var(--d);letter-spacing:-.02em" data-act="sheetCity">Warszawa ▾</span>
+      <span style="font:600 19px/1.1 var(--d);letter-spacing:-.02em" data-act="sheetCity">${esc(S.city)} ▾</span>
     </div>
     <div data-act="sheetNotif" style="position:relative;width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:#fff">${ic('bell',18)}
       <span style="position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:${PINK}"></span></div>
@@ -698,27 +784,31 @@ const scHome = () => {
       ${S.query?`<span data-act="clearQ" style="color:var(--t3);display:flex">${ic('cross',16)}</span>`:''}
     </div>
   </div>
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 22px">
-    ${cats.map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat:${c}">${c}</button>`).join('')}
+  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 10px">
+    ${catList().map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat:${c}">${catLabel(c)}</button>`).join('')}
   </div>
-  ${f.length===0 ? `
+  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 22px">
+    ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
+  </div>
+  ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
       <span class="h3">Nic nie pasuje</span>
-      <span class="body">Zmień kategorię albo wyczyść wyszukiwanie — w Warszawie dziś gra 6 miejsc.</span>
+      <span class="body">Zmień filtry albo wyczyść wyszukiwanie — w mieście ${esc(S.city)} mamy ${inCity().length} nadchodzących wydarzeń.</span>
       <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
     </div>` : `
   <div class="mq" style="margin-bottom:22px"><span>${
-    (' NOW · '+f.map(x=>x.name).join('  +  ')+'  +  ').repeat(4)
+    (' NOW · '+f.slice(0,10).map(x=>esc(x.name)).join('  +  ')+'  +  ').repeat(3)
   }</span></div>
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
     <span class="h3">Happening soon</span>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="go:list">CAŁA LISTA →</span>
   </div>
   <div class="sc" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
-    ${f.slice(0,3).map(bigCard).join('')}
+    ${[...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,6).map(bigCard).join('')}
   </div>
-  <div class="pad h3" style="padding-bottom:8px">Popular near you</div>
-  <div class="pad" style="padding-bottom:26px">${f.slice(0,6).map(listRow).join('')}</div>`}
+  ${f.length>6?`<div class="pad h3" style="padding-bottom:8px">Dalej w kalendarzu</div>
+  <div class="pad" style="padding-bottom:8px">${f.slice(6,14).map(listRow).join('')}</div>
+  <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
 
   <div style="margin:0 20px 18px;padding:18px;border-radius:20px;position:relative;overflow:hidden;
     background:linear-gradient(125deg,#2a0013,#0d0009 72%);border:1px solid var(--pink-line)"
@@ -771,12 +861,12 @@ const bigListRow = e => {
     <span style="position:absolute;bottom:6px;left:7px;font:700 8px/1 var(--m);letter-spacing:.1em;color:#fff">${esc(e.badge)}</span>
   </div>
   <div style="flex:1;min-width:0" class="col">
-    <span class="h4">${esc(e.name)}</span>
+    <span class="h4 clamp2">${esc(e.name)}</span>
     <span class="mono" style="margin-top:5px">${esc(e.when)}</span>
-    <span class="mono" style="margin-top:4px;color:var(--t2)">${esc(e.venue)} · ${esc(e.city)}</span>
+    <span class="mono" style="margin-top:4px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.venue)}</span>
     <div class="row" style="gap:7px;margin-top:8px;flex-wrap:wrap">
-      <span style="font:600 12px/1 var(--d);color:${PINK}">od ${zl(e.from)}</span>
-      <span class="mono">· ${Math.round(e.sold*100)}% sprzedane</span>
+      <span style="font:600 12px/1 var(--d);color:${PINK}">${price(e)}</span>
+      ${e.sold!=null?`<span class="mono">· ${Math.round(e.sold*100)}% sprzedane</span>`:`<span class="mono">· ${esc(CAT_PL[e.cat]||'')}</span>`}
       ${back?`<span style="font:500 9px/1 var(--m);letter-spacing:.06em;padding:4px 7px;border-radius:6px;
         background:var(--pink-dim);border:1px solid var(--pink-line);color:#fff">${back} Z PULI ZWROTÓW</span>`:''}
     </div>
@@ -787,15 +877,14 @@ const bigListRow = e => {
 
 const scList = () => {
   const f = sorted(filtered());
-  const cats = ['Wszystko','Clubs','Concerts','Festivals','Parties','Comedy'];
-  const sorts = [['date','Najbliższe'],['price','Cena'],['popular','Popularne']];
+  const sorts = [['date','Najbliższe'],['price','Najtańsze']];
   const inv = INVITES[0], se = EVENTS.find(x=>x.id===inv.ev);
   return `
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad row" style="justify-content:space-between;align-items:baseline;padding-bottom:16px">
     <div class="col" style="gap:3px">
       <div class="h2">Wydarzenia</div>
-      <span class="mono">${f.length} otwartych · Warszawa</span>
+      <span class="mono">${LIVE.state==='ok'?f.length+' wydarzeń · ':''}${esc(S.city)}</span>
     </div>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="sheetCity">ZMIEŃ ▾</span>
   </div>
@@ -810,7 +899,10 @@ const scList = () => {
   </div>
 
   <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 12px">
-    ${cats.map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat:${c}">${c}</button>`).join('')}
+    ${catList().map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat:${c}">${catLabel(c)}</button>`).join('')}
+  </div>
+  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 12px">
+    ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
   </div>
   <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 18px">
     <span class="mono" style="align-self:center">SORTUJ:</span>
@@ -835,18 +927,18 @@ const scList = () => {
     </div>
   </div>
 
-  ${f.length===0?`
+  ${LIVE.state!=='ok' ? loadingBox() : f.length===0?`
     <div class="pad col" style="gap:12px;padding-top:20px;align-items:flex-start">
       <span class="h3">Nic nie pasuje</span>
       <span class="body">Zmień kategorię albo wyczyść wyszukiwanie.</span>
       <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
     </div>`:`
-  <div class="pad">${f.map(bigListRow).join('')}</div>
+  <div class="pad">${f.slice(0,S.limit).map(bigListRow).join('')}</div>
+  ${f.length>S.limit?`<div class="pad" style="padding-top:16px"><button class="btn g" data-act="more" style="height:46px;font:500 13px/1 var(--d)">Pokaż więcej (${f.length-S.limit})</button></div>`:''}
   <div class="pad" style="padding-top:20px">
     <div class="card" style="padding:16px;display:flex;gap:12px;align-items:center">
       <span style="color:${PINK};display:flex">${ic('bell',19)}</span>
-      <span class="mono" style="flex:1;line-height:1.5">Nie ma tego, czego szukasz? Włącz alert — damy znać, gdy ktoś odda bilet do puli.</span>
-      <button class="chip" data-act="alertMe" style="padding:7px 12px">Alert</button>
+      <span class="mono" style="flex:1;line-height:1.5">Dane z Going., eBilet i Resident Advisor · aktualizacja ${LIVE.updatedAt?new Date(LIVE.updatedAt).toLocaleString('pl-PL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</span>
     </div>
   </div>`}
 </div>`;
@@ -982,9 +1074,63 @@ const scSecret = (e) => {
 };
 
 /* ---- EVENT ---- */
+/* prawdziwe wydarzenie: info + linki do sprzedawców biletów */
+const mapsUrl = e => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([e.venue,e.address||e.city].join(', '));
+const scLive = e => `
+<div class="pg" style="padding-bottom:118px">
+  <div style="position:relative;height:430px">
+    ${artBox(e)}
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.95) 100%)"></div>
+    <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px)">${ic('chevL',18)}</button>
+    <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px)">${ic('share',17)}</button>
+    <div style="position:absolute;bottom:20px;left:20px;right:20px" class="col">
+      <span style="padding:6px 10px;border-radius:8px;background:${PINK};color:#000;font:700 10px/1 var(--m);letter-spacing:.08em;align-self:flex-start">${esc(e.badge)}</span>
+      <div class="h1" style="font-size:${e.name.length>40?26:34}px;margin-top:12px">${esc(e.name)}</div>
+      <span class="mono" style="color:rgba(255,255,255,.7);margin-top:8px">${esc(e.date)}${e.time?' · '+esc(e.time):''} · ${esc(e.city)}</span>
+    </div>
+  </div>
+
+  <div class="pad col" style="gap:18px;padding-top:20px">
+    <a href="${mapsUrl(e)}" target="_blank" rel="noopener" class="card" style="padding:16px;display:flex;gap:14px;align-items:center;color:inherit;text-decoration:none">
+      <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff">${ic('pin',18)}</span>
+      <div class="col" style="flex:1;min-width:0"><span class="h4">${esc(e.venue)}</span>
+        <span class="mono" style="margin-top:4px">${esc(e.address||e.city)}</span></div>
+      <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
+    </a>
+
+    ${e.desc?`<div class="body">${esc(e.desc)}</div>`:''}
+
+    ${e.lineup.length?`<div class="col" style="gap:10px">
+      <span class="eyebrow">Line-up</span>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">
+        ${e.lineup.map((a,i)=>`<span class="chip" style="${i===0?'border-color:'+PINK+';color:#fff':''}">${esc(a)}</span>`).join('')}
+      </div>
+    </div>`:''}
+
+    ${e.tags.length?`<div style="display:flex;flex-wrap:wrap;gap:7px">
+      ${e.tags.map(t=>`<span class="mono" style="padding:6px 9px;border-radius:7px;background:#16161b">${esc(t)}</span>`).join('')}</div>`:''}
+
+    <div class="col" style="gap:10px">
+      <span class="eyebrow">Bilety</span>
+      ${e.links.map(l=>`
+      <a href="${esc(l.url)}" target="_blank" rel="noopener" class="card" style="padding:16px;display:flex;gap:14px;align-items:center;color:inherit;text-decoration:none">
+        <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff">${ic('ticket',18)}</span>
+        <div class="col" style="flex:1"><span class="h4">${esc(SRC_PL[l.source]||l.source)}</span>
+          <span class="mono" style="margin-top:4px">${l.price==null?'sprawdź ceny':l.price===0?'wstęp wolny':'od '+zl(l.price)}</span></div>
+        <span style="color:${PINK};display:flex">${ic('chevR',17)}</span>
+      </a>`).join('')}
+    </div>
+  </div>
+</div>
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 30%);z-index:45">
+  <a class="btn p" href="${esc(e.links[0].url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">
+    Kup bilet · ${price(e)}</a>
+</div>`;
+
 const scEvent = () => {
   const e = ev();
   if(e.secret) return scSecret(e);
+  if(e.real) return scLive(e);
   return `
 <div class="pg" style="padding-bottom:118px">
   <div style="position:relative;height:430px">
@@ -1971,9 +2117,14 @@ function act(a){
     case 'go': go(p1); break;
     case 'back': back(); break;
     case 'ev': openEvent(p1); break;
-    case 'cat': S.cat = p1; haptic(5); sfxTap(); render(); break;
+    case 'cat': S.cat = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
+    case 'when': S.when = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
+    case 'city': S.city = a.slice(5); S.cat='Wszystko'; S.limit=40; try{localStorage.setItem('city',S.city)}catch(e){}
+      closeSheet(); S.dir=null; render(); break;
+    case 'more': S.limit += 60; S.dir=null; render(); break;
+    case 'reload': LIVE.state='loading'; render(); loadLive(); break;
     case 'clearQ': S.query=''; render(); break;
-    case 'resetFilters': S.cat='Wszystko'; S.query=''; render(); break;
+    case 'resetFilters': S.cat='Wszystko'; S.query=''; S.when='all'; render(); break;
     case 'qty': {
       const k=p1, d=parseInt(p2,10);
       const next = clamp((S.qty[k]||0)+d, 0, 8);
@@ -2019,6 +2170,11 @@ function act(a){
     case 'payBar': payBar(); break;
     case 'noFunds': sfxErr(); haptic(30); toast('Za mało PLUSÓW — doładuj portfel',true); break;
     case 'share': shareSheet(); break;
+    case 'shareLink': { const e=ev(), url=e.links[0].url;
+      if(navigator.share) navigator.share({title:e.name, text:e.when+' · '+e.venue, url}).catch(()=>{});
+      else { try{navigator.clipboard.writeText(url)}catch(x){} toast('Link skopiowany'); }
+      closeSheet(); break; }
+    case 'copyLink': try{navigator.clipboard.writeText(ev().links[0].url)}catch(x){} toast('Link skopiowany'); closeSheet(); break;
     case 'promo': promoSheet(); break;
     case 'splitSheet': splitSheet(); break;
     case 'sheetCity': citySheet(); break;
@@ -2036,7 +2192,7 @@ function act(a){
     case 'sendSplit': closeSheet(); setTimeout(()=>{ toast('Wysłano prośbę o 34 PLUSY do Kai'); sfxOk(); },300); break;
 
     /* ---- lista ---- */
-    case 'sort': S.sort=p1; haptic(5); sfxTap(); render(); break;
+    case 'sort': S.sort=p1; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'alertMe': sfxOk(); haptic(14); toast('Alert włączony — damy znać, gdy bilet wróci do puli'); break;
 
     /* ---- zaproszenia / +1 ---- */
@@ -2227,12 +2383,13 @@ function shareSheet(){
   sheet(`<div class="col" style="gap:18px">
     <span class="h3">Udostępnij</span>
     <div class="row" style="gap:12px;flex-wrap:wrap">
-      ${['Instagram Stories','WhatsApp','Kopiuj link','Dodaj do kalendarza'].map(x=>
+      ${e.real ? `<button class="chip on" data-act="shareLink">Udostępnij</button><button class="chip" data-act="copyLink">Kopiuj link</button>`
+        : ['Instagram Stories','WhatsApp','Kopiuj link','Dodaj do kalendarza'].map(x=>
         `<button class="chip" data-act="closeSheet">${x}</button>`).join('')}
     </div>
     <div class="card" style="padding:14px;display:flex;gap:12px;align-items:center">
       <span style="display:block;position:relative;width:40px;height:40px;border-radius:10px;overflow:hidden">${artBox(e)}</span>
-      <div class="col"><span class="h4">${esc(e.name)}</span><span class="mono" style="margin-top:4px">plus1.pl/e/${e.id}</span></div>
+      <div class="col" style="min-width:0"><span class="h4">${esc(e.name)}</span><span class="mono" style="margin-top:4px">${e.real?esc(e.when+' · '+e.venue):'plus1.pl/e/'+e.id}</span></div>
     </div>
     <button class="btn g" data-act="closeSheet">Zamknij</button></div>`);
 }
@@ -2266,11 +2423,13 @@ function splitSheet(){
     <button class="btn p" data-act="sendSplit">Poproś o 34 PLUSY</button></div>`);
 }
 function citySheet(){
+  const list = Object.entries(LIVE.cities).slice(0,14);
   sheet(`<div class="col" style="gap:14px"><span class="h3">Miasto</span>
-    ${['Warszawa','Kraków','Trójmiasto','Wrocław','Poznań','Katowice'].map((c,i)=>
-      `<button data-act="closeSheet" class="row" style="justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);width:100%">
-        <span style="font:500 15px/1 var(--d)">${c}</span>
-        <span class="mono">${[6,4,3,2,2,1][i]} eventów</span></button>`).join('')}</div>`);
+    <div class="sc" style="max-height:56vh;overflow-y:auto">
+    ${list.length ? list.map(([c,n])=>
+      `<button data-act="city:${esc(c)}" class="row" style="justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);width:100%">
+        <span style="font:500 15px/1 var(--d);${c===S.city?'color:'+PINK:''}">${esc(c)}</span>
+        <span class="mono">${n} wydarzeń</span></button>`).join('') : '<span class="mono">Ładuję listę miast…</span>'}</div></div>`);
 }
 function notifSheet(){
   sheet(`<div class="col" style="gap:12px"><span class="h3">Powiadomienia</span>
@@ -2418,7 +2577,7 @@ function attachGestures(){
       if(dy>0){ ptr.style.height=Math.min(dy,64)+'px'; } };
     v.onpointerup = ()=>{ if(y0===null) return;
       if(dy>52){ haptic(12); ptr.style.height='64px';
-        setTimeout(()=>{ toast('Odświeżono · 2 nowe eventy w Warszawie',true); sfxTap(); render(); },900); }
+        loadLive().then(()=>{ toast(LIVE.state==='ok'?'Odświeżono · '+inCity().length+' wydarzeń · '+esc(S.city):'Brak połączenia',true); sfxTap(); }); }
       else ptr.style.height='0px';
       y0=null; dy=0; };
     v.onpointercancel=v.onpointerup;
@@ -2511,7 +2670,7 @@ setInterval(()=>{
 
   // odliczanie puli
   if(S.screen==='event'){
-    const e=ev(); e.poolEnds=Math.max(0,e.poolEnds-1);
+    const e=ev(); if(e.poolEnds) e.poolEnds=Math.max(0,e.poolEnds-1);
     const cd=$('#cd'); if(cd) cd.textContent=hms(e.poolEnds);
   }
 
@@ -2541,6 +2700,7 @@ document.addEventListener('keydown', e=>{
 $('#view').addEventListener('click', ()=>{ if(!AC) beep(1,.001,'sine',.0001); }, {once:true});
 
 render();
+loadLive();
 setTimeout(()=>{ $('#splash').classList.add('out'); }, 1550);
 setTimeout(()=>{ const sp=$('#splash'); if(sp) sp.remove(); }, 2150);
 if(innerWidth>760) setTimeout(()=>toast('Pasek na dole (desktop) przeskakuje po ekranach', true, 4200), 2600);
