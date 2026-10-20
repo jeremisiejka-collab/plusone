@@ -410,7 +410,7 @@ const S = {
   balance:240, topupAmount:100,
   sector:null, seats:[], taken:{},
   cat:'Wszystko', query:'', city:(()=>{try{return localStorage.getItem('city')||'Warszawa'}catch(e){return 'Warszawa'}})(),
-  when:'all', limit:40,
+  when:'all', price:'all', limit:40,
   blik:{digits:'', target:null, left:120},
   owned:[{id:'unsound', type:'REGULAR', qty:2},{id:'taaki', type:'GENERAL ADMISSION', qty:1}],
   ticketIdx:0, scanned:{ok:12, bad:1}, barCart:{},
@@ -725,6 +725,9 @@ function weekendDays(){
     if(w===5||w===6||w===0) out.push(localDay(d)); if(w===0) break; }
   return out;
 }
+/* cena: brak ceny = płatne (sprzedaje serwis biletowy), 0 zł = bezpłatne */
+const PRICE = [['free','Bezpłatne'],['paid','Płatne']];
+const okPrice = e => S.price==='free' ? e.from===0 : S.price==='paid' ? e.from!==0 : true;
 const WHEN = [['all','Kiedykolwiek'],['today','Dziś'],['tomorrow','Jutro'],['weekend','Weekend'],['week','7 dni']];
 function okWhen(e){
   if(S.when==='today') return e.day===localDay();
@@ -740,7 +743,7 @@ function filtered(){
   return inCity().filter(e=>{
     const okCat = S.cat==='Wszystko' || e.cat===S.cat;
     const okQ = !q || fold(e.name+' '+e.venue+' '+e.lineup.join(' ')+' '+(CAT_PL[e.cat]||'')+' '+e.tags.join(' ')).includes(q);
-    return okCat && okQ && okWhen(e);
+    return okCat && okQ && okWhen(e) && okPrice(e);
   });
 }
 function sorted(arr){
@@ -833,6 +836,8 @@ const scHome = () => {
   </div>
   <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 22px">
     ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
+    <span style="flex:none;width:1px;margin:4px 2px;background:var(--line-2)"></span>
+    ${PRICE.map(([k,l])=>`<button class="chip ${S.price===k?'on':''}" data-act="price:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
   </div>
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
@@ -947,6 +952,8 @@ const scList = () => {
   </div>
   <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 12px">
     ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
+    <span style="flex:none;width:1px;margin:4px 2px;background:var(--line-2)"></span>
+    ${PRICE.map(([k,l])=>`<button class="chip ${S.price===k?'on':''}" data-act="price:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
   </div>
   <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 18px">
     <span class="mono" style="align-self:center">SORTUJ:</span>
@@ -2165,13 +2172,14 @@ function act(a){
     case 'back': back(); break;
     case 'ev': openEvent(p1); break;
     case 'cat': S.cat = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
+    case 'price': S.price = S.price===p1 ? 'all' : p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'when': S.when = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'city': S.city = a.slice(5); S.cat='Wszystko'; S.limit=40; try{localStorage.setItem('city',S.city)}catch(e){}
       closeSheet(); S.dir=null; render(); break;
     case 'more': S.limit += 60; S.dir=null; render(); break;
     case 'reload': LIVE.state='loading'; render(); loadLive(); break;
     case 'clearQ': S.query=''; render(); break;
-    case 'resetFilters': S.cat='Wszystko'; S.query=''; S.when='all'; render(); break;
+    case 'resetFilters': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; render(); break;
     case 'qty': {
       const k=p1, d=parseInt(p2,10);
       const next = clamp((S.qty[k]||0)+d, 0, 8);
