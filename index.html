@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
 <meta name="theme-color" content="#000000">
+<script>
+/* motyw ustawiany przed narysowaniem strony (bez mignięcia): wybór użytkownika albo ustawienie systemu */
+(function(){
+  var t=null; try{t=localStorage.getItem('theme')}catch(e){}
+  if(t!=='light'&&t!=='dark') t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+  document.documentElement.dataset.theme=t;
+  document.querySelector('meta[name=theme-color]').content=t==='light'?'#ffffff':'#000000';
+})();
+</script>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>+1</title>
@@ -18,14 +27,30 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --pink:#FF0059; --pink-dim:rgba(255,0,89,.13); --pink-line:rgba(255,0,89,.45);
-  --bg:#000; --surface:#0F0F12; --surface-2:#131317; --line:rgba(255,255,255,.08);
-  --line-2:rgba(255,255,255,.14); --t1:#fff; --t2:rgba(255,255,255,.55); --t3:rgba(255,255,255,.32);
+:root,.ds{
+  /* ciemny motyw (domyślny). --fg/--bg-rgb to składowe RGB do rgba(var(--fg),alfa) */
+  --fg:255,255,255; --bg-rgb:0,0,0;
+  --pink:#FF0059; --pink-dim:rgba(255,0,89,.14); --pink-line:rgba(255,0,89,.5);
+  --bg:#000; --surface:#111115; --surface-2:#16161b; --surface-3:#1f1f26; --track:#24242c;
+  --line:rgba(var(--fg),.1); --line-2:rgba(var(--fg),.2);
+  --t1:#fff; --t2:rgba(var(--fg),.74); --t3:rgba(var(--fg),.56);
+  --inv:#fff; --inv-t:#000; --promo1:#2a0013; --promo2:#0d0009;
   --ok:#2BE08A; --warn:#FFC53D;
   --d:'Space Grotesk',system-ui,-apple-system,sans-serif;
   --m:'JetBrains Mono',ui-monospace,monospace;
 }
+.ds{color:var(--t1)}
+/* jasny motyw: wybrany ręcznie albo systemowy, jeśli użytkownik nic nie wybrał */
+:root[data-theme="light"]{
+  --fg:17,17,22; --bg-rgb:255,255,255;
+  --pink:#E8004F; --pink-dim:rgba(232,0,79,.09); --pink-line:rgba(232,0,79,.4);
+  --bg:#fff; --surface:#f4f4f7; --surface-2:#efeff3; --surface-3:#e5e5eb; --track:#e2e2e8;
+  --line:rgba(17,17,22,.1); --line-2:rgba(17,17,22,.18);
+  --t1:#111116; --t2:rgba(17,17,22,.74); --t3:rgba(17,17,22,.6);
+  --inv:#111116; --inv-t:#fff; --promo1:#ffe0eb; --promo2:#fff5f8;
+  --ok:#0f9d58; --warn:#b77900;
+}
+:root[data-theme="light"] .ds{--ok:#2BE08A; --warn:#FFC53D}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#111113;font-family:var(--d);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
@@ -35,18 +60,18 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 
 #desk{min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:20px;padding:36px 20px 56px;
   background:radial-gradient(120% 80% at 50% 0%,#1b1b20 0%,#0b0b0d 60%)}
-#deskbar{display:flex;align-items:center;gap:13px;color:#fff}
-#shell{width:390px;height:844px;position:relative;border-radius:52px;background:#000;
+#deskbar{display:flex;align-items:center;gap:13px;color:var(--t1)}
+#shell{width:390px;height:844px;position:relative;border-radius:52px;background:var(--bg);
   box-shadow:0 0 0 11px #17171b,0 0 0 12px #2c2c33,0 40px 90px rgba(0,0,0,.7);overflow:hidden}
 #jumpbar{display:flex;flex-wrap:wrap;gap:6px;max-width:620px;justify-content:center}
 .jump{padding:7px 13px;border-radius:100px;font:500 11px/1 var(--m);letter-spacing:.04em;
-  background:rgba(255,255,255,.07);color:rgba(255,255,255,.6);transition:.15s}
+  background:rgba(var(--fg),.07);color:rgba(var(--fg),.6);transition:.15s}
 .jump.on{background:var(--pink);color:#000}
-.jump:hover{background:rgba(255,255,255,.14)}
+.jump:hover{background:rgba(var(--fg),.14)}
 .jump.on:hover{background:#ff2d72}
 
 @media (max-width:760px){
-  #desk{padding:0;gap:0;background:#000;min-height:100dvh}
+  #desk{padding:0;gap:0;background:var(--bg);min-height:100dvh}
   #deskbar,#jumpbar{display:none}
   #shell{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
 }
@@ -54,16 +79,16 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 /* status bar */
 #status{position:absolute;top:0;left:0;right:0;height:52px;z-index:60;display:flex;align-items:center;
   justify-content:space-between;padding:0 26px;pointer-events:none}
-#status .t{font:600 13px/1 var(--d);color:#fff;margin-top:6px}
-.notch{width:104px;height:26px;background:#000;border-radius:14px;margin-top:2px}
+#status .t{font:600 13px/1 var(--d);color:var(--t1);margin-top:6px}
+.notch{width:104px;height:26px;background:var(--bg);border-radius:14px;margin-top:2px}
 .sig{display:flex;align-items:center;gap:5px;margin-top:6px}
-.sig i{display:block;width:15px;height:10px;border:1.5px solid rgba(255,255,255,.85);border-radius:3px;font-style:normal}
-.sig i.off{border-color:rgba(255,255,255,.25)}
-.batt{display:block;width:22px;height:11px;border:1.5px solid rgba(255,255,255,.5);border-radius:3px;padding:1.5px}
-.batt span{display:block;height:100%;background:#fff;border-radius:1px;transition:width .4s}
+.sig i{display:block;width:15px;height:10px;border:1.5px solid rgba(var(--fg),.85);border-radius:3px;font-style:normal}
+.sig i.off{border-color:rgba(var(--fg),.25)}
+.batt{display:block;width:22px;height:11px;border:1.5px solid rgba(var(--fg),.5);border-radius:3px;padding:1.5px}
+.batt span{display:block;height:100%;background:var(--t1);border-radius:1px;transition:width .4s}
 
 /* view */
-#view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;background:#000;color:#fff;
+#view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;background:var(--bg);color:var(--t1);
   overscroll-behavior:contain}
 .pg{min-height:844px;animation:in .34s cubic-bezier(.2,.7,.3,1)}
 @media (max-width:760px){.pg{min-height:100dvh}}
@@ -93,21 +118,21 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 .btn{width:100%;height:56px;border-radius:17px;font:700 16px/1 var(--d);display:grid;place-items:center;transition:.15s}
 .btn.p{background:var(--pink);color:#000}
 .btn.p:active{transform:scale(.98);background:#ff2d72}
-.btn.w{background:#fff;color:#000}
-.btn.g{background:transparent;color:#fff;border:1px solid var(--line-2)}
-.btn.off{background:#1c1c22;color:rgba(255,255,255,.35);cursor:not-allowed}
+.btn.w{background:var(--inv);color:var(--inv-t)}
+.btn.g{background:transparent;color:var(--t1);border:1px solid var(--line-2)}
+.btn.off{background:var(--surface-3);color:rgba(var(--fg),.35);cursor:not-allowed}
 .chip{flex:none;padding:9px 15px;border-radius:100px;border:1px solid var(--line-2);
-  font:500 13px/1 var(--d);color:rgba(255,255,255,.8);transition:.15s;white-space:nowrap}
+  font:500 13px/1 var(--d);color:rgba(var(--fg),.8);transition:.15s;white-space:nowrap}
 .chip.on{background:var(--pink);color:#000;border-color:var(--pink)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:20px}
 .hdr{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;height:60px;padding:0 16px;
-  background:rgba(0,0,0,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  background:rgba(var(--bg-rgb),.85);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid var(--line);margin-top:52px}
 .back{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;font-size:17px;flex:none}
 
 /* nav */
 #nav{position:absolute;bottom:0;left:0;right:0;height:82px;z-index:50;display:flex;
-  background:rgba(0,0,0,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(var(--bg-rgb),.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-top:1px solid var(--line);padding-bottom:14px;overflow:visible}
 #nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
   font:500 10px/1 var(--m);color:var(--t3);letter-spacing:.06em}
@@ -116,7 +141,7 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 #nav.hide{display:none}
 #nav .fabslot{flex:1;position:relative}
 #nav .fab{position:absolute;left:50%;top:-24px;transform:translateX(-50%);width:62px;height:62px;border-radius:23px;
-  background:var(--pink);display:grid;place-items:center;box-shadow:0 12px 28px rgba(255,0,89,.42),0 0 0 6px #000;
+  background:var(--pink);display:grid;place-items:center;box-shadow:0 12px 28px rgba(255,0,89,.42),0 0 0 6px var(--bg);
   transition:transform .16s}
 #nav .fab:active{transform:translateX(-50%) scale(.93)}
 #nav .fab .halo{position:absolute;inset:0;border-radius:23px;border:2px solid var(--pink);animation:ring 2.4s ease-out infinite}
@@ -125,18 +150,18 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 /* ---- viewfinder ---- */
 #vf{position:absolute;inset:0;object-fit:cover;width:100%;height:100%}
 .vfmock{position:absolute;inset:0;background:
-  radial-gradient(60% 40% at 30% 25%,rgba(255,255,255,.07),transparent 70%),
+  radial-gradient(60% 40% at 30% 25%,rgba(var(--fg),.07),transparent 70%),
   linear-gradient(160deg,#141419,#08080a 60%,#101015);}
 .vfmock:after{content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 3px,transparent 3px 6px)}
-.brk{position:absolute;width:40px;height:40px;border-color:#fff;border-style:solid;border-width:0}
+  background:repeating-linear-gradient(0deg,rgba(var(--fg),.02) 0 3px,transparent 3px 6px)}
+.brk{position:absolute;width:40px;height:40px;border-color:var(--t1);border-style:solid;border-width:0}
 
 
 /* toast */
 #toast{position:absolute;left:16px;right:16px;bottom:104px;z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.toast{background:#fff;color:#000;border-radius:15px;padding:13px 16px;font:600 13px/1.3 var(--d);
+.toast{background:var(--inv);color:var(--inv-t);border-radius:15px;padding:13px 16px;font:600 13px/1.3 var(--d);
   box-shadow:0 12px 30px rgba(0,0,0,.5);animation:pop .22s;display:flex;gap:10px;align-items:center}
-.toast.dark{background:#17171c;color:#fff;border:1px solid var(--line-2)}
+.toast.dark{background:var(--surface-3);color:var(--t1);border:1px solid var(--line-2)}
 
 /* sheet */
 #sheetwrap{position:absolute;inset:0;z-index:150;display:none}
@@ -145,7 +170,7 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 #sheet{position:absolute;left:0;right:0;bottom:0;background:#0c0c0f;border-radius:26px 26px 0 0;
   border-top:1px solid var(--line-2);padding:10px 20px 30px;max-height:82%;overflow-y:auto;
   transition:transform .28s cubic-bezier(.2,.8,.3,1)}
-.grab{width:38px;height:4px;border-radius:3px;background:rgba(255,255,255,.2);margin:0 auto 16px}
+.grab{width:38px;height:4px;border-radius:3px;background:rgba(var(--fg),.2);margin:0 auto 16px}
 
 /* offline banner */
 #offline{position:absolute;top:52px;left:0;right:0;z-index:55;background:var(--warn);color:#000;
@@ -158,9 +183,10 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
 #vign{position:absolute;inset:0;z-index:8;pointer-events:none;
   background:radial-gradient(130% 90% at 50% 40%,transparent 55%,rgba(0,0,0,.55) 100%)}
+:root[data-theme="light"] #shell:not(.ds) #vign{display:none}
 
 /* ---- splash ---- */
-#splash{position:absolute;inset:0;z-index:300;background:#000;display:grid;place-items:center;transition:opacity .5s}
+#splash{position:absolute;inset:0;z-index:300;background:var(--bg);display:grid;place-items:center;transition:opacity .5s}
 #splash.out{opacity:0;pointer-events:none}
 #splash rect.b{opacity:0;animation:brick .5s cubic-bezier(.2,.9,.3,1) forwards}
 @keyframes brick{from{opacity:0;transform:translateY(-14px) scaleY(.3)}to{opacity:1;transform:none}}
@@ -175,7 +201,7 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 @keyframes slideB{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
 
 /* ---- skeleton ---- */
-.sk{background:linear-gradient(100deg,#141418 30%,#1e1e25 50%,#141418 70%);background-size:220% 100%;
+.sk{background:linear-gradient(100deg,var(--surface-2) 30%,#1e1e25 50%,var(--surface-2) 70%);background-size:220% 100%;
   animation:shim 1.2s linear infinite;border-radius:12px}
 @keyframes shim{from{background-position:180% 0}to{background-position:-40% 0}}
 
@@ -186,13 +212,13 @@ input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 
 /* ---- bilet fizyczny ---- */
 .stub{position:relative;background:#fff;color:#000;border-radius:20px}
-.stub:before,.stub:after{content:'';position:absolute;width:26px;height:26px;border-radius:50%;background:#000;top:var(--y);}
+.stub:before,.stub:after{content:'';position:absolute;width:26px;height:26px;border-radius:50%;background:var(--bg);top:var(--y);}
 .stub:before{left:-13px}.stub:after{right:-13px}
 .perf{border-top:2px dashed rgba(0,0,0,.22);margin:0 18px}
 
 /* ---- plus-grid (signature) ---- */
 .pgrid{position:absolute;inset:0;pointer-events:none;opacity:.5;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='52'%3E%3Cg stroke='rgba(255,255,255,.10)' stroke-width='1'%3E%3Cpath d='M26 21v10M21 26h10'/%3E%3C/g%3E%3C/svg%3E")}
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='52'%3E%3Cg stroke='rgba(var(--fg),.10)' stroke-width='1'%3E%3Cpath d='M26 21v10M21 26h10'/%3E%3C/g%3E%3C/svg%3E")}
 
 /* ---- roll cyfr ---- */
 .roll{display:inline-block;overflow:hidden;vertical-align:bottom}
@@ -212,10 +238,10 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 </head>
 <body>
 <div id="desk">
-  <div id="deskbar">
+  <div id="deskbar" class="ds">
     <svg width="32" height="32" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#000"/><g fill="#FF0059"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
     <div style="font:600 14px/1.2 var(--d);letter-spacing:.02em">+1 — prototyp v2.6</div>
-    <div style="font:400 11px/1.2 var(--m);color:rgba(255,255,255,.4);letter-spacing:.06em">iPhone 390×844</div>
+    <div style="font:400 11px/1.2 var(--m);color:rgba(var(--fg),.4);letter-spacing:.06em">iPhone 390×844</div>
   </div>
 
   <div id="shell">
@@ -247,7 +273,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
     </div>
   </div>
 
-  <div id="jumpbar"></div>
+  <div id="jumpbar" class="ds"></div>
 </div>
 <script>
 /* ============================================================
@@ -256,7 +282,8 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
    i logiki UI — żadnych realnych płatności.
    ============================================================ */
 
-const PINK = '#FF0059';
+const PINK_HEX = '#FF0059';
+const PINK = 'var(--pink)';
 
 const EVENTS = [
   {id:'unsound', name:'UNSOUND WARSAW', badge:'PRESALE', when:'pt 5 wrz · 22:00', date:'5 września', time:'22:00',
@@ -406,6 +433,18 @@ const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 const hms = s => {const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=Math.floor(s%60);
   return h?`${h}h ${String(m).padStart(2,'0')}m`:`${m}:${String(x).padStart(2,'0')}`;};
 
+function setTheme(t){
+  document.documentElement.dataset.theme=t;
+  $('meta[name=theme-color]').content = t==='light' ? '#ffffff' : '#000000';
+  try{localStorage.setItem('theme',t)}catch(e){}
+  S.dir=null; render();
+}
+// bez ręcznego wyboru — podążaj za systemem
+matchMedia('(prefers-color-scheme: light)').addEventListener?.('change', m=>{
+  let t=null; try{t=localStorage.getItem('theme')}catch(e){}
+  if(!t){ document.documentElement.dataset.theme = m.matches?'light':'dark'; render(); }
+});
+
 function haptic(ms=8){ if(S.haptics && navigator.vibrate) try{navigator.vibrate(ms)}catch(e){} }
 
 let AC=null;
@@ -470,7 +509,7 @@ function confetti(n=90){
   const c=$('#confetti'), sh=$('#shell');
   c.width=sh.clientWidth; c.height=sh.clientHeight; c.style.display='block';
   const x=c.getContext('2d');
-  const cols=[PINK,'#fff','#ff6fa3','#ffd1e0'];
+  const cols=[PINK_HEX,'#fff','#ff6fa3','#ffd1e0'];
   const ps=Array.from({length:n},()=>({
     x:c.width/2+(Math.random()-.5)*140, y:c.height*.42,
     vx:(Math.random()-.5)*9, vy:-6-Math.random()*9,
@@ -514,7 +553,7 @@ function dragSheet(){
    EKRANY
    ========================================================= */
 const GLYPH = (fill) => `<g fill="${fill}" transform="translate(6.45 8.3)"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g>`;
-const LOGO = (s=104,r=24)=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100" style="display:block;border-radius:${r}px"><rect width="100" height="100" rx="${r*100/s}" fill="#000"/>${GLYPH(PINK)}</svg>`;
+const LOGO = (s=104,r=24)=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100" style="display:block;border-radius:${r}px"><rect width="100" height="100" rx="${r*100/s}" fill="#000"/>${GLYPH(PINK_HEX)}</svg>`;
 
 /* ===== GENERATOR PLAKATÓW =====================================
    Każdy event dostaje deterministyczną, unikalną kompozycję
@@ -593,6 +632,8 @@ const IP = {
   ticket:'M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z|M14 6v12',
   wallet:'M3 8a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z|M16 12.5h3',
   search:'M11 11m-6 0a6 6 0 1 0 12 0a6 6 0 1 0-12 0|M15.5 15.5 20 20',
+  sun:'M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0|M12 2v2|M12 20v2|M4.9 4.9l1.4 1.4|M17.7 17.7l1.4 1.4|M2 12h2|M20 12h2|M4.9 19.1l1.4-1.4|M17.7 6.3l1.4-1.4',
+  moon:'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z',
   bell:'M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6|M10.5 20a2 2 0 0 0 3 0',
   plane:'M3 12.5 21 4l-4 8.5L21 21 3 12.5z',
   bolt:'M13 2 4 14h6l-1 8 9-12h-6z',
@@ -634,7 +675,7 @@ const coverArt = e => artBox(e);
 /* ---- LOGIN ---- */
 const scLogin = () => `
 <div class="pg" style="display:flex;flex-direction:column;justify-content:space-between;padding:116px 26px 44px;
-  background:linear-gradient(180deg,#000 0%,#12000a 55%,#2a0013 100%)">
+  background:linear-gradient(180deg,var(--bg) 0%,var(--promo2) 55%,var(--promo1) 100%)">
   <div class="pgrid"></div>
   <div class="col" style="gap:26px;position:relative">
     <div style="align-self:center">${LOGO(104,24)}</div>
@@ -653,12 +694,12 @@ const scLogin = () => `
 const scBlik = () => {
   const d = S.blik.digits, dots = Array.from({length:6},(_,i)=>
     `<span style="width:46px;height:58px;border-radius:14px;display:grid;place-items:center;
-      font:600 26px/1 var(--m);background:${d[i]?'#17171c':'var(--surface)'};
-      border:1px solid ${i===d.length?PINK:'var(--line)'};color:#fff">${d[i]?'•':''}</span>`).join('');
+      font:600 26px/1 var(--m);background:${d[i]?'var(--surface-3)':'var(--surface)'};
+      border:1px solid ${i===d.length?PINK:'var(--line)'};color:var(--t1)">${d[i]?'•':''}</span>`).join('');
   const keys = [1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''
     ? '<span></span>'
-    : `<button data-act="key:${k}" style="height:62px;border-radius:18px;background:#0e0e11;
-        border:1px solid var(--line);font:600 24px/1 var(--d);color:#fff">${k}</button>`).join('');
+    : `<button data-act="key:${k}" style="height:62px;border-radius:18px;background:var(--surface);
+        border:1px solid var(--line);font:600 24px/1 var(--d);color:var(--t1)">${k}</button>`).join('');
   return `
 <div class="pg" style="padding:96px 24px 30px;display:flex;flex-direction:column;gap:22px">
   <div class="col" style="gap:10px">
@@ -726,17 +767,17 @@ const loadingBox = () => LIVE.state==='error' ? `
         <div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:10px;width:45%"></div></div></div>`).join('')}
     </div>`;
 const bigCard = e => `
-<div data-act="ev:${e.id}" style="flex:none;width:270px;scroll-snap-align:start">
+<div data-act="ev:${e.id}" class="ds" style="flex:none;width:270px;scroll-snap-align:start">
   <div style="position:relative;height:330px;border-radius:20px;overflow:hidden;background:var(--surface-2)">
     ${coverArt(e)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 38%,rgba(0,0,0,.88) 100%)"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--bg-rgb),0) 38%,rgba(0,0,0,.88) 100%)"></div>
     <div style="position:absolute;top:12px;left:12px;padding:6px 10px;border-radius:8px;background:${PINK};color:#000;
       font:700 10px/1 var(--m);letter-spacing:.08em">${esc(e.badge)}</div>
     <div style="position:absolute;top:12px;right:12px;padding:6px 9px;border-radius:8px;background:rgba(0,0,0,.55);
       backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${e.sold!=null?Math.round(e.sold*100)+'% sprzedane':esc(CAT_PL[e.cat]||'')}</div>
     <div style="position:absolute;bottom:14px;left:14px;right:14px" class="col">
       <span class="clamp2" style="font:600 21px/1.1 var(--d);letter-spacing:-.02em">${esc(e.name)}</span>
-      <span class="mono" style="color:rgba(255,255,255,.7);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
+      <span class="mono" style="color:rgba(var(--fg),.7);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
       <span style="font:600 13px/1 var(--d);color:${PINK};margin-top:6px">${price(e)}</span>
     </div>
   </div>
@@ -749,7 +790,7 @@ const listRow = e => `
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
     <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
-    <span style="font:500 12px/1 var(--d);color:rgba(255,255,255,.75);margin-top:5px">${price(e)}</span>
+    <span style="font:500 12px/1 var(--d);color:rgba(var(--fg),.75);margin-top:5px">${price(e)}</span>
   </div>
   <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
 </div>`;
@@ -773,14 +814,17 @@ const scHome = () => {
       <span class="eyebrow">Lokalizacja</span>
       <span style="font:600 19px/1.1 var(--d);letter-spacing:-.02em" data-act="sheetCity">${esc(S.city)} ▾</span>
     </div>
-    <div data-act="sheetNotif" style="position:relative;width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:#fff">${ic('bell',18)}
+    <div class="row" style="gap:8px">
+    <button data-act="theme" aria-label="Zmień motyw" style="width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:var(--t1)">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
+    <div data-act="sheetNotif" style="position:relative;width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:var(--t1)">${ic('bell',18)}
       <span style="position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:${PINK}"></span></div>
+    </div>
   </div>
   <div class="pad" style="padding-bottom:16px">
-    <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(255,255,255,.07)">
+    <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)">
       <span style="color:var(--t2);display:flex">${ic('search',17)}</span>
       <input id="q" placeholder="Szukaj eventów, artystów, venue" value="${esc(S.query)}"
-        style="flex:1;font:400 14px/1 var(--d);color:#fff" autocomplete="off">
+        style="flex:1;font:400 14px/1 var(--d);color:var(--t1)" autocomplete="off">
       ${S.query?`<span data-act="clearQ" style="color:var(--t3);display:flex">${ic('cross',16)}</span>`:''}
     </div>
   </div>
@@ -811,11 +855,11 @@ const scHome = () => {
   <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
 
   <div style="margin:0 20px 18px;padding:18px;border-radius:20px;position:relative;overflow:hidden;
-    background:linear-gradient(125deg,#2a0013,#0d0009 72%);border:1px solid var(--pink-line)"
+    background:linear-gradient(125deg,var(--promo1),var(--promo2) 72%);border:1px solid var(--pink-line)"
     data-act="${S.invite.accepted?'ev:dom47':'go:invite'}">
     <div class="pgrid" style="opacity:.4"></div>
     <div class="row" style="gap:13px;align-items:center;position:relative">
-      <span style="width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.06);display:grid;place-items:center;color:${PINK}">${ic(S.invite.accepted?'check':'lock',20)}</span>
+      <span style="width:44px;height:44px;border-radius:13px;background:rgba(var(--fg),.06);display:grid;place-items:center;color:${PINK}">${ic(S.invite.accepted?'check':'lock',20)}</span>
       <div class="col" style="flex:1">
         <span class="eyebrow pink">${S.invite.accepted?'Jesteś na liście':'Zaproszenie'}</span>
         <span style="font:600 16px/1.25 var(--d);letter-spacing:-.01em;margin-top:6px">
@@ -855,10 +899,10 @@ const bigListRow = e => {
   const back = S.pool[e.id]||0;
   return `
 <div data-act="ev:${e.id}" style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)">
-  <div style="flex:none;width:78px;height:98px;border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2)">
+  <div class="ds" style="flex:none;width:78px;height:98px;border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2)">
     ${artBox(e)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.8))"></div>
-    <span style="position:absolute;bottom:6px;left:7px;font:700 8px/1 var(--m);letter-spacing:.1em;color:#fff">${esc(e.badge)}</span>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--bg-rgb),0) 45%,rgba(0,0,0,.8))"></div>
+    <span style="position:absolute;bottom:6px;left:7px;font:700 8px/1 var(--m);letter-spacing:.1em;color:var(--t1)">${esc(e.badge)}</span>
   </div>
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
@@ -868,7 +912,7 @@ const bigListRow = e => {
       <span style="font:600 12px/1 var(--d);color:${PINK}">${price(e)}</span>
       ${e.sold!=null?`<span class="mono">· ${Math.round(e.sold*100)}% sprzedane</span>`:`<span class="mono">· ${esc(CAT_PL[e.cat]||'')}</span>`}
       ${back?`<span style="font:500 9px/1 var(--m);letter-spacing:.06em;padding:4px 7px;border-radius:6px;
-        background:var(--pink-dim);border:1px solid var(--pink-line);color:#fff">${back} Z PULI ZWROTÓW</span>`:''}
+        background:var(--pink-dim);border:1px solid var(--pink-line);color:var(--t1)">${back} Z PULI ZWROTÓW</span>`:''}
     </div>
   </div>
   <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
@@ -890,10 +934,10 @@ const scList = () => {
   </div>
 
   <div class="pad" style="padding-bottom:14px">
-    <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(255,255,255,.07)">
+    <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)">
       <span style="color:var(--t2);display:flex">${ic('search',17)}</span>
       <input id="q" placeholder="Szukaj eventów, artystów, venue" value="${esc(S.query)}"
-        style="flex:1;font:400 14px/1 var(--d);color:#fff" autocomplete="off">
+        style="flex:1;font:400 14px/1 var(--d);color:var(--t1)" autocomplete="off">
       ${S.query?`<span data-act="clearQ" style="color:var(--t3);display:flex">${ic('cross',16)}</span>`:''}
     </div>
   </div>
@@ -912,10 +956,10 @@ const scList = () => {
 
   <div class="pad" style="padding-bottom:20px">
     <div data-act="${S.invite.accepted?'ev:dom47':'go:invite'}" style="padding:16px;border-radius:18px;position:relative;overflow:hidden;
-      background:linear-gradient(120deg,#2a0013,#0d0009 70%);border:1px solid var(--pink-line)">
+      background:linear-gradient(120deg,var(--promo1),var(--promo2) 70%);border:1px solid var(--pink-line)">
       <div class="pgrid" style="opacity:.35"></div>
       <div class="row" style="gap:12px;align-items:center;position:relative">
-        <span style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.06);display:grid;place-items:center;color:${PINK}">${ic(S.invite.accepted?'check':'lock',19)}</span>
+        <span style="width:40px;height:40px;border-radius:12px;background:rgba(var(--fg),.06);display:grid;place-items:center;color:${PINK}">${ic(S.invite.accepted?'check':'lock',19)}</span>
         <div class="col" style="flex:1">
           <span class="h4">${S.invite.accepted?'Jesteś na liście · '+esc(se.name):'Masz 1 zaproszenie'}</span>
           <span class="mono" style="margin-top:4px">${S.invite.accepted
@@ -949,7 +993,7 @@ const scInvite = () => {
   const inv = INVITES[0], e = EVENTS.find(x=>x.id===inv.ev);
   return `
 <div class="pg" style="display:flex;flex-direction:column;justify-content:space-between;padding:88px 24px 34px;
-  background:linear-gradient(180deg,#000 0%,#14000b 60%,#2a0013 100%);position:relative">
+  background:linear-gradient(180deg,var(--bg) 0%,var(--promo2) 60%,var(--promo1) 100%);position:relative">
   <div class="pgrid"></div>
   <div class="col" style="gap:20px;position:relative">
     <div class="row" style="gap:9px;align-items:center">
@@ -958,15 +1002,15 @@ const scInvite = () => {
     </div>
     <div style="position:relative;height:180px;border-radius:20px;overflow:hidden;border:1px solid var(--pink-line)">
       <div style="position:absolute;inset:0;filter:blur(16px);transform:scale(1.15)">${artBox(e)}</div>
-      <div style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;flex-direction:column;
+      <div class="ds" style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;flex-direction:column;
         align-items:center;justify-content:center;gap:10px">
-        <span style="color:#fff;opacity:.9">${ic('lock',26,1.6)}</span>
-        <span class="mono" style="letter-spacing:.2em;color:rgba(255,255,255,.8)">EVENT UKRYTY</span>
+        <span style="color:var(--t1);opacity:.9">${ic('lock',26,1.6)}</span>
+        <span class="mono" style="letter-spacing:.2em;color:rgba(var(--fg),.8)">EVENT UKRYTY</span>
       </div>
     </div>
     <div class="h1" style="font-size:38px">Ktoś Cię<br>zaprosił.</div>
     <div class="body">Ten event nie istnieje w wyszukiwarce, nie ma go na żadnej liście i nie da się go kupić z ulicy. Wejście tylko z tego linku.</div>
-    <div class="card" style="padding:15px;display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.04)">
+    <div class="card" style="padding:15px;display:flex;gap:12px;align-items:center;background:rgba(var(--fg),.04)">
       <span style="width:38px;height:38px;border-radius:50%;background:hsl(300 55% 42%);display:grid;place-items:center;font:600 14px/1 var(--d)">${inv.from[0]}</span>
       <div class="col" style="flex:1"><span style="font:500 14px/1 var(--d)">${esc(inv.from)}</span>
         <span class="mono" style="margin-top:4px">wysłała Ci zaproszenie</span></div>
@@ -997,16 +1041,16 @@ const scSecret = (e) => {
     </div>` : p==='pending' ? `
     <div class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px;border-color:var(--line-2)">
       <div class="row" style="gap:12px;align-items:center">
-        <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff;
+        <span style="width:42px;height:42px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1);
           animation:pulse 1.4s ease-in-out infinite">${ic('clock',19)}</span>
         <div class="col" style="flex:1"><span class="h4">Prośba wysłana</span>
           <span class="mono" style="margin-top:4px">${esc(g||'')} · czeka na decyzję hosta</span></div>
       </div>
-      <div style="height:5px;border-radius:3px;background:#1a1a1f;overflow:hidden">
+      <div style="height:5px;border-radius:3px;background:var(--track);overflow:hidden">
         <div style="height:100%;width:38%;background:${PINK};animation:pulse 1.4s ease-in-out infinite"></div></div>
       <button class="btn g" data-act="cancelPlus" style="height:44px;font:500 13px/1 var(--d)">Wycofaj prośbę</button>
     </div>` : `
-    <div style="padding:18px;border-radius:20px;background:linear-gradient(130deg,#2a0013,#0d0009 70%);border:1px solid ${PINK};
+    <div style="padding:18px;border-radius:20px;background:linear-gradient(130deg,var(--promo1),var(--promo2) 70%);border:1px solid ${PINK};
       display:flex;flex-direction:column;gap:12px">
       <div class="row" style="gap:12px;align-items:center">
         <span style="width:42px;height:42px;border-radius:12px;background:${PINK};display:grid;place-items:center;color:#000">${ic('check',20,2.2)}</span>
@@ -1020,20 +1064,20 @@ const scSecret = (e) => {
 <div class="pg" style="padding-bottom:118px">
   <div style="position:relative;height:400px">
     <div style="position:absolute;inset:0;${acc?'':'filter:blur(18px);transform:scale(1.14)'}">${artBox(e)}</div>
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,.15) 30%,rgba(0,0,0,.95) 100%)"></div>
-    <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px)">${ic('chevL',18)}</button>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,.15) 30%,rgba(var(--bg-rgb),.95) 100%)"></div>
+    <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
     <div style="position:absolute;bottom:20px;left:20px;right:20px" class="col">
       <span class="row" style="gap:6px;align-self:flex-start;padding:6px 10px;border-radius:8px;background:${PINK};color:#000;
         font:700 10px/1 var(--m);letter-spacing:.08em">${ic('lock',12,2.2)} NA ZAPROSZENIE</span>
       <div class="h1" style="font-size:34px;margin-top:12px">${esc(e.name)}</div>
-      <span class="mono" style="color:rgba(255,255,255,.7);margin-top:8px">
+      <span class="mono" style="color:rgba(var(--fg),.7);margin-top:8px">
         ${esc(e.date)} · ${esc(e.time)} · ${acc?'Wola, dokładny adres w bilecie':'adres ukryty'}</span>
     </div>
   </div>
 
   <div class="pad col" style="gap:16px;padding-top:20px">
     <div class="card" style="padding:16px;display:flex;gap:14px;align-items:center">
-      <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff">${ic('users',19)}</span>
+      <span style="width:42px;height:42px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1)">${ic('users',19)}</span>
       <div class="col" style="flex:1"><span class="h4">${e.confirmed} / ${e.cap} osób</span>
         <span class="mono" style="margin-top:4px">Lista zamknięta · bez wejść z ulicy</span></div>
       <span class="mono" style="color:${PINK}">${e.cap-e.confirmed} wolnych</span>
@@ -1057,14 +1101,14 @@ const scSecret = (e) => {
     </div>
 
     <div data-act="hostQueue" class="card" style="padding:16px;display:flex;gap:14px;align-items:center">
-      <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff">${ic('scan',18)}</span>
+      <span style="width:42px;height:42px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1)">${ic('scan',18)}</span>
       <div class="col" style="flex:1"><span class="h4">Widok hosta</span>
         <span class="mono" style="margin-top:4px">Kolejka próśb o +1 — zobacz jak decyduje organizator</span></div>
       <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
     </div>
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 30%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
   ${acc
     ? (S.owned.find(o=>o.id===e.id)
         ? `<button class="btn w" data-act="go:tickets">Bilet jest w Twoich biletach</button>`
@@ -1080,19 +1124,19 @@ const scLive = e => `
 <div class="pg" style="padding-bottom:118px">
   <div style="position:relative;height:430px">
     ${artBox(e)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.95) 100%)"></div>
-    <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px)">${ic('chevL',18)}</button>
-    <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px)">${ic('share',17)}</button>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(var(--bg-rgb),0) 30%,rgba(var(--bg-rgb),.95) 100%)"></div>
+    <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
+    <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('share',17)}</button>
     <div style="position:absolute;bottom:20px;left:20px;right:20px" class="col">
       <span style="padding:6px 10px;border-radius:8px;background:${PINK};color:#000;font:700 10px/1 var(--m);letter-spacing:.08em;align-self:flex-start">${esc(e.badge)}</span>
       <div class="h1" style="font-size:${e.name.length>40?26:34}px;margin-top:12px">${esc(e.name)}</div>
-      <span class="mono" style="color:rgba(255,255,255,.7);margin-top:8px">${esc(e.date)}${e.time?' · '+esc(e.time):''} · ${esc(e.city)}</span>
+      <span class="mono" style="color:rgba(var(--fg),.7);margin-top:8px">${esc(e.date)}${e.time?' · '+esc(e.time):''} · ${esc(e.city)}</span>
     </div>
   </div>
 
   <div class="pad col" style="gap:18px;padding-top:20px">
     <a href="${mapsUrl(e)}" target="_blank" rel="noopener" class="card" style="padding:16px;display:flex;gap:14px;align-items:center;color:inherit;text-decoration:none">
-      <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff">${ic('pin',18)}</span>
+      <span style="width:42px;height:42px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1)">${ic('pin',18)}</span>
       <div class="col" style="flex:1;min-width:0"><span class="h4">${esc(e.venue)}</span>
         <span class="mono" style="margin-top:4px">${esc(e.address||e.city)}</span></div>
       <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
@@ -1103,18 +1147,18 @@ const scLive = e => `
     ${e.lineup.length?`<div class="col" style="gap:10px">
       <span class="eyebrow">Line-up</span>
       <div style="display:flex;flex-wrap:wrap;gap:7px">
-        ${e.lineup.map((a,i)=>`<span class="chip" style="${i===0?'border-color:'+PINK+';color:#fff':''}">${esc(a)}</span>`).join('')}
+        ${e.lineup.map((a,i)=>`<span class="chip" style="${i===0?'border-color:'+PINK+';color:var(--t1)':''}">${esc(a)}</span>`).join('')}
       </div>
     </div>`:''}
 
     ${e.tags.length?`<div style="display:flex;flex-wrap:wrap;gap:7px">
-      ${e.tags.map(t=>`<span class="mono" style="padding:6px 9px;border-radius:7px;background:#16161b">${esc(t)}</span>`).join('')}</div>`:''}
+      ${e.tags.map(t=>`<span class="mono" style="padding:6px 9px;border-radius:7px;background:var(--surface-2)">${esc(t)}</span>`).join('')}</div>`:''}
 
     <div class="col" style="gap:10px">
       <span class="eyebrow">Bilety</span>
       ${e.links.map(l=>`
       <a href="${esc(l.url)}" target="_blank" rel="noopener" class="card" style="padding:16px;display:flex;gap:14px;align-items:center;color:inherit;text-decoration:none">
-        <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff">${ic('ticket',18)}</span>
+        <span style="width:42px;height:42px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1)">${ic('ticket',18)}</span>
         <div class="col" style="flex:1"><span class="h4">${esc(SRC_PL[l.source]||l.source)}</span>
           <span class="mono" style="margin-top:4px">${l.price==null?'sprawdź ceny':l.price===0?'wstęp wolny':'od '+zl(l.price)}</span></div>
         <span style="color:${PINK};display:flex">${ic('chevR',17)}</span>
@@ -1122,7 +1166,7 @@ const scLive = e => `
     </div>
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 30%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
   <a class="btn p" href="${esc(e.links[0].url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">
     Kup bilet · ${price(e)}</a>
 </div>`;
@@ -1135,13 +1179,13 @@ const scEvent = () => {
 <div class="pg" style="padding-bottom:118px">
   <div style="position:relative;height:430px">
     ${coverArt(e)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.95) 100%)"></div>
-    <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px)">${ic('chevL',18)}</button>
-    <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px)">${ic('share',17)}</button>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(var(--bg-rgb),0) 30%,rgba(var(--bg-rgb),.95) 100%)"></div>
+    <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
+    <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('share',17)}</button>
     <div style="position:absolute;bottom:20px;left:20px;right:20px" class="col">
       <span style="padding:6px 10px;border-radius:8px;background:${PINK};color:#000;font:700 10px/1 var(--m);letter-spacing:.08em;align-self:flex-start">${esc(e.badge)}</span>
       <div class="h1" style="font-size:34px;margin-top:12px">${esc(e.name)}</div>
-      <span class="mono" style="color:rgba(255,255,255,.7);margin-top:8px">${esc(e.date)} · ${esc(e.time)} · ${esc(e.venue)}</span>
+      <span class="mono" style="color:rgba(var(--fg),.7);margin-top:8px">${esc(e.date)} · ${esc(e.time)} · ${esc(e.venue)}</span>
     </div>
   </div>
 
@@ -1160,9 +1204,9 @@ const scEvent = () => {
 
     <div class="col" style="gap:8px">
       <div class="row" style="justify-content:space-between">
-        <span class="mono">SPRZEDANE</span><span class="mono" style="color:#fff">${Math.round(e.sold*100)}%</span>
+        <span class="mono">SPRZEDANE</span><span class="mono" style="color:var(--t1)">${Math.round(e.sold*100)}%</span>
       </div>
-      <div style="height:6px;border-radius:4px;background:#1a1a1f;overflow:hidden">
+      <div style="height:6px;border-radius:4px;background:var(--track);overflow:hidden">
         <div style="height:100%;width:${e.sold*100}%;background:${PINK};border-radius:4px"></div></div>
     </div>
 
@@ -1171,12 +1215,12 @@ const scEvent = () => {
     <div class="col" style="gap:10px">
       <span class="eyebrow">Line-up</span>
       <div style="display:flex;flex-wrap:wrap;gap:7px">
-        ${e.lineup.map((a,i)=>`<span class="chip" style="${i===0?'border-color:'+PINK+';color:#fff':''}">${esc(a)}</span>`).join('')}
+        ${e.lineup.map((a,i)=>`<span class="chip" style="${i===0?'border-color:'+PINK+';color:var(--t1)':''}">${esc(a)}</span>`).join('')}
       </div>
     </div>
 
     <div class="card" style="padding:16px;display:flex;gap:14px;align-items:center">
-      <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff">${ic('check',18)}</span>
+      <span style="width:42px;height:42px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1)">${ic('check',18)}</span>
       <div class="col" style="flex:1"><span class="h4">${esc(e.organizer)}</span>
         <span class="mono" style="margin-top:4px">Organizator zweryfikowany</span></div>
       <span style="color:${PINK};display:flex">${ic('check',17)}</span>
@@ -1200,14 +1244,14 @@ const scEvent = () => {
     </div>` : '')}
 
     <div data-act="go:venue" class="card" style="padding:16px;display:flex;gap:14px;align-items:center">
-      <span style="width:42px;height:42px;border-radius:12px;background:#1c1c22;display:grid;place-items:center;color:#fff">${ic('seat',18)}</span>
+      <span style="width:42px;height:42px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1)">${ic('seat',18)}</span>
       <div class="col" style="flex:1"><span class="h4">Mapa sali</span>
         <span class="mono" style="margin-top:4px">Wybierz sektor i konkretne miejsce</span></div>
       <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
     </div>
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 30%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
   <button class="btn p" data-act="go:select">Wybierz bilety · od ${zl(e.from)}</button>
 </div>`;
 };
@@ -1218,9 +1262,9 @@ const scVenue = () => {
   const boxes = SECTORS.map(x=>{
     const on = S.sector===x.id;
     const st = x.soldout
-      ? 'background:#151519;color:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.06)'
+      ? 'background:var(--surface-2);color:rgba(var(--fg),.28);border:1px solid rgba(var(--fg),.06)'
       : on ? `background:${PINK};color:#000;border:1px solid ${PINK}`
-           : `background:var(--pink-dim);color:#fff;border:1px solid var(--pink-line)`;
+           : `background:var(--pink-dim);color:var(--t1);border:1px solid var(--pink-line)`;
     return `<button data-act="sector:${x.id}" style="position:absolute;left:${x.l}px;top:${x.t}px;width:${x.w}px;height:${x.h}px;
       border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;${st}">
       <span style="font:600 11px/1 var(--d);letter-spacing:.02em">${x.label}</span>
@@ -1230,22 +1274,22 @@ const scVenue = () => {
 <div class="pg" style="padding-bottom:110px">
   <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4">Mapa sali · ${esc(ev().venue)}</span></div>
   <div class="pad" style="padding-top:16px">
-    <div style="position:relative;height:420px;border-radius:20px;background:#08080a;border:1px solid var(--line);overflow:hidden">
-      <div style="position:absolute;left:56px;top:26px;width:238px;height:34px;border-radius:8px;background:#1c1c22;
+    <div style="position:relative;height:420px;border-radius:20px;background:var(--surface);border:1px solid var(--line);overflow:hidden">
+      <div style="position:absolute;left:56px;top:26px;width:238px;height:34px;border-radius:8px;background:var(--surface-3);
         display:grid;place-items:center;font:600 11px/1 var(--m);letter-spacing:.2em;color:var(--t2)">SCENA</div>
       ${boxes}
     </div>
     <div class="row" style="gap:16px;padding:14px 0">
       ${[['DOSTĘPNE','background:var(--pink-dim);border:1px solid var(--pink-line)'],
          ['WYBRANE','background:'+PINK],
-         ['SOLD OUT','background:#151519;border:1px solid rgba(255,255,255,.12)']]
+         ['SOLD OUT','background:var(--surface-2);border:1px solid rgba(var(--fg),.12)']]
         .map(([l,sw])=>`<span class="row" style="gap:6px"><span style="width:10px;height:10px;border-radius:3px;${sw}"></span>
         <span class="mono">${l}</span></span>`).join('')}
     </div>
     ${s && s.rows ? seatGrid(s) : ''}
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 30%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
   <div class="row" style="justify-content:space-between;padding-bottom:10px">
     <span class="mono">${s ? esc(s.label+' · '+s.info) : 'Wybierz sektor na mapie'}</span>
     <span style="font:600 15px/1 var(--d)">${s ? zl(ev().from*s.mult) : '—'}</span>
@@ -1265,7 +1309,7 @@ function seatGrid(s){
       const key=`${s.id}-${r}-${n}`;
       const taken = ((r*7+n*13+s.id.length*5)%9)<3;
       const on = S.seats.includes(key);
-      const st = taken ? 'background:#141418;border:1px solid rgba(255,255,255,.05)'
+      const st = taken ? 'background:var(--surface-2);border:1px solid rgba(var(--fg),.05)'
         : on ? `background:${PINK};border:1px solid ${PINK}` : 'background:#22222a;border:1px solid var(--line)';
       row += `<button ${taken?'':`data-act="seat:${key}"`} style="width:20px;height:20px;border-radius:5px;${st}"></button>`;
     }
@@ -1304,13 +1348,13 @@ const scSelect = () => {
         </div>
       </div>`).join('')}
     <div class="card" style="padding:15px;display:flex;gap:12px;align-items:center;margin-top:4px">
-      <span style="color:#fff;display:flex">${ic('ticket',18)}</span>
+      <span style="color:var(--t1);display:flex">${ic('ticket',18)}</span>
       <span class="mono" style="flex:1;color:var(--t2)">Masz kod zniżkowy?</span>
       <button data-act="promo" class="chip" style="padding:7px 12px">Wpisz kod</button>
     </div>
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 26%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 26%);z-index:45">
   <div class="row" style="justify-content:space-between;padding-bottom:10px">
     <span class="mono">${c===1?'1 bilet':c+' bilety'}</span>
     <span style="font:600 17px/1 var(--d)">${zl(t)}</span></div>
@@ -1330,7 +1374,7 @@ const scCheckout = () => {
     <div class="card col" style="padding:18px">
       ${pools().filter(p=>S.qty[p.k]>0).map(p=>`
         <div class="row" style="justify-content:space-between;padding:5px 0">
-          <span class="body" style="color:#fff">${p.name} × ${S.qty[p.k]}</span>
+          <span class="body" style="color:var(--t1)">${p.name} × ${S.qty[p.k]}</span>
           <span style="font:500 14px/1 var(--m)">${zl(p.price*S.qty[p.k])}</span></div>`).join('')}
       <div class="row" style="justify-content:space-between;padding:5px 0">
         <span class="body">Opłata serwisowa +1</span><span style="font:500 14px/1 var(--m);color:var(--t2)">${zl(f)}</span></div>
@@ -1344,17 +1388,17 @@ const scCheckout = () => {
         <button data-act="pm:${m.id}" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
           border-radius:15px;background:var(--surface);border:1px solid ${S.pm===m.id?PINK:'var(--line)'};width:100%">
           <span class="row" style="gap:12px">
-            <span style="width:42px;height:26px;border-radius:6px;background:#1c1c22;display:grid;place-items:center;
+            <span style="width:42px;height:26px;border-radius:6px;background:var(--surface-3);display:grid;place-items:center;
               font:700 9px/1 var(--m);letter-spacing:.06em">${m.tag}</span>
             <span style="font:500 14px/1 var(--d)">${m.n}</span></span>
-          <span style="width:18px;height:18px;border-radius:50%;border:1px solid ${S.pm===m.id?PINK:'rgba(255,255,255,.25)'};
+          <span style="width:18px;height:18px;border-radius:50%;border:1px solid ${S.pm===m.id?PINK:'rgba(var(--fg),.25)'};
             background:${S.pm===m.id?PINK:'transparent'};box-shadow:${S.pm===m.id?'inset 0 0 0 4px var(--surface)':'none'}"></span>
         </button>`).join('')}
     </div>
     <div class="mono" style="line-height:1.6">Kupując akceptujesz regulamin +1 oraz warunki organizatora. Bilet trafia do zakładki Bilety natychmiast po płatności.</div>
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 26%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 26%);z-index:45">
   <button class="btn p" data-act="payNow">Zapłać ${zl(t+f)}</button>
 </div>`;
 };
@@ -1381,16 +1425,16 @@ const scTickets = () => `
     <span class="mono" style="display:block;margin-top:6px">Przesuń kartę w bok · dotknij by otworzyć</span></div>
   <div class="sc" id="stack" style="display:flex;gap:14px;overflow-x:auto;padding:0 20px 24px;scroll-snap-type:x mandatory">
     ${S.owned.map((o,i)=>{const e=EVENTS.find(x=>x.id===o.id); return `
-      <div data-act="openTicket:${i}" class="tk" style="flex:none;width:290px;scroll-snap-align:center;
+      <div data-act="openTicket:${i}" class="tk ds" style="flex:none;width:290px;scroll-snap-align:center;
         border-radius:22px;overflow:hidden;position:relative;height:400px;transition:transform .2s">
         ${artBox(e)}
         <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.92))"></div>
         <div class="row" style="position:absolute;top:16px;left:16px;right:16px;justify-content:space-between">
-          <span class="mono" style="color:rgba(255,255,255,.75)">${o.type}</span></div>
+          <span class="mono" style="color:rgba(var(--fg),.75)">${o.type}</span></div>
         <div style="position:absolute;bottom:0;left:0;right:0;padding:18px" class="col">
           <span class="h3">${esc(e.name)}</span>
           <span class="mono" style="margin-top:6px">${esc(e.date)} · ${esc(e.time)} · ${esc(e.venue)}</span>
-          <div style="height:1px;background:rgba(255,255,255,.16);margin:14px 0"></div>
+          <div style="height:1px;background:rgba(var(--fg),.16);margin:14px 0"></div>
           <div class="row" style="justify-content:space-between">
             <span class="mono">${o.qty} × bilet</span>
             <span class="mono" style="color:${PINK}">POKAŻ QR →</span></div>
@@ -1398,7 +1442,7 @@ const scTickets = () => `
       </div>`;}).join('')}
     <div style="flex:none;width:290px;scroll-snap-align:center;height:400px;border-radius:22px;border:1px dashed var(--line-2);
       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px">
-      <span style="opacity:.4;color:#fff">${ic('plus',28)}</span>
+      <span style="opacity:.4;color:var(--t1)">${ic('plus',28)}</span>
       <span class="h4">Miejsce na kolejny</span>
       <span class="body" style="font-size:13px">Znajdź coś na ten weekend</span>
       <button class="chip on" data-act="go:home" style="margin-top:6px">Przeglądaj</button>
@@ -1432,7 +1476,7 @@ const scTicket = () => {
   const o=S.owned[S.ticketIdx]||S.owned[0], e=EVENTS.find(x=>x.id===o.id);
   const pct = S.secLeft/20;
   return `
-<div class="pg" style="padding:64px 0 112px;background:linear-gradient(180deg,#000,#17000c 70%,#2a0013)">
+<div class="pg" style="padding:64px 0 112px;background:linear-gradient(180deg,var(--bg),var(--promo2) 70%,var(--promo1))">
   <div class="pgrid"></div>
   <div class="pad row" style="justify-content:space-between;padding-bottom:20px;position:relative">
     <button class="back" data-act="go:tickets">${ic('chevL',18)}</button>
@@ -1445,7 +1489,7 @@ const scTicket = () => {
       <div style="position:relative;height:120px;overflow:hidden">
         ${artBox(e)}
         <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.7),transparent 70%)"></div>
-        <div style="position:absolute;left:18px;bottom:14px;color:#fff">
+        <div style="position:absolute;left:18px;bottom:14px;color:var(--t1)">
           <div style="font:700 10px/1 var(--m);letter-spacing:.2em;opacity:.75">${esc(o.type)}</div>
           <div style="font:700 21px/1.05 var(--d);letter-spacing:-.02em;margin-top:6px">${esc(e.name)}</div>
         </div>
@@ -1462,7 +1506,7 @@ const scTicket = () => {
         <div style="display:flex;align-items:center;gap:9px">
           <svg width="16" height="16" viewBox="0 0 36 36" style="transform:rotate(-90deg)">
             <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(0,0,0,.14)" stroke-width="5"/>
-            <circle id="qring" cx="18" cy="18" r="15" fill="none" stroke="${PINK}" stroke-width="5" stroke-linecap="round"
+            <circle id="qring" cx="18" cy="18" r="15" fill="none" stroke="${PINK_HEX}" stroke-width="5" stroke-linecap="round"
               stroke-dasharray="${(2*Math.PI*15).toFixed(1)}" stroke-dashoffset="${((1-pct)*2*Math.PI*15).toFixed(1)}"/></svg>
           <span id="qcode" style="font:700 15px/1 var(--m);letter-spacing:.3em">${S.secCode}</span>
           <span id="qsec" style="font:400 10px/1 var(--m);color:rgba(0,0,0,.45)">· ${S.secLeft}s</span>
@@ -1528,7 +1572,7 @@ const scRelease = () => {
               ${x.tag?`<span style="font:700 9px/1 var(--m);letter-spacing:.06em;padding:4px 6px;border-radius:5px;background:${PINK};color:#000">${x.tag}</span>`:''}
             </span>
             <span class="mono">${x.s}</span></span>
-          <span style="width:18px;height:18px;border-radius:50%;border:1px solid ${S.release.mode===x.k?PINK:'rgba(255,255,255,.25)'};
+          <span style="width:18px;height:18px;border-radius:50%;border:1px solid ${S.release.mode===x.k?PINK:'rgba(var(--fg),.25)'};
             background:${S.release.mode===x.k?PINK:'transparent'};box-shadow:${S.release.mode===x.k?'inset 0 0 0 4px var(--surface)':'none'};flex:none"></span>
         </button>`).join('')}
     </div>
@@ -1536,7 +1580,7 @@ const scRelease = () => {
     <div class="mono" style="line-height:1.6">Oddanie jest ostateczne — bilet znika z Twojej listy w momencie potwierdzenia. Jeśli nikt go nie kupi do 2h przed startem, wraca do Ciebie i nadal możesz wejść.</div>
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 26%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 26%);z-index:45">
   <div class="row" style="justify-content:space-between;padding-bottom:10px">
     <span class="mono">Odzyskasz</span>
     <span style="font:600 17px/1 var(--d)">${S.release.mode==='plusy'?(face+bonus)+' PLUSÓW':zl(face)}</span></div>
@@ -1563,22 +1607,22 @@ const scTransfer = () => `
             <span style="width:36px;height:36px;border-radius:50%;background:hsl(${c.id*70+300} 55% 42%);display:grid;place-items:center;font:600 13px/1 var(--d)">${c.name[0]}</span>
             <span class="col" style="align-items:flex-start"><span style="font:500 14px/1 var(--d)">${c.name}</span>
               <span class="mono" style="margin-top:4px">${c.handle}</span></span></span>
-          <span style="width:18px;height:18px;border-radius:50%;border:1px solid ${S.recipient===c.id?PINK:'rgba(255,255,255,.25)'};
+          <span style="width:18px;height:18px;border-radius:50%;border:1px solid ${S.recipient===c.id?PINK:'rgba(var(--fg),.25)'};
             background:${S.recipient===c.id?PINK:'transparent'};box-shadow:${S.recipient===c.id?'inset 0 0 0 4px var(--surface)':'none'}"></span>
         </button>`).join('')}
     </div>
     <div class="mono" style="line-height:1.6">Bilet zniknie z Twojej listy. Odbiorca dostanie go w +1 od razu — bez PDF-ów i screenów.</div>
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 26%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 26%);z-index:45">
   ${S.recipient===null
     ? `<button class="btn off">Wybierz odbiorcę</button>`
-    : `<div id="swipe" style="position:relative;height:58px;border-radius:18px;background:#141419;border:1px solid var(--line-2);overflow:hidden;touch-action:none">
+    : `<div id="swipe" style="position:relative;height:58px;border-radius:18px;background:var(--surface-2);border:1px solid var(--line-2);overflow:hidden;touch-action:none">
         <div id="swipefill" style="position:absolute;inset:0;width:56px;background:${PINK};border-radius:18px"></div>
         <div style="position:absolute;inset:0;display:grid;place-items:center;font:600 14px/1 var(--d);color:var(--t2);pointer-events:none">
           Przesuń, aby wysłać →</div>
-        <div id="knob" style="position:absolute;top:5px;left:5px;width:48px;height:48px;border-radius:14px;background:#000;
-          display:grid;place-items:center;color:#fff">${ic('chevR',20)}</div>
+        <div id="knob" style="position:absolute;top:5px;left:5px;width:48px;height:48px;border-radius:14px;background:var(--bg);
+          display:grid;place-items:center;color:var(--t1)">${ic('chevR',20)}</div>
       </div>`}
 </div>`;
 
@@ -1603,7 +1647,7 @@ const scWallet = () => `
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad" style="padding-bottom:20px"><div class="h2">Portfel</div></div>
   <div class="pad">
-    <div style="border-radius:24px;padding:24px;background:linear-gradient(150deg,#2a0013,#12000a 60%,#0b0b0d);
+    <div style="border-radius:24px;padding:24px;background:linear-gradient(150deg,var(--promo1),var(--promo2) 60%,var(--promo2));
       border:1px solid var(--pink-line);position:relative;overflow:hidden">
       <div style="position:absolute;right:-30px;top:-30px;opacity:.12">${LOGO(150,0)}</div>
       <span class="eyebrow pink">Saldo PLUSÓW</span>
@@ -1632,7 +1676,7 @@ const scWallet = () => `
       <div class="row" style="justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)">
         <div class="col"><span style="font:500 14px/1.2 var(--d)">${esc(x.t)}</span>
           <span class="mono" style="margin-top:5px">${esc(x.m)}</span></div>
-        <span style="font:600 15px/1 var(--m);color:${x.a>0?PINK:'#fff'}">${x.a>0?'+':'−'}${Math.abs(x.a)}</span>
+        <span style="font:600 15px/1 var(--m);color:${x.a>0?PINK:'var(--t1)'}">${x.a>0?'+':'−'}${Math.abs(x.a)}</span>
       </div>`).join('')}
   </div>
 </div>`;
@@ -1650,23 +1694,23 @@ const scTopup = () => `
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
       ${[20,50,100,200,300,500].map(v=>`
         <button data-act="amt:${v}" style="height:54px;border-radius:15px;display:grid;place-items:center;font:600 16px/1 var(--d);
-          ${S.topupAmount===v?`background:${PINK};color:#000`:'background:var(--surface);color:#fff;border:1px solid var(--line)'}">${v}</button>`).join('')}
+          ${S.topupAmount===v?`background:${PINK};color:#000`:'background:var(--surface);color:var(--t1);border:1px solid var(--line)'}">${v}</button>`).join('')}
     </div>
     <div class="card" style="padding:16px;display:flex;gap:12px;align-items:center">
-      <span style="width:42px;height:26px;border-radius:6px;background:#1c1c22;display:grid;place-items:center;font:700 9px/1 var(--m)">BLIK</span>
+      <span style="width:42px;height:26px;border-radius:6px;background:var(--surface-3);display:grid;place-items:center;font:700 9px/1 var(--m)">BLIK</span>
       <span style="flex:1;font:500 14px/1 var(--d)" data-act="go:blik">BLIK · zapamiętany</span>
       <span style="color:${PINK};display:flex">${ic('check',17)}</span>
     </div>
     <div class="mono" style="line-height:1.6">PLUSY są zamkniętym środkiem rozliczeniowym — działają wyłącznie na terenie eventu. Niewykorzystane saldo wraca automatycznie w 3 dni robocze.</div>
   </div>
 </div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 26%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 26%);z-index:45">
   <button class="btn p" data-act="confirmTopup">Doładuj ${zl(S.topupAmount)}</button>
 </div>`;
 
 /* ---- NFC / TAP TO PAY ---- */
 const scNfc = () => `
-<div class="pg" style="display:flex;flex-direction:column;padding:80px 24px 40px;background:radial-gradient(90% 50% at 50% 45%,#2a0013,#000 70%)">
+<div class="pg" style="display:flex;flex-direction:column;padding:80px 24px 40px;background:radial-gradient(90% 50% at 50% 45%,var(--promo1),var(--bg) 70%)">
   <div class="row" style="justify-content:space-between"><button class="back" data-act="back">${ic('chevL',18)}</button>
     <span class="mono">SALDO ${pl(S.balance)} PLUSÓW</span></div>
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px">
@@ -1682,7 +1726,7 @@ const scNfc = () => `
     </div>
     <div class="col" style="align-items:center;gap:8px;text-align:center">
       <span class="h3" id="nfclabel">Bar 2 · Smolna</span>
-      <span class="mono">Do zapłaty <b style="color:#fff">${S._pending||34} PLUSÓW</b> · offline-first, działa bez zasięgu</span>
+      <span class="mono">Do zapłaty <b style="color:var(--t1)">${S._pending||34} PLUSÓW</b> · offline-first, działa bez zasięgu</span>
     </div>
   </div>
   <div class="mono" style="text-align:center;line-height:1.6">W MVP na Androidzie: HCE. Na iOS do czasu entitlementu — QR z tego samego ekranu.</div>
@@ -1700,7 +1744,7 @@ const scBar = () => {
     ${BAR_MENU.map(b=>{const q=S.barCart[b.n]||0; return `
       <button data-act="bar:${b.n}" style="aspect-ratio:1;border-radius:16px;background:var(--surface);
         border:1px solid ${q?PINK:'var(--line)'};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;position:relative">
-        <span style="color:${q?PINK:'rgba(255,255,255,.85)'}">${ic(b.i,24)}</span>
+        <span style="color:${q?PINK:'rgba(var(--fg),.85)'}">${ic(b.i,24)}</span>
         <span style="font:500 11px/1.2 var(--d);text-align:center">${b.n}</span>
         <span class="mono" style="color:${PINK}">${b.p}</span>
         ${q?`<span style="position:absolute;top:6px;right:6px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:${PINK};
@@ -1710,7 +1754,7 @@ const scBar = () => {
   ${items.length?`<div class="pad" style="padding-top:18px"><button class="chip" data-act="clearBar">Wyczyść koszyk</button></div>`:''}
 </div>
 ${items.length?`
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(0,0,0,0),#000 26%);z-index:45">
+<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 26%);z-index:45">
   <div class="row" style="justify-content:space-between;padding-bottom:10px">
     <span class="mono">${items.reduce((s,[,v])=>s+v,0)} poz. · saldo ${pl(S.balance)}</span>
     <span style="font:600 17px/1 var(--d)">${sum} PLUSÓW</span></div>
@@ -1727,7 +1771,7 @@ const scScanner = () => `
   <div class="pad" style="padding-top:16px">
     <div id="scanbox" style="position:relative;aspect-ratio:1;border-radius:22px;overflow:hidden;background:#0b0b0e;border:1px solid var(--line)">
       <div style="position:absolute;inset:0;background:
-        repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 2px,transparent 2px 4px)"></div>
+        repeating-linear-gradient(0deg,rgba(var(--fg),.025) 0 2px,transparent 2px 4px)"></div>
       <div style="position:absolute;left:6%;top:6%;width:88%;height:88%;border-radius:14px;
         box-shadow:0 0 0 9999px rgba(0,0,0,.45)"></div>
       
@@ -1736,7 +1780,7 @@ const scScanner = () => `
       <span style="position:absolute;left:6%;bottom:6%;width:34px;height:34px;border-left:3px solid ${PINK};border-bottom:3px solid ${PINK};border-radius:0 0 0 12px"></span>
       <span style="position:absolute;right:6%;bottom:6%;width:34px;height:34px;border-right:3px solid ${PINK};border-bottom:3px solid ${PINK};border-radius:0 0 12px 0"></span>
       <span style="position:absolute;left:8%;right:8%;height:2px;background:${PINK};box-shadow:0 0 14px ${PINK};animation:scanline 2.1s ease-in-out infinite alternate"></span>
-      <div id="scanres" style="position:absolute;inset:0;display:none;place-items:center;flex-direction:column;gap:12px;background:rgba(0,0,0,.86)"></div>
+      <div id="scanres" style="position:absolute;inset:0;display:none;place-items:center;flex-direction:column;gap:12px;background:rgba(var(--bg-rgb),.88)"></div>
     </div>
   </div>
   <div class="pad row" style="gap:10px;padding-top:16px">
@@ -1790,23 +1834,23 @@ function wShell(inner, hue){
   <div style="position:absolute;inset:0;background:radial-gradient(70% 45% at 50% 18%,hsl(${hue} 90% 40%/.28),transparent 70%)"></div>
 
   <div class="row" style="gap:4px;position:absolute;top:62px;left:20px;right:20px;z-index:8">
-    ${WRAPPED.map((_,k)=>`<span style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.2);overflow:hidden">
+    ${WRAPPED.map((_,k)=>`<span style="flex:1;height:3px;border-radius:2px;background:rgba(var(--fg),.2);overflow:hidden">
       <span style="display:block;height:100%;border-radius:2px;background:#fff;
         width:${k<i?'100%':'0'};${k===i?`animation:wfill 6.4s linear forwards`:''}"></span></span>`).join('')}
   </div>
 
   <div class="row" style="position:absolute;top:78px;left:20px;right:20px;z-index:8;justify-content:space-between;align-items:center">
     <span class="row" style="gap:8px;align-items:center">
-      ${LOGO(20,5)}<span class="mono" style="letter-spacing:.2em;color:rgba(255,255,255,.75)">WRAPPED '26</span>
+      ${LOGO(20,5)}<span class="mono" style="letter-spacing:.2em;color:rgba(var(--fg),.75)">WRAPPED '26</span>
     </span>
-    <button data-act="wrapEnd" style="color:rgba(255,255,255,.55);display:flex">${ic('cross',18)}</button>
+    <button data-act="wrapEnd" style="color:rgba(var(--fg),.55);display:flex">${ic('cross',18)}</button>
   </div>
 
   <div class="wr" style="position:relative;z-index:6;min-height:100%;display:flex;flex-direction:column;
     justify-content:center;padding:130px 28px 96px;gap:16px">${inner}</div>
 
   <div class="mono" style="position:absolute;bottom:34px;left:0;right:0;text-align:center;z-index:8;
-    color:rgba(255,255,255,.35)">${i+1} / ${WRAPPED.length} · przytrzymaj, żeby zatrzymać</div>
+    color:rgba(var(--fg),.35)">${i+1} / ${WRAPPED.length} · przytrzymaj, żeby zatrzymać</div>
 </div>`;
 }
 
@@ -1825,7 +1869,7 @@ const scWrapped = () => {
       <div class="body" style="font-size:15px">Dwanaście slajdów o tym, gdzie byłeś, ile przeszedłeś i co wypiłeś. Nie musisz się tym chwalić. Ale będziesz.</div>
       <div class="row" style="gap:7px;flex-wrap:wrap;margin-top:6px">
         ${['17 eventów','41 godzin','128 400 kroków','34 piwa'].map(x=>
-          `<span class="chip" style="border-color:rgba(255,255,255,.3);font-size:12px">${x}</span>`).join('')}
+          `<span class="chip" style="border-color:rgba(var(--fg),.3);font-size:12px">${x}</span>`).join('')}
       </div>
       <button class="btn w" data-act="wrapNext" style="margin-top:14px">Zaczynamy</button>`;
   }
@@ -1834,7 +1878,7 @@ const scWrapped = () => {
     inner = `
       <span class="eyebrow" style="color:hsl(${H} 90% 70%)">${w.eyebrow}</span>
       ${wNum(w.n, w.unit)}
-      <div class="h2" style="color:rgba(255,255,255,.95)">${w.l}</div>
+      <div class="h2" style="color:rgba(var(--fg),.95)">${w.l}</div>
       <div class="body" style="font-size:15px">${w.s}</div>`;
   }
 
@@ -1846,13 +1890,13 @@ const scWrapped = () => {
       <div class="body" style="font-size:15px">To 91 kilometrów. Tyle, co z Placu Zbawiciela do Łodzi — tyle że w bok, w kółko i przy 128 BPM.</div>
       <svg viewBox="0 0 320 60" style="width:100%;height:60px;margin-top:6px">
         <path d="M4 44 H316" stroke="rgba(255,255,255,.18)" stroke-width="2" stroke-dasharray="3 5"/>
-        <circle cx="4" cy="44" r="5" fill="#fff"/><circle cx="316" cy="44" r="5" fill="${PINK}"/>
+        <circle cx="4" cy="44" r="5" fill="#fff"/><circle cx="316" cy="44" r="5" fill="${PINK_HEX}"/>
         <text x="0" y="28" fill="rgba(255,255,255,.6)" font-family="JetBrains Mono" font-size="9">WARSZAWA</text>
-        <text x="255" y="28" fill="${PINK}" font-family="JetBrains Mono" font-size="9">ŁÓDŹ · 91 KM</text>
+        <text x="255" y="28" fill="${PINK_HEX}" font-family="JetBrains Mono" font-size="9">ŁÓDŹ · 91 KM</text>
       </svg>
       <div class="row" style="gap:10px;margin-top:4px">
         ${[['21 400','rekord jednej nocy'],['7 540','średnio na event'],['3','pary butów']].map(([k,l])=>`
-          <div style="flex:1;padding:13px;border-radius:15px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)">
+          <div style="flex:1;padding:13px;border-radius:15px;background:rgba(var(--fg),.06);border:1px solid rgba(var(--fg),.12)">
             <div style="font:700 19px/1 var(--d)">${k}</div>
             <div class="mono" style="margin-top:6px;line-height:1.4">${l}</div></div>`).join('')}
       </div>`;
@@ -1863,16 +1907,16 @@ const scWrapped = () => {
     inner = `
       <span class="eyebrow" style="color:hsl(${H} 90% 74%)">Najdłuższa noc</span>
       <div style="font:700 60px/.92 var(--d);letter-spacing:-.04em">9h 31m</div>
-      <div class="h3" style="color:rgba(255,255,255,.9)">15 marca · Smolna</div>
+      <div class="h3" style="color:rgba(var(--fg),.9)">15 marca · Smolna</div>
       <div class="col" style="gap:0;margin-top:10px">
         ${marks.map(([t,l],k)=>`
           <div class="row" style="gap:14px;align-items:flex-start">
-            <span class="mono" style="width:44px;color:#fff;padding-top:2px">${t}</span>
+            <span class="mono" style="width:44px;color:var(--t1);padding-top:2px">${t}</span>
             <span class="col" style="align-items:center;align-self:stretch">
-              <span style="width:9px;height:9px;border-radius:50%;background:${k===2?PINK:'rgba(255,255,255,.5)'};flex:none;margin-top:4px"></span>
-              ${k<marks.length-1?`<span style="width:1px;flex:1;min-height:24px;background:rgba(255,255,255,.2)"></span>`:''}
+              <span style="width:9px;height:9px;border-radius:50%;background:${k===2?PINK:'rgba(var(--fg),.5)'};flex:none;margin-top:4px"></span>
+              ${k<marks.length-1?`<span style="width:1px;flex:1;min-height:24px;background:rgba(var(--fg),.2)"></span>`:''}
             </span>
-            <span style="font:500 14px/1.3 var(--d);color:${k===2?PINK:'rgba(255,255,255,.8)'};padding-bottom:14px">${l}</span>
+            <span style="font:500 14px/1.3 var(--d);color:${k===2?PINK:'rgba(var(--fg),.8)'};padding-bottom:14px">${l}</span>
           </div>`).join('')}
       </div>
       <div class="mono" style="line-height:1.6">Wyszedłeś, kiedy tramwaje już jeździły. Statystycznie: 4 razy w tym roku.</div>`;
@@ -1885,7 +1929,7 @@ const scWrapped = () => {
       <div class="h1" style="font-size:40px">71 zamówień<br>z telefonu.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
         ${drinks.map(([i,n,l])=>`
-          <div style="padding:15px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+          <div style="padding:15px;border-radius:16px;background:rgba(var(--fg),.06);border:1px solid rgba(var(--fg),.12);
             display:flex;flex-direction:column;gap:8px">
             <span style="color:hsl(${H} 92% 68%)">${ic(i,22)}</span>
             <span style="font:700 26px/1 var(--d);letter-spacing:-.02em">${n}</span>
@@ -1907,13 +1951,13 @@ const scWrapped = () => {
             <div class="row" style="justify-content:space-between">
               <span class="row" style="gap:10px">
                 <span class="mono" style="color:${k===0?PINK:'var(--t3)'}">${String(k+1).padStart(2,'0')}</span>
-                <span style="font:${k===0?600:500} 15px/1 var(--d);color:${k===0?'#fff':'rgba(255,255,255,.75)'}">${n}</span>
+                <span style="font:${k===0?600:500} 15px/1 var(--d);color:${k===0?'#fff':'rgba(var(--fg),.75)'}">${n}</span>
               </span>
-              <span class="mono" style="color:#fff">${v}×</span>
+              <span class="mono" style="color:var(--t1)">${v}×</span>
             </div>
-            <div style="height:4px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden">
+            <div style="height:4px;border-radius:3px;background:rgba(var(--fg),.12);overflow:hidden">
               <div style="height:100%;width:${(v/max*100).toFixed(0)}%;border-radius:3px;
-                background:${k===0?PINK:'rgba(255,255,255,.4)'}"></div></div>
+                background:${k===0?PINK:'rgba(var(--fg),.4)'}"></div></div>
           </div>`).join('')}
       </div>`;
   }
@@ -1930,8 +1974,8 @@ const scWrapped = () => {
       <div class="body" style="font-size:15px">9 wspólnych nocy. Za każdym razem to Ty kupowałeś bilety, a ona pierwsza wchodziła na parkiet.</div>
       <div class="col" style="gap:9px;margin-top:6px">
         ${[['przekazane bilety','4'],['odebrane od znajomych','3'],['oddane do puli','2'],['zaproszenia na tajne eventy','1']].map(([l,v])=>`
-          <div class="row" style="justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.12)">
-            <span class="mono" style="color:rgba(255,255,255,.7)">${l}</span>
+          <div class="row" style="justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(var(--fg),.12)">
+            <span class="mono" style="color:rgba(var(--fg),.7)">${l}</span>
             <span style="font:700 15px/1 var(--m)">${v}</span></div>`).join('')}
       </div>`;
   }
@@ -1940,16 +1984,16 @@ const scWrapped = () => {
     inner = `
       <span class="eyebrow" style="color:hsl(${H} 92% 62%)">Rachunek roku</span>
       ${wNum(1840,' zł',62)}
-      <div class="h3" style="color:rgba(255,255,255,.9)">przeszło przez +1</div>
+      <div class="h3" style="color:rgba(var(--fg),.9)">przeszło przez +1</div>
       <div class="col" style="gap:10px;margin-top:8px">
         ${[['Bilety','1 240 zł',68],['Bar i szatnia','600 zł',32]].map(([l,v,p])=>`
           <div class="col" style="gap:6px">
             <div class="row" style="justify-content:space-between">
-              <span class="mono" style="color:rgba(255,255,255,.75)">${l}</span><span style="font:600 14px/1 var(--m)">${v}</span></div>
-            <div style="height:5px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden">
+              <span class="mono" style="color:rgba(var(--fg),.75)">${l}</span><span style="font:600 14px/1 var(--m)">${v}</span></div>
+            <div style="height:5px;border-radius:3px;background:rgba(var(--fg),.12);overflow:hidden">
               <div style="height:100%;width:${p}%;background:${PINK};border-radius:3px"></div></div></div>`).join('')}
       </div>
-      <div style="padding:15px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);margin-top:8px">
+      <div style="padding:15px;border-radius:16px;background:rgba(var(--fg),.06);border:1px solid rgba(var(--fg),.14);margin-top:8px">
         <div class="row" style="gap:10px;align-items:center">
           <span style="color:${PINK};display:flex">${ic('undo',19)}</span>
           <span class="col" style="flex:1">
@@ -1966,7 +2010,7 @@ const scWrapped = () => {
       <div class="body" style="font-size:15px">Przychodzisz późno, wychodzisz najpóźniej. Nie zostawiasz kolegów w szatni, nie robisz relacji i pijesz wodę między setami. Rzadki gatunek — 6% użytkowników +1.</div>
       <div class="row" style="gap:7px;flex-wrap:wrap;margin-top:6px">
         ${['do końca setu','woda w rotacji','zawsze +1','zero relacji','wchodzi po 23:00'].map(x=>
-          `<span class="chip" style="border-color:${PINK};color:#fff;font-size:12px">${x}</span>`).join('')}
+          `<span class="chip" style="border-color:${PINK};color:var(--t1);font-size:12px">${x}</span>`).join('')}
       </div>
       <div class="mono" style="line-height:1.6;margin-top:4px">Twoje przeciwieństwo: „Wcześniak" — wchodzi o 20:00, wychodzi przed headlinerem.</div>`;
   }
@@ -1975,7 +2019,7 @@ const scWrapped = () => {
     inner = `
       <span class="eyebrow pink">Karta roku</span>
       <div id="wcard" style="border-radius:22px;overflow:hidden;border:1px solid var(--pink-line);
-        background:linear-gradient(150deg,#2a0013,#0d0009 65%,#000);padding:20px;position:relative">
+        background:linear-gradient(150deg,var(--promo1),var(--promo2) 65%,var(--promo2));padding:20px;position:relative">
         <div class="pgrid" style="opacity:.5"></div>
         <div class="row" style="justify-content:space-between;align-items:center;position:relative">
           ${LOGO(30,7)}
@@ -1988,7 +2032,7 @@ const scWrapped = () => {
             <div><div style="font:700 21px/1 var(--d);letter-spacing:-.02em">${k}</div>
               <div class="mono" style="margin-top:5px">${l}</div></div>`).join('')}
         </div>
-        <div class="mono" style="margin-top:18px;position:relative;color:rgba(255,255,255,.45)">plus1.pl/wrapped</div>
+        <div class="mono" style="margin-top:18px;position:relative;color:rgba(var(--fg),.45)">plus1.pl/wrapped</div>
       </div>
       <div class="col" style="gap:9px;margin-top:6px">
         <button class="btn p" data-act="wrapShare">Udostępnij na Instagram Stories</button>
@@ -2010,7 +2054,7 @@ const MERCHANTS = [
 const scScanpay = () => {
   const p = S.pay;
   return `
-<div class="pg" style="background:#000;position:relative;overflow:hidden">
+<div class="pg" style="background:var(--bg);position:relative;overflow:hidden">
   <div id="vfwrap" style="position:absolute;inset:0">
     <div class="vfmock"></div>
     <video id="vf" autoplay playsinline muted style="display:none"></video>
@@ -2028,8 +2072,8 @@ const scScanpay = () => {
     box-shadow:0 0 16px ${PINK};animation:scanline 1.8s ease-in-out infinite alternate"></span>`:''}
 
   <div class="row" style="position:absolute;top:64px;left:16px;right:16px;justify-content:space-between;z-index:5">
-    <button class="back" data-act="back" style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px)">${ic('chevL',18)}</button>
-    <span class="mono" style="color:rgba(255,255,255,.75)">SALDO ${pl(S.balance)} PLUSÓW</span>
+    <button class="back" data-act="back" style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
+    <span class="mono" style="color:rgba(var(--fg),.75)">SALDO ${pl(S.balance)} PLUSÓW</span>
     <button class="back" data-act="torch" style="background:${S.torch?'#fff':'rgba(0,0,0,.5)'};color:${S.torch?'#000':'#fff'};backdrop-filter:blur(10px)">${ic('bolt',17)}</button>
   </div>
 
@@ -2072,8 +2116,11 @@ const FAB_SVG = `<svg width="26" height="26" viewBox="0 0 100 100"><g fill="#000
   <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
   <rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>`;
 
+/* ekrany "aparatowe"/immersyjne zostają ciemne także w trybie dziennym */
+const DARK_SCREENS = ['ticket','nfc','scanner','wrapped','scanpay'];
 function render(){
   if(S.screen!=='scanpay') stopCam();
+  $('#shell').classList.toggle('ds', DARK_SCREENS.includes(S.screen));
   const fn = SCREENS[S.screen] || scHome;
   $('#view').innerHTML = fn();
   const pg = $('#view').firstElementChild;
@@ -2179,6 +2226,7 @@ function act(a){
     case 'splitSheet': splitSheet(); break;
     case 'sheetCity': citySheet(); break;
     case 'sheetNotif': notifSheet(); break;
+    case 'theme': setTheme(document.documentElement.dataset.theme==='light'?'dark':'light'); haptic(8); sfxTap(); break;
     case 'closeSheet': closeSheet(); break;
     case 'applyPromo': applyPromo(); break;
     case 'torch': S.torch=!S.torch; haptic(8); setTorch(S.torch); render(); break;
@@ -2398,7 +2446,7 @@ function promoSheet(){
     <span class="h3">Kod zniżkowy</span>
     <input id="promoInput" placeholder="np. TOODAY20" autocomplete="off"
       style="height:54px;border-radius:15px;background:var(--surface);border:1px solid var(--line);padding:0 16px;
-      font:600 16px/1 var(--m);letter-spacing:.1em;text-transform:uppercase;color:#fff">
+      font:600 16px/1 var(--m);letter-spacing:.1em;text-transform:uppercase;color:var(--t1)">
     <span class="mono">Spróbuj: TOODAY20</span>
     <button class="btn p" data-act="applyPromo">Zastosuj</button></div>`);
   setTimeout(()=>$('#promoInput') && $('#promoInput').focus(), 320);
@@ -2481,7 +2529,7 @@ function payDrawer(m){
   sheet(`<div class="col" style="gap:16px">
     <div class="row" style="gap:12px;align-items:center">
       <span style="width:44px;height:44px;border-radius:13px;background:var(--pink-dim);border:1px solid var(--pink-line);
-        display:grid;place-items:center;color:#fff">${ic('qr',20)}</span>
+        display:grid;place-items:center;color:var(--t1)">${ic('qr',20)}</span>
       <div class="col" style="flex:1"><span class="h4">${esc(m.n)}</span>
         <span class="mono" style="margin-top:4px">${esc(m.d)}</span></div>
     </div>
