@@ -83,7 +83,7 @@ export default async function ebilet() {
       if (byUrl.has(url)) continue;
       const a = e.location?.address || {};
       byUrl.set(url, makeEvent({
-        id: 'ebilet-' + url.split('/').pop(),
+        id: 'ebilet-' + url.split('/').pop().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w.-]+/g, '-'),
         source: 'ebilet',
         title: e.name,
         start: localTime(e.startDate),

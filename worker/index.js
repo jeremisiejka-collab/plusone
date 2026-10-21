@@ -65,7 +65,7 @@ const publicUser = u => ({ id: u.id, email: u.email, name: u.name, role: u.role,
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const cleanEmail = e => String(e || '').trim().toLowerCase();
 const cleanText = (s, max) => String(s || '').replace(/[\u0000-\u001f]/g, '').trim().slice(0, max);
-const EVENT_ID_RE = /^[a-z]+-[\w.-]{1,120}$/;
+const EVENT_ID_RE = /^[a-z0-9]+-[\w.-]{1,120}$/;
 
 async function body(req) {
   try { return await req.json(); } catch { return {}; }
