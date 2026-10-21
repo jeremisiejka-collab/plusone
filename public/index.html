@@ -2395,12 +2395,14 @@ const SCREENS = {
 const NAV = [
   {k:'home',   ic:'home',   l:'ODKRYJ'},
   {k:'list',   ic:'list',   l:'EVENTY'},
-  {fab:true, demo:true},
-  {k:'tickets',ic:'ticket', l:'BILETY', demo:true},
-  {k:'wallet', ic:'wallet', l:'PORTFEL', demo:true}
-].filter(n => DEMO || !n.demo);
+  {fab:true},
+  {k:'tickets',ic:'ticket', l:'BILETY'},
+  {k:'wallet', ic:'wallet', l:'PORTFEL'}
+];
+/* środkowy przycisk: na ekranach z wydarzeniami logo +1 (strona główna), gdzie indziej PAY */
+const FAB_HOME = ['home','list'];
 const NAV_ON = ['home','list','tickets','ticket','wallet','bar'];
-const FAB_SVG = `<svg width="26" height="26" viewBox="0 0 100 100"><g fill="#000">
+const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000">
   <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
   <rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>`;
 
@@ -2419,8 +2421,10 @@ function render(){
     nav.classList.remove('hide');
     const active = S.screen==='ticket' ? 'tickets' : (S.screen==='bar' ? 'wallet' : S.screen);
     nav.innerHTML = NAV.map(n => n.fab
-      ? `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać">
-           <span class="halo"></span><span class="fabtxt">PAY</span></button></div>`
+      ? (FAB_HOME.includes(S.screen)
+        ? `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Strona główna +1">${FAB_SVG}</button></div>`
+        : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać">
+           <span class="halo"></span><span class="fabtxt">PAY</span></button></div>`)
       : `<button data-act="go:${n.k}" class="${active===n.k?'on':''}">
           ${ic(n.ic,21)}<span>${n.l}</span></button>`).join('');
   } else nav.classList.add('hide');
@@ -2452,6 +2456,8 @@ function act(a){
     case 'go': go(p1); break;
     case 'back': back(); break;
     case 'ev': openEvent(p1); break;
+    case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40;
+      if(S.screen==='home'){ $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
     case 'guest': markEntered(); S.prev='home'; go('home'); break;
     case 'authgo': ACC.authMode=p1; ACC.authErr=''; go('auth'); break;
     case 'authmode': ACC.authMode=p1; ACC.authErr=''; S.dir=null; render(); break;
