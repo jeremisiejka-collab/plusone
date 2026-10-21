@@ -1,7 +1,7 @@
 /* Pipeline +1: pobiera wydarzenia ze wszystkich źródeł, czyści, łączy duplikaty,
    sortuje i zapisuje public/data/events.json (to czyta aplikacja).
    Uruchomienie: node pipeline/run.mjs [--only=ra,going] */
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, readFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nowLocal, CATEGORIES } from './lib/normalize.mjs';
@@ -9,9 +9,17 @@ import { dedup } from './lib/dedup.mjs';
 import ra from './sources/ra.mjs';
 import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
+import go2warsaw from './sources/go2warsaw.mjs';
 
-const SOURCES = { going, ebilet, ra };
+const SOURCES = { going, ebilet, ra, go2warsaw };
 const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'data', 'events.json');
+
+/* poprzedni plik: daty pierwszego pojawienia się ("Nowe w +1") i zapas, gdy źródło padnie */
+let prev = null;
+try { prev = JSON.parse(await readFile(OUT, 'utf8')); } catch { /* pierwszy przebieg */ }
+const prevEvents = prev?.events || [];
+// wydarzenia z pliku sprzed wprowadzenia firstSeen traktujemy jako "stare"
+const firstSeen = new Map(prevEvents.map(e => [e.id, e.firstSeen || '2000-01-01T00:00:00.000Z']));
 
 const only = process.argv.find(a => a.startsWith('--only='))?.slice(7).split(',');
 
@@ -26,8 +34,11 @@ for (const [name, fn] of Object.entries(SOURCES)) {
     report[name] = { ok: true, count: list.length };
     console.log(`✓ ${name}: ${list.length} (${((Date.now() - t) / 1000).toFixed(1)}s)`);
   } catch (e) {
-    report[name] = { ok: false, error: e.message };
-    console.error(`✗ ${name}: ${e.message}`);
+    // źródło nie odpowiada: bierzemy jego wydarzenia z poprzedniego przebiegu, żeby nie zniknęły z apki
+    const kept = prevEvents.filter(x => x.sources?.includes(name)).map(x => ({ ...x, links: x.links.filter(l => l.source === name), sources: [name] }));
+    raw.push(...kept);
+    report[name] = { ok: false, error: e.message, kept: kept.length };
+    console.error(`✗ ${name}: ${e.message} (zostawiam ${kept.length} z poprzedniego przebiegu)`);
   }
 }
 
@@ -39,7 +50,10 @@ const valid = raw.filter(e =>
   (e.end || e.start).slice(0, 10) >= today
 );
 
-const events = dedup(valid).sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
+const stamp = new Date().toISOString();
+const events = dedup(valid)
+  .map(e => ({ ...e, firstSeen: firstSeen.get(e.id) || stamp }))
+  .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 
 const cities = {};
 for (const e of events) cities[e.city] = (cities[e.city] || 0) + 1;

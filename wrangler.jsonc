@@ -1,10 +1,28 @@
-// Cloudflare Workers (static assets): serwuje folder public/.
-// Przy Cloudflare Pages ten plik jest pomijany — tam ustawia się "Build output directory: public".
+// Cloudflare Workers: statyczna apka z public/ + API (/api/*) z worker/index.js + baza D1.
 {
   "name": "plusone",
   "account_id": "3b85c6d89850b97817458147e0fd71f6",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "./public" },
+  "main": "worker/index.js",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "plusone",
+      // przy publikacji GitHub Actions podmienia to na id bazy (tworzy ją, jeśli nie istnieje)
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    // sha256 adresów e-mail, które dostają rolę admina (po przecinku)
+    "ADMIN_EMAIL_SHA256": "f5b0a493b81b1b8b4876cf0a4e60842484aef9dc06f0e7e07886843c6760e28d"
+  },
+  "observability": { "enabled": true },
   "workers_dev": true,           // zapasowy adres plusone.jeremi-3b8.workers.dev
   "preview_urls": false,
   // domena w Cloudflare (DNS i certyfikat ustawiają się same przy publikacji)

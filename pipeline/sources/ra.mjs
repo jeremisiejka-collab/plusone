@@ -2,15 +2,23 @@
 import { request, sleep } from '../lib/http.mjs';
 import { localTime, parsePrice, makeEvent } from '../lib/normalize.mjs';
 
-/* id obszarów RA (zapytanie: areas(searchTerm:"...")) */
-const AREAS = { Warszawa: 454, Kraków: 455, Poznań: 666, Gdańsk: 667, Wrocław: 668, Łódź: 677 };
+/* obszar RA "All" dla Polski (id 69) — obejmuje też miasta bez własnego obszaru (Katowice, Lublin…) */
+const POLAND = 69;
+const AREA_CITY = { Warsaw: 'Warszawa', Krakow: 'Kraków', Poznan: 'Poznań', Gdansk: 'Gdańsk', Wroclaw: 'Wrocław', Lodz: 'Łódź' };
+
+/* miasto z adresu ("Smolna 38, 00-375 Warszawa"), w razie czego z obszaru RA */
+function cityOf(venue) {
+  const m = (venue?.address || '').match(/\d{2}-\d{3}\s+([^,\d]+)/);
+  if (m) return m[1].replace(/\s+(Poland|Polska)$/i, '').trim();
+  return AREA_CITY[venue?.area?.name] || null;
+}
 
 const QUERY = `query($filters: FilterInputDtoInput, $page: Int, $pageSize: Int) {
   eventListings(filters: $filters, pageSize: $pageSize, page: $page) {
     totalResults
     data { event {
       id title startTime endTime contentUrl cost
-      venue { name address }
+      venue { name address area { name } }
       images { filename type }
       artists { name }
       genres { name }
@@ -18,7 +26,7 @@ const QUERY = `query($filters: FilterInputDtoInput, $page: Int, $pageSize: Int) 
   }
 }`;
 
-async function fetchArea(city, areaId, from, to) {
+async function fetchArea(areaId, from, to) {
   const out = [];
   for (let page = 1; page <= 20; page++) {
     const res = await request('https://ra.co/graphql', {
@@ -39,7 +47,7 @@ async function fetchArea(city, areaId, from, to) {
         title: ev.title,
         start: localTime(ev.startTime),
         end: localTime(ev.endTime),
-        city,
+        city: cityOf(ev.venue),
         venue: ev.venue?.name,
         address: ev.venue?.address,
         category: 'Clubs',
@@ -59,10 +67,5 @@ async function fetchArea(city, areaId, from, to) {
 export default async function ra({ days = 180 } = {}) {
   const from = new Date();
   const to = new Date(Date.now() + days * 864e5);
-  const all = [];
-  for (const [city, id] of Object.entries(AREAS)) {
-    all.push(...await fetchArea(city, id, from.toISOString(), to.toISOString()));
-    await sleep(500);
-  }
-  return all;
+  return (await fetchArea(POLAND, from.toISOString(), to.toISOString())).filter(e => e.city);
 }

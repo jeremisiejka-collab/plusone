@@ -2,7 +2,7 @@ name: Aktualizacja wydarzeń
 
 on:
   schedule:
-    - cron: '17 */4 * * *'   # co 4 godziny
+    - cron: '7 5,15 * * *'   # 2× dziennie: ok. 6:00 i 16:00 czasu polskiego (zimą; latem 7:00 i 17:00)
   workflow_dispatch:          # ręczne uruchomienie z zakładki Actions
 
 permissions:

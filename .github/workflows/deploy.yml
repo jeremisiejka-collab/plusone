@@ -2,6 +2,7 @@ name: Publikacja na Cloudflare
 
 # Wysyła folder public/ do Cloudflare Workers (wrangler.jsonc).
 # Wymaga sekretu repo CLOUDFLARE_API_TOKEN (account_id jest w wrangler.jsonc).
+# Bazę D1 "plusone" zakłada sam, jeśli jej nie ma, i nakłada migracje z migrations/.
 on:
   push:
     branches: [main]
@@ -40,6 +41,22 @@ jobs:
         if: steps.keys.outputs.ok == 'true'
         with:
           node-version: 22
+
+      - name: Baza danych (D1)
+        if: steps.keys.outputs.ok == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          find_id() { npx --yes wrangler@4 d1 list --json 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const d=JSON.parse(s).find(x=>x.name==='plusone');console.log(d?d.uuid:'')}catch(e){console.log('')}})"; }
+          ID=$(find_id)
+          if [ -z "$ID" ]; then
+            echo "Zakładam bazę D1 plusone…"
+            npx --yes wrangler@4 d1 create plusone --location eeur
+            ID=$(find_id)
+          fi
+          if [ -z "$ID" ]; then echo "::error::Nie mogę utworzyć ani znaleźć bazy D1 — token potrzebuje uprawnienia Account / D1 / Edit."; exit 1; fi
+          sed -i "s/00000000-0000-0000-0000-000000000000/$ID/" wrangler.jsonc
+          npx --yes wrangler@4 d1 migrations apply plusone --remote
 
       - name: Publikuj
         if: steps.keys.outputs.ok == 'true'
