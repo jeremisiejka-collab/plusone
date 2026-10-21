@@ -2,6 +2,7 @@
 // Przy Cloudflare Pages ten plik jest pomijany — tam ustawia się "Build output directory: public".
 {
   "name": "plusone",
+  "account_id": "3b85c6d89850b97817458147e0fd71f6",
   "compatibility_date": "2026-10-01",
   "assets": { "directory": "./public" }
 }

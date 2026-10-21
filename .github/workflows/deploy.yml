@@ -1,7 +1,7 @@
 name: Publikacja na Cloudflare
 
 # Wysyła folder public/ do Cloudflare Workers (wrangler.jsonc).
-# Wymaga sekretów repo: CLOUDFLARE_API_TOKEN i CLOUDFLARE_ACCOUNT_ID.
+# Wymaga sekretu repo CLOUDFLARE_API_TOKEN (account_id jest w wrangler.jsonc).
 on:
   push:
     branches: [main]
@@ -23,10 +23,9 @@ jobs:
         id: keys
         env:
           TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          if [ -z "$TOKEN" ] || [ -z "$ACCOUNT" ]; then
-            echo "Brak sekretów CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID — pomijam publikację."
+          if [ -z "$TOKEN" ]; then
+            echo "Brak sekretu CLOUDFLARE_API_TOKEN — pomijam publikację."
             echo "ok=false" >> "$GITHUB_OUTPUT"
           else
             echo "ok=true" >> "$GITHUB_OUTPUT"
@@ -42,5 +41,4 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
