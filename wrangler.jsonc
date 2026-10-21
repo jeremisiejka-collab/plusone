@@ -1,0 +1,7 @@
+// Cloudflare Workers (static assets): serwuje folder public/.
+// Przy Cloudflare Pages ten plik jest pomijany — tam ustawia się "Build output directory: public".
+{
+  "name": "plusone",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./public" }
+}

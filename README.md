@@ -7,11 +7,11 @@ Aplikacja z wydarzeniami — imprezy, koncerty, teatr, stand-up, festiwale — n
 ```
 źródła (Going., eBilet, Resident Advisor)
    → pipeline/run.mjs   pobiera, czyści, łączy duplikaty, sortuje
-   → data/events.json   jeden plik z wszystkimi wydarzeniami
-   → index.html         apka wczytuje plik i pokazuje wydarzenia
+   → public/data/events.json   jeden plik z wszystkimi wydarzeniami
+   → public/index.html         apka wczytuje plik i pokazuje wydarzenia
 ```
 
-- **GitHub Actions** (`.github/workflows/events.yml`) uruchamia pipeline co 4 godziny i commituje świeży `data/events.json`. Vercel publikuje nową wersję po każdym commicie.
+- **GitHub Actions** (`.github/workflows/events.yml`) uruchamia pipeline co 4 godziny i commituje świeży `public/data/events.json`. Cloudflare publikuje nową wersję po każdym commicie na `main`.
 - Ręczne uruchomienie: zakładka **Actions → Aktualizacja wydarzeń → Run workflow**.
 - Duplikaty (ten sam koncert w kilku serwisach) są łączone w jeden wpis z kilkoma linkami do biletów.
 
@@ -28,8 +28,16 @@ Nowe źródło = nowy plik w `pipeline/sources/`, który zwraca listę wydarzeń
 ## Lokalnie
 
 ```sh
-node pipeline/run.mjs          # odświeża data/events.json (Node 20+)
-npx serve .                    # apka na http://localhost:3000
+node pipeline/run.mjs          # odświeża public/data/events.json (Node 20+)
+npx serve public               # apka na http://localhost:3000
 ```
 
-Ekrany biletów, portfela, BLIK i zaproszeń +1 to nadal demo (mock danych, bez realnych płatności).
+## Hosting
+
+- Domena **plusoneapp.pl**: rejestrator GoDaddy, DNS w Cloudflare.
+- Strona: **Cloudflare Pages** podpięte do tego repo; publikowany jest tylko folder `public/` (build command pusty, output `public`). `public/_headers` ustawia cache.
+- `wrangler.jsonc` pozwala zamiast Pages użyć Cloudflare Workers (static assets) — Pages go pomija.
+
+## Demo
+
+Bilety, portfel, PAY, BLIK i zaproszenia +1 to wciąż makiety (bez realnych płatności). Publicznie są ukryte; pokazuje je `?demo`, chowa `?demo=0`.

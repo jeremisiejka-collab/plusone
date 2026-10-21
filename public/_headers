@@ -1,0 +1,13 @@
+# Nagłówki dla Cloudflare (Pages / Workers static assets)
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/data/*
+  Cache-Control: public, max-age=300, stale-while-revalidate=3600
+
+/*.png
+  Cache-Control: public, max-age=86400
+
+/*.svg
+  Cache-Control: public, max-age=86400

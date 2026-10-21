@@ -1,5 +1,5 @@
 /* Pipeline +1: pobiera wydarzenia ze wszystkich źródeł, czyści, łączy duplikaty,
-   sortuje i zapisuje data/events.json (to czyta aplikacja).
+   sortuje i zapisuje public/data/events.json (to czyta aplikacja).
    Uruchomienie: node pipeline/run.mjs [--only=ra,going] */
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -11,7 +11,7 @@ import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
 
 const SOURCES = { going, ebilet, ra };
-const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'events.json');
+const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'data', 'events.json');
 
 const only = process.argv.find(a => a.startsWith('--only='))?.slice(7).split(',');
 
