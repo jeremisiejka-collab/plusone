@@ -51,10 +51,15 @@ jobs:
           ID=$(find_id)
           if [ -z "$ID" ]; then
             echo "Zakładam bazę D1 plusone…"
-            npx --yes wrangler@4 d1 create plusone --location eeur
+            npx --yes wrangler@4 d1 create plusone --location eeur || true
             ID=$(find_id)
           fi
-          if [ -z "$ID" ]; then echo "::error::Nie mogę utworzyć ani znaleźć bazy D1 — token potrzebuje uprawnienia Account / D1 / Edit."; exit 1; fi
+          if [ -z "$ID" ]; then
+            # bez bazy publikujemy apkę bez kont (API odpowie "baza niepodłączona"), zamiast blokować całą stronę
+            echo "::warning::Brak dostępu do D1 — token potrzebuje uprawnienia Account / D1 / Edit. Publikuję bez kont."
+            sed -i '/D1-START/,/D1-END/d' wrangler.jsonc
+            exit 0
+          fi
           sed -i "s/00000000-0000-0000-0000-000000000000/$ID/" wrangler.jsonc
           npx --yes wrangler@4 d1 migrations apply plusone --remote
 

@@ -9,6 +9,7 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
   },
+  // D1-START
   "d1_databases": [
     {
       "binding": "DB",
@@ -18,6 +19,7 @@
       "migrations_dir": "migrations"
     }
   ],
+  // D1-END
   "vars": {
     // sha256 adresów e-mail, które dostają rolę admina (po przecinku)
     "ADMIN_EMAIL_SHA256": "f5b0a493b81b1b8b4876cf0a4e60842484aef9dc06f0e7e07886843c6760e28d"
