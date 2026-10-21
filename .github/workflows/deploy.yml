@@ -1,0 +1,46 @@
+name: Publikacja na Cloudflare
+
+# Wysyła folder public/ do Cloudflare Workers (wrangler.jsonc).
+# Wymaga sekretów repo: CLOUDFLARE_API_TOKEN i CLOUDFLARE_ACCOUNT_ID.
+on:
+  push:
+    branches: [main]
+  workflow_run:                 # commity bota z danymi nie odpalają "push", więc łapiemy koniec aktualizacji
+    workflows: ['Aktualizacja wydarzeń']
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Sprawdź klucze Cloudflare
+        id: keys
+        env:
+          TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$TOKEN" ] || [ -z "$ACCOUNT" ]; then
+            echo "Brak sekretów CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID — pomijam publikację."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.keys.outputs.ok == 'true'
+        with:
+          ref: main               # zawsze najnowszy main (także po commicie bota)
+
+      - name: Publikuj
+        if: steps.keys.outputs.ok == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
