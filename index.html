@@ -15,14 +15,22 @@
 </script>
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>+1</title>
+<title>+1 — imprezy, koncerty i wydarzenia w Warszawie</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="+1">
+<meta name="description" content="Wszystkie imprezy, koncerty, teatr i stand-up w Warszawie i całej Polsce w jednym miejscu. Codziennie aktualne.">
+<link rel="canonical" href="https://plusoneapp.pl/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://plusoneapp.pl/">
+<meta property="og:site_name" content="+1">
+<meta property="og:locale" content="pl_PL">
 <meta property="og:title" content="+1 — Where are we going?">
-<meta property="og:image" content="/og.png">
+<meta property="og:description" content="Imprezy, koncerty, teatr i stand-up w Warszawie i całej Polsce. Codziennie aktualne.">
+<meta property="og:image" content="https://plusoneapp.pl/og.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -57,6 +65,7 @@ button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer
 input{font-family:inherit;border:0;outline:0;background:none;color:inherit}
 .sc::-webkit-scrollbar{width:0;height:0}
 .sc{scrollbar-width:none}
+body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{display:none!important}
 
 #desk{min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:20px;padding:36px 20px 56px;
   background:radial-gradient(120% 80% at 50% 0%,#1b1b20 0%,#0b0b0d 60%)}
@@ -240,8 +249,10 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 <div id="desk">
   <div id="deskbar" class="ds">
     <svg width="32" height="32" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#000"/><g fill="#FF0059"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
-    <div style="font:600 14px/1.2 var(--d);letter-spacing:.02em">+1 — prototyp v2.6</div>
-    <div style="font:400 11px/1.2 var(--m);color:rgba(var(--fg),.4);letter-spacing:.06em">iPhone 390×844</div>
+    <div class="demo-only" style="font:600 14px/1.2 var(--d);letter-spacing:.02em">+1 — prototyp v2.6</div>
+    <div class="live-only" style="font:600 14px/1.2 var(--d);letter-spacing:.02em">+1 — gdzie dziś idziemy?</div>
+    <div class="demo-only" style="font:400 11px/1.2 var(--m);color:rgba(var(--fg),.4);letter-spacing:.06em">iPhone 390×844</div>
+    <div class="live-only" style="font:400 11px/1.2 var(--m);color:rgba(var(--fg),.55);letter-spacing:.06em">najlepiej na telefonie · plusoneapp.pl</div>
   </div>
 
   <div id="shell">
@@ -402,9 +413,20 @@ const CONTACTS = [
   {id:3, name:'Tymek Sz.', handle:'tymek@mail.com'}
 ];
 
+/* Funkcje demo (bilety, portfel, PAY, zaproszenia, logowanie) są jeszcze makietą.
+   Publicznie ich nie pokazujemy; włącza je ?demo (wyłącza ?demo=0), zapamiętane w sesji. */
+const DEMO = (()=>{
+  try{
+    const q = new URLSearchParams(location.search);
+    if(q.has('demo')) sessionStorage.setItem('demo', q.get('demo')==='0' ? '' : '1');
+    return !!sessionStorage.getItem('demo');
+  }catch(e){ return /[?&]demo(?!=0)/.test(location.search); }
+})();
+document.body.classList.toggle('demo', DEMO);
+
 /* ---------------- state ---------------- */
 const S = {
-  screen:'login', prev:'home', eventId:'unsound',
+  screen:DEMO?'login':'home', prev:'home', eventId:'unsound',
   qty:{early:0, regular:1, vip:0},
   pm:'blik', recipient:null,
   balance:240, topupAmount:100,
@@ -819,8 +841,8 @@ const scHome = () => {
     </div>
     <div class="row" style="gap:8px">
     <button data-act="theme" aria-label="Zmień motyw" style="width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:var(--t1)">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
-    <div data-act="sheetNotif" style="position:relative;width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:var(--t1)">${ic('bell',18)}
-      <span style="position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:${PINK}"></span></div>
+    ${DEMO?`<div data-act="sheetNotif" style="position:relative;width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:var(--t1)">${ic('bell',18)}
+      <span style="position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:${PINK}"></span></div>`:''}
     </div>
   </div>
   <div class="pad" style="padding-bottom:16px">
@@ -859,6 +881,7 @@ const scHome = () => {
   <div class="pad" style="padding-bottom:8px">${f.slice(6,14).map(listRow).join('')}</div>
   <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
 
+  ${DEMO?`
   <div style="margin:0 20px 18px;padding:18px;border-radius:20px;position:relative;overflow:hidden;
     background:linear-gradient(125deg,var(--promo1),var(--promo2) 72%);border:1px solid var(--pink-line)"
     data-act="${S.invite.accepted?'ev:dom47':'go:invite'}">
@@ -896,6 +919,7 @@ const scHome = () => {
       <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
     </div>
   </div>
+`:''}
 </div>`;
 };
 
@@ -961,7 +985,7 @@ const scList = () => {
       style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
   </div>
 
-  <div class="pad" style="padding-bottom:20px">
+  ${DEMO?`<div class="pad" style="padding-bottom:20px">
     <div data-act="${S.invite.accepted?'ev:dom47':'go:invite'}" style="padding:16px;border-radius:18px;position:relative;overflow:hidden;
       background:linear-gradient(120deg,var(--promo1),var(--promo2) 70%);border:1px solid var(--pink-line)">
       <div class="pgrid" style="opacity:.35"></div>
@@ -976,7 +1000,7 @@ const scList = () => {
         <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
       </div>
     </div>
-  </div>
+  </div>`:''}
 
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0?`
     <div class="pad col" style="gap:12px;padding-top:20px;align-items:flex-start">
@@ -2114,10 +2138,10 @@ const SCREENS = {
 const NAV = [
   {k:'home',   ic:'home',   l:'ODKRYJ'},
   {k:'list',   ic:'list',   l:'EVENTY'},
-  {fab:true},
-  {k:'tickets',ic:'ticket', l:'BILETY'},
-  {k:'wallet', ic:'wallet', l:'PORTFEL'}
-];
+  {fab:true, demo:true},
+  {k:'tickets',ic:'ticket', l:'BILETY', demo:true},
+  {k:'wallet', ic:'wallet', l:'PORTFEL', demo:true}
+].filter(n => DEMO || !n.demo);
 const NAV_ON = ['home','list','tickets','ticket','wallet','bar'];
 const FAB_SVG = `<svg width="26" height="26" viewBox="0 0 100 100"><g fill="#000">
   <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
@@ -2759,7 +2783,7 @@ render();
 loadLive();
 setTimeout(()=>{ $('#splash').classList.add('out'); }, 1550);
 setTimeout(()=>{ const sp=$('#splash'); if(sp) sp.remove(); }, 2150);
-if(innerWidth>760) setTimeout(()=>toast('Pasek na dole (desktop) przeskakuje po ekranach', true, 4200), 2600);
+if(DEMO && innerWidth>760) setTimeout(()=>toast('Pasek na dole (desktop) przeskakuje po ekranach', true, 4200), 2600);
 </script>
 </body>
 </html>
