@@ -35,8 +35,9 @@ npx serve public               # apka na http://localhost:3000
 ## Hosting
 
 - Domena **plusoneapp.pl**: rejestrator GoDaddy, DNS w Cloudflare.
-- Strona: **Cloudflare Pages** podpięte do tego repo; publikowany jest tylko folder `public/` (build command pusty, output `public`). `public/_headers` ustawia cache.
-- `wrangler.jsonc` pozwala zamiast Pages użyć Cloudflare Workers (static assets) — Pages go pomija.
+- Strona: **Cloudflare Workers** (static assets, `wrangler.jsonc`), publikowany jest tylko folder `public/`. `public/_headers` ustawia cache.
+- Publikuje GitHub Actions (`.github/workflows/deploy.yml`) po każdym pushu na `main` i po każdej aktualizacji danych. Wymaga sekretu repo `CLOUDFLARE_API_TOKEN` (szablon „Edit Cloudflare Workers”).
+- Adres zapasowy: https://plusone.jeremi-3b8.workers.dev
 
 ## Demo
 
