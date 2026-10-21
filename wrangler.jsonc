@@ -4,5 +4,10 @@
   "name": "plusone",
   "account_id": "3b85c6d89850b97817458147e0fd71f6",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "./public" }
+  "assets": { "directory": "./public" },
+  // domena w Cloudflare (DNS i certyfikat ustawiają się same przy publikacji)
+  "routes": [
+    { "pattern": "plusoneapp.pl", "custom_domain": true },
+    { "pattern": "www.plusoneapp.pl", "custom_domain": true }
+  ]
 }
