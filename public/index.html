@@ -228,7 +228,7 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
 
 /* ---- marquee ---- */
 .mq{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 0}
-.mq-track{display:flex;width:max-content;animation:slide var(--ticker-duration,60s) linear infinite;font:600 12px/1 var(--m);letter-spacing:.18em;color:var(--t2)}
+.mq-track{display:flex;width:max-content;animation:slide var(--ticker-duration,150s) linear infinite;font:600 12px/1 var(--m);letter-spacing:.18em;color:var(--t2)}
 .mq-group{flex:none;min-width:100vw;padding-right:3rem}
 .mq:hover .mq-track,.mq:focus .mq-track{animation-play-state:paused}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -2419,7 +2419,7 @@ const DARK_SCREENS = ['ticket','nfc','scanner','wrapped','scanpay'];
 function eventTicker(events){
   const text = 'TERAZ · '+events.slice(0,10).map(e=>e.name).join('  +  ')+'  +';
   // Dwie identyczne połowy: przesunięcie o 50% daje płynną pętlę bez skoku.
-  return `<div class="mq" tabindex="0" aria-label="Aktualne wydarzenia. Najedź lub ustaw fokus, aby zatrzymać przewijanie." style="margin-bottom:22px;--ticker-duration:${Math.max(30, Math.round(text.length*.14))}s">
+  return `<div class="mq" tabindex="0" aria-label="Aktualne wydarzenia. Najedź lub ustaw fokus, aby zatrzymać przewijanie." style="margin-bottom:22px;--ticker-duration:${Math.max(75, Math.round(text.length*.35))}s">
     <div class="mq-track"><span class="mq-group">${esc(text)}</span><span class="mq-group" aria-hidden="true">${esc(text)}</span></div>
   </div>`;
 }
