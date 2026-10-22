@@ -81,6 +81,16 @@ export function guessCategory(...hints) {
   return 'Other';
 }
 
+/* "duże wydarzenie": festiwal, koncert na stadionie/arenie albo drogi bilet na koncert */
+const BIG_VENUE = /narodow(y|ym)\b.*stadion|pge narodowy|stadion|tauron arena|atlas arena|ergo arena|polsat plus arena|spodek|torwar|prezero arena|g2a arena|orlen arena|netto arena|hala stulecia|expo xxi|enea arena|arena gliwice|tarczyński arena|tor wyścigów|lotnisko|muzeum lotnictwa|park śląski|plac defilad|międzynarodowe centrum kongresowe|\bmck\b|kghm ślęza arena|arena lublin|hala mt[pP]|międzynarodowe targi/i;
+export function isBig(e) {
+  const text = `${e.title} ${e.venue || ''}`;
+  if (/film|kino|teatr|filharmon|klasyk|symfoni|świec/i.test(text)) return false;
+  if (e.category === 'Festivals') return true;
+  if (!['Concerts', 'Clubs', 'Comedy'].includes(e.category)) return false;
+  return BIG_VENUE.test(e.venue || '') || (e.priceFrom != null && e.priceFrom >= 350);
+}
+
 export function makeEvent(e) {
   return {
     id: e.id,

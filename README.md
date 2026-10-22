@@ -20,9 +20,12 @@ Aplikacja z wydarzeniami — imprezy, koncerty, teatr, stand-up, festiwale — n
 | Źródło | Co daje | Plik |
 |---|---|---|
 | Going. (goingapp.pl) | koncerty, teatr, stand-up, sport — cała Polska | `pipeline/sources/going.mjs` |
-| eBilet | koncerty, teatr, rodzina — 13 miast | `pipeline/sources/ebilet.mjs` |
+| eBilet | koncerty, teatr, rodzina — 13 miast + ogólnopolskie strony muzyki i festiwali | `pipeline/sources/ebilet.mjs` |
 | Resident Advisor | kluby i elektronika — cała Polska | `pipeline/sources/ra.mjs` |
 | go2warsaw.pl | wystawy, koncerty, spotkania w Warszawie (oficjalny serwis miasta) | `pipeline/sources/go2warsaw.mjs` |
+
+- **Wielkie wydarzenia** (`big` w events.json): festiwale oraz koncerty na stadionach i arenach albo z biletami od 350 zł — reguła `isBig()` w `pipeline/lib/normalize.mjs`.
+- **Mapa**: granice województw w `public/data/poland.json`, współrzędne miejscowości (GeoNames) w `pipeline/data/places.json`; pipeline dopisuje do events.json pole `geo` (`pipeline/lib/geo.mjs`).
 
 Nowe źródło = nowy plik w `pipeline/sources/`, który zwraca listę wydarzeń przez `makeEvent()` (format opisany w `pipeline/lib/normalize.mjs`), i dopisanie go w `pipeline/run.mjs`.
 

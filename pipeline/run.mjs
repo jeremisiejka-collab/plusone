@@ -4,7 +4,7 @@
 import { writeFile, readFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { nowLocal, CATEGORIES } from './lib/normalize.mjs';
+import { nowLocal, CATEGORIES, isBig } from './lib/normalize.mjs';
 import { dedup } from './lib/dedup.mjs';
 import { cityGeo } from './lib/geo.mjs';
 import ra from './sources/ra.mjs';
@@ -54,7 +54,7 @@ const valid = raw.filter(e =>
 
 const stamp = new Date().toISOString();
 const events = dedup(valid)
-  .map(e => ({ ...e, firstSeen: firstSeen.get(e.id) || stamp }))
+  .map(e => ({ ...e, big: isBig(e), firstSeen: firstSeen.get(e.id) || stamp }))
   .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 
 const cities = {};

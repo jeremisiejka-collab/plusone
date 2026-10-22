@@ -399,7 +399,7 @@ function liveEvent(x){
     : day===localDay() ? 'dziś' : day===addDays(1) ? 'jutro'
     : `${DNI[d.getDay()]} ${d.getDate()} ${MIES[d.getMonth()]}`;
   return {
-    id:x.id, real:true, multi, name:x.title, cat:x.category, city:x.city,
+    id:x.id, real:true, multi, big:!!x.big, name:x.title, cat:x.category, city:x.city,
     venue:x.venue||x.city, address:x.address, start:x.start, day,
     when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
     badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
@@ -1216,9 +1216,11 @@ function okWhen(e){
 }
 const fold = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l');
 function inCity(){ return EVENTS.filter(e=>e.real && e.city===S.city && e.day>=localDay() && !ACC.hidden.has(e.id)); }
+/* wielkie wydarzenia z całej Polski (festiwale, stadiony, areny) */
+function bigAll(){ return EVENTS.filter(e=>e.real && e.big && e.day>=localDay() && !ACC.hidden.has(e.id)); }
 function filtered(){
   const q = fold(S.query.trim());
-  return inCity().filter(e=>{
+  return (S.big ? bigAll() : inCity()).filter(e=>{
     const okCat = S.cat==='Wszystko' || e.cat===S.cat;
     const okQ = !q || fold(e.name+' '+e.venue+' '+e.lineup.join(' ')+' '+(CAT_PL[e.cat]||'')+' '+e.tags.join(' ')).includes(q);
     return okCat && okQ && okWhen(e) && okPrice(e);
@@ -1319,6 +1321,7 @@ const scHome = () => {
     ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
     <span style="flex:none;width:1px;margin:4px 2px;background:var(--line-2)"></span>
     ${PRICE.map(([k,l])=>`<button class="chip ${S.price===k?'on':''}" data-act="price:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
+    <button class="chip ${S.big?'on':''}" data-act="big" style="padding:7px 12px;font-size:12px">Duże wydarzenia</button>
   </div>
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
@@ -1330,6 +1333,15 @@ const scHome = () => {
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
+  ${(()=>{ if(S.big) return ''; const bg = bigAll(); return bg.length ? `
+  <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
+    <span class="h3">Wielkie wydarzenia</span>
+    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="bigList">WSZYSTKIE (${bg.length}) →</span>
+  </div>
+  <div class="pad mono" style="padding-bottom:12px">Festiwale i koncerty na stadionach i arenach w całej Polsce</div>
+  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
+    ${[...bg.filter(e=>e.image&&!e.multi), ...bg.filter(e=>!e.image||e.multi)].slice(0,8).map(e=>bigCard({...e, venue:e.city+' · '+e.venue})).join('')}
+  </div>` : ''; })()}
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
     <span class="h3">Już niedługo</span>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="go:list">CAŁA LISTA →</span>
@@ -1396,7 +1408,7 @@ const bigListRow = e => {
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
     <span class="mono" style="margin-top:5px">${esc(e.when)}</span>
-    <span class="mono" style="margin-top:4px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.venue)}</span>
+    <span class="mono" style="margin-top:4px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${S.big?esc(e.city)+' · ':''}${esc(e.venue)}</span>
     <div class="row" style="gap:7px;margin-top:8px;flex-wrap:wrap">
       <span style="font:600 12px/1 var(--d);color:${PINK}">${price(e)}</span>
       ${e.sold!=null?`<span class="mono">· ${Math.round(e.sold*100)}% sprzedane</span>`:`<span class="mono">· ${esc(CAT_PL[e.cat]||'')}</span>`}
@@ -1417,7 +1429,7 @@ const scList = () => {
   <div class="pad row" style="justify-content:space-between;align-items:baseline;padding-bottom:16px">
     <div class="col" style="gap:3px">
       <div class="h2">Wydarzenia</div>
-      <span class="mono">${LIVE.state==='ok'?f.length+' wydarzeń · ':''}${esc(S.city)}</span>
+      <span class="mono">${LIVE.state==='ok'?f.length+' wydarzeń · ':''}${S.big?'cała Polska · duże wydarzenia':esc(S.city)}</span>
     </div>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="sheetCity">ZMIEŃ ▾</span>
   </div>
@@ -1438,6 +1450,7 @@ const scList = () => {
     ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
     <span style="flex:none;width:1px;margin:4px 2px;background:var(--line-2)"></span>
     ${PRICE.map(([k,l])=>`<button class="chip ${S.price===k?'on':''}" data-act="price:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
+    <button class="chip ${S.big?'on':''}" data-act="big" style="padding:7px 12px;font-size:12px">Duże wydarzenia</button>
   </div>
   <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 18px">
     <span class="mono" style="align-self:center">SORTUJ:</span>
@@ -2722,12 +2735,14 @@ function act(a){
     case 'go': go(p1); break;
     case 'back': back(); break;
     case 'ev': openEvent(p1); break;
-    case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40;
+    case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.big=false; S.limit=40;
       if(S.screen==='home'){ if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo({top:0,behavior:'smooth'}); $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
     case 'mapWhen': MAP.when=p1; haptic(5); sfxTap(); S.dir=null; render(); break;
     case 'mapPin': MAP.pinned=a.slice(7); S.dir=null; render(); setTimeout(()=>{ const t=$('#view'); t && t.scrollTo({top:520,behavior:'smooth'}); },60); break;
     case 'mapGo': S.city=a.slice(6); try{localStorage.setItem('city',S.city)}catch(e){}
       S.cat='Wszystko'; S.query=''; S.price='all'; S.limit=40; S.when = MAP.when==='all' ? 'all' : MAP.when; S.prev='map'; go('list'); break;
+    case 'big': S.big=!S.big; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
+    case 'bigList': S.big=true; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40; go('list'); break;
     case 'guest': markEntered(); S.prev='home'; go('home'); break;
     case 'authgo': ACC.authMode=p1; ACC.authErr=''; go('auth'); break;
     case 'authmode': ACC.authMode=p1; ACC.authErr=''; S.dir=null; render(); break;
@@ -2749,7 +2764,7 @@ function act(a){
     case 'more': S.limit += 60; S.dir=null; render(); break;
     case 'reload': LIVE.state='loading'; render(); loadLive(); break;
     case 'clearQ': S.query=''; render(); break;
-    case 'resetFilters': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; render(); break;
+    case 'resetFilters': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.big=false; render(); break;
     case 'qty': {
       const k=p1, d=parseInt(p2,10);
       const next = clamp((S.qty[k]||0)+d, 0, 8);

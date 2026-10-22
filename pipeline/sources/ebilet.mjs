@@ -4,6 +4,10 @@ import { request, sleep } from '../lib/http.mjs';
 import { localTime, guessCategory, makeEvent } from '../lib/normalize.mjs';
 
 const CITIES = ['warszawa', 'krakow', 'trojmiasto', 'wroclaw', 'poznan', 'lodz', 'slaskie', 'szczecin', 'lublin', 'bialystok', 'bydgoszcz', 'torun', 'rzeszow'];
+/* ogólnopolskie strony kategorii — tu są duże koncerty i festiwale spoza list miast */
+const CATEGORY_PAGES = ['muzyka', 'festiwale', 'muzyka/festiwale', 'muzyka/rock', 'muzyka/pop', 'muzyka/piosenka', 'muzyka/hip-hop-rap',
+  'muzyka/hard-heavy', 'muzyka/elektro-techno', 'muzyka/jazz-blues', 'muzyka/disco-polo', 'muzyka/k-pop', 'muzyka/reggae', 'muzyka/pozostale'];
+const PAGES = [...CITIES.map(c => 'miasto/' + c), ...CATEGORY_PAGES];
 
 const CAT = {
   muzyka: null, // doprecyzowane po podkategorii
@@ -45,10 +49,10 @@ function fromJsonLd(html) {
 
 export default async function ebilet() {
   const byUrl = new Map();
-  for (const slug of CITIES) {
+  for (const slug of PAGES) {
     let html;
     try {
-      html = await request(`https://www.ebilet.pl/miasto/${slug}`, { type: 'text' });
+      html = await request(`https://www.ebilet.pl/${slug}`, { type: 'text' });
     } catch (e) {
       console.warn(`  ebilet ${slug}: ${e.message}`);
       continue;
