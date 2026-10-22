@@ -2425,20 +2425,16 @@ function eventTicker(events){
 }
 
 function webHero(){
+  const printMark = '<g transform="translate(6.45 8.3)"><path d="M27.4 22.9H40.6V34.8H53.8V48.8H40.6V60.5H27.4V48.8H13.7V34.8H27.4Z"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g>';
   return `<section class="web-only web-hero" aria-label="Odkrywaj wydarzenia">
     <span class="eyebrow">Twoje miasto. Twoi ludzie. Twój plan.</span>
     <h1>Gdzie dziś<br><span>idziemy?</span></h1>
     <p>Koncerty, kluby, teatr i wszystko pomiędzy.<br>Znajdź swój powód, żeby wyjść z domu.</p>
     <div class="web-hero-mark" aria-hidden="true">
-      <svg class="web-hero-orbits" viewBox="0 0 300 300">
-        ${[146,116,86,56].map((r,i)=>`<g class="web-orbit" style="--orbit-period:${48+i*12}s;animation-delay:-${i*9}s">
-          <circle class="web-orbit-path" cx="150" cy="150" r="${r}"/>
-          <circle class="web-orbit-arc" cx="150" cy="150" r="${r}" stroke-dasharray="${r*.5} ${2*Math.PI*r-r*.5}"/>
-          <circle class="web-orbit-dot" cx="${150+r}" cy="150" r="${i%2?1.5:2}"/>
-        </g>`).join('')}
+      <svg class="web-hero-print" viewBox="10 10 80 80">
+        <g class="web-print-outline" fill="none">${printMark}</g>
+        <g class="web-print-solid" fill="var(--pink)">${printMark}</g>
       </svg>
-      <svg class="web-hero-logo" viewBox="0 0 100 100">${GLYPH(PINK_HEX)}</svg>
-      <span class="web-float-plus">+</span><span class="web-float-plus">+</span><span class="web-float-plus">+</span>
     </div>
     <div class="web-hero-meta">${esc(S.city)} / ${LIVE.state==='ok'?pl(inCity().length)+' nadchodzących wydarzeń':'Odkryj coś dla siebie'}</div>
   </section>`;
