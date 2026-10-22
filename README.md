@@ -35,6 +35,12 @@ npx serve public               # apka na http://localhost:3000
 
 ## Hosting
 
+### Strona na komputerze i widok mobilny
+
+Oba widoki działają pod `plusoneapp.pl`, korzystają z tego samego katalogu wydarzeń i API kont. Do 760 px pozostaje układ mobilny; od 761 px `public/desktop.css` włącza stronę z górną nawigacją, siatką wydarzeń i dwukolumnowymi szczegółami. Zmiana szerokości okna zachowuje wybrane miasto, filtry i otwarty ekran. Na komputerze nowe wejście otwiera od razu katalog, bez ekranu powitalnego. Tryb `?demo` zachowuje dotychczasowy prototyp.
+
+Lokalnie uruchom Worker z bazą D1 poleceniem opisanym niżej. Sprawdź widoki przy 390, 760, 761, 1024 i 1440 px, w obu motywach: wyszukiwanie, filtry, zmianę miasta, szczegóły wydarzenia, link do sprzedawcy i logowanie. Podział dostępnych funkcji między stronę a aplikację pozostaje kolejnym etapem.
+
 - Domena **plusoneapp.pl**: rejestrator GoDaddy, DNS w Cloudflare.
 - Strona: **Cloudflare Workers** (static assets, `wrangler.jsonc`), publikowany jest tylko folder `public/`. `public/_headers` ustawia cache.
 - Publikuje GitHub Actions (`.github/workflows/deploy.yml`) po każdym pushu na `main` i po każdej aktualizacji danych. Wymaga sekretu repo `CLOUDFLARE_API_TOKEN` (szablon „Edit Cloudflare Workers”).

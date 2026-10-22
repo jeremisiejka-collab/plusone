@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <script>
 /* motyw ustawiany przed narysowaniem strony (bez mignięcia): wybór użytkownika albo ustawienie systemu */
@@ -256,6 +256,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 .wr>*:nth-child(7){animation-delay:.44s}
 #wrapwrap.paused span[style*="wfill"]{animation-play-state:paused}
 </style>
+<link rel="stylesheet" href="/desktop.css">
 </head>
 <body>
 <div id="desk">
@@ -268,6 +269,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
   </div>
 
   <div id="shell">
+    <header id="web-header" class="web-only"></header>
     <div id="status">
       <span class="t" id="clock">22:14</span>
       <div class="notch"></div>
@@ -277,7 +279,8 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
       </div>
     </div>
     <div id="offline">TRYB OFFLINE · BILET DZIAŁA BEZ ZASIĘGU</div>
-    <div id="view" class="sc"></div>
+    <main id="view" class="sc" tabindex="-1"></main>
+    <footer id="web-footer" class="web-only"></footer>
     <div id="nav" class="hide"></div>
     <div id="toast"></div>
     <div id="sheetwrap"><div id="scrim" data-act="closeSheet"></div><div id="sheet"></div></div>
@@ -438,7 +441,7 @@ document.body.classList.toggle('demo', DEMO);
 
 /* ---------------- state ---------------- */
 const S = {
-  screen:DEMO?'login':(()=>{try{return localStorage.getItem('entered')?'home':'start'}catch(e){return 'start'}})(), prev:'home', eventId:'unsound',
+  screen:DEMO?'login':matchMedia('(min-width:761px)').matches?'home':(()=>{try{return localStorage.getItem('entered')?'home':'start'}catch(e){return 'start'}})(), prev:'home', eventId:'unsound',
   qty:{early:0, regular:1, vip:0},
   pm:'blik', recipient:null,
   balance:240, topupAmount:100,
@@ -516,6 +519,7 @@ function go(s){
   S.dir = ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
   S.prev = S.screen; S.screen = s; haptic(6); sfxTap();
   $('#view').scrollTop = 0;
+  if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo(0,0);
   render();
 }
 function back(){ const p = S.prev===S.screen ? 'home' : S.prev; S.dir='bwd'; S.prev='home'; S.screen=p; haptic(6); render(); }
@@ -563,7 +567,7 @@ function confetti(n=90){
 
 /* ---------------- sheet ---------------- */
 function sheet(html){
-  $('#sheet').innerHTML = '<div class="grab"></div>'+html;
+  $('#sheet').innerHTML = '<div class="grab"></div><button class="web-only web-sheet-close" data-act="closeSheet" aria-label="Zamknij okno">×</button>'+html;
   $('#sheetwrap').classList.add('on');
   $('#sheet').style.transform='translateY(100%)';
   requestAnimationFrame(()=>{ $('#sheet').style.transform='translateY(0)'; });
@@ -576,7 +580,7 @@ function closeSheet(){
 }
 function dragSheet(){
   const el=$('#sheet'); let y0=null, dy=0;
-  el.onpointerdown=e=>{ if(el.scrollTop>0) return; y0=e.clientY; el.style.transition='none'; };
+  el.onpointerdown=e=>{ if(e.pointerType==='mouse'||el.scrollTop>0) return; y0=e.clientY; el.style.transition='none'; };
   el.onpointermove=e=>{ if(y0===null) return; dy=Math.max(0,e.clientY-y0); el.style.transform=`translateY(${dy}px)`; };
   el.onpointerup=()=>{ if(y0===null) return; el.style.transition=''; 
     if(dy>110){ closeSheet(); } else { el.style.transform='translateY(0)'; }
@@ -655,8 +659,8 @@ function poster(e){
 const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
 const artBox = e => e.image
-  ? `<div style="position:absolute;inset:0;background:hsl(${e.hue} 34% 8%)"><img src="${esc(e.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"
-      onerror="this.remove()" style="width:100%;height:100%;object-fit:cover;display:block"></div>`
+  ? `<div style="position:absolute;inset:0;background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+      onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></div>`
   : `<div style="position:absolute;inset:0">${art(e)}</div>`;
 const cover = e => `background:hsl(${e.hue} 34% 8%)`;
 
@@ -1038,7 +1042,7 @@ const loadingBox = () => LIVE.state==='error' ? `
         <div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:10px;width:45%"></div></div></div>`).join('')}
     </div>`;
 const bigCard = e => `
-<div data-act="ev:${e.id}" class="ds" style="flex:none;width:270px;scroll-snap-align:start">
+<div data-act="ev:${e.id}" class="ds event-card" style="flex:none;width:270px;scroll-snap-align:start">
   <div style="position:relative;height:330px;border-radius:20px;overflow:hidden;background:var(--surface-2)">
     ${coverArt(e)}
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--bg-rgb),0) 38%,rgba(0,0,0,.88) 100%)"></div>
@@ -1055,7 +1059,7 @@ const bigCard = e => `
 </div>`;
 
 const listRow = e => `
-<div data-act="ev:${e.id}" style="display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)">
+<div data-act="ev:${e.id}" class="event-row" style="display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)">
   <div style="flex:none;width:66px;height:66px;border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2)">
     ${artBox(e)}</div>
   <div style="flex:1;min-width:0" class="col">
@@ -1070,6 +1074,7 @@ const scHome = () => {
   const f = filtered();
   return `
 <div class="pg" style="padding:64px 0 112px">
+  ${webHero()}
   <div id="ptr" style="height:0;overflow:hidden;transition:height .2s">
     <div style="padding:10px 20px;display:flex;gap:12px">
       <div class="sk" style="width:66px;height:66px;border-radius:14px"></div>
@@ -1080,7 +1085,7 @@ const scHome = () => {
       </div>
     </div>
   </div>
-  <div class="row pad" style="justify-content:space-between;padding-bottom:18px">
+  <div class="row pad mobile-toolbar" style="justify-content:space-between;padding-bottom:18px">
     <div class="col" style="gap:2px">
       <span class="eyebrow">Lokalizacja</span>
       <span style="font:600 19px/1.1 var(--d);letter-spacing:-.02em" data-act="sheetCity">${esc(S.city)} ▾</span>
@@ -1093,18 +1098,18 @@ const scHome = () => {
       <span style="position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:${PINK}"></span></div>`:''}
     </div>
   </div>
-  <div class="pad" style="padding-bottom:16px">
+  <div class="pad search-wrap" style="padding-bottom:16px">
     <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)">
       <span style="color:var(--t2);display:flex">${ic('search',17)}</span>
-      <input id="q" placeholder="Szukaj eventów, artystów, venue" value="${esc(S.query)}"
+      <input id="q" aria-label="Szukaj wydarzeń, artystów i miejsc" placeholder="Szukaj wydarzeń, artystów, miejsc" value="${esc(S.query)}"
         style="flex:1;font:400 14px/1 var(--d);color:var(--t1)" autocomplete="off">
       ${S.query?`<span data-act="clearQ" style="color:var(--t3);display:flex">${ic('cross',16)}</span>`:''}
     </div>
   </div>
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 10px">
+  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 10px">
     ${catList().map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat:${c}">${catLabel(c)}</button>`).join('')}
   </div>
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 22px">
+  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 22px">
     ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
     <span style="flex:none;width:1px;margin:4px 2px;background:var(--line-2)"></span>
     ${PRICE.map(([k,l])=>`<button class="chip ${S.price===k?'on':''}" data-act="price:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
@@ -1120,16 +1125,16 @@ const scHome = () => {
   }</span></div>
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
-  <div class="sc" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
+  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
-    <span class="h3">Happening soon</span>
+    <span class="h3">Już niedługo</span>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="go:list">CAŁA LISTA →</span>
   </div>
-  <div class="sc" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
+  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
     ${[...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,6).map(bigCard).join('')}
   </div>
   ${f.length>6?`<div class="pad h3" style="padding-bottom:8px">Dalej w kalendarzu</div>
-  <div class="pad" style="padding-bottom:8px">${f.slice(6,14).map(listRow).join('')}</div>
+  <div class="pad calendar-grid" style="padding-bottom:8px">${f.slice(6,14).map(listRow).join('')}</div>
   <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
 
   ${DEMO?`
@@ -1178,7 +1183,7 @@ const scHome = () => {
 const bigListRow = e => {
   const back = S.pool[e.id]||0;
   return `
-<div data-act="ev:${e.id}" style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)">
+<div data-act="ev:${e.id}" class="event-row" style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)">
   <div class="ds" style="flex:none;width:78px;height:98px;border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2)">
     ${artBox(e)}
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--bg-rgb),0) 45%,rgba(0,0,0,.8))"></div>
@@ -1213,24 +1218,24 @@ const scList = () => {
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="sheetCity">ZMIEŃ ▾</span>
   </div>
 
-  <div class="pad" style="padding-bottom:14px">
+  <div class="pad search-wrap" style="padding-bottom:14px">
     <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)">
       <span style="color:var(--t2);display:flex">${ic('search',17)}</span>
-      <input id="q" placeholder="Szukaj eventów, artystów, venue" value="${esc(S.query)}"
+      <input id="q" aria-label="Szukaj wydarzeń, artystów i miejsc" placeholder="Szukaj wydarzeń, artystów, miejsc" value="${esc(S.query)}"
         style="flex:1;font:400 14px/1 var(--d);color:var(--t1)" autocomplete="off">
       ${S.query?`<span data-act="clearQ" style="color:var(--t3);display:flex">${ic('cross',16)}</span>`:''}
     </div>
   </div>
 
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 12px">
+  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 12px">
     ${catList().map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat:${c}">${catLabel(c)}</button>`).join('')}
   </div>
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 12px">
+  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 12px">
     ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
     <span style="flex:none;width:1px;margin:4px 2px;background:var(--line-2)"></span>
     ${PRICE.map(([k,l])=>`<button class="chip ${S.price===k?'on':''}" data-act="price:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
   </div>
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 18px">
+  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 18px">
     <span class="mono" style="align-self:center">SORTUJ:</span>
     ${sorts.map(([k,l])=>`<button class="chip ${S.sort===k?'on':''}" data-act="sort:${k}"
       style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
@@ -1259,8 +1264,8 @@ const scList = () => {
       <span class="body">Zmień kategorię albo wyczyść wyszukiwanie.</span>
       <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
     </div>`:`
-  <div class="pad">${f.slice(0,S.limit).map(bigListRow).join('')}</div>
-  ${f.length>S.limit?`<div class="pad" style="padding-top:16px"><button class="btn g" data-act="more" style="height:46px;font:500 13px/1 var(--d)">Pokaż więcej (${f.length-S.limit})</button></div>`:''}
+  <div class="pad catalog-grid">${f.slice(0,S.limit).map(bigListRow).join('')}</div>
+  ${f.length>S.limit?`<div class="pad catalog-more" style="padding-top:16px"><button class="btn g" data-act="more" style="height:46px;font:500 13px/1 var(--d)">Pokaż więcej (${f.length-S.limit})</button></div>`:''}
   <div class="pad" style="padding-top:20px">
     <div class="card" style="padding:16px;display:flex;gap:12px;align-items:center">
       <span style="color:${PINK};display:flex">${ic('bell',19)}</span>
@@ -1403,8 +1408,8 @@ const scSecret = (e) => {
 /* prawdziwe wydarzenie: info + linki do sprzedawców biletów */
 const mapsUrl = e => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([e.venue,e.address||e.city].join(', '));
 const scLive = e => `
-<div class="pg" style="padding-bottom:118px">
-  <div style="position:relative;height:430px">
+<div class="pg event-detail" style="padding-bottom:118px">
+  <div class="event-art" style="position:relative;height:430px">
     ${artBox(e)}
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(var(--bg-rgb),0) 30%,rgba(var(--bg-rgb),.95) 100%)"></div>
     <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
@@ -1416,7 +1421,7 @@ const scLive = e => `
     </div>
   </div>
 
-  <div class="pad col" style="gap:18px;padding-top:20px">
+  <div class="pad col event-info" style="gap:18px;padding-top:20px">
     ${isAdmin()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
       <span class="mono" style="flex:1;color:${PINK}">ADMIN</span>
       <button class="chip ${ACC.featured.includes(e.id)?'on':''}" data-act="curate:${e.id}:${ACC.featured.includes(e.id)?'clear':'feature'}" style="padding:7px 12px;font-size:12px">${ACC.featured.includes(e.id)?'Polecane':'Poleć'}</button>
@@ -1451,11 +1456,11 @@ const scLive = e => `
         <span style="color:${PINK};display:flex">${ic('chevR',17)}</span>
       </a>`).join('')}
     </div>
-  </div>
-</div>
-<div style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
+<div class="event-buy" style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
   <a class="btn p" href="${esc(e.links[0].url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">
     Kup bilet · ${price(e)}</a>
+</div>
+  </div>
 </div>`;
 
 const scEvent = () => {
@@ -2408,12 +2413,46 @@ const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000
 
 /* ekrany "aparatowe"/immersyjne zostają ciemne także w trybie dziennym */
 const DARK_SCREENS = ['ticket','nfc','scanner','wrapped','scanpay'];
+
+/* Strona na komputerze korzysta z tych samych ekranów, filtrów i API co telefon. */
+function webHero(){
+  return `<section class="web-only web-hero" aria-label="Odkrywaj wydarzenia">
+    <span class="eyebrow">Twoje miasto. Twoi ludzie. Twój plan.</span>
+    <h1>Gdzie dziś<br><span>idziemy?</span></h1>
+    <p>Koncerty, kluby, teatr i wszystko pomiędzy.<br>Znajdź swój powód, żeby wyjść z domu.</p>
+    <div class="web-hero-mark" aria-hidden="true"><svg viewBox="0 0 100 100">${GLYPH(PINK_HEX)}</svg></div>
+    <div class="web-hero-meta">${esc(S.city)} / ${LIVE.state==='ok'?pl(inCity().length)+' nadchodzących wydarzeń':'Odkryj coś dla siebie'}</div>
+  </section>`;
+}
+
+function renderWebChrome(){
+  $('#web-header').innerHTML = `<div class="web-header-inner">
+    <button class="web-brand" data-act="fabHome" aria-label="+1 — strona główna">${LOGO(48,12)}<span>WHERE ARE<br>WE GOING?</span></button>
+    <nav class="web-nav" aria-label="Nawigacja główna">
+      <button data-act="go:home" ${S.screen==='home'?'aria-current="page"':''}>Odkrywaj</button>
+      <button data-act="go:list" ${S.screen==='list'?'aria-current="page"':''}>Wydarzenia</button>
+    </nav>
+    <div class="web-actions">
+      <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
+      <button class="web-theme" data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
+      <button class="web-account" data-act="${ACC.user?'go:profile':'authgo:login'}">${ic('user',16)}${ACC.user?'Moje konto':'Zaloguj się'}</button>
+    </div>
+  </div>`;
+  $('#web-footer').innerHTML = `<div class="web-footer-inner">
+    <span>+1 &nbsp; WHERE ARE WE GOING?<br>Wydarzenia w Twoim mieście, w jednym miejscu.</span>
+    <button data-act="go:profile">Konto i ustawienia ${ic('chevR',12)}</button>
+    <span>plusoneapp.pl</span>
+  </div>`;
+}
+
 function render(){
   if(S.screen!=='scanpay') stopCam();
   $('#shell').classList.toggle('ds', DARK_SCREENS.includes(S.screen));
   const fn = SCREENS[S.screen] || scHome;
   $('#view').innerHTML = fn();
+  renderWebChrome();
   const pg = $('#view').firstElementChild;
+  if(pg) pg.dataset.screen = S.screen;
   if(pg && S.dir) pg.classList.add(S.dir);
 
   const nav = $('#nav');
@@ -2442,6 +2481,12 @@ function render(){
 function bind(root){
   $$('[data-act]', root).forEach(el=>{
     if(el.__b) return; el.__b = true;
+    if(!el.matches('button,a,input')){
+      el.setAttribute('role','button'); el.tabIndex=0;
+      el.addEventListener('keydown', e=>{
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); }
+      });
+    }
     el.addEventListener('click', e=>{
       e.stopPropagation();
       act(el.getAttribute('data-act'));
@@ -2457,7 +2502,7 @@ function act(a){
     case 'back': back(); break;
     case 'ev': openEvent(p1); break;
     case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40;
-      if(S.screen==='home'){ $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
+      if(S.screen==='home'){ if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo({top:0,behavior:'smooth'}); $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
     case 'guest': markEntered(); S.prev='home'; go('home'); break;
     case 'authgo': ACC.authMode=p1; ACC.authErr=''; go('auth'); break;
     case 'authmode': ACC.authMode=p1; ACC.authErr=''; S.dir=null; render(); break;
@@ -2931,7 +2976,7 @@ function attachGestures(){
   v.onpointerdown=v.onpointermove=v.onpointerup=v.onpointercancel=null;
   if(ptr){
     let y0=null,dy=0;
-    v.onpointerdown = e=>{ if(v.scrollTop<=0) y0=e.clientY; };
+    v.onpointerdown = e=>{ if(e.pointerType!=='mouse' && v.scrollTop<=0) y0=e.clientY; };
     v.onpointermove = e=>{ if(y0===null) return; dy=Math.max(0,(e.clientY-y0)*.5);
       if(dy>0){ ptr.style.height=Math.min(dy,64)+'px'; } };
     v.onpointerup = ()=>{ if(y0===null) return;
@@ -3058,6 +3103,9 @@ document.addEventListener('keydown', e=>{
 });
 $('#view').addEventListener('click', ()=>{ if(!AC) beep(1,.001,'sine',.0001); }, {once:true});
 
+matchMedia('(min-width:761px)').addEventListener('change', e=>{
+  if(e.matches && !DEMO && S.screen==='start') go('home');
+});
 render();
 loadLive();
 loadAccount();
