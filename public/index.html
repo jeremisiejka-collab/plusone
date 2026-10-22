@@ -128,6 +128,31 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
 .statc{padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
 .statc b{display:block;font:700 26px/1 var(--d);margin-top:8px}
 .listbtn{width:100%;display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);text-align:left}
+.reg{fill:#101014;stroke:rgba(255,255,255,.2);stroke-width:2;stroke-linejoin:round;transition:fill .25s,stroke .25s;cursor:pointer}
+.reg:hover{fill:#2a0a17;stroke:rgba(255,0,89,.75)}
+.city{cursor:pointer}
+.city .hit{fill:transparent}
+.city .core{transition:transform .2s cubic-bezier(.3,1.6,.5,1);stroke:#000;stroke-width:2.5}
+.city.hov .core,.city.on .core{transform:scale(1.45)}
+.city.on .core{stroke:#fff;stroke-width:2.5}
+.city text{font:600 28px/1 'Space Grotesk',sans-serif;fill:#fff;paint-order:stroke;stroke:#050506;stroke-width:9px;pointer-events:none;opacity:.94}
+.city.hov text,.city.on text{fill:#FF0059}
+.city .pulse{fill:none;stroke:#FF0059;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:mpulse 2.4s ease-out infinite}
+@keyframes mpulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(3.2);opacity:0}}
+.mapcard{position:absolute;left:0;top:0;width:220px;padding:14px;border-radius:18px;z-index:5;color:#fff;
+  background:rgba(18,18,22,.72);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 0 1px rgba(255,0,89,.12);
+  opacity:0;pointer-events:none;transition:opacity .18s}
+.mapcard.on{opacity:1;pointer-events:auto}
+.mapgrid{display:block}
+@media (min-width:761px){
+  body:not(.demo) .mapgrid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);gap:40px;align-items:start}
+  body:not(.demo) .mapside > div:first-child{padding-top:0 !important}
+}
+.regcard{position:absolute;left:12px;bottom:12px;padding:10px 13px;border-radius:14px;color:#fff;max-width:70%;
+  background:rgba(18,18,22,.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);
+  opacity:0;transform:translateY(6px);transition:.2s;pointer-events:none}
+.regcard.on{opacity:1;transform:none}
 .clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .body{font:400 14px/1.5 var(--d);color:var(--t2)}
 .mono{font:400 11px/1.3 var(--m);color:var(--t3);letter-spacing:.02em}
@@ -391,7 +416,7 @@ async function loadLive(){
     const d = await r.json();
     for(let i=EVENTS.length-1;i>=0;i--) if(EVENTS[i].real) EVENTS.splice(i,1);
     EVENTS.push(...d.events.map(liveEvent));
-    LIVE.cities = d.cities; LIVE.updatedAt = d.updatedAt; LIVE.sources = d.sources; LIVE.count = d.count; LIVE.state = 'ok';
+    LIVE.cities = d.cities; LIVE.updatedAt = d.updatedAt; LIVE.sources = d.sources; LIVE.count = d.count; LIVE.geo = d.geo; LIVE.state = 'ok';
     if(!LIVE.cities[S.city]) S.city = 'Warszawa';
   }catch(e){ LIVE.state = 'error'; }
   render();
@@ -516,7 +541,7 @@ function toast(msg, dark=false, ms=2200){
 
 const ORDER = ['start','login','blik','home','list','invite','event','venue','select','checkout','success',
   'tickets','ticket','release','transfer','transferDone','wallet','topup','nfc','scanpay','bar','scanner','wrapped',
-  'auth','profile','admin'];
+  'auth','profile','admin','map'];
 function go(s){
   if(s===S.screen) return;
   S.dir = ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
@@ -674,6 +699,7 @@ const IP = {
   ticket:'M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z|M14 6v12',
   wallet:'M3 8a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z|M16 12.5h3',
   search:'M11 11m-6 0a6 6 0 1 0 12 0a6 6 0 1 0-12 0|M15.5 15.5 20 20',
+  map:'M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z|M9 3v15|M15 6v15',
   user:'M12 8m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0|M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6',
   shield:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',
   logout:'M15 4h4v16h-4|M10 8l-4 4 4 4|M6 12h10',
@@ -991,6 +1017,183 @@ const scAdmin = () => {
   </div>
 </div>`;
 };
+
+/* =========================================================
+   MAPA: województwa (public/data/poland.json) + miasta z wydarzeniami (events.json → geo)
+   ========================================================= */
+const MAP = { data:null, loading:false, when:'all', pinned:null };
+const MAP_WHEN = [['all','Wszystko'],['today','Dziś'],['tomorrow','Jutro'],['weekend','Weekend'],['week','7 dni']];
+
+async function loadMap(){
+  if(MAP.data || MAP.loading) return;
+  MAP.loading = true;
+  try{ MAP.data = await (await fetch('/data/poland.json')).json(); }catch(e){ MAP.data = {error:true}; }
+  MAP.loading = false; if(S.screen==='map'){ S.dir=null; render(); }
+}
+
+function mapWhen(e){
+  const k = MAP.when;
+  if(k==='today') return e.day===localDay();
+  if(k==='tomorrow') return e.day===addDays(1);
+  if(k==='weekend') return weekendDays().includes(e.day);
+  if(k==='week') return e.day<=addDays(6);
+  return true;
+}
+/* wydarzenia pogrupowane po miastach, z położeniem na mapie */
+function mapCities(){
+  const geo = LIVE.geo||{}, by = {};
+  for(const e of EVENTS){
+    if(!e.real || e.day<localDay() || ACC.hidden.has(e.id) || !geo[e.city] || !mapWhen(e)) continue;
+    (by[e.city] = by[e.city] || []).push(e);
+  }
+  return Object.entries(by).map(([city,list])=>({city, list, n:list.length, x:geo[city][0], y:geo[city][1], r:geo[city][2]}))
+    .sort((a,b)=>b.n-a.n);
+}
+const ringPath = ring => 'M'+ring.map(p=>p[0]+','+p[1]).join('L')+'Z';
+
+const scMap = () => {
+  if(!MAP.data){ setTimeout(loadMap,0); }
+  const M = MAP.data, ok = M && !M.error && LIVE.state==='ok';
+  const cities = ok ? mapCities() : [];
+  const max = cities[0]?.n || 1, total = cities.reduce((s,c)=>s+c.n,0);
+  const byRegion = {}; cities.forEach(c=>byRegion[c.r]=(byRegion[c.r]||0)+c.n);
+  const rad = n => (5 + 17*Math.sqrt(n/max)).toFixed(1);
+  const pin = MAP.pinned && cities.find(c=>c.city===MAP.pinned);
+  return `
+<div class="pg" style="padding:64px 0 112px">
+  <div class="pad row" style="justify-content:space-between;align-items:baseline;padding-bottom:14px">
+    <div class="col" style="gap:3px"><div class="h2">Mapa</div>
+      <span class="mono">${ok?`${pl(total)} wydarzeń · ${cities.length} miast`:'Ładuję mapę…'}</span></div>
+  </div>
+  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 14px">
+    ${MAP_WHEN.map(([k,l])=>`<button class="chip ${MAP.when===k?'on':''}" data-act="mapWhen:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
+  </div>
+  <div class="pad mapgrid"><div>
+    <div id="mapbox" class="ds" style="position:relative;border-radius:24px;overflow:hidden;background:radial-gradient(120% 90% at 50% 30%,#14070d 0%,#050506 70%);border:1px solid rgba(255,255,255,.08);touch-action:manipulation">
+      ${!ok ? `<div style="aspect-ratio:1/0.95;display:grid;place-items:center"><span class="mono">Ładuję mapę…</span></div>` : `
+      <svg id="mapsvg" viewBox="0 0 ${M.w} ${M.h}" style="display:block;width:100%;height:auto">
+        <defs>
+          <filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="7"/></filter>
+          <radialGradient id="dot"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="${PINK_HEX}"/><stop offset="1" stop-color="${PINK_HEX}" stop-opacity=".85"/></radialGradient>
+        </defs>
+        <g id="regions">
+          ${M.regions.map((r,i)=>`<path class="reg" data-region="${i}" d="${r.rings.map(ringPath).join('')}"/>`).join('')}
+        </g>
+        <g id="glows" style="pointer-events:none">
+          ${cities.map(c=>`<circle cx="${c.x}" cy="${c.y}" r="${(rad(c.n)*2.2).toFixed(1)}" fill="${PINK_HEX}" opacity="${(.18+.5*Math.sqrt(c.n/max)).toFixed(2)}" filter="url(#glow)"/>`).join('')}
+        </g>
+        <g id="dots">
+          ${[...cities].reverse().map(c=>`<g class="city ${c.city===MAP.pinned?'on':''}" data-city="${esc(c.city)}" transform="translate(${c.x} ${c.y})">
+            ${c.n>=max*.35?`<circle class="pulse" r="${rad(c.n)}"/>`:''}
+            <circle class="hit" r="${Math.max(18,+rad(c.n)+8)}"/>
+            <circle class="core" r="${rad(c.n)}" fill="url(#dot)"/>
+            ${c.n>=Math.max(10,max*.08)?`<text y="${-(+rad(c.n))-12}" text-anchor="middle">${esc(c.city)}</text>`:''}
+          </g>`).join('')}
+        </g>
+      </svg>
+      <div id="mapcard" class="mapcard"></div>
+      <div id="regcard" class="regcard"></div>`}
+    </div>
+    <div class="mono" style="padding:10px 2px 0;line-height:1.5">${matchMedia('(hover:hover)').matches?'Najedź na miasto, żeby zobaczyć co się dzieje. Kliknij, żeby wybrać.':'Stuknij miasto, żeby zobaczyć co się dzieje.'}</div>
+  </div><div class="mapside">
+
+  ${pin ? `
+  <div style="padding-top:22px">
+    <div class="row" style="justify-content:space-between;align-items:baseline;padding-bottom:6px">
+      <span class="h3">${esc(pin.city)}</span>
+      <span class="mono" style="color:${PINK}">${pin.n} ${pin.n===1?'wydarzenie':'wydarzeń'}</span>
+    </div>
+    ${pin.list.slice(0,6).map(listRow).join('')}
+    <button class="btn p" data-act="mapGo:${esc(pin.city)}" style="height:50px;font:600 15px/1 var(--d);margin-top:14px">Wszystkie w mieście ${esc(pin.city)} →</button>
+  </div>` : ''}
+
+  ${ok ? `
+  <div style="padding-top:26px">
+    <div class="h3" style="padding-bottom:10px">Najwięcej się dzieje</div>
+    ${cities.slice(0,10).map((c,i)=>`
+    <button data-act="mapPin:${esc(c.city)}" class="row" style="width:100%;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);text-align:left">
+      <span class="mono" style="width:18px;color:${i<3?PINK:'var(--t3)'}">${String(i+1).padStart(2,'0')}</span>
+      <span style="flex:1;font:600 15px/1.2 var(--d)">${esc(c.city)}</span>
+      <span style="width:90px;height:4px;border-radius:2px;background:var(--track);overflow:hidden"><span style="display:block;height:100%;width:${(100*c.n/max).toFixed(0)}%;background:${PINK}"></span></span>
+      <span class="mono" style="width:34px;text-align:right;color:var(--t1)">${c.n}</span>
+    </button>`).join('')}
+  </div>` : ''}
+  </div></div>
+</div>`;
+};
+
+/* interakcje mapy: najechanie / stuknięcie bez przerysowywania całego ekranu */
+function attachMap(){
+  const svg = $('#mapsvg'), box = $('#mapbox'), card = $('#mapcard'), reg = $('#regcard');
+  if(!svg) return;
+  const cities = mapCities(), byCity = Object.fromEntries(cities.map(c=>[c.city,c]));
+  const byRegion = {}; cities.forEach(c=>{ (byRegion[c.r] = byRegion[c.r] || {n:0, top:[]}); byRegion[c.r].n += c.n; if(byRegion[c.r].top.length<3) byRegion[c.r].top.push(c.city); });
+  const hover = matchMedia('(hover:hover)').matches;
+  let cur = null;
+
+  const showCity = (g) => {
+    const c = byCity[g.getAttribute('data-city')]; if(!c) return;
+    if(cur) cur.classList.remove('hov'); cur = g; g.classList.add('hov');
+    const next = c.list.slice(0,3);
+    card.innerHTML = `<div class="row" style="justify-content:space-between;gap:10px">
+        <span style="font:600 17px/1.1 var(--d);letter-spacing:-.01em">${esc(c.city)}</span>
+        <span class="mono" style="color:${PINK_HEX}">${c.n}</span></div>
+      <span class="mono" style="display:block;margin:3px 0 10px;color:rgba(255,255,255,.55)">${MAP_WHEN.find(w=>w[0]===MAP.when)[1].toLowerCase()} · ${c.n===1?'wydarzenie':'wydarzeń'}</span>
+      ${next.map(e=>`<div data-act="ev:${e.id}" style="padding:7px 0;border-top:1px solid rgba(255,255,255,.08);cursor:pointer">
+        <div style="font:600 13px/1.25 var(--d);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${esc(e.name)}</div>
+        <div class="mono" style="margin-top:3px;color:rgba(255,255,255,.55)">${esc(e.when)}</div></div>`).join('')}
+      <button data-act="mapGo:${esc(c.city)}" style="margin-top:8px;width:100%;height:36px;border-radius:11px;background:${PINK_HEX};color:#000;font:700 12px/1 var(--d)">Pokaż wydarzenia</button>`;
+    bind(card);
+    // karta obok punktu, w granicach mapy
+    card.classList.add('on');
+    const bb = box.getBoundingClientRect(), pt = g.getBoundingClientRect();
+    const cx = pt.left + pt.width/2 - bb.left, cy = pt.top + pt.height/2 - bb.top;
+    // wąska mapa albo dotyk: karta na pełną szerokość, po przeciwnej stronie niż punkt — nie zasłania go
+    if(!hover || bb.width < 560){
+      card.style.cssText = `left:10px;right:10px;width:auto;transform:none;${cy > bb.height/2 ? 'top:10px;bottom:auto' : 'bottom:10px;top:auto'}`;
+      reg.classList.remove('on'); return;
+    }
+    card.style.cssText = '';
+    const w = card.offsetWidth, h = card.offsetHeight;
+    let left = cx + 18, top = cy - h/2;
+    if(left + w > bb.width - 8) left = cx - w - 18;
+    left = clamp(left, 8, bb.width - w - 8); top = clamp(top, 8, bb.height - h - 8);
+    card.style.transform = `translate(${left}px,${top}px)`;
+    reg.classList.remove('on');
+  };
+  const hideCity = () => { if(cur) cur.classList.remove('hov'); cur=null; card.classList.remove('on'); };
+  const showRegion = (p) => {
+    const i = +p.getAttribute('data-region'), r = byRegion[i];
+    reg.innerHTML = `<span class="mono" style="color:rgba(255,255,255,.5);letter-spacing:.12em">WOJEWÓDZTWO</span>
+      <div style="font:600 15px/1.2 var(--d);margin-top:4px;text-transform:capitalize">${esc(MAP.data.regions[i].name)}</div>
+      <div class="mono" style="margin-top:4px;color:${PINK_HEX}">${r?r.n+' wydarzeń':'brak wydarzeń'}${r?' · '+r.top.map(esc).join(', '):''}</div>`;
+    reg.classList.add('on');
+  };
+
+  svg.onpointerover = e => {
+    if(e.pointerType!=='mouse') return;
+    const g = e.target.closest('.city'); if(g){ showCity(g); return; }
+    const p = e.target.closest('.reg'); if(p){ if(!card.classList.contains('on')) showRegion(p); }
+  };
+  svg.onpointerout = e => {
+    if(e.pointerType!=='mouse') return;
+    const g = e.target.closest('.city'); if(g && !g.contains(e.relatedTarget) && !card.contains(e.relatedTarget)) setTimeout(()=>{ if(!card.matches(':hover') && !(cur&&cur.matches(':hover'))) hideCity(); }, 120);
+  };
+  card.onpointerleave = e => { if(e.pointerType==='mouse') hideCity(); };
+  box.onpointerleave = () => { reg.classList.remove('on'); };
+  svg.onclick = e => {
+    const g = e.target.closest('.city');
+    if(g){
+      const name = g.getAttribute('data-city');
+      if(!hover && cur!==g){ showCity(g); return; }    // dotyk: pierwsze stuknięcie pokazuje kartę
+      MAP.pinned = name; haptic(10); sfxTap(); S.dir=null; render();
+      setTimeout(()=>{ const t=$('#view'); t && t.scrollTo({top:t.scrollTop+320,behavior:'smooth'}); }, 60);
+      return;
+    }
+    hideCity();
+    const p = e.target.closest('.reg'); if(p) showRegion(p);
+  };
+}
 
 /* ---- HOME ---- */
 /* najbliższy weekend (pt–nd); w weekend — od dziś do niedzieli */
@@ -2392,7 +2595,7 @@ const SCREENS = {
   select:scSelect, checkout:scCheckout, success:scSuccess, tickets:scTickets, ticket:scTicket,
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, scanner:scScanner, wrapped:scWrapped, scanpay:scScanpay,
-  start:scStart, auth:scAuth, profile:scProfile, admin:scAdmin
+  start:scStart, auth:scAuth, profile:scProfile, admin:scAdmin, map:scMap
 };
 
 /* =========================================================
@@ -2401,13 +2604,15 @@ const SCREENS = {
 const NAV = [
   {k:'home',   ic:'home',   l:'ODKRYJ'},
   {k:'list',   ic:'list',   l:'EVENTY'},
+  {k:'map',    ic:'map',    l:'MAPA'},
   {fab:true},
   {k:'tickets',ic:'ticket', l:'BILETY'},
-  {k:'wallet', ic:'wallet', l:'PORTFEL'}
+  {k:'wallet', ic:'wallet', l:'PORTFEL'},
+  {k:'profile',ic:'user',   l:'KONTO'}
 ];
 /* środkowy przycisk: na ekranach z wydarzeniami logo +1 (strona główna), gdzie indziej PAY */
-const FAB_HOME = ['home','list'];
-const NAV_ON = ['home','list','tickets','ticket','wallet','bar'];
+const FAB_HOME = ['home','list','map','profile'];
+const NAV_ON = ['home','list','map','tickets','ticket','wallet','bar','profile'];
 const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000">
   <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
   <rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>`;
@@ -2446,6 +2651,7 @@ function renderWebChrome(){
     <nav class="web-nav" aria-label="Nawigacja główna">
       <button data-act="go:home" ${S.screen==='home'?'aria-current="page"':''}>Odkrywaj</button>
       <button data-act="go:list" ${S.screen==='list'?'aria-current="page"':''}>Wydarzenia</button>
+      <button data-act="go:map" ${S.screen==='map'?'aria-current="page"':''}>Mapa</button>
     </nav>
     <div class="web-actions">
       <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
@@ -2518,6 +2724,10 @@ function act(a){
     case 'ev': openEvent(p1); break;
     case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40;
       if(S.screen==='home'){ if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo({top:0,behavior:'smooth'}); $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
+    case 'mapWhen': MAP.when=p1; haptic(5); sfxTap(); S.dir=null; render(); break;
+    case 'mapPin': MAP.pinned=a.slice(7); S.dir=null; render(); setTimeout(()=>{ const t=$('#view'); t && t.scrollTo({top:520,behavior:'smooth'}); },60); break;
+    case 'mapGo': S.city=a.slice(6); try{localStorage.setItem('city',S.city)}catch(e){}
+      S.cat='Wszystko'; S.query=''; S.price='all'; S.limit=40; S.when = MAP.when==='all' ? 'all' : MAP.when; S.prev='map'; go('list'); break;
     case 'guest': markEntered(); S.prev='home'; go('home'); break;
     case 'authgo': ACC.authMode=p1; ACC.authErr=''; go('auth'); break;
     case 'authmode': ACC.authMode=p1; ACC.authErr=''; S.dir=null; render(); break;
@@ -2973,6 +3183,8 @@ function attachGestures(){
     if(S.pay.state==='scanning' && !SCANT)
       SCANT = setTimeout(()=>{ SCANT=null; if(S.screen==='scanpay') detectCode(); }, 3200);
   }
+
+  if(S.screen==='map') attachMap();
 
   // Enter w polach formularzy
   $$('[data-enter]').forEach(i=>{ i.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); act(i.dataset.enter); } }; });

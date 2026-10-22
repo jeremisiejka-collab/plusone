@@ -6,13 +6,15 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nowLocal, CATEGORIES } from './lib/normalize.mjs';
 import { dedup } from './lib/dedup.mjs';
+import { cityGeo } from './lib/geo.mjs';
 import ra from './sources/ra.mjs';
 import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
 import go2warsaw from './sources/go2warsaw.mjs';
 
 const SOURCES = { going, ebilet, ra, go2warsaw };
-const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'data', 'events.json');
+const HERE = dirname(fileURLToPath(import.meta.url));
+const OUT = join(HERE, '..', 'public', 'data', 'events.json');
 
 /* poprzedni plik: daty pierwszego pojawienia się ("Nowe w +1") i zapas, gdy źródło padnie */
 let prev = null;
@@ -71,7 +73,9 @@ const head = JSON.stringify({
   count: events.length,
   sources: report,
   cities: Object.fromEntries(Object.entries(cities).sort((a, b) => b[1] - a[1])),
-  categories: byCategory
+  categories: byCategory,
+  // położenie miast na mapie (public/data/poland.json): [x, y, indeks województwa]
+  geo: await cityGeo(Object.keys(cities), join(HERE, 'data', 'places.json'), join(HERE, '..', 'public', 'data', 'poland.json'))
 });
 // jedno wydarzenie na linię — małe diffy w gicie przy commitach co 4h
 await writeFile(OUT, head.slice(0, -1) + ',"events":[\n' + events.map(e => JSON.stringify(e)).join(',\n') + '\n]}\n');
