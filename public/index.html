@@ -228,8 +228,11 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
 
 /* ---- marquee ---- */
 .mq{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 0}
-.mq span{display:inline-block;animation:slide 26s linear infinite;font:600 12px/1 var(--m);letter-spacing:.18em;color:var(--t2)}
+.mq-track{display:flex;width:max-content;animation:slide var(--ticker-duration,60s) linear infinite;font:600 12px/1 var(--m);letter-spacing:.18em;color:var(--t2)}
+.mq-group{flex:none;min-width:100vw;padding-right:3rem}
+.mq:hover .mq-track,.mq:focus .mq-track{animation-play-state:paused}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.mq-track{animation:none}.mq{overflow-x:auto}}
 
 /* ---- bilet fizyczny ---- */
 .stub{position:relative;background:#fff;color:#000;border-radius:20px}
@@ -1120,9 +1123,7 @@ const scHome = () => {
       <span class="body">Zmień filtry albo wyczyść wyszukiwanie — w mieście ${esc(S.city)} mamy ${inCity().length} nadchodzących wydarzeń.</span>
       <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
     </div>` : `
-  <div class="mq" style="margin-bottom:22px"><span>${
-    (' NOW · '+f.slice(0,10).map(x=>esc(x.name)).join('  +  ')+'  +  ').repeat(3)
-  }</span></div>
+  ${eventTicker(f)}
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
@@ -2415,12 +2416,30 @@ const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000
 const DARK_SCREENS = ['ticket','nfc','scanner','wrapped','scanpay'];
 
 /* Strona na komputerze korzysta z tych samych ekranów, filtrów i API co telefon. */
+function eventTicker(events){
+  const text = 'TERAZ · '+events.slice(0,10).map(e=>e.name).join('  +  ')+'  +';
+  // Dwie identyczne połowy: przesunięcie o 50% daje płynną pętlę bez skoku.
+  return `<div class="mq" tabindex="0" aria-label="Aktualne wydarzenia. Najedź lub ustaw fokus, aby zatrzymać przewijanie." style="margin-bottom:22px;--ticker-duration:${Math.max(30, Math.round(text.length*.14))}s">
+    <div class="mq-track"><span class="mq-group">${esc(text)}</span><span class="mq-group" aria-hidden="true">${esc(text)}</span></div>
+  </div>`;
+}
+
 function webHero(){
   return `<section class="web-only web-hero" aria-label="Odkrywaj wydarzenia">
     <span class="eyebrow">Twoje miasto. Twoi ludzie. Twój plan.</span>
     <h1>Gdzie dziś<br><span>idziemy?</span></h1>
     <p>Koncerty, kluby, teatr i wszystko pomiędzy.<br>Znajdź swój powód, żeby wyjść z domu.</p>
-    <div class="web-hero-mark" aria-hidden="true"><svg viewBox="0 0 100 100">${GLYPH(PINK_HEX)}</svg></div>
+    <div class="web-hero-mark" aria-hidden="true">
+      <svg class="web-hero-orbits" viewBox="0 0 300 300">
+        ${[146,116,86,56].map((r,i)=>`<g class="web-orbit" style="--orbit-period:${48+i*12}s;animation-delay:-${i*9}s">
+          <circle class="web-orbit-path" cx="150" cy="150" r="${r}"/>
+          <circle class="web-orbit-arc" cx="150" cy="150" r="${r}" stroke-dasharray="${r*.5} ${2*Math.PI*r-r*.5}"/>
+          <circle class="web-orbit-dot" cx="${150+r}" cy="150" r="${i%2?1.5:2}"/>
+        </g>`).join('')}
+      </svg>
+      <svg class="web-hero-logo" viewBox="0 0 100 100">${GLYPH(PINK_HEX)}</svg>
+      <span class="web-float-plus">+</span><span class="web-float-plus">+</span><span class="web-float-plus">+</span>
+    </div>
     <div class="web-hero-meta">${esc(S.city)} / ${LIVE.state==='ok'?pl(inCity().length)+' nadchodzących wydarzeń':'Odkryj coś dla siebie'}</div>
   </section>`;
 }
