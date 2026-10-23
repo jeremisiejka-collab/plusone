@@ -12,3 +12,8 @@
 ## Aplikacja
 - Aplikacja na telefon to `/app` (`private/app.html`, wygląd i funkcje inne niż strona). **Wygląd aplikacji = oryginał sprzed rozdzielenia (commit `a9a30d5`)** — nie przenoś do niej zmian wyglądu strony. Aplikacja ma własny, zamrożony arkusz `public/app.css` (strona używa `public/desktop.css`).
 - Aplikacja nie może się powiększać na iPhonie: pola formularzy min. 16 px, `maximum-scale=1`, blokada gestu szczypania. Strona uruchomiona z ikony na ekranie telefonu przekierowuje na `/app`. `/preview` to stary adres (301 → `/app`).
+
+## Konta i panel admina
+- Role: **Użytkownik**, **Obsługa biletów** (`perm_scan`, skaner biletów), **Administrator** (`role='admin'`); główni administratorzy (`owner`) nadają admina i mają „Zobacz jako”.
+- Panel admina, zaproszenia, poczta, skaner biletów i bilet z QR są w jednym pliku `public/admin.js` (+ `public/admin.css`), ładowanym przez stronę i aplikację — zmieniaj je tylko tam.
+- Biblioteki trzymamy u siebie w `public/vendor/` (Leaflet, jsQR, qrcode-generator), nie z CDN.

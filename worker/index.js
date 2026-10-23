@@ -57,7 +57,7 @@ async function currentUser(req, env) {
   const token = cookie(req, 'sid');
   if (!token) return null;
   const row = await env.DB.prepare(
-    `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at, u.owner, u.perm_curate, u.must_change FROM sessions s JOIN users u ON u.id = s.user_id
+    `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at, u.owner, u.perm_curate, u.perm_scan, u.must_change FROM sessions s JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = ? AND s.expires_at > ?`).bind(await sha256(token), Date.now()).first();
   return row || null;
 }
@@ -66,8 +66,11 @@ async function currentUser(req, env) {
 const isOwner = u => !!u && !!u.owner;
 const isAdmin = u => !!u && (u.role === 'admin' || !!u.owner);
 const canCurate = u => isAdmin(u) || (!!u && !!u.perm_curate);
+const canScan = u => isAdmin(u) || (!!u && !!u.perm_scan);
+/* rola do wyświetlenia: admin > obsługa biletów > użytkownik */
+const roleOf = u => isAdmin(u) ? 'admin' : u.perm_scan ? 'staff' : 'user';
 const publicUser = u => ({ id: u.id, email: u.email, name: u.name, role: u.role, city: u.city, createdAt: u.created_at,
-  owner: !!u.owner, curate: canCurate(u), mustChange: !!u.must_change });
+  owner: !!u.owner, curate: canCurate(u), scan: canScan(u), level: roleOf(u), mustChange: !!u.must_change });
 
 /* ---------------- walidacja ---------------- */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -180,6 +183,8 @@ async function deleteMe(req, env, user) {
   if (!(await checkPassword(String(b.password || ''), u.pass))) return fail(401, 'Złe hasło.');
   await env.DB.batch([
     env.DB.prepare('DELETE FROM saved WHERE user_id = ?').bind(user.id),
+    env.DB.prepare('DELETE FROM tickets WHERE user_id = ?').bind(user.id),
+    env.DB.prepare('UPDATE tickets SET used_by = NULL WHERE used_by = ?').bind(user.id),
     env.DB.prepare('DELETE FROM preview_access WHERE user_id = ?').bind(user.id),
     env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id),
     env.DB.prepare('UPDATE curation SET by_user = NULL WHERE by_user = ?').bind(user.id),
@@ -239,7 +244,7 @@ async function adminUsers(req, env) {
   const url = new URL(req.url);
   const q = '%' + cleanText(url.searchParams.get('q'), 100).toLowerCase() + '%';
   const { results } = await env.DB.prepare(
-    `SELECT u.id, u.email, u.name, u.role, u.owner, u.perm_curate, u.must_change, u.city, u.created_at, u.last_seen,
+    `SELECT u.id, u.email, u.name, u.role, u.owner, u.perm_curate, u.perm_scan, u.must_change, u.city, u.created_at, u.last_seen,
             (SELECT COUNT(*) FROM saved s WHERE s.user_id = u.id) AS saves,
             EXISTS(SELECT 1 FROM preview_access p WHERE p.user_id = u.id) AS preview_access
      FROM users u WHERE lower(u.email) LIKE ? OR lower(u.name) LIKE ? ORDER BY u.created_at DESC LIMIT 200`).bind(q, q).all();
@@ -247,7 +252,7 @@ async function adminUsers(req, env) {
 }
 
 async function canPreview(env, user) {
-  return !!user && (isAdmin(user) || !!(await env.DB.prepare('SELECT 1 FROM preview_access WHERE user_id = ?').bind(user.id).first()));
+  return !!user && (isAdmin(user) || canScan(user) || !!(await env.DB.prepare('SELECT 1 FROM preview_access WHERE user_id = ?').bind(user.id).first()));
 }
 
 async function adminPreviewAccess(req, env, id) {
@@ -351,11 +356,47 @@ async function adminSetPerms(req, env, user, id) {
     ? env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(t.id, Date.now())
     : env.DB.prepare('DELETE FROM preview_access WHERE user_id = ?').bind(t.id));
   if (typeof b.curate === 'boolean') ops.push(env.DB.prepare('UPDATE users SET perm_curate = ? WHERE id = ?').bind(b.curate ? 1 : 0, t.id));
+  if (typeof b.scan === 'boolean') ops.push(env.DB.prepare('UPDATE users SET perm_scan = ? WHERE id = ?').bind(b.scan ? 1 : 0, t.id));
   if (typeof b.admin === 'boolean') ops.push(env.DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(b.admin ? 'admin' : 'user', t.id));
   if (typeof b.owner === 'boolean') ops.push(env.DB.prepare('UPDATE users SET owner = ?' + (b.owner ? ", role = 'admin'" : '') + ' WHERE id = ?').bind(b.owner ? 1 : 0, t.id));
   if (!ops.length) return fail(400, 'Brak zmian.');
   await env.DB.batch(ops);
   return json({ ok: true });
+}
+
+/* ---------------- bilety +1 i skanowanie ----------------
+   Każde "Mam bilet" zalogowanego użytkownika ma swój kod QR. Obsługa biletów skanuje go przy wejściu:
+   pierwszy skan wpuszcza, kolejny pokazuje, kiedy i kto już go użył. */
+const ticketCode = () => 'P1-' + randomToken().slice(0, 20);
+async function myTickets(env, user) {
+  const going = (await savedIds(env, user.id)).going;
+  const { results } = await env.DB.prepare('SELECT code, event_id, used_at FROM tickets WHERE user_id = ?').bind(user.id).all();
+  const have = new Map(results.map(r => [r.event_id, r]));
+  const add = going.filter(id => !have.has(id)).slice(0, 200).map(id => ({ code: ticketCode(), event_id: id, used_at: null }));
+  if (add.length) await env.DB.batch(add.map(t => env.DB.prepare('INSERT OR IGNORE INTO tickets (code, user_id, event_id, created_at) VALUES (?, ?, ?, ?)').bind(t.code, user.id, t.event_id, Date.now())));
+  const all = [...results, ...add].filter(t => going.includes(t.event_id));
+  return json({ tickets: all.map(t => ({ code: t.code, eventId: t.event_id, usedAt: t.used_at })) });
+}
+/* POST /api/scan { code, undo? } — dla obsługi biletów i adminów */
+async function scanTicket(req, env, user) {
+  const b = await body(req), code = String(b.code || '').trim().slice(0, 80);
+  if (!/^P1-[\w-]{8,40}$/.test(code)) return json({ status: 'invalid', message: 'To nie jest bilet +1.' });
+  const t = await env.DB.prepare(`SELECT t.*, u.email, u.name, s.email AS by_email FROM tickets t JOIN users u ON u.id = t.user_id
+    LEFT JOIN users s ON s.id = t.used_by WHERE t.code = ?`).bind(code).first();
+  if (!t) return json({ status: 'invalid', message: 'Nie ma takiego biletu.' });
+  const who = { name: t.name, email: t.email, eventId: t.event_id };
+  if (b.undo) {
+    await env.DB.prepare('UPDATE tickets SET used_at = NULL, used_by = NULL WHERE code = ?').bind(code).run();
+    return json({ status: 'undone', ...who });
+  }
+  if (t.used_at) return json({ status: 'used', usedAt: t.used_at, usedBy: t.by_email, ...who });
+  await env.DB.prepare('UPDATE tickets SET used_at = ?, used_by = ? WHERE code = ? AND used_at IS NULL').bind(Date.now(), user.id, code).run();
+  return json({ status: 'ok', ...who });
+}
+async function scanStats(env, user) {
+  const since = Date.now() - DAY;
+  const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM tickets WHERE used_by = ? AND used_at > ?').bind(user.id, since).first('n');
+  return json({ scanned24h: r });
 }
 
 /* ---------------- zaproszenia ---------------- */
@@ -423,7 +464,7 @@ async function adminMailTest(req, env, user) {
 }
 
 const inviteMail = (link, by, perms) => {
-  const what = [perms.preview && 'aplikacji +1', perms.curate && 'moderowania wydarzeń', perms.admin && 'panelu administratora'].filter(Boolean).join(', ');
+  const what = [perms.preview && 'aplikacji +1', perms.scan && 'skanowania biletów', perms.curate && 'moderowania wydarzeń', perms.admin && 'panelu administratora'].filter(Boolean).join(', ');
   const text = `Cześć!\n\n${by} zaprasza Cię do +1 — dostęp do: ${what}.\n\nOtwórz link, ustaw hasło i gotowe (link ważny ${INVITE_DAYS} dni):\n${link}\n\nNa iPhonie otwórz go w Safari, a potem Udostępnij → Do ekranu początkowego.\n\n+1 · plusoneapp.pl`;
   const html = `<div style="font:16px/1.6 -apple-system,Segoe UI,sans-serif;max-width:480px;margin:auto;padding:24px;color:#111">
 <div style="width:56px;height:56px;border-radius:14px;background:#000;color:#FF0059;font:700 28px/56px sans-serif;text-align:center">+1</div>
@@ -439,7 +480,7 @@ async function adminInvite(req, env, user) {
   const b = await body(req);
   const email = cleanEmail(b.email);
   if (!EMAIL_RE.test(email) || email.length > 200) return fail(400, 'Podaj poprawny adres e-mail.');
-  const perms = { preview: b.preview !== false, curate: !!b.curate, admin: !!b.admin };
+  const perms = { preview: b.preview !== false, curate: !!b.curate, admin: !!b.admin, scan: !!b.scan };
   if (perms.admin && !isOwner(user)) return fail(403, 'Admina może zaprosić tylko główny administrator.');
   const by = user.name || user.email;
 
@@ -450,6 +491,7 @@ async function adminInvite(req, env, user) {
     if (perms.preview) ops.push(env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(ex.id, Date.now()));
     if (perms.curate) ops.push(env.DB.prepare('UPDATE users SET perm_curate = 1 WHERE id = ?').bind(ex.id));
     if (perms.admin) ops.push(env.DB.prepare("UPDATE users SET role = 'admin' WHERE id = ?").bind(ex.id));
+    if (perms.scan) ops.push(env.DB.prepare('UPDATE users SET perm_scan = 1 WHERE id = ?').bind(ex.id));
     if (ops.length) await env.DB.batch(ops);
     const link = siteUrl(req, '/app'), m = inviteMail(link, by, perms);
     const emailed = await sendMail(env, email, m.subject, m.text, m.html);
@@ -457,8 +499,8 @@ async function adminInvite(req, env, user) {
   }
 
   const token = randomToken(), now = Date.now();
-  await env.DB.prepare('INSERT INTO invites (token_hash, email, preview, curate, admin, invited_by, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(await sha256(token), email, +perms.preview, +perms.curate, +perms.admin, user.id, now, now + INVITE_DAYS * DAY).run();
+  await env.DB.prepare('INSERT INTO invites (token_hash, email, preview, curate, admin, scan, invited_by, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(await sha256(token), email, +perms.preview, +perms.curate, +perms.admin, +perms.scan, user.id, now, now + INVITE_DAYS * DAY).run();
   const link = inviteLink(req, token), m = inviteMail(link, by, perms);
   const emailed = await sendMail(env, email, m.subject, m.text, m.html);
   return json({ ok: true, existing: false, link, emailed, mail: { subject: m.subject, text: m.text } }, 201);
@@ -466,7 +508,7 @@ async function adminInvite(req, env, user) {
 
 async function adminInvites(req, env) {
   const { results } = await env.DB.prepare(
-    `SELECT i.rowid AS id, i.email, i.preview, i.curate, i.admin, i.created_at, i.expires_at, i.used_at, u.email AS by_email
+    `SELECT i.rowid AS id, i.email, i.preview, i.curate, i.admin, i.scan, i.created_at, i.expires_at, i.used_at, u.email AS by_email
      FROM invites i LEFT JOIN users u ON u.id = i.invited_by ORDER BY i.created_at DESC LIMIT 100`).all();
   return json({ invites: results, mailer: await hasMailer(env) });
 }
@@ -492,8 +534,8 @@ async function acceptInvite(req, env) {
   if (await env.DB.prepare('SELECT 1 FROM users WHERE email = ?').bind(inv.email).first())
     return fail(409, 'To konto już istnieje — zaloguj się.');
   const now = Date.now();
-  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, perm_curate, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?)')
-    .bind(inv.email, name, await hashPassword(password), inv.admin ? 'admin' : 'user', inv.curate, now, now).run();
+  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, perm_curate, perm_scan, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(inv.email, name, await hashPassword(password), inv.admin ? 'admin' : 'user', inv.curate, inv.scan || 0, now, now).run();
   const id = res.meta.last_row_id;
   await env.DB.batch([
     env.DB.prepare('UPDATE invites SET used_at = ? WHERE rowid = ?').bind(now, inv.id),
@@ -546,6 +588,13 @@ async function api(req, env) {
   if (path === '/api/me' && m === 'PATCH') return updateMe(req, env, user);
   if (path === '/api/me' && m === 'DELETE') return deleteMe(req, env, user);
   if (path === '/api/saved' && m === 'POST') return toggleSaved(req, env, user);
+  if (path === '/api/tickets' && m === 'GET') return myTickets(env, user);
+  if (path === '/api/scan' || path === '/api/scan/stats') {
+    if (user.must_change) return fail(403, 'Najpierw ustaw nowe hasło.');
+    if (!canScan(user)) return fail(403, 'Skanowanie jest dla obsługi biletów.');
+    if (path === '/api/scan' && m === 'POST') return scanTicket(req, env, user);
+    if (m === 'GET') return scanStats(env, user);
+  }
 
   if (path.startsWith('/api/admin/')) {
     // konto z hasłem startowym: najpierw nowe hasło

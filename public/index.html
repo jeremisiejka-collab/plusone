@@ -316,6 +316,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 #wrapwrap.paused span[style*="wfill"]{animation-play-state:paused}
 </style>
 <link rel="stylesheet" href="/desktop.css">
+<link rel="stylesheet" href="/admin.css">
 </head>
 <body>
 <div id="desk">
@@ -360,6 +361,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 
   <div id="jumpbar" class="ds"></div>
 </div>
+<script src="/admin.js"></script>
 <script>
 /* ============================================================
    +1 — prototyp v2
@@ -583,7 +585,7 @@ function morph(update, el){
   t.finished.finally(()=>$$('.vt-hero').forEach(x=>x.classList.remove('vt-hero')));
 }
 function go(s, anim=true){
-  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads'].includes(s)) return;
+  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan'].includes(s)) return;
   if(s===S.screen) return;
   SCROLL[S.screen] = scrollY_();
   S.dir = !anim ? null : ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
@@ -868,9 +870,10 @@ function addToCalendar(e){
   document.body.appendChild(a); a.click(); a.remove();
   toast('Plik kalendarza pobrany — otwórz go, żeby dodać wydarzenie', true);
 }
-const isAdmin = () => ACC.user?.role==='admin' || !!ACC.user?.owner;
-const isOwner = () => !!ACC.user?.owner;
-const canCurate = () => isAdmin() || !!ACC.user?.curate;
+/* uprawnienia; „Zobacz jako” (admin.js) pozwala głównemu administratorowi obejrzeć widok innej roli */
+const isAdmin = () => { const v = ACC.user?.owner && viewAs(); return v ? v==='admin' : (ACC.user?.role==='admin' || !!ACC.user?.owner); };
+const isOwner = () => !!ACC.user?.owner && !viewAs();
+const canCurate = () => isAdmin() || (!viewAs() && !!ACC.user?.curate);
 const entered = () => { try{ return !!localStorage.getItem('entered') }catch(e){ return false } };
 const markEntered = () => { try{ localStorage.setItem('entered','1') }catch(e){} };
 
@@ -943,84 +946,6 @@ async function deleteAccount(){
   closeSheet(); ACC.user=null; ACC.preview=false; toast('Konto usunięte'); S.prev='home'; go('home');
 }
 
-/* ---- hasło ---- */
-function passwordSheet(force=false){
-  sheet(`<div class="col" style="gap:14px"><span class="h3">${force?'Ustaw własne hasło':'Zmień hasło'}</span>
-    ${force?'<span class="body">Konto ma hasło startowe. Zmień je, zanim zaczniesz korzystać z panelu.</span>':''}
-    <div class="field"><label>OBECNE HASŁO</label><input id="pw-cur" type="password" autocomplete="current-password"></div>
-    <div class="field"><label>NOWE HASŁO (MIN. 8 ZNAKÓW)</label><input id="pw-new" type="password" autocomplete="new-password" data-enter="savePassword"></div>
-    <button class="btn p" data-act="savePassword">Zapisz hasło</button>
-    ${force?'':'<button class="btn g" data-act="closeSheet" style="height:48px;font:500 14px/1 var(--d)">Anuluj</button>'}</div>`);
-  $$('[data-enter]',$('#sheet')).forEach(i=>{ i.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); act(i.dataset.enter); } }; });
-}
-async function savePassword(){
-  try{ ACC.user = (await apiCall('/api/me/password','POST',{current:$('#pw-cur')?.value||'', password:$('#pw-new')?.value||''})).user; }
-  catch(e){ toast(esc(e.message),true); return; }
-  closeSheet(); sfxOk(); toast('Hasło zmienione'); if(ACC.admin) ACC.admin.at=0; S.dir=null; render();
-}
-
-/* ---- uprawnienia ---- */
-const PERMS = [['preview','Tester aplikacji','Wchodzi do aplikacji /app'],['curate','Moderator','Poleca i ukrywa wydarzenia'],
-  ['admin','Administrator','Panel admina, użytkownicy, zaproszenia'],['owner','Główny administrator','Nadaje i odbiera admina']];
-const userPerms = x => ({preview:!!x.preview_access, curate:!!x.perm_curate, admin:x.role==='admin', owner:!!x.owner});
-const permAllowed = (k, x) => k==='admin'||k==='owner' ? isOwner() : !(x && x.owner && !isOwner());
-const permToggle = (k, on, lock) => `<button class="perm ${on?'on':''}" data-perm="${k}" ${lock?'disabled':''} aria-pressed="${on}">
-  <span class="perm-box">${on?ic('check',14,2.4):''}</span>
-  <span class="col" style="flex:1;min-width:0;text-align:left"><span class="h4">${PERMS.find(p=>p[0]===k)[1]}</span><span class="mono" style="margin-top:3px">${PERMS.find(p=>p[0]===k)[2]}${lock?' · tylko główny administrator':''}</span></span></button>`;
-function wirePerms(root){ $$('.perm', root).forEach(b=>b.onclick=()=>{ if(b.disabled) return; const on=!b.classList.contains('on'); b.classList.toggle('on',on); b.setAttribute('aria-pressed',on); b.querySelector('.perm-box').innerHTML=on?ic('check',14,2.4):''; haptic(5); }); }
-const readPerms = root => Object.fromEntries($$('.perm', root).filter(b=>!b.disabled).map(b=>[b.dataset.perm, b.classList.contains('on')]));
-function permsSheet(id){
-  const x = ACC.admin?.users?.find(u=>u.id===+id); if(!x) return;
-  const cur = userPerms(x);
-  sheet(`<div class="col" style="gap:12px"><span class="h3">Uprawnienia</span>
-    <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.email)}</span>
-    <div class="col" style="gap:8px">${PERMS.map(([k])=>permToggle(k, cur[k], !permAllowed(k, x) || (x.id===ACC.user.id && (k==='admin'||k==='owner')))).join('')}</div>
-    <button class="btn p" data-act="savePerms:${x.id}">Zapisz</button></div>`);
-  wirePerms($('#sheet'));
-}
-async function savePerms(id){
-  const x = ACC.admin?.users?.find(u=>u.id===+id), cur = userPerms(x), next = readPerms($('#sheet'));
-  const diff = Object.fromEntries(Object.entries(next).filter(([k,v])=>v!==cur[k]));
-  if(!Object.keys(diff).length){ closeSheet(); return; }
-  try{ await apiCall(`/api/admin/users/${id}/perms`,'POST',diff); }catch(e){ toast(esc(e.message),true); return; }
-  closeSheet(); sfxOk(); toast('Uprawnienia zapisane'); adminLoad();
-}
-
-/* ---- zaproszenia ---- */
-async function sendInvite(){
-  const email = $('#inv-email')?.value.trim(), p = readPerms($('#inv-form'));
-  if(!email){ toast('Wpisz adres e-mail',true); return; }
-  try{
-    const r = await apiCall('/api/admin/invites','POST',{email, preview:p.preview, curate:p.curate, admin:p.admin});
-    S.lastInvite = {...r, email}; sfxOk();
-    toast(r.emailed ? 'Zaproszenie wysłane na '+esc(email) : r.existing ? 'Uprawnienia nadane' : 'Zaproszenie gotowe — wyślij link', !r.emailed);
-    adminLoad();
-  }catch(e){ toast(esc(e.message),true); }
-}
-async function revokeInvite(id){
-  try{ await apiCall('/api/admin/invites/'+id,'DELETE',{}); toast('Zaproszenie cofnięte'); adminLoad(); }catch(e){ toast(esc(e.message),true); }
-}
-
-/* ---- admin ---- */
-async function adminLoad(){
-  try{
-    const [stats, users, st, inv, mail] = await Promise.all([apiCall('/api/admin/stats'), apiCall('/api/admin/users?q='+encodeURIComponent(S.adminQ||'')), apiCall('/api/state'), apiCall('/api/admin/invites'),
-      isOwner() ? apiCall('/api/admin/mail') : null]);
-    ACC.hidden=new Set(st.hidden); ACC.featured=st.featured;
-    ACC.admin={stats, users:users.users, invites:inv.invites, mailer:inv.mailer, mail, at:Date.now()};
-  }catch(e){ ACC.admin={error:e.message, at:Date.now()}; }
-  S.dir=null; render();
-}
-async function curate(id, action){
-  try{ await apiCall('/api/admin/curation','POST',{eventId:id, action}); }
-  catch(e){ toast(esc(e.message),true); return; }
-  ACC.hidden.delete(id); ACC.featured = ACC.featured.filter(x=>x!==id);
-  if(action==='hide') ACC.hidden.add(id);
-  if(action==='feature') ACC.featured.unshift(id);
-  toast(action==='hide'?'Ukryte dla wszystkich':action==='feature'?'Dodane do polecanych':'Przywrócone');
-  if(ACC.admin) ACC.admin.at=0;
-  S.dir=null; render();
-}
 /* ---- START: wybór wejścia ---- */
 const scStart = () => `
 <div class="pg" style="display:flex;flex-direction:column;justify-content:space-between;padding:116px 26px 44px;
@@ -1079,7 +1004,7 @@ const scProfile = () => {
       <div class="col" style="gap:4px;min-width:0">
         <span class="h2" style="font-size:22px">${u?esc(u.name||'Twoje konto'):'Gość'}</span>
         <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u?esc(u.email):'Przeglądasz bez konta'}</span>
-        ${isAdmin()||u?.curate?`<span style="align-self:flex-start;margin-top:2px;padding:4px 8px;border-radius:6px;background:${PINK};color:#000;font:700 9px/1 var(--m);letter-spacing:.1em">${isOwner()?'GŁÓWNY ADMIN':isAdmin()?'ADMIN':'MODERATOR'}</span>`:''}
+        ${isAdmin()||canCurate()?`<span style="align-self:flex-start;margin-top:2px;padding:4px 8px;border-radius:6px;background:${PINK};color:#000;font:700 9px/1 var(--m);letter-spacing:.1em">${isOwner()?'GŁÓWNY ADMIN':isAdmin()?'ADMIN':'MODERATOR'}</span>`:''}
       </div>
     </div>
     ${!u?`<div class="row" style="gap:10px">
@@ -1090,8 +1015,11 @@ const scProfile = () => {
     <div class="field"><label>IMIĘ</label><input id="pf-name" value="${esc(u.name||'')}" maxlength="60" autocomplete="given-name" data-enter="saveProfile"></div>
     <button class="btn g" data-act="saveProfile" style="height:44px;font:600 13px/1 var(--d)">Zapisz</button></div>`:''}
   <div class="pad">
-    ${ACC.preview?`<a class="listbtn" href="/app" style="color:inherit;text-decoration:none">${ic('shield',18)} Podgląd aplikacji · dla testerów</a>`:''}
+    ${ACC.preview?`<a class="listbtn" href="/app" style="color:inherit;text-decoration:none">${ic('shield',18)} Aplikacja na telefon</a>`:''}
     ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">${isOwner()?'GŁÓWNY ADMIN':'ADMIN'}</span>`):''}
+    ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
+    ${realOwner()?row('users','Zobacz jako…','viewAsSheet',`<span class="mono">${viewAs()?esc(roleName(viewAs())):'Ty'}</span>`):''}
+
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
     ${row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`)}
     ${row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`)}
@@ -1100,130 +1028,6 @@ const scProfile = () => {
     ${u?row('logout','Wyloguj się','logout'):''}
   </div>
   ${u?`<div class="pad" style="padding-top:26px"><button class="mono" data-act="deleteAccountSheet" style="color:var(--t3)">Usuń konto</button></div>`:''}
-</div>`;
-};
-
-/* ---- PANEL ADMINA: poczta (SMTP skrzynki, z której wychodzą zaproszenia) ---- */
-const adminMailTab = A => {
-  const c = A.mail?.smtp || {};
-  const f = (id, label, val, attrs='') => `<div class="field"><label>${label}</label><input id="${id}" value="${esc(val??'')}" ${attrs}></div>`;
-  return `<div id="mail-form" class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px">
-    <div class="row" style="justify-content:space-between;gap:10px"><span class="h3">Poczta</span>
-      <span class="badge ${A.mail?.smtp?'':'off'}">${A.mail?.smtp?'podłączona':A.mail?.resend?'Resend':'niepodłączona'}</span></div>
-    <span class="body" style="font-size:13px">Zaloguj skrzynkę, z której mają wychodzić zaproszenia (np. kontakt@tooday.pl). Dane serwera SMTP znajdziesz w ustawieniach poczty u dostawcy —
-      np. home.pl: <b>serwerXXXXXX.home.pl</b>, OVH: <b>ssl0.ovh.net</b>, Google Workspace: <b>smtp.gmail.com</b> z hasłem aplikacji, Microsoft 365: <b>smtp.office365.com</b> (587).</span>
-    ${f('ml-host','SERWER SMTP',c.host,'placeholder="smtp.twojadomena.pl" autocapitalize="off"')}
-    <div class="row" style="gap:10px">
-      <div class="field" style="flex:1"><label>PORT</label><select id="ml-port" class="sel">${[[465,'465 · SSL/TLS'],[587,'587 · STARTTLS']].map(([v,l])=>`<option value="${v}" ${+c.port===v?'selected':''}>${l}</option>`).join('')}</select></div>
-    </div>
-    ${f('ml-user','LOGIN (ZWYKLE ADRES E-MAIL)',c.user,'autocapitalize="off" autocomplete="off"')}
-    ${f('ml-pass','HASŁO DO SKRZYNKI','', `type="password" autocomplete="new-password" placeholder="${c.hasPass?'zapisane — wpisz, żeby zmienić':''}"`)}
-    ${f('ml-from','ADRES NADAWCY',c.from||c.user,'type="email" autocapitalize="off"')}
-    ${f('ml-name','NAZWA NADAWCY',c.fromName||'+1')}
-    <button class="btn p" data-act="saveMail">Zapisz</button>
-    ${A.mail?.smtp?`<div class="row" style="gap:8px;flex-wrap:wrap">
-      <button class="chip on" data-act="testMail">Wyślij test na ${esc(ACC.user.email)}</button>
-      <button class="chip" data-act="dropMail">Odłącz</button></div>`:''}
-    <span class="mono" style="line-height:1.5">Hasło jest zapisane na serwerze +1 i nie wraca do przeglądarki. Ustawia je tylko główny administrator.</span>
-  </div>`;
-};
-async function saveMail(){
-  const v = id => $('#'+id)?.value.trim();
-  try{
-    ACC.admin.mail = await apiCall('/api/admin/mail','POST',{host:v('ml-host'), port:+v('ml-port'), user:v('ml-user'), pass:$('#ml-pass')?.value||'', from:v('ml-from'), fromName:v('ml-name')});
-    toast('Zapisano — wyślij test, żeby sprawdzić'); sfxOk(); ACC.admin.mailer = true; S.dir=null; render();
-  }catch(e){ toast(esc(e.message),true); }
-}
-async function testMail(){
-  toast('Wysyłam…',true,1500);
-  try{ const r = await apiCall('/api/admin/mail/test','POST',{}); toast('Wysłano na '+esc(r.to)+' — sprawdź skrzynkę'); sfxOk(); }
-  catch(e){ toast(esc(e.message),true,6000); }
-}
-async function dropMail(){
-  try{ ACC.admin.mail = await apiCall('/api/admin/mail','DELETE',{}); ACC.admin.at=0; toast('Poczta odłączona'); adminLoad(); }catch(e){ toast(esc(e.message),true); }
-}
-
-/* ---- PANEL ADMINA: zaproszenia ---- */
-const adminInvitesTab = A => {
-  const L = S.lastInvite, now = Date.now();
-  return `
-  <div id="inv-form" class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px">
-    <span class="h3">Zaproś do +1</span>
-    <span class="body" style="font-size:13px">${A.mailer?'Zaproszenie przyjdzie mailem z linkiem. Osoba ustawia hasło i od razu ma wybrane uprawnienia.':'Wysyłka maili nie jest jeszcze podłączona'+(isOwner()?' (zakładka Poczta)':'')+' — po utworzeniu zaproszenia skopiuj link albo wyślij go ze swojej poczty.'}</span>
-    <div class="field"><label>E-MAIL</label><input id="inv-email" type="email" inputmode="email" autocapitalize="off" placeholder="ktos@przyklad.pl" data-enter="sendInvite"></div>
-    <div class="col" style="gap:8px">${['preview','curate','admin'].map(k=>permToggle(k, k==='preview', !permAllowed(k))).join('')}</div>
-    <button class="btn p" data-act="sendInvite">${A.mailer?'Wyślij zaproszenie':'Utwórz zaproszenie'}</button>
-  </div>
-  ${L ? `<div class="card" style="margin-top:12px;padding:16px;display:flex;flex-direction:column;gap:10px;border-color:var(--pink-line)">
-    <span class="h4">${L.emailed?'Wysłano na '+esc(L.email):L.existing?'Uprawnienia nadane: '+esc(L.email):'Link dla '+esc(L.email)}</span>
-    ${L.emailed?'':`<input readonly value="${esc(L.link)}" onclick="this.select()" style="height:44px;border-radius:12px;padding:0 12px;background:var(--surface-2);border:1px solid var(--line-2);font:400 12px/1 var(--m);color:var(--t1)">
-    <div class="row" style="gap:8px;flex-wrap:wrap">
-      <button class="chip on" data-act="copyInvite">Kopiuj link</button>
-      <a class="chip" href="mailto:${encodeURIComponent(L.email)}?subject=${encodeURIComponent(L.mail.subject)}&body=${encodeURIComponent(L.mail.text)}">Wyślij z poczty</a>
-      <button class="chip" data-act="shareInvite">Udostępnij</button>
-    </div>`}
-    <button class="mono" data-act="clearInvite" style="align-self:flex-start;color:var(--t3)">Zamknij</button></div>` : ''}
-  <div class="h4" style="padding:22px 0 4px">Wysłane zaproszenia</div>
-  ${(A.invites||[]).map(i=>{ const st = i.used_at ? 'przyjęte' : i.expires_at<now ? 'wygasło' : 'czeka';
-    return `<div class="row" style="gap:12px;padding:12px 0;border-bottom:1px solid var(--line)">
-      <div class="col" style="flex:1;min-width:0"><span class="h4" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(i.email)}</span>
-        <span class="mono" style="margin-top:4px">${[i.preview&&'tester',i.curate&&'moderator',i.admin&&'admin'].filter(Boolean).join(' · ')} · ${new Date(i.created_at).toLocaleDateString('pl-PL')}${i.by_email?' · od '+esc(i.by_email):''}</span></div>
-      <span class="badge ${st==='czeka'?'':'off'}">${st}</span>
-      ${st==='czeka'?`<button class="chip" data-act="revokeInvite:${i.id}" style="padding:7px 12px;font-size:12px">Cofnij</button>`:''}</div>`; }).join('') || '<span class="mono" style="display:block;padding:12px 0">Jeszcze nikogo nie zaproszono.</span>'}`;
-};
-
-/* ---- PANEL ADMINA ---- */
-const scAdmin = () => {
-  if(!isAdmin()) return `<div class="pg pad col" style="padding-top:120px;gap:14px"><span class="h3">Tylko dla admina</span>
-    <button class="btn p" data-act="authgo:admin" style="height:48px">Zaloguj się jako admin</button></div>`;
-  const A = ACC.admin;
-  if(!A || Date.now()-A.at>60e3) setTimeout(adminLoad,0);
-  const tab = S.adminTab||'stats';
-  const byId = id => EVENTS.find(e=>e.id===id);
-  const curList = (ids, lbl) => ids.length ? ids.map(id=>{ const e=byId(id); return `
-    <div class="row" style="gap:12px;padding:12px 0;border-bottom:1px solid var(--line)">
-      <div class="col" style="flex:1;min-width:0"><span class="h4 clamp2">${esc(e?e.name:id)}</span>
-        <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
-      <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
-  const src = LIVE.sources||{};
-  return `
-<div class="pg" style="padding:0 0 60px">
-  <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4" style="flex:1">Panel admina</span>
-    <button class="mono" data-act="adminReload" style="color:${PINK}">ODŚWIEŻ</button></div>
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:16px 20px">
-    ${[['stats','Statystyki'],['users','Użytkownicy'],['invites','Zaproszenia'],...(isOwner()?[['mail','Poczta']]:[]),['curation','Moderacja'],['data','Dane']].map(([k,l])=>
-      `<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}
-  </div>
-  <div class="pad">
-  ${A?.error ? `<div class="err">${esc(A.error)}</div>` : !A ? loadingBox() : tab==='stats' ? `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      ${[['Użytkownicy',A.stats.users],['Nowi (7 dni)',A.stats.new7],['Aktywni (7 dni)',A.stats.active7],['Admini',A.stats.admins],
-         ['Zaproszenia (czekają)',(A.invites||[]).filter(i=>!i.used_at&&i.expires_at>Date.now()).length],['Wydarzeń w bazie',LIVE.count||EVENTS.filter(e=>e.real).length],['W mieście '+S.city,inCity().length],['Polecane',A.stats.featured],['Ukryte',A.stats.hidden]]
-        .map(([l,v])=>`<div class="statc"><span class="mono">${esc(l)}</span><b>${pl(v||0)}</b></div>`).join('')}
-    </div>` : tab==='users' ? `
-    <div class="field" style="padding-bottom:10px"><input id="adm-q" placeholder="Szukaj po e-mailu lub imieniu" value="${esc(S.adminQ||'')}" data-enter="adminSearch" autocapitalize="off"></div>
-    ${A.users.map(x=>{ const p=userPerms(x); return `
-    <div class="row" style="gap:12px;padding:12px 0;border-bottom:1px solid var(--line)">
-      <div class="col" style="flex:1;min-width:0">
-        <span class="h4" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.name||'—')}</span>
-        <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.email)}</span>
-        <span class="row" style="gap:5px;margin-top:6px;flex-wrap:wrap">${[p.owner&&'Główny admin', !p.owner&&p.admin&&'Admin', p.curate&&'Moderator', p.preview&&'Tester', x.must_change&&'hasło startowe']
-          .filter(Boolean).map(t=>`<span class="badge">${t}</span>`).join('') || '<span class="mono">użytkownik</span>'}<span class="mono">· od ${new Date(x.created_at).toLocaleDateString('pl-PL')}</span></span>
-      </div>
-      <button class="chip" data-act="perms:${x.id}" style="padding:7px 12px;font-size:12px">Uprawnienia</button>
-    </div>`; }).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='invites' ? adminInvitesTab(A) : tab==='mail' ? adminMailTab(A) : tab==='curation' ? `
-    <span class="body" style="display:block;padding-bottom:10px">Polecaj albo ukrywaj wydarzenia przyciskami na ekranie wydarzenia. Tu możesz to cofnąć.</span>
-    <div class="h4" style="padding:10px 0 4px">Polecane</div>${curList(ACC.featured,'Usuń z polecanych')}
-    <div class="h4" style="padding:20px 0 4px">Ukryte</div>${curList([...ACC.hidden],'Przywróć')}` : `
-    <div class="col" style="gap:10px">
-      <div class="statc"><span class="mono">Ostatnia aktualizacja</span><b style="font-size:18px">${LIVE.updatedAt?new Date(LIVE.updatedAt).toLocaleString('pl-PL'):'—'}</b></div>
-      ${Object.entries(src).map(([k,v])=>`<div class="statc row" style="justify-content:space-between">
-        <span class="h4">${esc(SRC_PL[k]||k)}</span><span class="mono" style="color:${v.ok?'var(--ok)':PINK}">${v.ok?pl(v.count)+' wydarzeń':'błąd'}</span></div>`).join('')}
-      <a class="btn g" href="https://github.com/jeremisiejka-collab/plusone/actions/workflows/events.yml" target="_blank" rel="noopener"
-        style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;text-decoration:none">Uruchom aktualizację (GitHub)</a>
-      <span class="mono" style="line-height:1.6">Automatyczna aktualizacja: 2× dziennie (ok. 6:00 i 16:00).</span>
-    </div>`}
-  </div>
 </div>`;
 };
 
@@ -1768,6 +1572,7 @@ const scLive = e => `
          ['Kalendarz','clock','calNext:'+e.id],['Udostępnij','share','share']]
         .map(([l,i,a,on,k])=>`<button class="mine-act ${on?'on':''} ${on&&S.popId===e.id+k?'pop':''}" data-act="${a}">${ic(i,18)}<span>${l}</span></button>`).join('')}
     </div>
+    ${MINE.going.has(e.id)?`<button class="btn w" data-act="${ACC.user?'ticketQR:'+e.id:'authFrom:event'}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} ${ACC.user?'Pokaż bilet z kodem QR':'Zaloguj się, żeby mieć bilet z kodem QR'}</button>`:''}
     ${canCurate()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
       <span class="mono" style="flex:1;color:${PINK}">${isAdmin()?'ADMIN':'MODERATOR'}</span>
       <button class="chip ${ACC.featured.includes(e.id)?'on':''}" data-act="curate:${e.id}:${ACC.featured.includes(e.id)?'clear':'feature'}" style="padding:7px 12px;font-size:12px">${ACC.featured.includes(e.id)?'Polecane':'Poleć'}</button>
@@ -1825,6 +1630,7 @@ const mineRow = (e, kind) => `
     <span class="h4 clamp2">${esc(e.name)}</span>
     <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
   </div>
+  ${kind==='going'&&ACC.user?`<button data-act="ticketQR:${e.id}" aria-label="Bilet z kodem QR" style="width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:var(--t1)">${ic('qr',18)}</button>`:''}
   <button class="mine-btn on" data-act="mine:${kind}:${e.id}" aria-label="Usuń" style="width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--pink-dim);color:${PINK}">${ic(kind==='going'?'ticket':'heart',18)}</button>
 </div>`;
 
@@ -1867,7 +1673,8 @@ const scMyTickets = () => {
       <a class="mine-act" href="${esc((next.links[0]||{}).url||'#')}" target="_blank" rel="noopener">${ic('ticket',18)}<span>Bilet</span></a>
       <a class="mine-act" href="${mapsUrl(next)}" target="_blank" rel="noopener">${ic('pin',18)}<span>Dojazd</span></a>
       <button class="mine-act" data-act="calNext:${next.id}">${ic('clock',18)}<span>Kalendarz</span></button>
-    </div>` : ''}
+    </div>
+    ${ACC.user?`<button class="btn w" data-act="ticketQR:${next.id}" style="height:50px;margin:4px 0 8px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} Bilet z kodem QR</button>`:''}` : ''}
     ${up.slice(next?1:0).map(e=>mineRow(e,tab)).join('')}
     ${past.length ? `<div class="eyebrow" style="padding:22px 0 4px">Minione</div><div style="opacity:.6">${past.map(e=>mineRow(e,tab)).join('')}</div>` : ''}`}
   ${!ACC.user ? `
@@ -1913,7 +1720,7 @@ const scWalletSoon = () => `
 const SCREENS = {
   home:scHome, list:scList, map:scMap, event:()=>scLive(ev()),
   tickets:scMyTickets, wallet:scWalletSoon,
-  auth:scAuth, profile:scProfile, admin:scAdmin, downloads:scDownloads
+  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan()
 };
 
 /* =========================================================
@@ -2219,6 +2026,7 @@ function act(a){
     }
     case 'rmode': S.release.mode=p1; haptic(5); sfxTap(); render(); break;
     case 'confirmRelease': doRelease(); break;
+    default: adminAct(cmd, p1, p2, a);
   }
 }
 
@@ -2559,6 +2367,7 @@ function attachGestures(){
 
   if(S.screen==='map') attachMap();
   attachRails();
+  adminAfterRender();
 
   // Enter w polach formularzy
   $$('[data-enter]').forEach(i=>{ i.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); act(i.dataset.enter); } }; });

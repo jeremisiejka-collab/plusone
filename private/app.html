@@ -367,6 +367,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 #wrapwrap.paused span[style*="wfill"]{animation-play-state:paused}
 </style>
 <link rel="stylesheet" href="/app.css">
+<link rel="stylesheet" href="/admin.css">
 </head>
 <body>
 <div id="previewbar" style="padding:10px;text-align:center;background:#ff0059;color:#000;font:600 12px system-ui">Zamknięty podgląd aplikacji · płatności i bilety są demonstracyjne · <a href="/?web" target="_blank" rel="noopener">Wróć do witryny</a></div>
@@ -412,6 +413,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 
   <div id="jumpbar" class="ds"></div>
 </div>
+<script src="/admin.js"></script>
 <script>
 /* ============================================================
    +1 — prototyp v2
@@ -922,7 +924,10 @@ function addToCalendar(e){
   document.body.appendChild(a); a.click(); a.remove();
   toast('Plik kalendarza pobrany — otwórz go, żeby dodać wydarzenie', true);
 }
-const isAdmin = () => ACC.user?.role==='admin';
+/* uprawnienia; „Zobacz jako” (admin.js) pozwala głównemu administratorowi obejrzeć widok innej roli */
+const isAdmin = () => { const v = ACC.user?.owner && viewAs(); return v ? v==='admin' : (ACC.user?.role==='admin' || !!ACC.user?.owner); };
+const isOwner = () => !!ACC.user?.owner && !viewAs();
+const canCurate = () => isAdmin() || (!viewAs() && !!ACC.user?.curate);
 const entered = () => { try{ return !!localStorage.getItem('entered') }catch(e){ return false } };
 const markEntered = () => { try{ localStorage.setItem('entered','1') }catch(e){} };
 
@@ -990,31 +995,6 @@ async function deleteAccount(){
   try{ await apiCall('/api/me','DELETE',{password:$('#del-pass')?.value||''}); }
   catch(e){ toast(esc(e.message),true); return; }
   closeSheet(); ACC.user=null; toast('Konto usunięte'); S.prev='home'; go('home');
-}
-
-/* ---- admin ---- */
-async function adminLoad(){
-  try{
-    const [stats, users, st] = await Promise.all([apiCall('/api/admin/stats'), apiCall('/api/admin/users?q='+encodeURIComponent(S.adminQ||'')), apiCall('/api/state')]);
-    ACC.hidden=new Set(st.hidden); ACC.featured=st.featured;
-    ACC.admin={stats, users:users.users, at:Date.now()};
-  }catch(e){ ACC.admin={error:e.message, at:Date.now()}; }
-  S.dir=null; render();
-}
-async function curate(id, action){
-  try{ await apiCall('/api/admin/curation','POST',{eventId:id, action}); }
-  catch(e){ toast(esc(e.message),true); return; }
-  ACC.hidden.delete(id); ACC.featured = ACC.featured.filter(x=>x!==id);
-  if(action==='hide') ACC.hidden.add(id);
-  if(action==='feature') ACC.featured.unshift(id);
-  toast(action==='hide'?'Ukryte dla wszystkich':action==='feature'?'Dodane do polecanych':'Przywrócone');
-  if(ACC.admin) ACC.admin.at=0;
-  S.dir=null; render();
-}
-async function setRole(id, role){
-  try{ await apiCall(`/api/admin/users/${id}/role`,'POST',{role}); toast(role==='admin'?'Nadano admina':'Odebrano admina'); }
-  catch(e){ toast(esc(e.message),true); }
-  adminLoad();
 }
 
 /* ---- START: wybór wejścia ---- */
@@ -1086,7 +1066,12 @@ const scProfile = () => {
     <div class="field"><label>IMIĘ</label><input id="pf-name" value="${esc(u.name||'')}" maxlength="60" autocomplete="given-name" data-enter="saveProfile"></div>
     <button class="btn g" data-act="saveProfile" style="height:44px;font:600 13px/1 var(--d)">Zapisz</button></div>`:''}
   <div class="pad">
-    ${u?.role==='admin'?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">ADMIN</span>`):''}
+    ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">${isOwner()?'GŁÓWNY ADMIN':'ADMIN'}</span>`):''}
+    ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
+    ${realOwner()?row('users','Zobacz jako…','viewAsSheet',`<span class="mono">${viewAs()?esc(roleName(viewAs())):'Ty'}</span>`):''}
+    ${u?row('ticket','Moje bilety z kodem QR','go:mytickets',''):''}
+    ${u?row('lock','Zmień hasło','passwordSheet'):''}
+
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
     ${row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`)}
     ${row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`)}
@@ -1097,59 +1082,6 @@ const scProfile = () => {
 </div>`;
 };
 
-/* ---- PANEL ADMINA ---- */
-const scAdmin = () => {
-  if(!isAdmin()) return `<div class="pg pad col" style="padding-top:120px;gap:14px"><span class="h3">Tylko dla admina</span>
-    <button class="btn p" data-act="authgo:admin" style="height:48px">Zaloguj się jako admin</button></div>`;
-  const A = ACC.admin;
-  if(!A || Date.now()-A.at>60e3) setTimeout(adminLoad,0);
-  const tab = S.adminTab||'stats';
-  const byId = id => EVENTS.find(e=>e.id===id);
-  const curList = (ids, lbl) => ids.length ? ids.map(id=>{ const e=byId(id); return `
-    <div class="row" style="gap:12px;padding:12px 0;border-bottom:1px solid var(--line)">
-      <div class="col" style="flex:1;min-width:0"><span class="h4 clamp2">${esc(e?e.name:id)}</span>
-        <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
-      <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
-  const src = LIVE.sources||{};
-  return `
-<div class="pg" style="padding:0 0 60px">
-  <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4" style="flex:1">Panel admina</span>
-    <button class="mono" data-act="adminReload" style="color:${PINK}">ODŚWIEŻ</button></div>
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:16px 20px">
-    ${[['stats','Statystyki'],['users','Użytkownicy'],['curation','Moderacja'],['data','Dane']].map(([k,l])=>
-      `<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}
-  </div>
-  <div class="pad">
-  ${A?.error ? `<div class="err">${esc(A.error)}</div>` : !A ? loadingBox() : tab==='stats' ? `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      ${[['Użytkownicy',A.stats.users],['Nowi (7 dni)',A.stats.new7],['Aktywni (7 dni)',A.stats.active7],['Admini',A.stats.admins],
-         ['Wydarzeń w bazie',LIVE.count||EVENTS.filter(e=>e.real).length],['W mieście '+S.city,inCity().length],['Polecane',A.stats.featured],['Ukryte',A.stats.hidden]]
-        .map(([l,v])=>`<div class="statc"><span class="mono">${esc(l)}</span><b>${pl(v||0)}</b></div>`).join('')}
-    </div>` : tab==='users' ? `
-    <div class="field" style="padding-bottom:10px"><input id="adm-q" placeholder="Szukaj po e-mailu lub imieniu" value="${esc(S.adminQ||'')}" data-enter="adminSearch" autocapitalize="off"></div>
-    ${A.users.map(x=>`
-    <div class="row" style="gap:12px;padding:12px 0;border-bottom:1px solid var(--line)">
-      <div class="col" style="flex:1;min-width:0">
-        <span class="h4" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.name||'—')} ${x.role==='admin'?`<span style="color:${PINK};font:700 9px/1 var(--m)">ADMIN</span>`:''}</span>
-        <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.email)}</span>
-        <span class="mono" style="margin-top:3px">od ${new Date(x.created_at).toLocaleDateString('pl-PL')}</span>
-      </div>
-      ${x.id!==ACC.user.id?`<button class="chip" data-act="role:${x.id}:${x.role==='admin'?'user':'admin'}" style="padding:7px 12px;font-size:12px">${x.role==='admin'?'Odbierz admina':'Daj admina'}</button>`:''}
-    </div>`).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='curation' ? `
-    <span class="body" style="display:block;padding-bottom:10px">Polecaj albo ukrywaj wydarzenia przyciskami na ekranie wydarzenia. Tu możesz to cofnąć.</span>
-    <div class="h4" style="padding:10px 0 4px">Polecane</div>${curList(ACC.featured,'Usuń z polecanych')}
-    <div class="h4" style="padding:20px 0 4px">Ukryte</div>${curList([...ACC.hidden],'Przywróć')}` : `
-    <div class="col" style="gap:10px">
-      <div class="statc"><span class="mono">Ostatnia aktualizacja</span><b style="font-size:18px">${LIVE.updatedAt?new Date(LIVE.updatedAt).toLocaleString('pl-PL'):'—'}</b></div>
-      ${Object.entries(src).map(([k,v])=>`<div class="statc row" style="justify-content:space-between">
-        <span class="h4">${esc(SRC_PL[k]||k)}</span><span class="mono" style="color:${v.ok?'var(--ok)':PINK}">${v.ok?pl(v.count)+' wydarzeń':'błąd'}</span></div>`).join('')}
-      <a class="btn g" href="https://github.com/jeremisiejka-collab/plusone/actions/workflows/events.yml" target="_blank" rel="noopener"
-        style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;text-decoration:none">Uruchom aktualizację (GitHub)</a>
-      <span class="mono" style="line-height:1.6">Automatyczna aktualizacja: 2× dziennie (ok. 6:00 i 16:00).</span>
-    </div>`}
-  </div>
-</div>`;
-};
 
 /* =========================================================
    MAPA: województwa (public/data/poland.json) + miasta z wydarzeniami (events.json → geo)
@@ -1795,6 +1727,7 @@ const scLive = e => `
          ['Kalendarz','clock','calNext:'+e.id],['Udostępnij','share','share']]
         .map(([l,i,a,on,k])=>`<button class="mine-act ${on?'on':''} ${on&&S.popId===e.id+k?'pop':''}" data-act="${a}">${ic(i,18)}<span>${l}</span></button>`).join('')}
     </div>
+    ${MINE.going.has(e.id)?`<button class="btn w" data-act="${ACC.user?'ticketQR:'+e.id:'authFrom:event'}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} ${ACC.user?'Pokaż bilet z kodem QR':'Zaloguj się, żeby mieć bilet z kodem QR'}</button>`:''}
     ${isAdmin()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
       <span class="mono" style="flex:1;color:${PINK}">ADMIN</span>
       <button class="chip ${ACC.featured.includes(e.id)?'on':''}" data-act="curate:${e.id}:${ACC.featured.includes(e.id)?'clear':'feature'}" style="padding:7px 12px;font-size:12px">${ACC.featured.includes(e.id)?'Polecane':'Poleć'}</button>
@@ -2095,6 +2028,7 @@ const mineRow = (e, kind) => `
     <span class="h4 clamp2">${esc(e.name)}</span>
     <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
   </div>
+  ${kind==='going'&&ACC.user?`<button data-act="ticketQR:${e.id}" aria-label="Bilet z kodem QR" style="width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--surface-2);color:var(--t1)">${ic('qr',18)}</button>`:''}
   <button class="mine-btn on" data-act="mine:${kind}:${e.id}" aria-label="Usuń" style="width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--pink-dim);color:${PINK}">${ic(kind==='going'?'ticket':'heart',18)}</button>
 </div>`;
 
@@ -2137,7 +2071,8 @@ const scMyTickets = () => {
       <a class="mine-act" href="${esc((next.links[0]||{}).url||'#')}" target="_blank" rel="noopener">${ic('ticket',18)}<span>Bilet</span></a>
       <a class="mine-act" href="${mapsUrl(next)}" target="_blank" rel="noopener">${ic('pin',18)}<span>Dojazd</span></a>
       <button class="mine-act" data-act="calNext:${next.id}">${ic('clock',18)}<span>Kalendarz</span></button>
-    </div>` : ''}
+    </div>
+    ${ACC.user?`<button class="btn w" data-act="ticketQR:${next.id}" style="height:50px;margin:4px 0 8px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} Bilet z kodem QR</button>`:''}` : ''}
     ${up.slice(next?1:0).map(e=>mineRow(e,tab)).join('')}
     ${past.length ? `<div class="eyebrow" style="padding:22px 0 4px">Minione</div><div style="opacity:.6">${past.map(e=>mineRow(e,tab)).join('')}</div>` : ''}`}
   ${!ACC.user ? `
@@ -2861,7 +2796,7 @@ const SCREENS = {
   select:scSelect, checkout:scCheckout, success:scSuccess, tickets:scTickets, ticket:scTicket,
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, scanner:scScanner, wrapped:scWrapped, scanpay:scScanpay,
-  start:scStart, auth:scAuth, profile:scProfile, admin:scAdmin, map:scMap, cities:()=>scCities()
+  start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), map:scMap, cities:()=>scCities(), scan:()=>scScan(), mytickets:()=>scMyTickets()
 };
 
 /* =========================================================
@@ -2877,10 +2812,10 @@ const NAV = [
   {k:'profile',ic:'user',   l:'KONTO'}
 ];
 /* środkowy przycisk: na ekranach z wydarzeniami logo +1 (strona główna), gdzie indziej PAY */
-const FAB_HOME = ['home','list','map','cities','profile'];
+const FAB_HOME = ['home','list','map','cities','profile','mytickets','scan'];
 /* publicznie PAY tylko w dniu wydarzenia, na które masz bilet (na Biletach i w Portfelu) */
 const payDay = () => ['tickets','wallet'].includes(S.screen) && [...MINE.going].some(id => EVENTS.find(e=>e.id===id)?.day===localDay());
-const NAV_ON = ['home','list','map','cities','tickets','ticket','wallet','bar','profile'];
+const NAV_ON = ['home','list','map','cities','tickets','ticket','wallet','bar','profile','mytickets','scan'];
 const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000">
   <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
   <rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>`;
@@ -3023,7 +2958,6 @@ function act(a){
     case 'adminReload': ACC.admin=null; S.dir=null; render(); break;
     case 'adminSearch': S.adminQ=$('#adm-q')?.value||''; adminLoad(); break;
     case 'curate': curate(p1, p2); break;
-    case 'role': setRole(p1, p2); break;
     case 'cat': S.cat = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'price': S.price = S.price===p1 ? 'all' : p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'when': S.when = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
@@ -3133,6 +3067,7 @@ function act(a){
     }
     case 'rmode': S.release.mode=p1; haptic(5); sfxTap(); render(); break;
     case 'confirmRelease': doRelease(); break;
+    default: adminAct(cmd, p1, p2, a);
   }
 }
 
@@ -3564,6 +3499,7 @@ function attachGestures(){
 
   if(S.screen==='map') attachMap();
   if(S.screen==='cities') attachCities();
+  adminAfterRender();
 
   // Enter w polach formularzy
   $$('[data-enter]').forEach(i=>{ i.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); act(i.dataset.enter); } }; });
