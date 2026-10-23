@@ -1803,7 +1803,6 @@ function renderWebChrome(){
     <nav class="web-nav" aria-label="Nawigacja główna">
       <button data-act="go:home" ${S.screen==='home'?'aria-current="page"':''}>Odkrywaj</button>
       <button data-act="go:list" ${S.screen==='list'?'aria-current="page"':''}>Wydarzenia</button>
-      <button data-act="go:downloads" ${S.screen==='downloads'?'aria-current="page"':''}>Aplikacja</button>
       <button data-act="go:map" ${S.screen==='map'?'aria-current="page"':''}>Mapa</button>
       <button data-act="go:tickets" ${S.screen==='tickets'||S.screen==='ticket'?'aria-current="page"':''}>Bilety</button>
       <button data-act="go:wallet" ${WALLET_SOON.includes(S.screen)?'aria-current="page"':''}>Portfel${DEMO?'':' <span style="font:700 8px/1 var(--m);letter-spacing:.08em;padding:3px 5px;border-radius:5px;background:var(--pink-dim);color:var(--pink);vertical-align:2px">WKRÓTCE</span>'}</button>
@@ -1811,7 +1810,8 @@ function renderWebChrome(){
     <div class="web-actions">
       <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
       <button class="web-theme" data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
-      <button class="web-account" data-act="${ACC.user?'go:profile':'authgo:login'}">${ic('user',16)}${ACC.user?'Moje konto':'Zaloguj się'}</button>
+      <button class="web-account" data-act="${ACC.user?'go:profile':'authgo:login'}" aria-label="${ACC.user?'Moje konto':'Zaloguj się'}">${ic('user',16)}<span>${ACC.user?'Moje konto':'Zaloguj się'}</span></button>
+      <button class="web-app" data-act="go:downloads" ${S.screen==='downloads'?'aria-current="page"':''}>Aplikacja</button>
     </div>
   </div>`;
   $('#web-footer').innerHTML = `<div class="web-footer-inner">
