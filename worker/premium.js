@@ -10,6 +10,8 @@ export function initPremium(h) {
     sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode } = h);
 }
 
+import { vapidKeys, pushUser } from './push.js';
+
 const SITE = 'https://plusoneapp.pl';
 const fold = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
 const seriesKey = e => fold(e.title) + '|' + e.city + '|' + fold(e.venue);
@@ -120,6 +122,7 @@ async function crewJoin(req, env, user) {
     ops.push(notify(env, c.from_user, 'crew', `${user.name || user.email.split('@')[0]} idzie z Tobą`, ev ? ev.title : '', c.event_id, `crew:${user.id}:${c.event_id}`));
   }
   await env.DB.batch(ops);
+  if (c.from_user !== user.id) await pushUser(env, c.from_user, { urgency: 'high' });
   return json({ ok: true, eventId: c.event_id, ...await savedIds(env, user.id) });
 }
 async function crewForEvent(req, env, user) {
@@ -230,12 +233,12 @@ export async function guestTicketPage(env, code) {
   const g = /^P1-[\w-]{8,40}$/.test(code) ? await env.DB.prepare('SELECT * FROM guests WHERE code = ?').bind(code).first() : null;
   const e = g && (await loadEvents(env)).byId.get(g.event_id);
   const html = `<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>Bilet +1</title><style>body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#000;color:#fff;
-font:16px/1.5 system-ui,-apple-system,sans-serif;padding:24px;text-align:center}main{max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:center}
+<meta name="robots" content="noindex"><link rel="stylesheet" href="/vendor/fonts/fonts.css"><title>Bilet +1</title><style>body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#000;color:#fff;
+font:16px/1.5 'Space Grotesk',system-ui,-apple-system,sans-serif;padding:24px;text-align:center}main{max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:center}
 #q{width:260px;height:260px;background:#fff;border-radius:22px;padding:16px;box-sizing:border-box}#q svg{width:100%;height:100%}
 small{color:#FF0059;letter-spacing:.14em;font-weight:700}p{color:rgba(255,255,255,.7);margin:0}</style></head><body><main>
 ${g ? `<small>BILET +1 · LISTA GOŚCI</small><h2 style="margin:0">${escHtml(e ? e.title : 'Wydarzenie')}</h2><p>${escHtml(e ? e.venue + ' · ' + e.start.replace('T', ' ') : '')}</p>
-<div id="q"></div><b>${escHtml(g.name)}</b><p style="font-family:monospace">${escHtml(code)}</p><p>${g.used_at ? 'Bilet został już użyty.' : 'Pokaż kod przy wejściu.'}</p>
+<div id="q"></div><b>${escHtml(g.name)}</b><p style="font-family:'JetBrains Mono',monospace">${escHtml(code)}</p><p>${g.used_at ? 'Bilet został już użyty.' : 'Pokaż kod przy wejściu.'}</p>
 <script src="/vendor/qr/qrcode.js"></script><script>var q=qrcode(0,'M');q.addData(${JSON.stringify(code)});q.make();document.getElementById('q').innerHTML=q.createSvgTag({cellSize:6,margin:0,scalable:true});</script>`
   : '<h2>Nie ma takiego biletu</h2><p>Sprawdź link od organizatora.</p>'}
 <a href="/" style="color:rgba(255,255,255,.5)">plusoneapp.pl</a></main></body></html>`;
@@ -361,7 +364,7 @@ async function runAlerts(env) {
   const F = by(fol), SV = by(sav);
   const fresh = ev.list.filter(e => e.firstSeen && Date.parse(e.firstSeen) >= since && e.start.slice(0, 10) >= t);
   const cheaper = ev.list.filter(e => e.priceDrop && Date.parse(e.priceDrop.at) >= since && e.start.slice(0, 10) >= t);
-  let made = 0, mailed = 0;
+  let made = 0, mailed = 0, pushed = 0;
   for (const u of users) {
     const interests = parseList(u.interests), f = F[u.id] || [], s = SV[u.id] || [], ops = [], items = [];
     const followedEv = new Set(f.filter(x => x.kind === 'event').map(x => x.value));
@@ -385,6 +388,7 @@ async function runAlerts(env) {
     if (!ops.length) continue;
     const res = await env.DB.batch(ops), added = res.reduce((n, r) => n + (r.meta.changes || 0), 0);
     made += added;
+    if (added) pushed += await pushUser(env, u.id);
     // mail: najwyżej raz na ~20 h, tylko jeśli doszło coś nowego
     if (added && u.notify_email && (!u.last_alert_mail || now - u.last_alert_mail > 20 * 3600e3)) {
       const ok = await sendMail(env, u.email, items.length === 1 ? items[0] : `${items.length} nowości dla Ciebie w +1`,
@@ -395,7 +399,7 @@ async function runAlerts(env) {
       if (ok) { mailed++; await env.DB.prepare('UPDATE users SET last_alert_mail = ? WHERE id = ?').bind(now, u.id).run(); }
     }
   }
-  console.log(`alerty: ${made} powiadomień, ${mailed} maili`);
+  console.log(`alerty: ${made} powiadomień, ${mailed} maili, ${pushed} push`);
 }
 
 export const NEWSLETTER_CRON = '3 8 * * 4'; // czwartek ok. 10:00 w Polsce
@@ -413,6 +417,24 @@ export async function premiumApi(path, m, req, env, user) {
   if (path === '/api/follows' && m === 'GET') return follows(env, user);
   if (path === '/api/follows' && m === 'POST') return setFollow(req, env, user);
   if (path === '/api/notifications' && m === 'GET') return notifications(env, user);
+  if (path === '/api/push/key' && m === 'GET') return json({ publicKey: (await vapidKeys(env)).publicKey });
+  if (path === '/api/push/subscribe' && m === 'POST') {
+    const b = await body(req), ep = String(b.endpoint || '');
+    if (!/^https:\/\/[\w.-]+\//.test(ep) || ep.length > 1000) return fail(400, 'Zła subskrypcja.');
+    await env.DB.prepare(`INSERT INTO push_subs (endpoint, user_id, p256dh, auth, ua, created_at) VALUES (?, ?, ?, ?, ?, ?)
+      ON CONFLICT(endpoint) DO UPDATE SET user_id = excluded.user_id`).bind(ep, user.id, cleanText(b.keys?.p256dh, 200), cleanText(b.keys?.auth, 100),
+      cleanText(req.headers.get('User-Agent'), 200), Date.now()).run();
+    return json({ ok: true });
+  }
+  if (path === '/api/push/unsubscribe' && m === 'POST') {
+    const b = await body(req);
+    await env.DB.prepare('DELETE FROM push_subs WHERE endpoint = ? AND user_id = ?').bind(String(b.endpoint || ''), user.id).run();
+    return json({ ok: true });
+  }
+  if (path === '/api/push/test' && m === 'POST') {
+    await notify(env, user.id, 'info', 'Powiadomienia działają', 'Tak będziemy dawać znać o nowościach z Twoich zainteresowań.', null, 'pushtest:' + Date.now()).run();
+    return json({ sent: await pushUser(env, user.id, { urgency: 'high' }) });
+  }
   if (path === '/api/notifications/read' && m === 'POST') {
     await env.DB.prepare('UPDATE notifications SET read_at = ? WHERE user_id = ? AND read_at IS NULL').bind(Date.now(), user.id).run();
     return notifications(env, user);

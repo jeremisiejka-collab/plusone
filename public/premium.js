@@ -11,9 +11,68 @@ async function premiumAfterLogin(){
   if(!ACC.user || (typeof appStaffMode==='function' && appStaffMode())) return;
   loadFollows(); loadNotif();
   const q = new URLSearchParams(location.search);
+  pushState().then(st=>{ PREM.push = st; });
   if(q.get('join')) joinSheet(q.get('join'));
+  else if(q.get('ev')){ history.replaceState(null,'','/app'); const id=q.get('ev'); setTimeout(()=>openEvent(id), 300); }
+  else if(q.has('notif')){ history.replaceState(null,'','/app'); setTimeout(premiumNotif, 300); }
   else if(!ACC.user.interests?.length && !sessionStorage.getItem('intAsked')){ sessionStorage.setItem('intAsked','1'); setTimeout(()=>interestsSheet(true), 900); }
+  else setTimeout(pushPrompt, 1500);
 }
+
+/* ---------- powiadomienia push (Android od razu; iPhone — gdy +1 jest dodane do ekranu początkowego) ---------- */
+const isIOS = () => /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone = () => matchMedia('(display-mode: standalone)').matches || !!navigator.standalone;
+const pushSupported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+async function pushState(){
+  if(!pushSupported()) return isIOS() && !isStandalone() ? 'install' : 'unsupported';
+  if(Notification.permission==='denied') return 'denied';
+  try{ const reg = await navigator.serviceWorker.getRegistration('/app'); const sub = reg && await reg.pushManager.getSubscription(); return sub ? 'on' : 'off'; }
+  catch(e){ return 'off'; }
+}
+const b64ToBytes = s => { const p='='.repeat((4-s.length%4)%4), b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/')); return Uint8Array.from(b, c=>c.charCodeAt(0)); };
+async function enablePush(){
+  if(!pushSupported()){ toast(isIOS() ? 'Najpierw dodaj +1 do ekranu początkowego (Udostępnij → Do ekranu początkowego)' : 'Ta przeglądarka nie obsługuje powiadomień', true, 3500); return; }
+  try{
+    const perm = await Notification.requestPermission();
+    if(perm!=='granted'){ toast('Bez zgody nie wyślemy powiadomień. Zmienisz to w ustawieniach telefonu.', true, 3500); PREM.push = await pushState(); return; }
+    const reg = await navigator.serviceWorker.ready;
+    const { publicKey } = await apiCall('/api/push/key');
+    const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64ToBytes(publicKey)});
+    await apiCall('/api/push/subscribe','POST', sub.toJSON());
+    PREM.push = 'on'; sfxOk(); haptic(20);
+    const r = await apiCall('/api/push/test','POST',{});
+    toast(r.sent ? 'Gotowe — wysłaliśmy próbne powiadomienie' : 'Powiadomienia włączone', true, 3000);
+  }catch(e){ toast('Nie udało się włączyć powiadomień: '+esc(e.message||''), true, 3500); }
+  closeSheet(); S.dir=null; render();
+}
+async function disablePush(){
+  try{ const reg = await navigator.serviceWorker.getRegistration('/app'); const sub = reg && await reg.pushManager.getSubscription();
+    if(sub){ await apiCall('/api/push/unsubscribe','POST',{endpoint:sub.endpoint}); await sub.unsubscribe(); } }catch(e){}
+  PREM.push = 'off'; toast('Powiadomienia na telefon wyłączone', true); notifSettings();
+}
+/* jednorazowa propozycja włączenia (tylko gdy da się je włączyć i jeszcze nie pytaliśmy) */
+async function pushPrompt(){
+  try{ if(localStorage.getItem('pushAsked')) return; }catch(e){}
+  const st = PREM.push || await pushState();
+  if(st!=='off' || Notification.permission!=='default' || $('#sheetwrap.on')) return;
+  try{ localStorage.setItem('pushAsked','1'); }catch(e){}
+  sheet(`<div class="col" style="gap:14px;align-items:center;text-align:center">
+    <span style="width:68px;height:68px;border-radius:22px;background:var(--pink-dim);color:${PINK};display:grid;place-items:center">${ic('bell',30)}</span>
+    <span class="h3">Nie przegap niczego</span>
+    <span class="body">Damy znać, gdy pojawi się coś z Twoich zainteresowań, gdy bilety na obserwowane wydarzenie stanieją i dzień przed wyjściem.</span>
+    <button class="btn p" data-act="pushOn" style="height:54px">Włącz powiadomienia</button>
+    <button class="btn g" data-act="closeSheet" style="height:46px;font:500 14px/1 var(--d)">Nie teraz</button></div>`);
+}
+const pushRow = () => {
+  const st = PREM.push;
+  if(st==='install') return `<div class="card" style="padding:14px"><span class="h4">Powiadomienia na telefon</span>
+    <p class="body" style="font-size:13px;margin-top:6px">Na iPhonie działają, gdy +1 jest na ekranie początkowym: w Safari stuknij Udostępnij → Do ekranu początkowego i otwórz +1 z ikony.</p></div>`;
+  if(st==='denied') return `<div class="card" style="padding:14px"><span class="h4">Powiadomienia zablokowane</span>
+    <p class="body" style="font-size:13px;margin-top:6px">Włączysz je w Ustawieniach telefonu → Powiadomienia → +1.</p></div>`;
+  if(st==='unsupported') return '';
+  return `<button class="perm ${st==='on'?'on':''}" data-act="${st==='on'?'pushOff':'pushOn'}"><span class="perm-box">${st==='on'?ic('check',14,2.4):''}</span>
+    <span class="col" style="flex:1;text-align:left"><span class="h4">Powiadomienia na telefon</span><span class="mono" style="margin-top:3px">Nowości, tańsze bilety, przypomnienia, znajomi</span></span></button>`;
+};
 async function loadFollows(){ try{ PREM.follows = (await apiCall('/api/follows')).follows; }catch(e){ PREM.follows = PREM.follows||[]; } }
 async function loadNotif(){
   try{ const r = await apiCall('/api/notifications'); PREM.notif = r.notifications; PREM.unread = r.unread; }catch(e){}
@@ -82,6 +141,7 @@ function notifSettings(){
   const tg = (act, on, title, sub) => `<button class="perm ${on?'on':''}" data-act="${act}"><span class="perm-box">${on?ic('check',14,2.4):''}</span>
     <span class="col" style="flex:1;text-align:left"><span class="h4">${title}</span><span class="mono" style="margin-top:3px">${sub}</span></span></button>`;
   sheet(`<div class="col" style="gap:10px"><span class="h3">Powiadomienia</span>
+    ${pushRow()}
     ${tg('prefToggle:notifyEmail', u.notifyEmail, 'Alerty także mailem', 'Najwyżej jeden mail dziennie, tylko gdy jest coś nowego')}
     ${tg('prefToggle:newsletter', u.newsletter, 'Newsletter „Na topie”', 'W czwartki: najfajniejsze wydarzenia w Twoim mieście')}
     <button class="btn g" data-act="interests" style="height:48px;font:500 14px/1 var(--d)">Zainteresowania →</button>
@@ -277,7 +337,9 @@ function premiumAct(cmd, p1, p2, a){
     case 'followCities': followCitySheet(); return true;
     case 'fcCity': follow('city', a.slice(7), !following('city', a.slice(7))).then(followCitySheet); return true;
     case 'fcArea': follow('area', a.slice(7), !following('area', a.slice(7)), 30).then(followCitySheet); return true;
-    case 'notifSettings': notifSettings(); return true;
+    case 'notifSettings': pushState().then(st=>{ PREM.push=st; notifSettings(); }); return true;
+    case 'pushOn': enablePush(); return true;
+    case 'pushOff': disablePush(); return true;
     case 'prefToggle': apiCall('/api/me','PATCH',{[p1]:!ACC.user[p1]}).then(r=>{ ACC.user=r.user; notifSettings(); }).catch(e=>toast(esc(e.message),true)); return true;
     case 'crewInvite': crewInvite(a.slice(11)); return true;
     case 'crewJoin': crewJoin(a.slice(9)); return true;
@@ -287,3 +349,10 @@ function premiumAct(cmd, p1, p2, a){
   }
   return false;
 }
+
+/* kliknięcie powiadomienia, gdy aplikacja jest już otwarta (public/app-sw.js → postMessage) */
+if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', e=>{
+  if(e.data?.type!=='open') return;
+  const u = new URL(e.data.url, location.origin), ev = u.searchParams.get('ev');
+  if(ev) openEvent(ev); else premiumNotif();
+});

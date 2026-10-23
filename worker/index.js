@@ -310,17 +310,18 @@ const gatePage = ({ mode, user, email, token, note }) => {
 <meta name="robots" content="noindex,nofollow"><link rel="manifest" href="/app.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="+1"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/vendor/fonts/fonts.css">
 <title>+1</title>
 <style>
 *{box-sizing:border-box;margin:0}body{min-height:100dvh;display:grid;place-items:center;background:#000;color:#fff;
-font:16px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;padding:max(24px,env(safe-area-inset-top)) 22px max(24px,env(safe-area-inset-bottom))}
+font:16px/1.5 'Space Grotesk',system-ui,-apple-system,sans-serif;padding:max(24px,env(safe-area-inset-top)) 22px max(24px,env(safe-area-inset-bottom))}
 main{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px}form{display:flex;flex-direction:column;gap:12px}
 svg{width:84px;height:84px;border-radius:22px;align-self:center;margin-bottom:6px}
 h1{font-size:40px;line-height:1.02;letter-spacing:-.035em;text-align:center;font-weight:700}h1 span{color:#FF0059}
 p{color:rgba(255,255,255,.66);text-align:center;font-size:15px}
 .reg{font-size:15px;color:rgba(255,255,255,.66);margin-top:4px}.reg a{color:#FF0059;font-weight:700;text-decoration:none;font-size:15px}
-a.site{color:rgba(255,255,255,.4);font-size:13px;text-decoration:none;letter-spacing:.04em}
-label{display:flex;flex-direction:column;gap:6px;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.7)}
+a.site{color:rgba(255,255,255,.4);font:400 12px/1 'JetBrains Mono',ui-monospace,monospace;text-decoration:none;letter-spacing:.04em}
+label{display:flex;flex-direction:column;gap:6px;font:400 11px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.06em;color:rgba(255,255,255,.7)}
 input{height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;padding:0 16px;font:inherit;outline:0}
 input:focus{border-color:#FF0059}button{height:54px;border:0;border-radius:16px;background:#FF0059;color:#000;font-weight:700;font-size:16px;cursor:pointer}
 button:disabled{opacity:.6}.err{color:#ff7aa5;font-size:14px;text-align:center;min-height:20px}a{color:rgba(255,255,255,.6);text-align:center;font-size:14px}

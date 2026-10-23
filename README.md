@@ -88,6 +88,7 @@ Następny krok (opcjonalnie): pakiet APK przez Capacitor/TWA dla Androida. Natyw
 - **„Idziesz z kimś?”**: link `/app?join=…` — znajomy dołącza jednym stuknięciem, powstaje para znajomych, zapraszający dostaje powiadomienie.
 - **Organizator**: panel ze statystykami swoich wydarzeń (dopasowanie po miejscu/nazwie), lista gości z biletem QR mailem (`/t/<kod>`), skaner. Admin: zakładka Organizatorzy (sortowanie, wejście w organizatora).
 - **Plan na wieczór**: jedzenie i bary w okolicy (OpenStreetMap: Nominatim + Overpass) i dojazd. **Twoje wyjścia**: podsumowanie z „Mam bilet”.
+- **Powiadomienia push** (Android; iPhone z +1 na ekranie początkowym, iOS 16.4+): Konto → Powiadomienia → „Powiadomienia na telefon”. Serwer wysyła pusty sygnał Web Push podpisany kluczem VAPID (generowany sam, `settings`), aplikacja pobiera treść z `/api/notifications`. Wysyłane przy alertach i gdy znajomy dołączy.
 - **Reset hasła** mailem (`/app?forgot`, `/app?reset=…`).
 
 ## Demo

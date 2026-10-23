@@ -20,4 +20,5 @@
 - Role także **Organizator** (`perm_org` + miejsca w `org_venues`): panel organizatora ze statystykami i listą gości; admin widzi listę organizatorów i wchodzi w każdego.
 - **Aplikacja = premium**: funkcje tylko dla aplikacji są w `public/premium.js` (+ `premium.css`), ładowanym wyłącznie przez `private/app.html` — zainteresowania, obserwowanie, powiadomienia, znajomi („Idziesz z kimś?”), plan na wieczór, „Twoje wyjścia”. Na stronie tylko newsletter i zachęta do aplikacji. API premium i zadania cron: `worker/premium.js`.
 - Cała poczta (zaproszenia, alerty, newsletter, bilety gości, reset hasła) wychodzi z jednego „Głównego e-maila” ustawianego w Panel admina → Główny e-mail.
-- Biblioteki trzymamy u siebie w `public/vendor/` (Leaflet, jsQR, qrcode-generator), nie z CDN.
+- Biblioteki i czcionki trzymamy u siebie w `public/vendor/` (Leaflet, jsQR, qrcode-generator, `fonts/` — Space Grotesk i JetBrains Mono), nie z CDN. Wszystkie ekrany aplikacji (też logowanie i bilet gościa) używają tylko tych dwóch krojów.
+- Powiadomienia push: `worker/push.js` (VAPID w `settings`, sygnał bez treści), subskrypcje `push_subs` (migracja `0008`), odbiór w `public/app-sw.js`.
