@@ -486,7 +486,7 @@ const S = {
   balance:240, topupAmount:100,
   sector:null, seats:[], taken:{},
   cat:'Wszystko', query:'', city:(()=>{try{return localStorage.getItem('city')||'Warszawa'}catch(e){return 'Warszawa'}})(),
-  when:'all', price:'all', limit:40,
+  when:'all', price:'all', limit:40, walletNotify:(()=>{try{return !!localStorage.getItem('walletNotify')}catch(e){return false}})(),
   blik:{digits:'', target:null, left:120},
   owned:[{id:'unsound', type:'REGULAR', qty:2},{id:'taaki', type:'GENERAL ADMISSION', qty:1}],
   ticketIdx:0, scanned:{ok:12, bad:1}, barCart:{},
@@ -2171,6 +2171,36 @@ const TXS = [
   {t:'Od: Kaja Wrona', m:'Jasna 1 · 12 sie', a:30},
   {t:'Bar 1 · woda', m:'Jasna 1 · 11 sie', a:-8}
 ];
+/* ---- PORTFEL: publicznie zapowiedź (pełny prototyp w ?demo) ---- */
+const WALLET_SOON = ['wallet','topup','bar','nfc','scanpay'];
+const walletSoon = () => !DEMO && WALLET_SOON.includes(S.screen);
+const scWalletSoon = () => `
+<div class="pg" style="padding:64px 0 112px">
+  <div class="pad col" style="gap:18px;max-width:760px;margin:0 auto">
+    <div class="row" style="gap:10px;align-items:center">
+      <div class="h2">Portfel</div>
+      <span style="padding:6px 10px;border-radius:8px;background:${PINK};color:#000;font:700 10px/1 var(--m);letter-spacing:.1em">WKRÓTCE</span>
+    </div>
+    <div class="ds" style="border-radius:24px;padding:24px;position:relative;overflow:hidden;
+      background:linear-gradient(150deg,#2a0013,#0d0009 70%);border:1px solid var(--pink-line)">
+      <div style="position:absolute;right:-30px;top:-30px;opacity:.14">${LOGO(150,0)}</div>
+      <span class="eyebrow pink">Portfel +1</span>
+      <div style="font:600 26px/1.15 var(--d);letter-spacing:-.02em;margin-top:12px;max-width:300px;color:#fff">Płać na imprezie jednym stuknięciem.</div>
+      <span class="body" style="display:block;margin-top:10px;max-width:340px;color:rgba(255,255,255,.72)">Doładujesz PLUSY przez BLIK, zapłacisz telefonem przy barze i w szatni, a niewykorzystane saldo wróci do Ciebie po evencie.</span>
+    </div>
+    <div class="col" style="gap:10px">
+      ${[['bolt','Bez kolejek','Zamawiasz z telefonu, odbierasz przy barze.'],
+         ['wallet','Doładowanie BLIK','Jedno stuknięcie, bez wpisywania karty.'],
+         ['undo','Zwrot salda','Czego nie wydasz, wraca automatycznie.']]
+        .map(([i,t,d])=>`<div class="card" style="padding:14px 16px;display:flex;gap:14px;align-items:center">
+          <span style="width:40px;height:40px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:${PINK};flex:none">${ic(i,18)}</span>
+          <div class="col" style="min-width:0"><span class="h4">${t}</span><span class="mono" style="margin-top:4px;line-height:1.4">${d}</span></div></div>`).join('')}
+    </div>
+    <button class="btn p" data-act="walletNotify" style="height:52px;font:600 15px/1 var(--d)">${S.walletNotify?'Damy znać, gdy ruszy':'Powiadom mnie, gdy ruszy'}</button>
+    <button class="btn g" data-act="go:home" style="height:48px;font:500 14px/1 var(--d)">Wróć do wydarzeń</button>
+  </div>
+</div>`;
+
 const scWallet = () => `
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad" style="padding-bottom:20px"><div class="h2">Portfel</div></div>
@@ -2685,7 +2715,7 @@ function renderWebChrome(){
       <button data-act="go:list" ${S.screen==='list'?'aria-current="page"':''}>Wydarzenia</button>
       <button data-act="go:map" ${S.screen==='map'?'aria-current="page"':''}>Mapa</button>
       <button data-act="go:tickets" ${S.screen==='tickets'||S.screen==='ticket'?'aria-current="page"':''}>Bilety</button>
-      <button data-act="go:wallet" ${S.screen==='wallet'||S.screen==='topup'||S.screen==='bar'?'aria-current="page"':''}>Portfel</button>
+      <button data-act="go:wallet" ${WALLET_SOON.includes(S.screen)?'aria-current="page"':''}>Portfel${DEMO?'':' <span style="font:700 8px/1 var(--m);letter-spacing:.08em;padding:3px 5px;border-radius:5px;background:var(--pink-dim);color:var(--pink);vertical-align:2px">WKRÓTCE</span>'}</button>
     </nav>
     <div class="web-actions">
       <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
@@ -2702,8 +2732,8 @@ function renderWebChrome(){
 
 function render(){
   if(S.screen!=='scanpay') stopCam();
-  $('#shell').classList.toggle('ds', DARK_SCREENS.includes(S.screen));
-  const fn = SCREENS[S.screen] || scHome;
+  $('#shell').classList.toggle('ds', DARK_SCREENS.includes(S.screen) && !walletSoon());
+  const fn = walletSoon() ? scWalletSoon : (SCREENS[S.screen] || scHome);
   $('#view').innerHTML = fn();
   renderWebChrome();
   const pg = $('#view').firstElementChild;
@@ -2715,7 +2745,7 @@ function render(){
     nav.classList.remove('hide');
     const active = S.screen==='ticket' ? 'tickets' : (S.screen==='bar' ? 'wallet' : S.screen);
     nav.innerHTML = NAV.map(n => n.fab
-      ? (FAB_HOME.includes(S.screen)
+      ? (FAB_HOME.includes(S.screen) || walletSoon()
         ? `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Strona główna +1">${FAB_SVG}</button></div>`
         : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać">
            <span class="halo"></span><span class="fabtxt">PAY</span></button></div>`)
@@ -2765,6 +2795,8 @@ function act(a){
     case 'big': S.big=!S.big; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'bigList': S.big=true; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40; go('list'); break;
     case 'descToggle': S.descOpen = S.descOpen===p1 ? null : p1; S.dir=null; render(); break;
+    case 'walletNotify': S.walletNotify=true; try{localStorage.setItem('walletNotify','1')}catch(e){}
+      sfxOk(); haptic(12); toast(ACC.user?'Damy znać na '+esc(ACC.user.email):'Zapisane. Załóż konto, żebyśmy mogli dać znać', true); S.dir=null; render(); break;
     case 'guest': markEntered(); S.prev='home'; go('home'); break;
     case 'authgo': ACC.authMode=p1; ACC.authErr=''; go('auth'); break;
     case 'authmode': ACC.authMode=p1; ACC.authErr=''; S.dir=null; render(); break;
