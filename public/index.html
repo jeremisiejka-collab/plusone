@@ -80,9 +80,14 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
 .jump.on:hover{background:#ff2d72}
 
 @media (max-width:760px){
+  html,body{background:var(--bg)}
   #desk{padding:0;gap:0;background:var(--bg);min-height:100dvh}
   #deskbar,#jumpbar{display:none}
   #shell{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
+  /* prawdziwy telefon ma własny pasek statusu — udawany zostaje tylko w demo */
+  body:not(.demo) #status{display:none}
+  /* dolne menu nad paskiem gestów iPhone'a, bez pustego pasa pod spodem */
+  #nav{height:calc(68px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
 }
 
 /* status bar */
@@ -145,6 +150,11 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
   opacity:0;pointer-events:none;transition:opacity .18s}
 .mapcard.on{opacity:1;pointer-events:auto}
 .mapgrid{display:block}
+/* komputer: przyciski przyklejone do dołu ekranu (Doładuj, Zapłać…) w szerokości strony */
+@media (min-width:761px){
+  body:not(.demo) #view > div[style*="position:absolute;bottom:0"]{position:fixed !important;left:50% !important;right:auto !important;
+    width:min(1200px,calc(100% - 80px));transform:translateX(-50%);padding-left:0 !important;padding-right:0 !important}
+}
 @media (min-width:761px){
   body:not(.demo) .mapgrid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr);gap:40px;align-items:start}
   body:not(.demo) .mapside > div:first-child{padding-top:0 !important}
@@ -2665,6 +2675,8 @@ function renderWebChrome(){
       <button data-act="go:home" ${S.screen==='home'?'aria-current="page"':''}>Odkrywaj</button>
       <button data-act="go:list" ${S.screen==='list'?'aria-current="page"':''}>Wydarzenia</button>
       <button data-act="go:map" ${S.screen==='map'?'aria-current="page"':''}>Mapa</button>
+      <button data-act="go:tickets" ${S.screen==='tickets'||S.screen==='ticket'?'aria-current="page"':''}>Bilety</button>
+      <button data-act="go:wallet" ${S.screen==='wallet'||S.screen==='topup'||S.screen==='bar'?'aria-current="page"':''}>Portfel</button>
     </nav>
     <div class="web-actions">
       <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
