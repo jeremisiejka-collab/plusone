@@ -280,14 +280,6 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
   animation:shim 1.2s linear infinite;border-radius:12px}
 @keyframes shim{from{background-position:180% 0}to{background-position:-40% 0}}
 
-/* ---- marquee ---- */
-.mq{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 0}
-.mq-track{display:flex;width:max-content;animation:slide var(--ticker-duration,150s) linear infinite;font:600 12px/1 var(--m);letter-spacing:.18em;color:var(--t2)}
-.mq-group{flex:none;min-width:100vw;padding-right:3rem}
-.mq:hover .mq-track,.mq:focus .mq-track{animation-play-state:paused}
-@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion:reduce){.mq-track{animation:none}.mq{overflow-x:auto}}
-
 /* ---- bilet fizyczny ---- */
 .stub{position:relative;background:#fff;color:#000;border-radius:20px}
 .stub:before,.stub:after{content:'';position:absolute;width:26px;height:26px;border-radius:50%;background:var(--bg);top:var(--y);}
@@ -1407,7 +1399,6 @@ const scHome = () => {
       <span class="body">Nie ma jeszcze nadchodzących wydarzeń w mieście ${esc(S.city)}. Sprawdź inne miasto.</span>
       <button class="chip on" data-act="sheetCity" style="margin-top:6px">Zmień miasto</button>
     </div>` : `
-  ${eventTicker(f)}
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean);
     return fe.length ? shelf('Polecane', 'Wybrane przez redakcję +1', '', fe.slice(0,8).map((e,i)=>heroCard(e,i)).join(''), 'hero-rail') : ''; })()}
   ${(()=>{ const tp = topPicks(); return tp.length ? shelf('Na topie',
@@ -1769,15 +1760,6 @@ const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000
 
 /* ekrany "aparatowe"/immersyjne zostają ciemne także w trybie dziennym */
 const DARK_SCREENS = ['ticket','nfc','scanner','wrapped','scanpay'];
-
-/* Strona na komputerze korzysta z tych samych ekranów, filtrów i API co telefon. */
-function eventTicker(events){
-  const text = 'TERAZ · '+events.slice(0,10).map(e=>e.name).join('  +  ')+'  +';
-  // Dwie identyczne połowy: przesunięcie o 50% daje płynną pętlę bez skoku.
-  return `<div class="mq" tabindex="0" aria-label="Aktualne wydarzenia. Najedź lub ustaw fokus, aby zatrzymać przewijanie." style="margin-bottom:22px;--ticker-duration:${Math.max(75, Math.round(text.length*.35))}s">
-    <div class="mq-track"><span class="mq-group">${esc(text)}</span><span class="mq-group" aria-hidden="true">${esc(text)}</span></div>
-  </div>`;
-}
 
 function webHero(){
   const printMark = '<g transform="translate(6.45 8.3)"><path d="M27.4 22.9H40.6V34.8H53.8V48.8H40.6V60.5H27.4V48.8H13.7V34.8H27.4Z"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g>';

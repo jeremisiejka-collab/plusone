@@ -54,8 +54,6 @@
   body:not(.demo) .filter-row { flex-wrap: wrap; overflow: visible !important; }
   body:not(.demo) .chip:hover { border-color: var(--pink); color: var(--t1); }
   body:not(.demo) .chip.on:hover { color: #000; }
-  body:not(.demo) .mq { margin-top: 8px; margin-bottom: 30px !important; }
-  body:not(.demo) .mq-track { font-size: 10px; color: var(--t3); }
   body:not(.demo) .calendar-grid,
   body:not(.demo) .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
   body:not(.demo) .event-row { min-width: 0; transition: background .15s; }
