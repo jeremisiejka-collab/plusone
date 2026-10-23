@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <script>
 /* motyw ustawiany przed narysowaniem strony (bez mignięcia): wybór użytkownika albo ustawienie systemu */
@@ -87,11 +87,14 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
   #shell{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
   /* prawdziwy telefon ma własny pasek statusu — udawany zostaje tylko w demo */
   body:not(.demo) #status{display:none}
-  /* w aplikacji na telefonie: miejsce na systemowy pasek statusu zostaje, udawany zegar i bateria znikają */
+  /* aplikacja na telefonie: miejsce na systemowy pasek statusu zostaje, udawany zegar i bateria znikają */
   body.demo #status > *{visibility:hidden}
+  body #status{height:max(52px,env(safe-area-inset-top))}
   /* pasek „zamknięty podgląd” spychałby dolne menu poza ekran telefonu */
   #previewbar{display:none}
-  body #status{height:max(52px,env(safe-area-inset-top))}
+  /* iPhone powiększa stronę po stuknięciu w pole z czcionką < 16 px — w aplikacji tego nie chcemy */
+  input,select,textarea{font-size:16px !important}
+  html,body{touch-action:pan-x pan-y;overflow-x:hidden}
   /* dolne menu nad paskiem gestów iPhone'a, bez pustego pasa pod spodem */
   #nav{height:calc(68px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
 }
@@ -327,7 +330,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 .wr>*:nth-child(7){animation-delay:.44s}
 #wrapwrap.paused span[style*="wfill"]{animation-play-state:paused}
 </style>
-<link rel="stylesheet" href="/desktop.css">
+<link rel="stylesheet" href="/app.css">
 </head>
 <body>
 <div id="previewbar" style="padding:10px;text-align:center;background:#ff0059;color:#000;font:600 12px system-ui">Zamknięty podgląd aplikacji · płatności i bilety są demonstracyjne · <a href="/?web" target="_blank" rel="noopener">Wróć do witryny</a></div>
@@ -444,13 +447,12 @@ function liveEvent(x){
     : day===localDay() ? 'dziś' : day===addDays(1) ? 'jutro'
     : `${DNI[d.getDay()]} ${d.getDate()} ${MIES[d.getMonth()]}`;
   return {
-    id:x.id, real:true, multi, ongoing, big:!!x.big,
-    tag: ongoing ? `do ${endD.getDate()} ${MIES[endD.getMonth()]}` : day===localDay() ? 'dziś' : day===addDays(1) ? 'jutro' : `${DNI[d.getDay()]} ${d.getDate()} ${MIES[d.getMonth()]}`, name:x.title, cat:x.category, city:x.city,
+    id:x.id, real:true, multi, big:!!x.big, name:x.title, cat:x.category, city:x.city,
     venue:x.venue||x.city, address:x.address, start:x.start, day,
     when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
     badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
     from:x.priceFrom, lineup:x.artists||[], tags:x.tags||[], desc:x.description||'',
-    image:x.image, ratio:x.imageRatio, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
+    image:x.image, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
     hue: [...x.id].reduce((a,c)=>(a*31+c.charCodeAt(0))%360, 7), sold:null
   };
 }
@@ -730,27 +732,10 @@ const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
 /* zdjęcia już wczytane nie mrugają przy przerysowaniu */
 const IMG_OK = new Set();
-/* karta przyjmuje kształt plakatu (imageRatio z pipeline) — bez przycinania i bez rozmytych pasów; style .ev w desktop.css */
-const IMG_R = new Map();
-const ratioOf = e => {
-  if(!e.image) return .8;
-  const m = e.image.match(/c_fill,w_(\d+),h_(\d+)/) || e.image.match(/(\d{3,4})[-_ ]?x[-_ ]?(\d{3,4})/i);
-  const r = IMG_R.get(e.image) || e.ratio || (m && m[1]/m[2]);
-  return r ? clamp(+r, .5, 2.2) : null;
-};
-const arStyle = e => `--r:${(ratioOf(e)||.8).toFixed(3)}`;
-function artLoad(img){
-  const k = img.dataset.k; IMG_OK.add(k); img.classList.add('on');
-  if(!img.naturalWidth) return;
-  const r = img.naturalWidth/img.naturalHeight, known = IMG_R.has(k);
-  IMG_R.set(k, r);
-  const box = img.closest('[data-ar]');
-  if(box && !known) box.style.setProperty('--r', clamp(r,.5,2.2).toFixed(3));
-}
 const artBox = e => e.image
-  ? `<div class="art" style="background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
-      data-k="${esc(e.image)}" class="${IMG_OK.has(e.image)?'on':''}" onload="artLoad(this)" onerror="this.remove()"></div>`
-  : `<div class="art">${art(e)}</div>`;
+  ? `<div style="position:absolute;inset:0;background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"
+      data-k="${esc(e.image)}" onload="this.style.opacity=1;IMG_OK.add(this.dataset.k)" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;${IMG_OK.has(e.image)?'':'opacity:0;transition:opacity .5s'}"></div>`
+  : `<div style="position:absolute;inset:0">${art(e)}</div>`;
 const cover = e => `background:hsl(${e.hue} 34% 8%)`;
 
 /* ===== IKONY — monoline SVG, zero systemowych emoji ===== */
@@ -808,7 +793,7 @@ const coverArt = e => artBox(e);
 /* ---- LOGIN ---- */
 const scLogin = () => `
 <div class="pg" style="display:flex;flex-direction:column;justify-content:space-between;padding:116px 26px 44px;
-  background:var(--bg)">
+  background:linear-gradient(180deg,var(--bg) 0%,var(--promo2) 55%,var(--promo1) 100%)">
   <div class="pgrid"></div>
   <div class="col" style="gap:26px;position:relative">
     <div style="align-self:center">${LOGO(104,24)}</div>
@@ -999,7 +984,7 @@ async function setRole(id, role){
 /* ---- START: wybór wejścia ---- */
 const scStart = () => `
 <div class="pg" style="display:flex;flex-direction:column;justify-content:space-between;padding:116px 26px 44px;
-  background:var(--bg)">
+  background:linear-gradient(180deg,var(--bg) 0%,var(--promo2) 55%,var(--promo1) 100%)">
   <div class="pgrid"></div>
   <div class="col" style="gap:26px;position:relative">
     <div style="align-self:center">${LOGO(104,24)}</div>
@@ -1338,14 +1323,12 @@ function filtered(){
     return okCat && okQ && okWhen(e) && okPrice(e);
   }));
 }
-/* ten sam tytuł w tym samym miejscu = jedna karta z liczbą terminów */
+/* ten sam tytuł w tym samym miejscu = jedna karta (pierwszy termin) */
 const seriesKey = e => fold(e.name)+'|'+e.city+'|'+fold(e.venue);
 function collapse(list){
-  const seen = new Map(), out = [];
-  for(const e of list){ const k = seriesKey(e), g = seen.get(k); if(g){ g.more++; continue; } const c = {...e, more:0}; seen.set(k, c); out.push(c); }
-  return out;
+  const seen = new Set();
+  return list.filter(e=>{ const k = seriesKey(e); if(seen.has(k)) return false; seen.add(k); return true; });
 }
-const terms = n => n===1 ? 'termin' : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 'terminy' : 'terminów';
 function sorted(arr){
   const a=[...arr];
   if(S.sort==='price') a.sort((x,y)=>(x.from??1e9)-(y.from??1e9));
@@ -1371,15 +1354,18 @@ const loadingBox = () => LIVE.state==='error' ? `
         <div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:10px;width:45%"></div></div></div>`).join('')}
     </div>`;
 const bigCard = e => `
-<div data-act="ev:${e.id}" class="ev event-card" data-ar style="--h:270px;--maxw:300px;scroll-snap-align:start;${arStyle(e)}">
-  <div class="ev-media ds">
-    ${e.real ? artBox(e) : coverArt(e)}
-    <div class="ev-tag${e.real&&e.day===localDay()&&!e.ongoing?' now':''}">${esc(e.real ? e.tag+(e.time&&!e.ongoing&&!e.multi?' · '+e.time:'') : e.badge)}</div>
+<div data-act="ev:${e.id}" class="event-card" style="flex:none;width:262px;scroll-snap-align:start;cursor:pointer">
+  <div class="ds event-img" style="position:relative;height:196px;border-radius:18px;overflow:hidden;background:var(--surface-2)">
+    ${coverArt(e)}
+    <div style="position:absolute;top:10px;left:10px;padding:6px 9px;border-radius:8px;background:${PINK};color:#000;
+      font:700 10px/1 var(--m);letter-spacing:.08em">${esc(e.badge)}</div>
+    ${e.sold!=null?`<div style="position:absolute;top:10px;right:10px;padding:6px 9px;border-radius:8px;background:rgba(0,0,0,.55);
+      backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${Math.round(e.sold*100)}% sprzedane</div>`:''}
   </div>
-  <div class="ev-body">
-    <span class="ev-title clamp2">${esc(e.name)}</span>
-    <span class="ev-sub">${esc(e.venue)}</span>
-    <span class="ev-foot">${e.from!=null?priceTag(e):`<span class="ev-cat">${esc(CAT_PL[e.cat]||'')}</span>`}${e.more?`<span class="ev-more">+${e.more} ${terms(e.more)}</span>`:''}</span>
+  <div class="col" style="padding:12px 2px 0;gap:6px">
+    <span class="clamp2" style="font:600 17px/1.22 var(--d);letter-spacing:-.01em">${esc(e.name)}</span>
+    <span class="mono" style="color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
+    ${priceTag(e)}
   </div>
 </div>`;
 
@@ -1743,8 +1729,9 @@ const scSecret = (e) => {
 const mapsUrl = e => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([e.venue,e.address||e.city].join(', '));
 const scLive = e => `
 <div class="pg event-detail" style="padding-bottom:118px">
-  <div class="event-art ds" data-ar style="position:relative;overflow:hidden;aspect-ratio:var(--r);${arStyle(e)}">
+  <div class="event-art ds" style="position:relative;height:340px;overflow:hidden">
     ${artBox(e)}
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 32%)"></div>
     <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
     <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('share',17)}</button>
   </div>
@@ -3618,6 +3605,8 @@ loadLive();
 /* aplikacja instalowana na ekranie telefonu (PWA): działa też bez zasięgu na ostatnich danych */
 if('serviceWorker' in navigator) navigator.serviceWorker.register('/app-sw.js', {scope:'/app'}).catch(()=>{});
 installHint();
+/* iPhone: bez powiększania gestem szczypania — aplikacja ma stały układ */
+['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t, e=>e.preventDefault(), {passive:false}));
 loadAccount();
 setTimeout(()=>{ $('#splash').classList.add('out'); }, 1550);
 setTimeout(()=>{ const sp=$('#splash'); if(sp) sp.remove(); }, 2150);

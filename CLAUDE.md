@@ -10,4 +10,5 @@
 - Pobieraj grafiki w możliwie oryginalnych proporcjach (Going: `c_limit` zamiast `c_fill`, eBilet: plakat pionowy przed banerem).
 
 ## Aplikacja
-- Aplikacja na telefon to `/app` (`private/app.html`, wygląd i funkcje inne niż strona). Strona uruchomiona z ikony na ekranie telefonu przekierowuje na `/app`. `/preview` to stary adres (301 → `/app`).
+- Aplikacja na telefon to `/app` (`private/app.html`, wygląd i funkcje inne niż strona). **Wygląd aplikacji = oryginał sprzed rozdzielenia (commit `a9a30d5`)** — nie przenoś do niej zmian wyglądu strony. Aplikacja ma własny, zamrożony arkusz `public/app.css` (strona używa `public/desktop.css`).
+- Aplikacja nie może się powiększać na iPhonie: pola formularzy min. 16 px, `maximum-scale=1`, blokada gestu szczypania. Strona uruchomiona z ikony na ekranie telefonu przekierowuje na `/app`. `/preview` to stary adres (301 → `/app`).
