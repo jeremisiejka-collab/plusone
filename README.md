@@ -77,6 +77,16 @@ Następny krok (opcjonalnie): pakiet APK przez Capacitor/TWA dla Androida. Natyw
 - Panel admina (Profil → Panel admina): statystyki, użytkownicy i role, polecanie/ukrywanie wydarzeń, stan źródeł danych.
 - Lokalnie: `npx wrangler d1 migrations apply plusone --local && npx wrangler dev`.
 
+## Aplikacja premium (worker/premium.js, public/premium.js, migracja 0007)
+
+- **Zainteresowania** (rejestracja na stronie, edycja w aplikacji) i **obserwowanie**: wydarzenie, miasto albo okolica (miasto + 30 km).
+- **Alerty** (cron co 6 h, `wrangler.jsonc → triggers`): nowe wydarzenia z zainteresowań w obserwowanych miejscach (`firstSeen`), **taniej** — obserwowane i wcześniej odwiedzane serie (`priceDrop` liczony w pipeline), przypomnienie dzień przed. W aplikacji (dzwonek) i mailem najwyżej raz dziennie.
+- **Newsletter „Na topie w Twoim mieście”** (strona i aplikacja): czwartek ok. 10:00, zgoda przy rejestracji / w Koncie.
+- **„Idziesz z kimś?”**: link `/app?join=…` — znajomy dołącza jednym stuknięciem, powstaje para znajomych, zapraszający dostaje powiadomienie.
+- **Organizator**: panel ze statystykami swoich wydarzeń (dopasowanie po miejscu/nazwie), lista gości z biletem QR mailem (`/t/<kod>`), skaner. Admin: zakładka Organizatorzy (sortowanie, wejście w organizatora).
+- **Plan na wieczór**: jedzenie i bary w okolicy (OpenStreetMap: Nominatim + Overpass) i dojazd. **Twoje wyjścia**: podsumowanie z „Mam bilet”.
+- **Reset hasła** mailem (`/app?forgot`, `/app?reset=…`).
+
 ## Demo
 
 Portfel, PAY, BLIK i zaproszenia +1 to wciąż makiety (publicznie Portfel ma ekran „Wkrótce”) (bez realnych płatności). Publicznie są ukryte; pokazuje je `?demo`, chowa `?demo=0`.

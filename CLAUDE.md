@@ -16,4 +16,7 @@
 ## Konta i panel admina
 - Role: **Użytkownik**, **Obsługa biletów** (`perm_scan`, skaner biletów), **Administrator** (`role='admin'`); główni administratorzy (`owner`) nadają admina i mają „Zobacz jako”.
 - Panel admina, zaproszenia, poczta, skaner biletów i bilet z QR są w jednym pliku `public/admin.js` (+ `public/admin.css`), ładowanym przez stronę i aplikację — zmieniaj je tylko tam.
+- Role także **Organizator** (`perm_org` + miejsca w `org_venues`): panel organizatora ze statystykami i listą gości; admin widzi listę organizatorów i wchodzi w każdego.
+- **Aplikacja = premium**: funkcje tylko dla aplikacji są w `public/premium.js` (+ `premium.css`), ładowanym wyłącznie przez `private/app.html` — zainteresowania, obserwowanie, powiadomienia, znajomi („Idziesz z kimś?”), plan na wieczór, „Twoje wyjścia”. Na stronie tylko newsletter i zachęta do aplikacji. API premium i zadania cron: `worker/premium.js`.
+- Cała poczta (zaproszenia, alerty, newsletter, bilety gości, reset hasła) wychodzi z jednego „Głównego e-maila” ustawianego w Panel admina → Główny e-mail.
 - Biblioteki trzymamy u siebie w `public/vendor/` (Leaflet, jsQR, qrcode-generator), nie z CDN.
