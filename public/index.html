@@ -1083,7 +1083,7 @@ const scMap = () => {
     ${MAP_WHEN.map(([k,l])=>`<button class="chip ${MAP.when===k?'on':''}" data-act="mapWhen:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
   </div>
   <div class="pad mapgrid"><div>
-    <div id="mapbox" class="ds" style="position:relative;border-radius:24px;overflow:hidden;background:radial-gradient(120% 90% at 50% 30%,#14070d 0%,#050506 70%);border:1px solid rgba(255,255,255,.08);touch-action:manipulation">
+    <div id="mapbox" style="position:relative;border-radius:24px;overflow:hidden;background:var(--bg);border:1px solid var(--line);touch-action:manipulation">
       ${!ok ? `<div style="aspect-ratio:1/0.95;display:grid;place-items:center"><span class="mono">Ładuję mapę…</span></div>` : `
       <svg id="mapsvg" viewBox="0 0 ${M.w} ${M.h}" style="display:block;width:100%;height:auto">
         <defs>
@@ -1152,10 +1152,10 @@ function attachMap(){
     card.innerHTML = `<div class="row" style="justify-content:space-between;gap:10px">
         <span style="font:600 17px/1.1 var(--d);letter-spacing:-.01em">${esc(c.city)}</span>
         <span class="mono" style="color:${PINK_HEX}">${c.n}</span></div>
-      <span class="mono" style="display:block;margin:3px 0 10px;color:rgba(255,255,255,.55)">${MAP_WHEN.find(w=>w[0]===MAP.when)[1].toLowerCase()} · ${c.n===1?'wydarzenie':'wydarzeń'}</span>
-      ${next.map(e=>`<div data-act="ev:${e.id}" style="padding:7px 0;border-top:1px solid rgba(255,255,255,.08);cursor:pointer">
+      <span class="mono" style="display:block;margin:3px 0 10px;color:var(--t3)">${MAP_WHEN.find(w=>w[0]===MAP.when)[1].toLowerCase()} · ${c.n===1?'wydarzenie':'wydarzeń'}</span>
+      ${next.map(e=>`<div data-act="ev:${e.id}" style="padding:7px 0;border-top:1px solid var(--line);cursor:pointer">
         <div style="font:600 13px/1.25 var(--d);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${esc(e.name)}</div>
-        <div class="mono" style="margin-top:3px;color:rgba(255,255,255,.55)">${esc(e.when)}</div></div>`).join('')}
+        <div class="mono" style="margin-top:3px;color:var(--t3)">${esc(e.when)}</div></div>`).join('')}
       <button data-act="mapGo:${esc(c.city)}" style="margin-top:8px;width:100%;height:36px;border-radius:11px;background:${PINK_HEX};color:#000;font:700 12px/1 var(--d)">Pokaż wydarzenia</button>`;
     bind(card);
     // karta obok punktu, w granicach mapy
@@ -1178,7 +1178,7 @@ function attachMap(){
   const hideCity = () => { if(cur) cur.classList.remove('hov'); cur=null; card.classList.remove('on'); };
   const showRegion = (p) => {
     const i = +p.getAttribute('data-region'), r = byRegion[i];
-    reg.innerHTML = `<span class="mono" style="color:rgba(255,255,255,.5);letter-spacing:.12em">WOJEWÓDZTWO</span>
+    reg.innerHTML = `<span class="mono" style="color:var(--t3);letter-spacing:.12em">WOJEWÓDZTWO</span>
       <div style="font:600 15px/1.2 var(--d);margin-top:4px;text-transform:capitalize">${esc(MAP.data.regions[i].name)}</div>
       <div class="mono" style="margin-top:4px;color:${PINK_HEX}">${r?r.n+' wydarzeń':'brak wydarzeń'}${r?' · '+r.top.map(esc).join(', '):''}</div>`;
     reg.classList.add('on');
@@ -1353,7 +1353,7 @@ function byDay(list, row){
 }
 
 const scHome = () => {
-  const f = filtered();
+  const f = collapse(inCity());
   const soon = [...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,10), soonIds = new Set(soon.map(e=>e.id));
   const later = f.filter(e=>!soonIds.has(e.id));
   return `
@@ -1382,45 +1382,31 @@ const scHome = () => {
       <span style="position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:${PINK}"></span></div>`:''}
     </div>
   </div>
-  <div class="pad search-wrap" style="padding-bottom:16px">
-    <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)">
-      <span style="color:var(--t2);display:flex">${ic('search',17)}</span>
-      <input id="q" aria-label="Szukaj wydarzeń, artystów i miejsc" placeholder="Szukaj wydarzeń, artystów, miejsc" value="${esc(S.query)}"
-        style="flex:1;font:400 14px/1 var(--d);color:var(--t1)" autocomplete="off">
-      ${S.query?`<span data-act="clearQ" style="color:var(--t3);display:flex">${ic('cross',16)}</span>`:''}
-    </div>
-  </div>
-  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 10px">
-    ${catList().map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat:${c}">${catLabel(c)}</button>`).join('')}
-  </div>
-  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 22px">
-    ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
-    <span style="flex:none;width:1px;margin:4px 2px;background:var(--line-2)"></span>
-    ${PRICE.map(([k,l])=>`<button class="chip ${S.price===k?'on':''}" data-act="price:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
-    <button class="chip ${S.big?'on':''}" data-act="big" style="padding:7px 12px;font-size:12px">Duże wydarzenia</button>
+  <div class="pad home-browse">
+    <button class="btn g" data-act="go:list">${ic('search',18)} Znajdź wydarzenie</button>
   </div>
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
       <span class="h3">Nic nie pasuje</span>
-      <span class="body">Zmień filtry albo wyczyść wyszukiwanie — w mieście ${esc(S.city)} mamy ${inCity().length} nadchodzących wydarzeń.</span>
-      <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
+      <span class="body">Nie ma jeszcze nadchodzących wydarzeń w mieście ${esc(S.city)}. Sprawdź inne miasto.</span>
+      <button class="chip on" data-act="sheetCity" style="margin-top:6px">Zmień miasto</button>
     </div>` : `
   ${eventTicker(f)}
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean);
     return fe.length ? shelf('Polecane', 'Wybrane przez redakcję +1', '', fe.slice(0,8).map((e,i)=>heroCard(e,i)).join(''), 'hero-rail') : ''; })()}
-  ${(()=>{ if(S.big || S.cat!=='Wszystko' || S.query) return ''; const tp = topPicks(); return tp.length ? shelf('Na topie',
+  ${(()=>{ const tp = topPicks(); return tp.length ? shelf('Na topie',
       'Najfajniejsze najbliższe wydarzenia', `<button class="shelf-all" data-act="surprise">Zaskocz mnie</button>`, tp.map((e,i)=>heroCard(e,i)).join(''), 'hero-rail') : ''; })()}
-  ${(()=>{ if(S.big) return '';
+  ${shelf('Już niedługo', '', `<button class="shelf-all" data-act="go:list">Cała lista</button>`,
+      soon.map((e,i)=>bigCard(e,i)).join(''))}
+  ${(()=>{
     const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || (b.hot-a.hot) || a.start.localeCompare(b.start)));
     if(!bg.length) return '';
-    const shown = new Set(S.cat==='Wszystko' && !S.query ? topPicks().map(e=>seriesKey(e)) : []), rest = bg.filter(e=>!shown.has(seriesKey(e)));
+    const shown = new Set(topPicks().map(e=>seriesKey(e))), rest = bg.filter(e=>!shown.has(seriesKey(e)));
     const pick = [...rest.filter(e=>e.city===S.city), ...rest.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...rest.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,10);
-    return shelf('Wielkie wydarzenia',
+    return shelf('Duże wydarzenia',
       bg.some(e=>e.city===S.city) ? 'Najpierw '+esc(S.city)+', potem reszta Polski' : 'Festiwale, stadiony i areny w całej Polsce',
       `<button class="shelf-all" data-act="bigList">Wszystkie · ${bg.length}</button>`,
       pick.map((e,i)=>heroCard(e,i)).join(''), 'hero-rail'); })()}
-  ${shelf('Już niedługo', '', `<button class="shelf-all" data-act="go:list">Cała lista</button>`,
-      soon.map((e,i)=>bigCard(e,i)).join(''))}
   ${later.length?`<section class="reveal">
     <h2 class="shelf-title" style="padding-bottom:4px">Dalej w kalendarzu</h2>
     <div class="calendar-grid">${byDay(later.slice(0,12), listRow)}</div>
@@ -1801,12 +1787,12 @@ function scDownloads(){
     <span class="eyebrow pink">Zamknięte testy · za darmo</span>
     <h1>+1 w Twojej<br><span>kieszeni.</span></h1>
     <p>Aplikacja ma własny wygląd: dolne menu, bilety, portfel i powiadomienia. Instalujesz ją prosto ze strony — bez sklepu, bez opłat — a działa też bez zasięgu.</p>
-    <div class="dl-badges"><span>Android</span><span>iPhone</span><span>Ikona na ekranie</span><span>Działa offline</span></div>
+    <div class="dl-badges"><span>Android</span><span>iOS</span><span>Ikona na ekranie</span><span>Działa offline</span></div>
   </section>
   ${access}${cta}
   <div class="dl-grid">
-    ${step('Android', ['Stuknij <b>Pobierz aplikację</b> (otworzy się <b>plusoneapp.pl/app</b>) i zaloguj się kontem z zaproszeniem.', 'Stuknij <b>Instaluj</b> na dole ekranu albo w menu ⋮ wybierz <b>Zainstaluj aplikację</b>.', 'Ikona +1 pojawi się na ekranie telefonu.'], android)}
-    ${step('iPhone', ['W <b>Safari</b> stuknij <b>Pobierz aplikację</b> — otworzy się <b>plusoneapp.pl/app</b>, czyli wersja aplikacji (nie strona).', 'Stuknij <b>Udostępnij</b> (kwadrat ze strzałką, czasem w menu ⋯).', 'Wybierz <b>Do ekranu początkowego</b> i <b>Dodaj</b>.', 'Uruchom +1 z ikony i <b>zaloguj się raz</b> w aplikacji. Masz już ikonę ze strony? Ona też otworzy teraz aplikację.'], ios)}
+    ${step('Android', ['Otwórz <b>plusoneapp.pl/app</b> w Chrome i zaloguj się kontem z zaproszeniem.', 'Stuknij <b>Instaluj</b> na dole ekranu albo w menu ⋮ wybierz <b>Zainstaluj aplikację</b>.', 'Ikona +1 pojawi się na ekranie telefonu.'], android)}
+    ${step('iOS', ['Otwórz <b>plusoneapp.pl/app</b> w Safari.', 'Stuknij <b>Udostępnij</b>.', 'Wybierz <b>Do ekranu początkowego</b> i <b>Dodaj</b>.', 'Otwórz +1 z ekranu początkowego i <b>zaloguj się</b> kontem z zaproszeniem.'], ios)}
   </div>
   <p class="body" style="color:var(--t3)">Chcesz dołączyć do testów? Załóż konto i napisz do nas — dostęp nadaje administrator.</p>
 </div></div>`; }

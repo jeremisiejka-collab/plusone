@@ -294,3 +294,18 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
   #web-footer { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
 }
 
+.home-browse { margin-bottom: 28px; }
+.home-browse .btn { display: flex; justify-content: center; gap: 10px; max-width: 380px; }
+
+/* Mapa podąża za motywem całej witryny. */
+#mapbox .reg { fill: var(--surface-2); stroke: var(--line-2); }
+#mapbox .reg:hover { fill: var(--pink-dim); stroke: var(--pink); }
+#mapbox .city .core { stroke: var(--bg); }
+#mapbox .city.on .core { stroke: var(--t1); }
+#mapbox .city text { fill: var(--t1); stroke: var(--bg); }
+#mapbox .city.hov text, #mapbox .city.on text { fill: var(--pink); }
+#mapbox .mapcard, #mapbox .regcard {
+  color: var(--t1); background: rgba(var(--bg-rgb), .96); border-color: var(--line-2);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .12);
+}
+:root[data-theme="light"] #mapbox #glows { opacity: .24; }
