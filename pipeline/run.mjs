@@ -8,6 +8,7 @@ import { nowLocal, CATEGORIES, isBig } from './lib/normalize.mjs';
 import { dedup } from './lib/dedup.mjs';
 import { cityGeo } from './lib/geo.mjs';
 import { measureImages } from './lib/images.mjs';
+import { hotScore } from './lib/hot.mjs';
 import ra from './sources/ra.mjs';
 import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
@@ -56,6 +57,7 @@ const valid = raw.filter(e =>
 const stamp = new Date().toISOString();
 const events = dedup(valid)
   .map(e => ({ ...e, big: isBig(e), firstSeen: firstSeen.get(e.id) || stamp }))
+  .map(e => ({ ...e, hot: hotScore(e) }))
   .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 
 const img = await measureImages(events, prevEvents);

@@ -439,7 +439,7 @@ function liveEvent(x){
     when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
     badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
     from:x.priceFrom, lineup:x.artists||[], tags:x.tags||[], desc:x.description||'',
-    image:x.image, ratio:x.imageRatio, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
+    image:x.image, ratio:x.imageRatio, hot:x.hot||0, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
     hue: [...x.id].reduce((a,c)=>(a*31+c.charCodeAt(0))%360, 7), sold:null
   };
 }
@@ -582,7 +582,8 @@ function morph(update, el){
   if(!document.startViewTransition || reduce){ update(); return; }
   if(el) el.classList.add('vt-hero');
   const t = document.startViewTransition(()=>{ if(el) el.classList.remove('vt-hero'); update(); });
-  t.finished.finally(()=>$$('.vt-hero').forEach(x=>x.classList.remove('vt-hero')));
+  t.ready.catch(()=>{}); // przerwane przejście (np. obrót ekranu) to nie błąd
+  t.finished.catch(()=>{}).finally(()=>$$('.vt-hero').forEach(x=>x.classList.remove('vt-hero')));
 }
 function go(s, anim=true){
   if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan'].includes(s)) return;
@@ -1253,6 +1254,18 @@ function collapse(list){
 const series = e => EVENTS.filter(x=>x.real && x.day>=localDay() && !ACC.hidden.has(x.id) && seriesKey(x)===seriesKey(e))
   .sort((a,b)=>a.start.localeCompare(b.start));
 const terms = n => n===1 ? 'termin' : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 'terminy' : 'terminów';
+/* „Na topie”: najfajniejsze najbliższe wydarzenia (hot z pipeline/lib/hot.mjs; polecane przez admina na początku) */
+function topPicks(n=10){
+  const lim = addDays(45), fe = new Set(ACC.featured);
+  return collapse(EVENTS.filter(e=>e.real && e.day>=localDay() && e.day<=lim && !ACC.hidden.has(e.id) && (e.city===S.city || e.big) && (e.hot>=6 || fe.has(e.id)))
+    .sort((a,b)=>(fe.has(b.id)-fe.has(a.id)) || ((b.hot+(b.city===S.city?4:0))-(a.hot+(a.city===S.city?4:0))) || a.start.localeCompare(b.start))).slice(0,n);
+}
+function surprise(){
+  const pool = topPicks(20).filter(e=>e.day<=addDays(7));
+  const list = pool.length ? pool : topPicks(20);
+  if(!list.length){ toast('Na razie nic nie wpadło — zajrzyj później', true); return; }
+  haptic(14); sfxCoin(); openEvent(list[Math.floor(Math.random()*list.length)].id);
+}
 function sorted(arr){
   const a=[...arr];
   if(S.sort==='price') a.sort((x,y)=>(x.from??1e9)-(y.from??1e9));
@@ -1395,10 +1408,13 @@ const scHome = () => {
   ${eventTicker(f)}
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean);
     return fe.length ? shelf('Polecane', 'Wybrane przez redakcję +1', '', fe.slice(0,8).map((e,i)=>heroCard(e,i)).join(''), 'hero-rail') : ''; })()}
+  ${(()=>{ if(S.big || S.cat!=='Wszystko' || S.query) return ''; const tp = topPicks(); return tp.length ? shelf('Na topie',
+      'Najfajniejsze najbliższe wydarzenia', `<button class="shelf-all" data-act="surprise">Zaskocz mnie</button>`, tp.map((e,i)=>heroCard(e,i)).join(''), 'hero-rail') : ''; })()}
   ${(()=>{ if(S.big) return '';
-    const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || a.start.localeCompare(b.start)));
+    const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || (b.hot-a.hot) || a.start.localeCompare(b.start)));
     if(!bg.length) return '';
-    const pick = [...bg.filter(e=>e.city===S.city), ...bg.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...bg.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,10);
+    const shown = new Set(S.cat==='Wszystko' && !S.query ? topPicks().map(e=>seriesKey(e)) : []), rest = bg.filter(e=>!shown.has(seriesKey(e)));
+    const pick = [...rest.filter(e=>e.city===S.city), ...rest.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...rest.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,10);
     return shelf('Wielkie wydarzenia',
       bg.some(e=>e.city===S.city) ? 'Najpierw '+esc(S.city)+', potem reszta Polski' : 'Festiwale, stadiony i areny w całej Polsce',
       `<button class="shelf-all" data-act="bigList">Wszystkie · ${bg.length}</button>`,
@@ -1926,6 +1942,7 @@ function act(a){
     case 'when': S.when = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'city': S.city = a.slice(5); S.cat='Wszystko'; S.limit=40; try{localStorage.setItem('city',S.city)}catch(e){}
       closeSheet(); S.dir=null; render(); break;
+    case 'surprise': surprise(); break;
     case 'more': S.limit += 60; S.dir=null; render(); break;
     case 'reload': LIVE.state='loading'; render(); loadLive(); break;
     case 'clearQ': S.query=''; render(); break;

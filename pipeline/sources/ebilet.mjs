@@ -3,10 +3,13 @@
 import { request, sleep } from '../lib/http.mjs';
 import { localTime, guessCategory, makeEvent } from '../lib/normalize.mjs';
 
-const CITIES = ['warszawa', 'krakow', 'trojmiasto', 'wroclaw', 'poznan', 'lodz', 'slaskie', 'szczecin', 'lublin', 'bialystok', 'bydgoszcz', 'torun', 'rzeszow'];
+const CITIES = ['warszawa', 'krakow', 'trojmiasto', 'wroclaw', 'poznan', 'lodz', 'slaskie', 'szczecin', 'lublin', 'bialystok', 'bydgoszcz', 'torun', 'rzeszow',
+  'olsztyn', 'kielce', 'opole', 'zielona-gora', 'gorzow-wielkopolski', 'radom', 'czestochowa'];
 /* ogólnopolskie strony kategorii — tu są duże koncerty i festiwale spoza list miast */
 const CATEGORY_PAGES = ['muzyka', 'festiwale', 'muzyka/festiwale', 'muzyka/rock', 'muzyka/pop', 'muzyka/piosenka', 'muzyka/hip-hop-rap',
-  'muzyka/hard-heavy', 'muzyka/elektro-techno', 'muzyka/jazz-blues', 'muzyka/disco-polo', 'muzyka/k-pop', 'muzyka/reggae', 'muzyka/pozostale'];
+  'muzyka/hard-heavy', 'muzyka/elektro-techno', 'muzyka/jazz-blues', 'muzyka/disco-polo', 'muzyka/k-pop', 'muzyka/reggae', 'muzyka/pozostale',
+  // więcej niż muzyka: spektakle i wydarzenia dla dzieci, teatr, kabaret, stand-up, klasyka, sport (strony nieistniejące tylko ostrzegają)
+  'rodzina', 'teatr', 'kabaret', 'stand-up', 'klasyka', 'sport', 'wystawy', 'inne'];
 const PAGES = [...CITIES.map(c => 'miasto/' + c), ...CATEGORY_PAGES];
 
 const CAT = {

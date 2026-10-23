@@ -490,7 +490,7 @@ function liveEvent(x){
     when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
     badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
     from:x.priceFrom, lineup:x.artists||[], tags:x.tags||[], desc:x.description||'',
-    image:x.image, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
+    image:x.image, hot:x.hot||0, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
     hue: [...x.id].reduce((a,c)=>(a*31+c.charCodeAt(0))%360, 7), sold:null
   };
 }
@@ -1297,6 +1297,18 @@ function collapse(list){
   const seen = new Set();
   return list.filter(e=>{ const k = seriesKey(e); if(seen.has(k)) return false; seen.add(k); return true; });
 }
+/* „Na topie”: najfajniejsze najbliższe wydarzenia (hot z pipeline/lib/hot.mjs; polecane przez admina na początku) */
+function topPicks(n=10){
+  const lim = addDays(45), fe = new Set(ACC.featured);
+  return collapse(EVENTS.filter(e=>e.real && e.day>=localDay() && e.day<=lim && !ACC.hidden.has(e.id) && (e.city===S.city || e.big) && (e.hot>=6 || fe.has(e.id)))
+    .sort((a,b)=>(fe.has(b.id)-fe.has(a.id)) || ((b.hot+(b.city===S.city?4:0))-(a.hot+(a.city===S.city?4:0))) || a.start.localeCompare(b.start))).slice(0,n);
+}
+function surprise(){
+  const pool = topPicks(20).filter(e=>e.day<=addDays(7));
+  const list = pool.length ? pool : topPicks(20);
+  if(!list.length){ toast('Na razie nic nie wpadło — zajrzyj później', true); return; }
+  haptic(14); sfxCoin(); openEvent(list[Math.floor(Math.random()*list.length)].id);
+}
 function sorted(arr){
   const a=[...arr];
   if(S.sort==='price') a.sort((x,y)=>(x.from??1e9)-(y.from??1e9));
@@ -1404,14 +1416,24 @@ const scHome = () => {
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
-  ${(()=>{ if(S.big) return ''; const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || a.start.localeCompare(b.start))); return bg.length ? `
+  ${(()=>{ if(S.big || S.cat!=='Wszystko' || S.query) return ''; const tp = topPicks(); return tp.length ? `
+  <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
+    <span class="h3">Na topie</span>
+    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="surprise">ZASKOCZ MNIE →</span>
+  </div>
+  <div class="pad mono" style="padding-bottom:12px">Najfajniejsze najbliższe wydarzenia</div>
+  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
+    ${tp.map(e=>bigCard(e.city===S.city?e:{...e, venue:e.city+' · '+e.venue})).join('')}
+  </div>` : ''; })()}
+  ${(()=>{ if(S.big) return ''; const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || (b.hot-a.hot) || a.start.localeCompare(b.start))); return bg.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
     <span class="h3">Wielkie wydarzenia</span>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="bigList">WSZYSTKIE (${bg.length}) →</span>
   </div>
   <div class="pad mono" style="padding-bottom:12px">${bg.some(e=>e.city===S.city)?'Najpierw '+esc(S.city)+', potem reszta Polski':'Festiwale i koncerty na stadionach i arenach w całej Polsce'}</div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
-    ${[...bg.filter(e=>e.city===S.city), ...bg.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...bg.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,9).map(e=>bigCard(e.city===S.city?e:{...e, venue:e.city+' · '+e.venue})).join('')}
+    ${(()=>{ const shown = new Set(S.cat==='Wszystko' && !S.query ? topPicks().map(e=>seriesKey(e)) : []), rest = bg.filter(e=>!shown.has(seriesKey(e)));
+      return [...rest.filter(e=>e.city===S.city), ...rest.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...rest.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,9).map(e=>bigCard(e.city===S.city?e:{...e, venue:e.city+' · '+e.venue})).join(''); })()}
   </div>` : ''; })()}
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
     <span class="h3">Już niedługo</span>
@@ -2963,6 +2985,7 @@ function act(a){
     case 'when': S.when = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'city': S.city = a.slice(5); S.cat='Wszystko'; S.limit=40; try{localStorage.setItem('city',S.city)}catch(e){}
       closeSheet(); S.dir=null; render(); break;
+    case 'surprise': surprise(); break;
     case 'more': S.limit += 60; S.dir=null; render(); break;
     case 'moreCities': closeSheet(); setTimeout(()=>go('cities'), 180); break;
     case 'cityCard': cityCard(a.slice(9)); break;
