@@ -56,12 +56,17 @@ async function currentUser(req, env) {
   const token = cookie(req, 'sid');
   if (!token) return null;
   const row = await env.DB.prepare(
-    `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at FROM sessions s JOIN users u ON u.id = s.user_id
+    `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at, u.owner, u.perm_curate, u.must_change FROM sessions s JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = ? AND s.expires_at > ?`).bind(await sha256(token), Date.now()).first();
   return row || null;
 }
 
-const publicUser = u => ({ id: u.id, email: u.email, name: u.name, role: u.role, city: u.city, createdAt: u.created_at });
+/* uprawnienia: owner = główny administrator, admin, moderator (perm_curate), tester (preview_access) */
+const isOwner = u => !!u && !!u.owner;
+const isAdmin = u => !!u && (u.role === 'admin' || !!u.owner);
+const canCurate = u => isAdmin(u) || (!!u && !!u.perm_curate);
+const publicUser = u => ({ id: u.id, email: u.email, name: u.name, role: u.role, city: u.city, createdAt: u.created_at,
+  owner: !!u.owner, curate: canCurate(u), mustChange: !!u.must_change });
 
 /* ---------------- walidacja ---------------- */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -154,8 +159,22 @@ async function updateMe(req, env, user) {
   return json({ user: publicUser({ ...user, name, city }) });
 }
 
+async function changePassword(req, env, user) {
+  const b = await body(req);
+  const next = String(b.password || '');
+  if (next.length < 8) return fail(400, 'Nowe hasło musi mieć co najmniej 8 znaków.');
+  if (next.length > 200) return fail(400, 'Hasło jest za długie.');
+  const u = await env.DB.prepare('SELECT pass FROM users WHERE id = ?').bind(user.id).first();
+  if (!(await checkPassword(String(b.current || ''), u.pass))) return fail(401, 'Obecne hasło jest niepoprawne.');
+  if (await checkPassword(next, u.pass)) return fail(400, 'Nowe hasło musi być inne niż obecne.');
+  await env.DB.prepare('UPDATE users SET pass = ?, must_change = 0 WHERE id = ?').bind(await hashPassword(next), user.id).run();
+  return json({ user: publicUser({ ...user, must_change: 0 }) });
+}
+
 async function deleteMe(req, env, user) {
   const b = await body(req);
+  if (isOwner(user) && (await env.DB.prepare('SELECT COUNT(*) AS n FROM users WHERE owner = 1').first('n')) <= 1)
+    return fail(400, 'Jesteś ostatnim głównym administratorem — najpierw nadaj tę rolę komuś innemu.');
   const u = await env.DB.prepare('SELECT pass FROM users WHERE id = ?').bind(user.id).first();
   if (!(await checkPassword(String(b.password || ''), u.pass))) return fail(401, 'Złe hasło.');
   await env.DB.batch([
@@ -163,6 +182,7 @@ async function deleteMe(req, env, user) {
     env.DB.prepare('DELETE FROM preview_access WHERE user_id = ?').bind(user.id),
     env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id),
     env.DB.prepare('UPDATE curation SET by_user = NULL WHERE by_user = ?').bind(user.id),
+    env.DB.prepare('UPDATE invites SET invited_by = NULL WHERE invited_by = ?').bind(user.id),
     env.DB.prepare('DELETE FROM users WHERE id = ?').bind(user.id)
   ]);
   return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
@@ -203,7 +223,7 @@ async function adminStats(req, env) {
   const q = (sql, ...a) => env.DB.prepare(sql).bind(...a).first('n');
   const [users, admins, active7, new7, saves, hidden, featured] = await Promise.all([
     q('SELECT COUNT(*) AS n FROM users'),
-    q("SELECT COUNT(*) AS n FROM users WHERE role = 'admin'"),
+    q("SELECT COUNT(*) AS n FROM users WHERE role = 'admin' OR owner = 1"),
     q('SELECT COUNT(*) AS n FROM users WHERE last_seen > ?', now - 7 * DAY),
     q('SELECT COUNT(*) AS n FROM users WHERE created_at > ?', now - 7 * DAY),
     q('SELECT COUNT(*) AS n FROM saved'),
@@ -218,7 +238,7 @@ async function adminUsers(req, env) {
   const url = new URL(req.url);
   const q = '%' + cleanText(url.searchParams.get('q'), 100).toLowerCase() + '%';
   const { results } = await env.DB.prepare(
-    `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at, u.last_seen,
+    `SELECT u.id, u.email, u.name, u.role, u.owner, u.perm_curate, u.must_change, u.city, u.created_at, u.last_seen,
             (SELECT COUNT(*) FROM saved s WHERE s.user_id = u.id) AS saves,
             EXISTS(SELECT 1 FROM preview_access p WHERE p.user_id = u.id) AS preview_access
      FROM users u WHERE lower(u.email) LIKE ? OR lower(u.name) LIKE ? ORDER BY u.created_at DESC LIMIT 200`).bind(q, q).all();
@@ -226,7 +246,7 @@ async function adminUsers(req, env) {
 }
 
 async function canPreview(env, user) {
-  return !!user && (user.role === 'admin' || !!(await env.DB.prepare('SELECT 1 FROM preview_access WHERE user_id = ?').bind(user.id).first()));
+  return !!user && (isAdmin(user) || !!(await env.DB.prepare('SELECT 1 FROM preview_access WHERE user_id = ?').bind(user.id).first()));
 }
 
 async function adminPreviewAccess(req, env, id) {
@@ -238,18 +258,34 @@ async function adminPreviewAccess(req, env, id) {
   return json({ ok: true, allowed: b.allowed });
 }
 
-/* Strona wejścia do aplikacji testowej. Ma własny formularz logowania, bo aplikacja dodana do ekranu
-   iPhone'a nie widzi ciasteczek z Safari — tester loguje się raz, już wewnątrz aplikacji. */
-const gatePage = (user) => `<!doctype html><html lang="pl"><head><meta charset="utf-8">
+/* Strona wejścia do aplikacji. Ma własne formularze, bo aplikacja dodana do ekranu iPhone'a nie widzi ciasteczek z Safari.
+   Tryby: login (bez sesji), denied (konto bez dostępu), invite (link z zaproszenia), change (hasło startowe do zmiany). */
+const escHtml = s => String(s).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+const gatePage = ({ mode, user, email, token, note }) => {
+  const field = (id, label, type, ac, extra = '') => `<label>${label}<input id="${id}" type="${type}" autocomplete="${ac}" ${extra}${extra.includes('data-optional') ? '' : ' required'}></label>`;
+  const forms = {
+    login: `<p>Zaloguj się kontem, które dostało zaproszenie do testów.</p>
+      <form id="f" data-mode="login">${field('e', 'E-MAIL', 'email', 'email', 'autocapitalize="off"')}${field('p', 'HASŁO', 'password', 'current-password')}
+      <div class="err" id="m" role="alert">${note ? escHtml(note) : ''}</div><button id="b">Wejdź do aplikacji</button></form>`,
+    denied: `<p>Konto <b>${escHtml(user?.email || '')}</b> nie ma jeszcze dostępu. Poproś administratora o zaproszenie do testów.</p>
+      <button id="out">Zaloguj się innym kontem</button>`,
+    invite: `<p>Zaproszenie dla <b>${escHtml(email || '')}</b>. Ustaw hasło — to wszystko.</p>
+      <form id="f" data-mode="invite" data-token="${escHtml(token || '')}">${field('n', 'IMIĘ (OPCJONALNIE)', 'text', 'given-name', 'maxlength="60" data-optional')}${field('p', 'HASŁO (MIN. 8 ZNAKÓW)', 'password', 'new-password', 'minlength="8"')}
+      <div class="err" id="m" role="alert"></div><button id="b">Przyjmij zaproszenie</button></form>`,
+    change: `<p>Konto <b>${escHtml(user?.email || '')}</b> ma hasło startowe. Ustaw własne, żeby przejść dalej.</p>
+      <form id="f" data-mode="change">${field('c', 'OBECNE HASŁO', 'password', 'current-password')}${field('p', 'NOWE HASŁO (MIN. 8 ZNAKÓW)', 'password', 'new-password', 'minlength="8"')}
+      <div class="err" id="m" role="alert"></div><button id="b">Zapisz i wejdź</button></form>`
+  };
+  return `<!doctype html><html lang="pl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000000">
 <meta name="robots" content="noindex,nofollow"><link rel="manifest" href="/app.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="+1"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/favicon.svg">
-<title>+1 — aplikacja testowa</title>
+<title>+1 — aplikacja</title>
 <style>
 *{box-sizing:border-box;margin:0}body{min-height:100dvh;display:grid;place-items:center;background:#000;color:#fff;
 font:16px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;padding:max(24px,env(safe-area-inset-top)) 22px max(24px,env(safe-area-inset-bottom))}
-main{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px}
+main{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px}form{display:flex;flex-direction:column;gap:12px}
 svg{width:72px;height:72px;border-radius:18px;align-self:center;margin-bottom:8px}
 h1{font-size:28px;line-height:1.1;letter-spacing:-.02em;text-align:center}p{color:rgba(255,255,255,.7);text-align:center;font-size:15px}
 label{display:flex;flex-direction:column;gap:6px;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.7)}
@@ -258,46 +294,162 @@ input:focus{border-color:#FF0059}button{height:54px;border:0;border-radius:16px;
 button:disabled{opacity:.6}.err{color:#ff7aa5;font-size:14px;text-align:center;min-height:20px}a{color:rgba(255,255,255,.6);text-align:center;font-size:14px}
 </style></head><body><main>
 <svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#000"/><g fill="#FF0059" transform="translate(6.45 8.3)"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
-<h1>Aplikacja +1<br>dla testerów</h1>
-${user
-  ? `<p>Konto <b>${user.email.replace(/[<>&"]/g, '')}</b> nie ma jeszcze dostępu. Poproś administratora o zaproszenie do testów.</p>
-     <button id="out">Zaloguj się innym kontem</button>`
-  : `<p>Zaloguj się kontem, które dostało zaproszenie do testów.</p>
-     <form id="f" style="display:flex;flex-direction:column;gap:12px">
-       <label>E-MAIL<input id="e" type="email" autocomplete="email" autocapitalize="off" required></label>
-       <label>HASŁO<input id="p" type="password" autocomplete="current-password" required></label>
-       <div class="err" id="m" role="alert"></div>
-       <button id="b">Wejdź do aplikacji</button>
-     </form>`}
+<h1>${mode === 'invite' ? 'Witaj w +1' : mode === 'change' ? 'Nowe hasło' : 'Aplikacja +1<br>dla testerów'}</h1>
+${forms[mode]}
 <p id="ios" style="display:none;font-size:13px">Na iPhonie: w Safari stuknij <b>Udostępnij</b> → <b>Do ekranu początkowego</b>. Ikona +1 otworzy aplikację.</p>
-<p style="font-size:13px">Nie masz konta? Załóż je na stronie, a potem poproś o dostęp do testów.</p>
+${mode === 'login' ? '<p style="font-size:13px">Nie masz konta? Załóż je na stronie, a potem poproś o dostęp do testów.</p>' : ''}
 <a href="/?web" target="_blank" rel="noopener">Przejdź do strony plusoneapp.pl</a>
 </main><script>
-const f=document.getElementById('f'),o=document.getElementById('out');
-if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone) document.getElementById('ios').style.display='block';
-if(f) f.onsubmit=async ev=>{ev.preventDefault();const b=document.getElementById('b'),m=document.getElementById('m');b.disabled=true;m.textContent='';
-  try{const r=await fetch('/api/auth/login',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({email:document.getElementById('e').value.trim(),password:document.getElementById('p').value})});
-    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Nie udało się zalogować.');location.reload();}
-  catch(e){m.textContent=e.message;b.disabled=false;}};
-if(o) o.onclick=async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'}).catch(()=>{});location.reload();};
+const $=id=>document.getElementById(id),f=$('f'),o=$('out');
+if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone) $('ios').style.display='block';
+const post=(u,d)=>fetch(u,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+  .then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Coś poszło nie tak.');return j;});
+if(f) f.onsubmit=async ev=>{ev.preventDefault();const b=$('b'),m=$('m'),k=f.dataset.mode;b.disabled=true;m.textContent='';
+  try{
+    if(k==='login') await post('/api/auth/login',{email:$('e').value.trim(),password:$('p').value});
+    if(k==='invite'){ await post('/api/invite/accept',{token:f.dataset.token,name:$('n').value.trim(),password:$('p').value}); location.replace('/app'); return; }
+    if(k==='change') await post('/api/me/password',{current:$('c').value,password:$('p').value});
+    location.reload();
+  }catch(e){m.textContent=e.message;b.disabled=false;}};
+if(o) o.onclick=async()=>{await post('/api/auth/logout',{}).catch(()=>{});location.reload();};
 </script></body></html>`;
+};
 
 async function preview(req, env) {
   const headers = { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex, nofollow', 'Vary': 'Cookie' };
   if (!env.DB) return new Response('Podgląd jest chwilowo niedostępny. <a href="/?web" target="_blank">Wróć do witryny</a>', { status: 503, headers });
+  const url = new URL(req.url), token = url.searchParams.get('invite');
+  if (token) {
+    const inv = await findInvite(env, token);
+    if (inv) return new Response(gatePage({ mode: 'invite', email: inv.email, token }), { headers });
+  }
   const user = await currentUser(req, env);
-  if (!await canPreview(env, user)) return new Response(gatePage(user), { status: user ? 403 : 401, headers });
+  const note = token ? 'Zaproszenie wygasło albo zostało już użyte. Zaloguj się.' : '';
+  if (!user) return new Response(gatePage({ mode: 'login', note }), { status: 401, headers });
+  if (user.must_change) return new Response(gatePage({ mode: 'change', user }), { status: 403, headers });
+  if (!await canPreview(env, user)) return new Response(gatePage({ mode: 'denied', user }), { status: 403, headers });
   return new Response(previewHtml, { headers });
 }
 
-async function adminSetRole(req, env, user, id) {
+/* POST /api/admin/users/:id/perms { preview?, curate?, admin?, owner? } — admin nadaje tester/moderator,
+   tylko główny administrator nadaje i odbiera admina oraz rolę głównego administratora */
+async function adminSetPerms(req, env, user, id) {
   const b = await body(req);
-  const role = b.role === 'admin' ? 'admin' : 'user';
-  if (+id === user.id && role !== 'admin') return fail(400, 'Nie możesz odebrać admina sam sobie.');
-  const r = await env.DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(role, +id).run();
-  if (!r.meta.changes) return fail(404, 'Nie ma takiego użytkownika.');
-  return json({ ok: true, role });
+  const t = await env.DB.prepare('SELECT id, role, owner FROM users WHERE id = ?').bind(+id).first();
+  if (!t) return fail(404, 'Nie ma takiego użytkownika.');
+  if (t.owner && !isOwner(user)) return fail(403, 'Uprawnienia głównego administratora zmienia tylko inny główny administrator.');
+  if ((b.admin !== undefined || b.owner !== undefined) && !isOwner(user)) return fail(403, 'Admina nadaje i odbiera tylko główny administrator.');
+  if (t.id === user.id && (b.admin === false || b.owner === false)) return fail(400, 'Nie możesz odebrać uprawnień sam sobie.');
+  if (b.owner === false && t.owner && (await env.DB.prepare('SELECT COUNT(*) AS n FROM users WHERE owner = 1').first('n')) <= 1)
+    return fail(400, 'Musi zostać co najmniej jeden główny administrator.');
+  const ops = [];
+  if (typeof b.preview === 'boolean') ops.push(b.preview
+    ? env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(t.id, Date.now())
+    : env.DB.prepare('DELETE FROM preview_access WHERE user_id = ?').bind(t.id));
+  if (typeof b.curate === 'boolean') ops.push(env.DB.prepare('UPDATE users SET perm_curate = ? WHERE id = ?').bind(b.curate ? 1 : 0, t.id));
+  if (typeof b.admin === 'boolean') ops.push(env.DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(b.admin ? 'admin' : 'user', t.id));
+  if (typeof b.owner === 'boolean') ops.push(env.DB.prepare('UPDATE users SET owner = ?' + (b.owner ? ", role = 'admin'" : '') + ' WHERE id = ?').bind(b.owner ? 1 : 0, t.id));
+  if (!ops.length) return fail(400, 'Brak zmian.');
+  await env.DB.batch(ops);
+  return json({ ok: true });
+}
+
+/* ---------------- zaproszenia ---------------- */
+const INVITE_DAYS = 14;
+const inviteLink = (req, token) => new URL('/app?invite=' + token, req.url).href;
+const randomToken = () => b64(crypto.getRandomValues(new Uint8Array(24))).replace(/[+/=]/g, c => ({ '+': '-', '/': '_', '=': '' }[c]));
+
+/* wysyłka przez Resend (https://resend.com), jeśli są ustawione sekrety RESEND_API_KEY i MAIL_FROM; inaczej admin dostaje link do przekazania */
+async function sendMail(env, to, subject, text, html) {
+  if (!env.RESEND_API_KEY || !env.MAIL_FROM) return false;
+  try {
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST', headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: env.MAIL_FROM, to: [to], subject, text, html })
+    });
+    if (!r.ok) console.error('mail', r.status, await r.text());
+    return r.ok;
+  } catch (e) { console.error('mail', e); return false; }
+}
+
+const inviteMail = (link, by, perms) => {
+  const what = [perms.preview && 'aplikacji +1 (testy)', perms.curate && 'moderowania wydarzeń', perms.admin && 'panelu administratora'].filter(Boolean).join(', ');
+  const text = `Cześć!\n\n${by} zaprasza Cię do +1 — dostęp do: ${what}.\n\nOtwórz link, ustaw hasło i gotowe (link ważny ${INVITE_DAYS} dni):\n${link}\n\nNa iPhonie otwórz go w Safari, a potem Udostępnij → Do ekranu początkowego.\n\n+1 · plusoneapp.pl`;
+  const html = `<div style="font:16px/1.6 -apple-system,Segoe UI,sans-serif;max-width:480px;margin:auto;padding:24px;color:#111">
+<div style="width:56px;height:56px;border-radius:14px;background:#000;color:#FF0059;font:700 28px/56px sans-serif;text-align:center">+1</div>
+<h1 style="font-size:24px;margin:20px 0 8px">Zaproszenie do +1</h1>
+<p>${by.replace(/[<>&]/g, '')} zaprasza Cię — dostęp do: <b>${what}</b>.</p>
+<p><a href="${link}" style="display:inline-block;background:#FF0059;color:#000;padding:14px 22px;border-radius:12px;font-weight:700;text-decoration:none">Przyjmij zaproszenie</a></p>
+<p style="color:#666;font-size:14px">Link jest ważny ${INVITE_DAYS} dni. Na iPhonie otwórz go w Safari, potem Udostępnij → Do ekranu początkowego.</p></div>`;
+  return { subject: 'Zaproszenie do +1', text, html };
+};
+
+/* POST /api/admin/invites { email, preview, curate, admin } */
+async function adminInvite(req, env, user) {
+  const b = await body(req);
+  const email = cleanEmail(b.email);
+  if (!EMAIL_RE.test(email) || email.length > 200) return fail(400, 'Podaj poprawny adres e-mail.');
+  const perms = { preview: b.preview !== false, curate: !!b.curate, admin: !!b.admin };
+  if (perms.admin && !isOwner(user)) return fail(403, 'Admina może zaprosić tylko główny administrator.');
+  const by = user.name || user.email;
+
+  // konto już istnieje: od razu nadajemy uprawnienia i wysyłamy powiadomienie z linkiem do aplikacji
+  const ex = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
+  if (ex) {
+    const ops = [];
+    if (perms.preview) ops.push(env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(ex.id, Date.now()));
+    if (perms.curate) ops.push(env.DB.prepare('UPDATE users SET perm_curate = 1 WHERE id = ?').bind(ex.id));
+    if (perms.admin) ops.push(env.DB.prepare("UPDATE users SET role = 'admin' WHERE id = ?").bind(ex.id));
+    if (ops.length) await env.DB.batch(ops);
+    const link = new URL('/app', req.url).href, m = inviteMail(link, by, perms);
+    const emailed = await sendMail(env, email, m.subject, m.text, m.html);
+    return json({ ok: true, existing: true, link, emailed, mail: { subject: m.subject, text: m.text } });
+  }
+
+  const token = randomToken(), now = Date.now();
+  await env.DB.prepare('INSERT INTO invites (token_hash, email, preview, curate, admin, invited_by, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(await sha256(token), email, +perms.preview, +perms.curate, +perms.admin, user.id, now, now + INVITE_DAYS * DAY).run();
+  const link = inviteLink(req, token), m = inviteMail(link, by, perms);
+  const emailed = await sendMail(env, email, m.subject, m.text, m.html);
+  return json({ ok: true, existing: false, link, emailed, mail: { subject: m.subject, text: m.text } }, 201);
+}
+
+async function adminInvites(req, env) {
+  const { results } = await env.DB.prepare(
+    `SELECT i.rowid AS id, i.email, i.preview, i.curate, i.admin, i.created_at, i.expires_at, i.used_at, u.email AS by_email
+     FROM invites i LEFT JOIN users u ON u.id = i.invited_by ORDER BY i.created_at DESC LIMIT 100`).all();
+  return json({ invites: results, mailer: !!(env.RESEND_API_KEY && env.MAIL_FROM) });
+}
+
+async function adminRevokeInvite(req, env, id) {
+  await env.DB.prepare('DELETE FROM invites WHERE rowid = ? AND used_at IS NULL').bind(+id).run();
+  return json({ ok: true });
+}
+
+async function findInvite(env, token) {
+  if (!token || token.length > 100) return null;
+  return env.DB.prepare('SELECT rowid AS id, * FROM invites WHERE token_hash = ? AND used_at IS NULL AND expires_at > ?').bind(await sha256(token), Date.now()).first();
+}
+
+/* POST /api/invite/accept { token, name, password } — zakłada konto z uprawnieniami z zaproszenia */
+async function acceptInvite(req, env) {
+  const b = await body(req);
+  const inv = await findInvite(env, String(b.token || ''));
+  if (!inv) return fail(410, 'Zaproszenie wygasło albo zostało już użyte.');
+  const password = String(b.password || ''), name = cleanText(b.name, 60);
+  if (password.length < 8) return fail(400, 'Hasło musi mieć co najmniej 8 znaków.');
+  if (password.length > 200) return fail(400, 'Hasło jest za długie.');
+  if (await env.DB.prepare('SELECT 1 FROM users WHERE email = ?').bind(inv.email).first())
+    return fail(409, 'To konto już istnieje — zaloguj się.');
+  const now = Date.now();
+  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, perm_curate, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?)')
+    .bind(inv.email, name, await hashPassword(password), inv.admin ? 'admin' : 'user', inv.curate, now, now).run();
+  const id = res.meta.last_row_id;
+  await env.DB.batch([
+    env.DB.prepare('UPDATE invites SET used_at = ? WHERE rowid = ?').bind(now, inv.id),
+    ...(inv.preview ? [env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(id, now)] : [])
+  ]);
+  return json({ ok: true }, 201, { 'Set-Cookie': await startSession(env, id) });
 }
 
 async function adminCurate(req, env, user) {
@@ -333,25 +485,36 @@ async function api(req, env) {
   if (path === '/api/auth/register' && m === 'POST') return register(req, env);
   if (path === '/api/auth/login' && m === 'POST') return login(req, env);
   if (path === '/api/auth/logout' && m === 'POST') return logout(req, env);
+  if (path === '/api/invite/accept' && m === 'POST') return acceptInvite(req, env);
 
   const user = await currentUser(req, env);
   if (path === '/api/preview-access' && m === 'GET') return json({ allowed: await canPreview(env, user) });
   if (path === '/api/me' && m === 'GET') return me(req, env, user);
   if (!user) return fail(401, 'Zaloguj się.');
 
+  if (path === '/api/me/password' && m === 'POST') return changePassword(req, env, user);
   if (path === '/api/me' && m === 'PATCH') return updateMe(req, env, user);
   if (path === '/api/me' && m === 'DELETE') return deleteMe(req, env, user);
   if (path === '/api/saved' && m === 'POST') return toggleSaved(req, env, user);
 
   if (path.startsWith('/api/admin/')) {
-    if (user.role !== 'admin') return fail(403, 'Tylko dla admina.');
+    // konto z hasłem startowym: najpierw nowe hasło
+    if (user.must_change) return fail(403, 'Najpierw ustaw nowe hasło (Konto → Zmień hasło).');
+    if (path === '/api/admin/curation' && m === 'POST') {
+      if (!canCurate(user)) return fail(403, 'Brak uprawnień moderatora.');
+      return adminCurate(req, env, user);
+    }
+    if (!isAdmin(user)) return fail(403, 'Tylko dla admina.');
     if (path === '/api/admin/stats' && m === 'GET') return adminStats(req, env);
     if (path === '/api/admin/users' && m === 'GET') return adminUsers(req, env);
     const previewUser = path.match(/^\/api\/admin\/users\/(\d+)\/preview$/);
     if (previewUser && m === 'POST') return adminPreviewAccess(req, env, previewUser[1]);
-    const r = path.match(/^\/api\/admin\/users\/(\d+)\/role$/);
-    if (r && m === 'POST') return adminSetRole(req, env, user, r[1]);
-    if (path === '/api/admin/curation' && m === 'POST') return adminCurate(req, env, user);
+    const r = path.match(/^\/api\/admin\/users\/(\d+)\/perms$/);
+    if (r && m === 'POST') return adminSetPerms(req, env, user, r[1]);
+    if (path === '/api/admin/invites' && m === 'GET') return adminInvites(req, env);
+    if (path === '/api/admin/invites' && m === 'POST') return adminInvite(req, env, user);
+    const inv = path.match(/^\/api\/admin\/invites\/(\d+)$/);
+    if (inv && m === 'DELETE') return adminRevokeInvite(req, env, inv[1]);
   }
   return fail(404, 'Nie znaleziono.');
 }

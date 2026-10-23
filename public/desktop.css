@@ -293,3 +293,12 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
   body:not(.demo) .pg { padding-left: max(16px, env(safe-area-inset-left)) !important; padding-right: max(16px, env(safe-area-inset-right)) !important; }
   #web-footer { padding-bottom: max(24px, env(safe-area-inset-bottom)); }
 }
+
+/* panel admina: uprawnienia */
+.perm { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--surface-2); color: var(--t1); transition: border-color .2s, background .2s; }
+.perm.on { border-color: var(--pink-line); background: var(--pink-dim); }
+.perm:disabled { opacity: .5; cursor: not-allowed; }
+.perm-box { flex: none; width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid var(--line-2); display: grid; place-items: center; color: #000; }
+.perm.on .perm-box { background: var(--pink); border-color: var(--pink); }
+.badge { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 6px; font: 600 10px/1 var(--d); background: var(--pink-dim); color: var(--pink); }
+.badge.off { background: var(--surface-3); color: var(--t3); }

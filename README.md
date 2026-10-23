@@ -68,7 +68,10 @@ Następny krok (opcjonalnie): pakiet APK przez Capacitor/TWA dla Androida. Natyw
 
 - API w `worker/index.js` (Cloudflare Worker, ścieżki `/api/*`), baza **D1** `plusone`, schemat w `migrations/`.
 - Rejestracja e-mail + hasło (PBKDF2), sesja w ciasteczku HttpOnly na 60 dni, limit prób logowania.
-- Role: `user` i `admin`. Admin z konfiguracji: `ADMIN_EMAIL_SHA256` w `wrangler.jsonc` (sha256 adresu e-mail); kolejnych adminów nadaje się w panelu.
+- Uprawnienia: **Tester aplikacji** (`preview_access`), **Moderator** (`perm_curate`: poleca/ukrywa wydarzenia), **Administrator** (`role = 'admin'`: panel, użytkownicy, zaproszenia), **Główny administrator** (`owner`: jako jedyny nadaje i odbiera admina; zawsze zostaje co najmniej jeden). Admin z konfiguracji: `ADMIN_EMAIL_SHA256` w `wrangler.jsonc`.
+- Główni administratorzy startowi (migracja `0004`): jeremi@tooday.pl, lukasz@tooday.pl, p.puchalski@tooday.pl — hasło startowe `1234`, zmiana wymuszona przy pierwszym logowaniu (`must_change`; do tego czasu panel admina jest zablokowany).
+- **Zaproszenia** (Panel admina → Zaproszenia): e-mail + uprawnienia → link `/app?invite=…` ważny 14 dni; zaproszony ustawia hasło i od razu ma dostęp. Istniejące konto dostaje uprawnienia od razu.
+- **Wysyłka maili**: przez [Resend](https://resend.com) — ustaw sekrety Workera `RESEND_API_KEY` i `MAIL_FROM` (np. `+1 <zaproszenia@plusoneapp.pl>`, domena zweryfikowana w Resend): `npx wrangler secret put RESEND_API_KEY`. Bez nich panel pokazuje link do skopiowania i przycisk „Wyślij z poczty”.
 - **Moje bilety**: na wydarzeniu „Mam bilet” i „Zapisz” (tabela `saved`, kolumna `kind` = `going`/`saved`, migracja `0002`). Gość trzyma je w `localStorage`, po zalogowaniu przechodzą na konto. Zakładka Bilety pokazuje najbliższe wydarzenie z odliczaniem, dojazdem i plikiem do kalendarza; PAY pojawia się tylko w dniu wydarzenia z biletem.
 - Panel admina (Profil → Panel admina): statystyki, użytkownicy i role, polecanie/ukrywanie wydarzeń, stan źródeł danych.
 - Lokalnie: `npx wrangler d1 migrations apply plusone --local && npx wrangler dev`.
