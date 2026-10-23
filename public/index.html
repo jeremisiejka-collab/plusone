@@ -1780,9 +1780,9 @@ function webHero(){
 function scDownloads(){
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent), android = /android/i.test(navigator.userAgent);
   const access = ACC.user && !ACC.preview
-    ? `<div class="card" style="padding:16px"><span class="h4">Twoje konto czeka na zaproszenie</span><p class="body" style="margin-top:6px">Testy są zamknięte. Gdy administrator nada Ci dostęp, przycisk poniżej otworzy aplikację.</p></div>`
+    ? `<div class="card" style="padding:16px"><span class="h4">Twoje konto czeka na zaproszenie</span><p class="body" style="margin-top:6px">Możesz zainstalować aplikację już teraz. Skorzystasz z niej po otrzymaniu dostępu do testów.</p></div>`
     : '';
-  const cta = `<a class="btn p" href="/app" style="display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;max-width:380px">${ic('plane',18)} Pobierz aplikację +1</a>`;
+  const cta = `<button class="btn p" data-act="installApp" style="display:flex;align-items:center;justify-content:center;gap:10px;max-width:380px">${ic('plus',18)} Zainstaluj +1</button>`;
   const step = (title, steps, on) => `<div class="dl-card" style="${on?'border-color:var(--pink-line)':''}">
     <div class="row" style="justify-content:space-between"><span class="h3">${title}</span>${on?'<span class="ev-more">Twój telefon</span>':''}</div><ol>${steps.map(x=>`<li><span>${x}</span></li>`).join('')}</ol></div>`;
   return `<div class="pg"><div class="dl">
@@ -1800,6 +1800,69 @@ function scDownloads(){
   <p class="body" style="color:var(--t3)">Chcesz dołączyć do testów? Załóż konto i napisz do nas — dostęp nadaje administrator.</p>
 </div></div>`; }
 
+/* Zachęta do instalacji. Okno systemowe otwieramy dopiero po kliknięciu. */
+const WEB_INSTALL = { prompt:null, ready:false, busy:false, dismissed:false, installed:false };
+const installedApp = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+function installNudgeHidden(){
+  if(installedApp() || WEB_INSTALL.installed || WEB_INSTALL.dismissed) return true;
+  try { return localStorage.getItem('plusoneInstalled')==='1' || Number(localStorage.getItem('webInstallDismissedUntil'))>Date.now(); } catch { return false; }
+}
+function dismissInstallNudge(){
+  WEB_INSTALL.dismissed = true;
+  try { localStorage.setItem('webInstallDismissedUntil', String(Date.now()+7*864e5)); } catch {}
+  $('#web-install')?.remove();
+}
+function renderInstallNudge(){
+  const visible = WEB_INSTALL.ready && !installNudgeHidden() && ['home','list','map','event','tickets','wallet'].includes(S.screen);
+  if(!visible){ $('#web-install')?.remove(); return; }
+  const existing = $('#web-install');
+  if(existing){ $('[data-act="installApp"]', existing).textContent = WEB_INSTALL.prompt ? 'Zainstaluj' : 'Jak zainstalować'; return; }
+  const el = document.createElement('aside'); el.id='web-install';
+  el.setAttribute('aria-labelledby','web-install-title'); el.setAttribute('aria-live','polite');
+  el.innerHTML = `<div class="web-install-head">${LOGO(44,12)}<div><h2 id="web-install-title">Zainstaluj +1</h2><p>Wydarzenia i bilety zawsze pod ręką.</p></div></div>
+    <button class="web-install-close" data-act="dismissInstall" aria-label="Zamknij zachętę do instalacji">${ic('cross',16)}</button>
+    <button class="web-install-go" data-act="installApp">${WEB_INSTALL.prompt?'Zainstaluj':'Jak zainstalować'}</button>`;
+  document.body.appendChild(el); bind(el);
+}
+function installInstructions(){
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  const android = /android/i.test(navigator.userAgent);
+  const steps = ios
+    ? ['Otwórz tę stronę w <b>Safari</b> i stuknij <b>Udostępnij</b>.', 'Wybierz <b>Do ekranu początkowego</b>, a następnie <b>Dodaj</b>.']
+    : android
+      ? ['Otwórz tę stronę w <b>Chrome</b> i rozwiń menu przeglądarki.', 'Wybierz <b>Zainstaluj aplikację</b> lub <b>Dodaj do ekranu głównego</b> i potwierdź.']
+      : ['Otwórz tę stronę w <b>Chrome</b> lub <b>Edge</b>.', 'W menu przeglądarki wybierz opcję <b>Zainstaluj tę stronę jako aplikację</b>.'];
+  $('#web-install')?.remove();
+  sheet(`<div class="col" style="gap:16px"><h2 class="h3">Zainstaluj +1</h2>
+    <ol class="install-steps">${steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+    <p class="body">Po instalacji otwórz ikonę +1 i zaloguj się kontem z dostępem do aplikacji.</p>
+    <a class="btn p" href="/app" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Otwórz aplikację</a></div>`);
+}
+async function installApp(){
+  if(WEB_INSTALL.busy) return;
+  if(installedApp() || WEB_INSTALL.installed){ location.assign('/app'); return; }
+  const prompt = WEB_INSTALL.prompt;
+  if(!prompt){ installInstructions(); return; }
+  WEB_INSTALL.busy=true; WEB_INSTALL.prompt=null;
+  try {
+    await prompt.prompt();
+    await prompt.userChoice;
+    dismissInstallNudge();
+  } catch { installInstructions(); }
+  finally { WEB_INSTALL.busy=false; }
+}
+addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault(); WEB_INSTALL.prompt=e; WEB_INSTALL.installed=false;
+  try { localStorage.removeItem('plusoneInstalled'); } catch {}
+  renderInstallNudge();
+});
+addEventListener('appinstalled', ()=>{
+  WEB_INSTALL.prompt=null; WEB_INSTALL.installed=true;
+  try { localStorage.setItem('plusoneInstalled','1'); } catch {}
+  $('#web-install')?.remove();
+});
+matchMedia('(display-mode: standalone)').addEventListener('change', renderInstallNudge);
+
 function renderWebChrome(){
   $('#web-header').innerHTML = `<div class="web-header-inner">
     <button class="web-brand" data-act="fabHome" aria-label="+1 — strona główna">${LOGO(48,12)}<span>WHERE ARE<br>WE GOING?</span></button>
@@ -1814,13 +1877,12 @@ function renderWebChrome(){
       <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
       <button class="web-theme" data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
       <button class="web-account" data-act="${ACC.user?'go:profile':'authgo:login'}" aria-label="${ACC.user?'Moje konto':'Zaloguj się'}">${ic('user',16)}<span>${ACC.user?'Moje konto':'Zaloguj się'}</span></button>
-      <button class="web-app" data-act="go:downloads" ${S.screen==='downloads'?'aria-current="page"':''}>Aplikacja</button>
     </div>
   </div>`;
   $('#web-footer').innerHTML = `<div class="web-footer-inner">
     <span>+1 &nbsp; WHERE ARE WE GOING?<br>Wydarzenia w Twoim mieście, w jednym miejscu.</span>
     <button data-act="go:profile">Konto i ustawienia ${ic('chevR',12)}</button>
-    <button data-act="go:downloads">Aplikacja na telefon</button>
+    <button data-act="installApp">Zainstaluj aplikację</button>
   </div>`;
 }
 
@@ -1830,6 +1892,7 @@ function render(){
   const fn = walletSoon() ? scWalletSoon : (!DEMO && S.screen==='tickets') ? scMyTickets : (SCREENS[S.screen] || scHome);
   $('#view').innerHTML = fn();
   renderWebChrome();
+  renderInstallNudge();
   const pg = $('#view').firstElementChild;
   if(pg) pg.dataset.screen = S.screen;
   if(pg && S.dir) pg.classList.add(S.dir);
@@ -1894,6 +1957,8 @@ function act(a){
       S.cat='Wszystko'; S.query=''; S.price='all'; S.limit=40; S.when = MAP.when==='all' ? 'all' : MAP.when; S.prev='map'; go('list'); break;
     case 'big': S.big=!S.big; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'bigList': S.big=true; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40; go('list'); break;
+    case 'installApp': installApp(); break;
+    case 'dismissInstall': dismissInstallNudge(); break;
     case 'upcomingList': S.big=false; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.sort='date'; S.limit=40; go('list'); break;
     case 'descToggle': S.descOpen = S.descOpen===p1 ? null : p1; S.dir=null; render(); break;
     case 'walletNotify': S.walletNotify=true; try{localStorage.setItem('walletNotify','1')}catch(e){}
@@ -2580,6 +2645,7 @@ if(/[?&]register\b/.test(location.search)){ ACC.authMode='register'; S.prev='hom
 render();
 loadLive();
 loadAccount();
+setTimeout(()=>{ WEB_INSTALL.ready=true; renderInstallNudge(); }, 3500);
 setTimeout(()=>{ $('#splash').classList.add('out'); }, 1550);
 setTimeout(()=>{ const sp=$('#splash'); if(sp) sp.remove(); }, 2150);
 if(DEMO && innerWidth>760) setTimeout(()=>toast('Pasek na dole (desktop) przeskakuje po ekranach', true, 4200), 2600);

@@ -33,12 +33,10 @@
   .web-nav button[aria-current="page"] { color: var(--t1); }
   .web-nav button[aria-current="page"]::after { content: ''; position: absolute; height: 3px; background: var(--pink); bottom: -17px; left: 0; right: 0; }
   .web-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-  .web-city, .web-account, .web-theme, .web-app { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; border-radius: 12px; padding: 0 12px; font-size: 13px; white-space: nowrap; }
+  .web-city, .web-account, .web-theme { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; border-radius: 12px; padding: 0 12px; font-size: 13px; white-space: nowrap; }
   .web-city { color: var(--t2); }
   .web-account { background: var(--inv); color: var(--inv-t); font-weight: 600; }
   .web-theme { border: 1px solid var(--line-2); padding: 0; width: 42px; }
-  .web-app { border: 1px solid var(--line-2); font-weight: 600; }
-  .web-app:hover, .web-app[aria-current="page"] { border-color: var(--pink); color: var(--pink); background: var(--pink-dim); }
   .web-hero { position: relative; isolation: isolate; padding: 28px 0 46px; overflow: hidden; }
   .web-hero h1 { font: 600 clamp(52px, 5.5vw, 80px)/1.02 var(--d); letter-spacing: -.065em; margin-top: 24px; }
   .web-hero h1 span { color: var(--pink); }
@@ -86,7 +84,7 @@
   .web-brand span { display: none; }
   .web-brand svg { width: 36px; height: 36px; }
   .web-actions { gap: 5px; }
-  .web-city, .web-account, .web-app { padding: 0 8px; font-size: 12px; }
+  .web-city, .web-account { padding: 0 8px; font-size: 12px; }
   .web-city svg { display: none !important; }
   .web-account span { display: none; }
   .web-account { width: 36px; padding: 0; }
@@ -137,6 +135,21 @@
   .web-nav { order: 3; width: 100%; min-height: 44px; }
   .web-nav button[aria-current="page"]::after { bottom: 0; }
 }
+
+/* Zamykana zachęta do instalacji, poza nawigacją strony. */
+#web-install { position: fixed; right: max(24px, env(safe-area-inset-right)); bottom: max(24px, env(safe-area-inset-bottom)); z-index: 80; width: 360px; max-width: calc(100vw - 24px); padding: 20px; border: 1px solid var(--pink-line); border-radius: 22px; background: var(--bg); color: var(--t1); box-shadow: 0 12px 48px rgba(0,0,0,.16); animation: install-appear .25s ease-out; }
+.web-install-head { display: flex; align-items: center; gap: 12px; padding-right: 20px; }
+.web-install-head > svg { flex: none; }
+.web-install-head h2 { font: 600 18px/1.2 var(--d); letter-spacing: -.02em; }
+.web-install-head p { margin-top: 5px; font: 400 13px/1.45 var(--d); color: var(--t2); }
+.web-install-close { position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; color: var(--t2); }
+.web-install-close:hover { background: var(--surface); }
+.web-install-go { width: 100%; min-height: 44px; margin-top: 16px; border-radius: 12px; background: var(--pink); color: #000; font: 600 14px/1.2 var(--d); }
+.install-steps { padding-left: 22px; font: 400 15px/1.6 var(--d); color: var(--t2); }
+.install-steps li + li { margin-top: 12px; }
+@keyframes install-appear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (max-width: 760px) { #web-install { right: max(12px, env(safe-area-inset-right)); bottom: max(12px, env(safe-area-inset-bottom)); padding: 16px; } }
+@media (prefers-reduced-motion: reduce) { #web-install { animation: none; } }
 
 /* Krótkie przesunięcie warstw nadruku, potem pauza przez większość cyklu. */
 @keyframes print-solid {
