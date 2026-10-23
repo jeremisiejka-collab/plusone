@@ -3,3 +3,4 @@ __MACOSX/
 .vercel
 node_modules/
 .wrangler/
+social/out/

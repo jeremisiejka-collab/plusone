@@ -62,7 +62,9 @@ export function parsePrice(v) {
 
 export function clean(s, max) {
   if (!s) return '';
-  let t = String(s).replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  let t = String(s).replace(/<[^>]+>/g, ' ').replace(/%26(#?\w+;)/g, '&$1')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&#x([\da-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
   if (max && t.length > max) t = t.slice(0, max).replace(/\s\S*$/, '') + '…';
   return t;
 }
