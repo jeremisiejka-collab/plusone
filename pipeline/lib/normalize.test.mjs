@@ -43,7 +43,7 @@ test('publikowany katalog nie zawiera emoji w treściach wydarzeń', () => {
 });
 
 test('interfejs używa ikon SVG zamiast systemowych emoji', () => {
-  for (const path of ['../../public/index.html', '../../private/app.html', '../../public/admin.js']) {
+  for (const path of ['../../public/index.html', '../../private/app.html', '../../public/admin.js', '../../public/premium.js']) {
     assert.doesNotMatch(readFileSync(new URL(path, import.meta.url), 'utf8'), /[\p{Emoji_Presentation}\uFE0F\u20E3]/u, path);
   }
 });
