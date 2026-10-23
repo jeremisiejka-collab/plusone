@@ -13,7 +13,7 @@
   document.querySelector('meta[name=theme-color]').content=t==='light'?'#ffffff':'#000000';
 })();
 </script>
-<link rel="manifest" href="/manifest.webmanifest">
+<link rel="manifest" href="/app.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>+1 — imprezy, koncerty i wydarzenia w Warszawie</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -87,6 +87,11 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
   #shell{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
   /* prawdziwy telefon ma własny pasek statusu — udawany zostaje tylko w demo */
   body:not(.demo) #status{display:none}
+  /* w aplikacji na telefonie: miejsce na systemowy pasek statusu zostaje, udawany zegar i bateria znikają */
+  body.demo #status > *{visibility:hidden}
+  /* pasek „zamknięty podgląd” spychałby dolne menu poza ekran telefonu */
+  #previewbar{display:none}
+  body #status{height:max(52px,env(safe-area-inset-top))}
   /* dolne menu nad paskiem gestów iPhone'a, bez pustego pasa pod spodem */
   #nav{height:calc(68px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
 }
@@ -325,7 +330,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 <link rel="stylesheet" href="/desktop.css">
 </head>
 <body>
-<div style="padding:10px;text-align:center;background:#ff0059;color:#000;font:600 12px system-ui">Zamknięty podgląd aplikacji · płatności i bilety są demonstracyjne · <a href="/">Wróć do witryny</a></div>
+<div id="previewbar" style="padding:10px;text-align:center;background:#ff0059;color:#000;font:600 12px system-ui">Zamknięty podgląd aplikacji · płatności i bilety są demonstracyjne · <a href="/">Wróć do witryny</a></div>
 <div id="desk">
   <div id="deskbar" class="ds">
     <svg width="32" height="32" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#000"/><g fill="#FF0059"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
@@ -429,7 +434,8 @@ const addDays = n => { const d=new Date(); d.setDate(d.getDate()+n); return loca
 function liveEvent(x){
   let [day, hm] = x.start.split('T'); const d = new Date(day+'T12:00');
   const time = hm && hm!=='00:00' ? hm : '';
-  const multi = !!x.end && x.end.slice(0,10)!==day;
+  // koniec po północy (19:00–01:00) to nadal jeden wieczór, nie wydarzenie wielodniowe
+  const multi = !!x.end && x.end.slice(0,10)!==day && new Date(x.end) - new Date(x.start) > 18*3600e3;
   const endD = multi && new Date(x.end.slice(0,10)+'T12:00');
   // wydarzenia wielodniowe, które już trwają: pokazujemy jako "dziś", z datą końca
   const ongoing = multi && day < localDay();
@@ -438,7 +444,8 @@ function liveEvent(x){
     : day===localDay() ? 'dziś' : day===addDays(1) ? 'jutro'
     : `${DNI[d.getDay()]} ${d.getDate()} ${MIES[d.getMonth()]}`;
   return {
-    id:x.id, real:true, multi, big:!!x.big, name:x.title, cat:x.category, city:x.city,
+    id:x.id, real:true, multi, ongoing, big:!!x.big,
+    tag: ongoing ? `do ${endD.getDate()} ${MIES[endD.getMonth()]}` : day===localDay() ? 'dziś' : day===addDays(1) ? 'jutro' : `${DNI[d.getDay()]} ${d.getDate()} ${MIES[d.getMonth()]}`, name:x.title, cat:x.category, city:x.city,
     venue:x.venue||x.city, address:x.address, start:x.start, day,
     when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
     badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
@@ -503,7 +510,8 @@ document.body.classList.toggle('demo', DEMO);
 
 /* ---------------- state ---------------- */
 const S = {
-  screen:DEMO?'login':matchMedia('(min-width:761px)').matches?'home':(()=>{try{return localStorage.getItem('entered')?'home':'start'}catch(e){return 'start'}})(), prev:'home', eventId:'unsound',
+  /* tester jest już zalogowany przy wejściu na /preview — na telefonie od razu ekran główny; na komputerze pokaz od makiety logowania */
+  screen:DEMO?(matchMedia('(max-width:760px)').matches?'home':'login'):matchMedia('(min-width:761px)').matches?'home':(()=>{try{return localStorage.getItem('entered')?'home':'start'}catch(e){return 'start'}})(), prev:'home', eventId:'unsound',
   qty:{early:0, regular:1, vip:0},
   pm:'blik', recipient:null,
   balance:240, topupAmount:100,
@@ -722,10 +730,19 @@ const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
 /* zdjęcia już wczytane nie mrugają przy przerysowaniu */
 const IMG_OK = new Set();
-const artBox = e => e.image
-  ? `<div style="position:absolute;inset:0;background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"
-      data-k="${esc(e.image)}" onload="this.style.opacity=1;IMG_OK.add(this.dataset.k)" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;${IMG_OK.has(e.image)?'':'opacity:0;transition:opacity .5s'}"></div>`
-  : `<div style="position:absolute;inset:0">${art(e)}</div>`;
+/* plakat o innych proporcjach niż ramka pokazujemy w całości na rozmytym tle (style .art w desktop.css) */
+const IMG_FIT = new Map();
+function artLoad(img){
+  const k = img.dataset.k, box = img.closest('.art');
+  IMG_OK.add(k); img.classList.add('on');
+  if(!box || !box.hasAttribute('data-fit') || !img.naturalWidth) return;
+  const fit = Math.abs(Math.log((img.naturalWidth/img.naturalHeight) / (box.clientWidth/box.clientHeight || 1))) > .32;
+  IMG_FIT.set(k, fit); box.classList.toggle('fit', fit);
+}
+const artBox = (e, fit=false) => e.image
+  ? `<div class="art${IMG_FIT.get(e.image)?' fit':''}" ${fit?'data-fit':''} style="background:hsl(${e.hue} 34% 8%)">${art(e)}${fit?`<div class="art-blur" style="background-image:url('${esc(e.image.replace(/'/g,'%27'))}')"></div>`:''}<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+      data-k="${esc(e.image)}" class="${IMG_OK.has(e.image)?'on':''}" onload="artLoad(this)" onerror="this.remove()"></div>`
+  : `<div class="art">${art(e)}</div>`;
 const cover = e => `background:hsl(${e.hue} 34% 8%)`;
 
 /* ===== IKONY — monoline SVG, zero systemowych emoji ===== */
@@ -1307,12 +1324,20 @@ function inCity(){ return EVENTS.filter(e=>e.real && e.city===S.city && e.day>=l
 function bigAll(){ return EVENTS.filter(e=>e.real && e.big && e.day>=localDay() && !ACC.hidden.has(e.id)); }
 function filtered(){
   const q = fold(S.query.trim());
-  return (S.big ? bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1)) : inCity()).filter(e=>{
+  return collapse((S.big ? bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1)) : inCity()).filter(e=>{
     const okCat = S.cat==='Wszystko' || e.cat===S.cat;
     const okQ = !q || fold(e.name+' '+e.venue+' '+e.lineup.join(' ')+' '+(CAT_PL[e.cat]||'')+' '+e.tags.join(' ')).includes(q);
     return okCat && okQ && okWhen(e) && okPrice(e);
-  });
+  }));
 }
+/* ten sam tytuł w tym samym miejscu = jedna karta z liczbą terminów */
+const seriesKey = e => fold(e.name)+'|'+e.city+'|'+fold(e.venue);
+function collapse(list){
+  const seen = new Map(), out = [];
+  for(const e of list){ const k = seriesKey(e), g = seen.get(k); if(g){ g.more++; continue; } const c = {...e, more:0}; seen.set(k, c); out.push(c); }
+  return out;
+}
+const terms = n => n===1 ? 'termin' : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 'terminy' : 'terminów';
 function sorted(arr){
   const a=[...arr];
   if(S.sort==='price') a.sort((x,y)=>(x.from??1e9)-(y.from??1e9));
@@ -1338,18 +1363,17 @@ const loadingBox = () => LIVE.state==='error' ? `
         <div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:10px;width:45%"></div></div></div>`).join('')}
     </div>`;
 const bigCard = e => `
-<div data-act="ev:${e.id}" class="event-card" style="flex:none;width:262px;scroll-snap-align:start;cursor:pointer">
-  <div class="ds event-img" style="position:relative;height:196px;border-radius:18px;overflow:hidden;background:var(--surface-2)">
-    ${coverArt(e)}
-    <div style="position:absolute;top:10px;left:10px;padding:6px 9px;border-radius:8px;background:${PINK};color:#000;
-      font:700 10px/1 var(--m);letter-spacing:.08em">${esc(e.badge)}</div>
+<div data-act="ev:${e.id}" class="event-card" style="flex:none;width:228px;scroll-snap-align:start;cursor:pointer">
+  <div class="ds event-img" style="position:relative;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:var(--surface-2)">
+    ${e.real ? artBox(e,true) : coverArt(e)}
+    <div class="ev-tag${e.real&&e.day===localDay()&&!e.ongoing?' now':''}">${esc(e.real ? e.tag+(e.time&&!e.ongoing&&!e.multi?' · '+e.time:'') : e.badge)}</div>
     ${e.sold!=null?`<div style="position:absolute;top:10px;right:10px;padding:6px 9px;border-radius:8px;background:rgba(0,0,0,.55);
       backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${Math.round(e.sold*100)}% sprzedane</div>`:''}
   </div>
-  <div class="col" style="padding:12px 2px 0;gap:6px">
-    <span class="clamp2" style="font:600 17px/1.22 var(--d);letter-spacing:-.01em">${esc(e.name)}</span>
-    <span class="mono" style="color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
-    ${priceTag(e)}
+  <div class="col" style="padding:12px 2px 0;gap:5px">
+    <span class="clamp2" style="font:600 16px/1.22 var(--d);letter-spacing:-.015em">${esc(e.name)}</span>
+    <span style="font:400 13px/1.35 var(--d);color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.venue)}</span>
+    <span class="row" style="gap:8px">${e.from!=null?priceTag(e):`<span class="ev-cat">${esc(CAT_PL[e.cat]||'')}</span>`}${e.more?`<span class="ev-more">+${e.more} ${terms(e.more)}</span>`:''}</span>
   </div>
 </div>`;
 
@@ -1420,7 +1444,7 @@ const scHome = () => {
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
-  ${(()=>{ if(S.big) return ''; const bg = bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || a.start.localeCompare(b.start)); return bg.length ? `
+  ${(()=>{ if(S.big) return ''; const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || a.start.localeCompare(b.start))); return bg.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
     <span class="h3">Wielkie wydarzenia</span>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="bigList">WSZYSTKIE (${bg.length}) →</span>
@@ -2902,7 +2926,7 @@ function render(){
     nav.classList.remove('hide');
     const active = S.screen==='ticket' ? 'tickets' : (S.screen==='bar' ? 'wallet' : S.screen);
     nav.innerHTML = NAV.map(n => n.fab
-      ? (DEMO ? FAB_HOME.includes(S.screen) : !payDay()
+      ? (!(DEMO ? !FAB_HOME.includes(S.screen) : payDay())
         ? `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Strona główna +1">${FAB_SVG}</button></div>`
         : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać">
            <span class="halo"></span><span class="fabtxt">PAY</span></button></div>`)
@@ -3553,6 +3577,26 @@ setInterval(()=>{
   if(Math.random()<.06){ S.battery=Math.max(4,S.battery-1); $('#battfill').style.width=S.battery+'%'; }
 }, 1000);
 
+/* ---- podpowiedź instalacji: Android (przycisk systemowy) i iPhone (Udostępnij → Do ekranu początkowego) ---- */
+let INSTALL = null;
+addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); INSTALL = e; installHint(); });
+function installHint(){
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  let skip = false; try{ skip = !!localStorage.getItem('installHintOff') }catch(e){}
+  $('#installbar')?.remove();
+  if(standalone || skip || innerWidth>760 || (!INSTALL && !ios)) return;
+  const el = document.createElement('div'); el.id='installbar';
+  el.style.cssText='position:absolute;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:140;display:flex;gap:12px;align-items:center;padding:12px 12px 12px 14px;border-radius:18px;background:rgba(20,20,24,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.5);animation:pop .3s';
+  el.innerHTML = `${LOGO(40,10)}<div class="col" style="flex:1;min-width:0"><span style="font:600 14px/1.2 var(--d)">Zainstaluj +1 na telefonie</span>
+    <span style="font:400 12px/1.35 var(--d);color:rgba(255,255,255,.7);margin-top:3px">${INSTALL?'Ikona na ekranie, pełny ekran, działa offline.':'Stuknij <b>Udostępnij</b> ⎋ w Safari, potem <b>Do ekranu początkowego</b>.'}</span></div>
+    ${INSTALL?'<button id="installgo" style="height:36px;padding:0 14px;border-radius:11px;background:var(--pink);color:#000;font:700 13px/1 var(--d)">Instaluj</button>':''}
+    <button id="installx" aria-label="Zamknij" style="width:28px;height:28px;color:rgba(255,255,255,.6);font-size:18px">×</button>`;
+  $('#shell').appendChild(el);
+  $('#installx').onclick = ()=>{ try{localStorage.setItem('installHintOff','1')}catch(e){} el.remove(); };
+  const g = $('#installgo'); if(g) g.onclick = async ()=>{ INSTALL.prompt(); await INSTALL.userChoice.catch(()=>{}); INSTALL=null; el.remove(); };
+}
+
 /* =========================================================
    START
    ========================================================= */
@@ -3566,6 +3610,9 @@ matchMedia('(min-width:761px)').addEventListener('change', e=>{
 });
 render();
 loadLive();
+/* aplikacja instalowana na ekranie telefonu (PWA): działa też bez zasięgu na ostatnich danych */
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app-sw.js', {scope:'/preview'}).catch(()=>{});
+installHint();
 loadAccount();
 setTimeout(()=>{ $('#splash').classList.add('out'); }, 1550);
 setTimeout(()=>{ const sp=$('#splash'); if(sp) sp.remove(); }, 2150);

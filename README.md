@@ -46,7 +46,16 @@ Prototyp aplikacji jest osobnym dokumentem `private/app.html`, dołączanym do W
 
 Przed uruchomieniem zastosuj wszystkie migracje D1, w tym `0003_preview_access.sql`. Bez dostępnej bazy podgląd pozostaje zamknięty. Publiczna witryna i prototyp mają osobne dokumenty — zmiany wyglądu strony nie powinny automatycznie modyfikować makiet aplikacji.
 
-Sekcja **Aplikacja na telefon** informuje o przygotowywanej aplikacji; nie oferuje jeszcze plików do instalacji. Następny etap to pakiet Capacitor dla Androida (APK do testów lub Google Play) i iOS (TestFlight dla zaproszonych testerów). iOS wymaga konta Apple Developer, podpisania wersji i kompilacji na macOS/Xcode. Sam manifest WWW nie tworzy pakietu APK ani aplikacji iOS. TestFlight i konta sklepowe nie są skonfigurowane w tym repozytorium.
+### Aplikacja na telefon (PWA, zamknięte testy)
+
+`/preview` to instalowalna aplikacja (PWA) — za darmo, na Androidzie i iPhonie, bez sklepu:
+
+- `public/app.webmanifest` (zakres `/preview`) i `public/app-sw.js` (service worker: ekran aplikacji i `events.json` najpierw z sieci, bez zasięgu z pamięci; strona logowania nie jest zapisywana).
+- Bez sesji `/preview` pokazuje własny formularz logowania. Aplikacja dodana do ekranu iPhone'a nie widzi ciasteczek z Safari, więc tester loguje się raz w aplikacji.
+- **Android**: Chrome → przycisk „Instaluj” w aplikacji albo menu ⋮ → „Zainstaluj aplikację”. **iPhone**: Safari → Udostępnij → „Do ekranu początkowego”.
+- Instrukcja dla testerów jest w zakładce **Aplikacja** na stronie.
+
+Następny krok (opcjonalnie): pakiet APK przez Capacitor/TWA dla Androida. Natywna aplikacja na iOS (TestFlight) wymaga płatnego konta Apple Developer i macOS/Xcode.
 
 - Domena **plusoneapp.pl**: rejestrator GoDaddy, DNS w Cloudflare.
 - Strona: **Cloudflare Workers** (static assets, `wrangler.jsonc`), publikowany jest tylko folder `public/`. `public/_headers` ustawia cache.

@@ -238,11 +238,53 @@ async function adminPreviewAccess(req, env, id) {
   return json({ ok: true, allowed: b.allowed });
 }
 
+/* Strona wejścia do aplikacji testowej. Ma własny formularz logowania, bo aplikacja dodana do ekranu
+   iPhone'a nie widzi ciasteczek z Safari — tester loguje się raz, już wewnątrz aplikacji. */
+const gatePage = (user) => `<!doctype html><html lang="pl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex,nofollow"><link rel="manifest" href="/app.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="+1"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/favicon.svg">
+<title>+1 — aplikacja testowa</title>
+<style>
+*{box-sizing:border-box;margin:0}body{min-height:100dvh;display:grid;place-items:center;background:radial-gradient(120% 70% at 50% 0%,#2a0013,#000 60%);color:#fff;
+font:16px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;padding:max(24px,env(safe-area-inset-top)) 22px max(24px,env(safe-area-inset-bottom))}
+main{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px}
+svg{width:72px;height:72px;border-radius:18px;align-self:center;margin-bottom:8px}
+h1{font-size:28px;line-height:1.1;letter-spacing:-.02em;text-align:center}p{color:rgba(255,255,255,.7);text-align:center;font-size:15px}
+label{display:flex;flex-direction:column;gap:6px;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.7)}
+input{height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;padding:0 16px;font:inherit;outline:0}
+input:focus{border-color:#FF0059}button{height:54px;border:0;border-radius:16px;background:#FF0059;color:#000;font-weight:700;font-size:16px;cursor:pointer}
+button:disabled{opacity:.6}.err{color:#ff7aa5;font-size:14px;text-align:center;min-height:20px}a{color:rgba(255,255,255,.6);text-align:center;font-size:14px}
+</style></head><body><main>
+<svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#000"/><g fill="#FF0059" transform="translate(6.45 8.3)"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
+<h1>Aplikacja +1<br>dla testerów</h1>
+${user
+  ? `<p>Konto <b>${user.email.replace(/[<>&"]/g, '')}</b> nie ma jeszcze dostępu. Poproś administratora o zaproszenie do testów.</p>
+     <button id="out">Zaloguj się innym kontem</button>`
+  : `<p>Zaloguj się kontem, które dostało zaproszenie do testów.</p>
+     <form id="f" style="display:flex;flex-direction:column;gap:12px">
+       <label>E-MAIL<input id="e" type="email" autocomplete="email" autocapitalize="off" required></label>
+       <label>HASŁO<input id="p" type="password" autocomplete="current-password" required></label>
+       <div class="err" id="m" role="alert"></div>
+       <button id="b">Wejdź do aplikacji</button>
+     </form>`}
+<a href="/">Przejdź do strony plusoneapp.pl</a>
+</main><script>
+const f=document.getElementById('f'),o=document.getElementById('out');
+if(f) f.onsubmit=async ev=>{ev.preventDefault();const b=document.getElementById('b'),m=document.getElementById('m');b.disabled=true;m.textContent='';
+  try{const r=await fetch('/api/auth/login',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:document.getElementById('e').value.trim(),password:document.getElementById('p').value})});
+    const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Nie udało się zalogować.');location.reload();}
+  catch(e){m.textContent=e.message;b.disabled=false;}};
+if(o) o.onclick=async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'}).catch(()=>{});location.reload();};
+</script></body></html>`;
+
 async function preview(req, env) {
   const headers = { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex, nofollow', 'Vary': 'Cookie' };
   if (!env.DB) return new Response('Podgląd jest chwilowo niedostępny. <a href="/">Wróć do witryny</a>', { status: 503, headers });
   const user = await currentUser(req, env);
-  if (!await canPreview(env, user)) return new Response(`<!doctype html><html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Podgląd +1</title><body style="font:18px/1.6 system-ui;max-width:560px;margin:15vh auto;padding:24px"><h1>Podgląd dla testerów</h1><p>${user?'Twoje konto nie ma jeszcze dostępu. Poproś administratora o zaproszenie.':'Zaloguj się na witrynie kontem z dostępem do testów.'}</p><a href="/">Wróć do witryny</a></body></html>`, { status: user ? 403 : 401, headers });
+  if (!await canPreview(env, user)) return new Response(gatePage(user), { status: user ? 403 : 401, headers });
   return new Response(previewHtml, { headers });
 }
 

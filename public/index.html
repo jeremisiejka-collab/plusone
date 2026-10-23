@@ -175,16 +175,7 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
 @keyframes popin{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 /* animacje: karty wjeżdżają po kolei, zdjęcia płynnie się pojawiają, przyciski reagują na dotyk */
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.anim .event-card,.anim .event-row,.anim .mine-row{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
-.anim .event-grid > :nth-child(2),.anim .pad > .event-row:nth-child(2){animation-delay:.05s}
-.anim .event-grid > :nth-child(3),.anim .pad > .event-row:nth-child(3){animation-delay:.1s}
-.anim .event-grid > :nth-child(4),.anim .pad > .event-row:nth-child(4){animation-delay:.15s}
-.anim .event-grid > :nth-child(5),.anim .pad > .event-row:nth-child(5){animation-delay:.2s}
-.anim .event-grid > :nth-child(n+6),.anim .pad > .event-row:nth-child(n+6){animation-delay:.25s}
-.event-card .event-img img{transition:opacity .5s,transform .6s cubic-bezier(.2,.7,.3,1)}
-.event-card:active .event-img{transform:scale(.98)}
-.event-img{transition:transform .2s}
-@media (hover:hover){ .event-card:hover .event-img img{transform:scale(1.04)} }
+.anim .mine-row{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
 .next-ticket{animation:rise .55s cubic-bezier(.2,.7,.3,1) both}
 .mine-empty > span:first-child{animation:floaty 3.2s ease-in-out infinite}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
@@ -427,7 +418,8 @@ const addDays = n => { const d=new Date(); d.setDate(d.getDate()+n); return loca
 function liveEvent(x){
   let [day, hm] = x.start.split('T'); const d = new Date(day+'T12:00');
   const time = hm && hm!=='00:00' ? hm : '';
-  const multi = !!x.end && x.end.slice(0,10)!==day;
+  // koniec po północy (19:00–01:00) to nadal jeden wieczór, nie wydarzenie wielodniowe
+  const multi = !!x.end && x.end.slice(0,10)!==day && new Date(x.end) - new Date(x.start) > 18*3600e3;
   const endD = multi && new Date(x.end.slice(0,10)+'T12:00');
   // wydarzenia wielodniowe, które już trwają: pokazujemy jako "dziś", z datą końca
   const ongoing = multi && day < localDay();
@@ -436,7 +428,8 @@ function liveEvent(x){
     : day===localDay() ? 'dziś' : day===addDays(1) ? 'jutro'
     : `${DNI[d.getDay()]} ${d.getDate()} ${MIES[d.getMonth()]}`;
   return {
-    id:x.id, real:true, multi, big:!!x.big, name:x.title, cat:x.category, city:x.city,
+    id:x.id, real:true, multi, ongoing, big:!!x.big,
+    tag: ongoing ? `do ${endD.getDate()} ${MIES[endD.getMonth()]}` : day===localDay() ? 'dziś' : day===addDays(1) ? 'jutro' : `${DNI[d.getDay()]} ${d.getDate()} ${MIES[d.getMonth()]}`, name:x.title, cat:x.category, city:x.city,
     venue:x.venue||x.city, address:x.address, start:x.start, day,
     when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
     badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
@@ -514,7 +507,7 @@ const S = {
   ticketIdx:0, scanned:{ok:12, bad:1}, barCart:{},
   offline:false, battery:76, secCode:'', secLeft:20,
   pay:{state:'scanning', m:null}, torch:false, payMode:'qr',
-  haptics:true, sound:true, refreshing:false, wrappedStep:0,
+  haptics:DEMO, sound:DEMO, refreshing:false, wrappedStep:0,
   sort:'date',
   invite:{accepted:false, left:INVITES[0].left, plus:'none', guest:null},
   release:{mode:'plusy'}, waitlist:{}, pool:{dom47:0, nocny:3, taaki:1}
@@ -575,17 +568,40 @@ function toast(msg, dark=false, ms=2200){
 const ORDER = ['start','login','blik','home','list','invite','event','venue','select','checkout','success',
   'tickets','ticket','release','transfer','transferDone','wallet','topup','nfc','scanpay','bar','scanner','wrapped',
   'auth','profile','admin','map'];
-function go(s){
+const SCROLL = {};
+const scrollY_ = () => DEMO ? $('#view').scrollTop : window.scrollY;
+function scrollTo_(y){ $('#view').scrollTop = DEMO ? y : 0; if(!DEMO) window.scrollTo(0, y); }
+/* przejście z animacją przeglądarki (Chrome, Safari 18+); bez wsparcia po prostu przerysowanie */
+function morph(update, el){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!document.startViewTransition || reduce){ update(); return; }
+  if(el) el.classList.add('vt-hero');
+  const t = document.startViewTransition(()=>{ if(el) el.classList.remove('vt-hero'); update(); });
+  t.finished.finally(()=>$$('.vt-hero').forEach(x=>x.classList.remove('vt-hero')));
+}
+function go(s, anim=true){
   if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads'].includes(s)) return;
   if(s===S.screen) return;
-  S.dir = ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
+  SCROLL[S.screen] = scrollY_();
+  S.dir = !anim ? null : ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
   S.prev = S.screen; S.screen = s; haptic(6); sfxTap();
-  $('#view').scrollTop = 0;
-  if(!DEMO) window.scrollTo(0,0);
   render();
+  scrollTo_(0);
 }
-function back(){ const p = S.prev===S.screen ? 'home' : S.prev; S.dir='bwd'; S.prev='home'; S.screen=p; haptic(6); render(); }
-function openEvent(id){ S.eventId=id; S.qty={early:0,regular:1,vip:0}; S.sector=null; S.seats=[]; go('event'); }
+function back(){
+  const p = S.prev===S.screen ? 'home' : S.prev, from = S.screen, id = S.eventId;
+  morph(()=>{
+    S.dir = from==='event' && document.startViewTransition ? null : 'bwd'; S.prev='home'; S.screen=p; haptic(6); render();
+    scrollTo_(SCROLL[p]||0);
+    // wracamy do karty, z której weszliśmy — plakat płynnie wraca na swoje miejsce
+    if(from==='event'){ const c = $(`[data-act="ev:${id}"] .ev-media, [data-act="ev:${id}"] .cat-thumb`); if(c) c.classList.add('vt-hero'); }
+  }, from==='event' ? $('.event-art') : null);
+}
+function openEvent(id, el){
+  S.qty={early:0,regular:1,vip:0}; S.sector=null; S.seats=[];
+  const media = el && el.querySelector('.ev-media, .cat-thumb');
+  morph(()=>{ S.eventId=id; go('event', !(media && document.startViewTransition)); const a=$('.event-art'); if(a && media) a.classList.add('vt-hero'); }, media);
+}
 
 /* ---------------- pricing ---------------- */
 function pools(){
@@ -722,10 +738,19 @@ const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
 /* zdjęcia już wczytane nie mrugają przy przerysowaniu */
 const IMG_OK = new Set();
-const artBox = e => e.image
-  ? `<div style="position:absolute;inset:0;background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"
-      data-k="${esc(e.image)}" onload="this.style.opacity=1;IMG_OK.add(this.dataset.k)" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;${IMG_OK.has(e.image)?'':'opacity:0;transition:opacity .5s'}"></div>`
-  : `<div style="position:absolute;inset:0">${art(e)}</div>`;
+/* plakat o innych proporcjach niż ramka (np. poziomy baner w pionowej karcie) pokazujemy w całości na rozmytym tle */
+const IMG_FIT = new Map();
+function artLoad(img){
+  const k = img.dataset.k, box = img.closest('.art');
+  IMG_OK.add(k); img.classList.add('on');
+  if(!box || !box.hasAttribute('data-fit') || !img.naturalWidth) return;
+  const fit = Math.abs(Math.log((img.naturalWidth/img.naturalHeight) / (box.clientWidth/box.clientHeight || 1))) > .32;
+  IMG_FIT.set(k, fit); box.classList.toggle('fit', fit);
+}
+const artBox = (e, fit=false) => e.image
+  ? `<div class="art${IMG_FIT.get(e.image)?' fit':''}" ${fit?'data-fit':''} style="background:hsl(${e.hue} 34% 8%)">${art(e)}${fit?`<div class="art-blur" style="background-image:url('${esc(e.image.replace(/'/g,'%27'))}')"></div>`:''}<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+      data-k="${esc(e.image)}" class="${IMG_OK.has(e.image)?'on':''}" onload="artLoad(this)" onerror="this.remove()"></div>`
+  : `<div class="art">${art(e)}</div>`;
 const cover = e => `background:hsl(${e.hue} 34% 8%)`;
 
 /* ===== IKONY — monoline SVG, zero systemowych emoji ===== */
@@ -1270,12 +1295,26 @@ function inCity(){ return EVENTS.filter(e=>e.real && e.city===S.city && e.day>=l
 function bigAll(){ return EVENTS.filter(e=>e.real && e.big && e.day>=localDay() && !ACC.hidden.has(e.id)); }
 function filtered(){
   const q = fold(S.query.trim());
-  return (S.big ? bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1)) : inCity()).filter(e=>{
+  return collapse((S.big ? bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1)) : inCity()).filter(e=>{
     const okCat = S.cat==='Wszystko' || e.cat===S.cat;
     const okQ = !q || fold(e.name+' '+e.venue+' '+e.lineup.join(' ')+' '+(CAT_PL[e.cat]||'')+' '+e.tags.join(' ')).includes(q);
     return okCat && okQ && okWhen(e) && okPrice(e);
-  });
+  }));
 }
+/* ten sam tytuł w tym samym miejscu (spektakl grany 20 razy, festiwal na 3 dni) = jedna karta z liczbą terminów */
+const seriesKey = e => fold(e.name)+'|'+e.city+'|'+fold(e.venue);
+function collapse(list){
+  const seen = new Map(), out = [];
+  for(const e of list){
+    const k = seriesKey(e), g = seen.get(k);
+    if(g){ g.more++; continue; }
+    const c = {...e, more:0}; seen.set(k, c); out.push(c);
+  }
+  return out;
+}
+const series = e => EVENTS.filter(x=>x.real && x.day>=localDay() && !ACC.hidden.has(x.id) && seriesKey(x)===seriesKey(e))
+  .sort((a,b)=>a.start.localeCompare(b.start));
+const terms = n => n===1 ? 'termin' : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 'terminy' : 'terminów';
 function sorted(arr){
   const a=[...arr];
   if(S.sort==='price') a.sort((x,y)=>(x.from??1e9)-(y.from??1e9));
@@ -1300,21 +1339,49 @@ const loadingBox = () => LIVE.state==='error' ? `
         <div style="flex:1;display:flex;flex-direction:column;gap:8px;justify-content:center">
         <div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:10px;width:45%"></div></div></div>`).join('')}
     </div>`;
-const bigCard = e => `
-<div data-act="ev:${e.id}" class="event-card" style="flex:none;width:262px;scroll-snap-align:start;cursor:pointer">
-  <div class="ds event-img" style="position:relative;height:196px;border-radius:18px;overflow:hidden;background:var(--surface-2)">
-    ${coverArt(e)}
-    <div style="position:absolute;top:10px;left:10px;padding:6px 9px;border-radius:8px;background:${PINK};color:#000;
-      font:700 10px/1 var(--m);letter-spacing:.08em">${esc(e.badge)}</div>
-    ${e.sold!=null?`<div style="position:absolute;top:10px;right:10px;padding:6px 9px;border-radius:8px;background:rgba(0,0,0,.55);
-      backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${Math.round(e.sold*100)}% sprzedane</div>`:''}
+/* plakietka z datą na zdjęciu: krótko, półprzezroczyście, nie zasłania plakatu */
+const dateTag = e => `<span class="ev-tag${e.day===localDay()&&!e.ongoing?' now':''}">${esc(e.tag)}${e.time&&!e.ongoing&&!e.multi?' · '+esc(e.time):''}</span>`;
+const subLine = (e, withCity) => esc((withCity && e.city!==S.city ? e.city+' · ' : '') + e.venue);
+const extra = e => e.from!=null ? `<span class="ev-price">${price(e)}</span>`
+  : `<span class="ev-cat">${esc(CAT_PL[e.cat]||'')}</span>`;
+const moreTag = e => e.more ? `<span class="ev-more">+${e.more} ${terms(e.more)}</span>` : '';
+
+/* karta w poziomym pasku */
+const bigCard = (e, i=0, withCity=false) => `
+<article data-act="ev:${e.id}" class="ev" style="--i:${i}">
+  <div class="ev-media ds">${artBox(e,true)}${dateTag(e)}</div>
+  <div class="ev-body">
+    <h3 class="ev-title clamp2">${esc(e.name)}</h3>
+    <p class="ev-sub">${subLine(e, withCity)}</p>
+    <div class="ev-foot">${extra(e)}${moreTag(e)}</div>
   </div>
-  <div class="col" style="padding:12px 2px 0;gap:6px">
-    <span class="clamp2" style="font:600 17px/1.22 var(--d);letter-spacing:-.01em">${esc(e.name)}</span>
-    <span class="mono" style="color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
-    ${priceTag(e)}
+</article>`;
+
+/* duża karta z tytułem na zdjęciu (karuzela wielkich wydarzeń) */
+const heroCard = (e, i=0) => `
+<article data-act="ev:${e.id}" class="ev ev-hero" style="--i:${i}">
+  <div class="ev-media ds">${artBox(e,true)}
+    <div class="ev-shade"></div>
+    ${dateTag(e)}
+    <div class="ev-over">
+      <span class="ev-kicker">${esc(CAT_PL[e.cat]||'')}${e.city!==S.city?' · '+esc(e.city):''}</span>
+      <h3 class="ev-title clamp2">${esc(e.name)}</h3>
+      <p class="ev-sub">${esc(e.venue)}${e.more?' · +'+e.more+' '+terms(e.more):''}</p>
+    </div>
   </div>
-</div>`;
+</article>`;
+
+/* poziomy pasek kart: przewijanie palcem, strzałki na komputerze, kropki postępu */
+const shelf = (title, sub, link, cards, cls='') => `
+<section class="shelf reveal">
+  <div class="shelf-hd"><div class="col" style="gap:4px;min-width:0"><h2 class="shelf-title">${title}</h2>${sub?`<p class="shelf-sub">${sub}</p>`:''}</div>${link||''}</div>
+  <div class="rail-wrap">
+    <div class="rail sc ${cls}" data-rail>${cards}</div>
+    <button class="rail-arrow l" data-rail-go="-1" aria-label="Poprzednie">${ic('chevL',20)}</button>
+    <button class="rail-arrow r" data-rail-go="1" aria-label="Następne">${ic('chevR',20)}</button>
+  </div>
+  <div class="rail-dots" aria-hidden="true"></div>
+</section>`;
 
 const listRow = e => `
 <div data-act="ev:${e.id}" class="event-row" style="display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)">
@@ -1322,14 +1389,25 @@ const listRow = e => `
     ${artBox(e)}</div>
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
-    <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
-    <span style="margin-top:6px">${priceTag(e,12)}</span>
+    <span class="ev-sub" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.time||e.when)} · ${esc(e.venue)}</span>
+    <span class="ev-foot" style="margin-top:6px">${extra(e)}${moreTag(e)}</span>
   </div>
   <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
 </div>`;
 
+/* lista z nagłówkami dni: Dziś, Jutro, sob 25 paź… */
+const dayLabel = e => e.ongoing ? 'Trwa teraz' : e.day===localDay() ? 'Dziś' : e.day===addDays(1) ? 'Jutro'
+  : (d => `${['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'][d.getDay()]}, ${d.getDate()} ${MIES_D[d.getMonth()]}`)(new Date(e.day+'T12:00'));
+function byDay(list, row){
+  let last = null, out = '';
+  for(const e of list){ const l = dayLabel(e); if(l!==last){ out += `<div class="day-hd">${l}</div>`; last = l; } out += row(e); }
+  return out;
+}
+
 const scHome = () => {
   const f = filtered();
+  const soon = [...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,10), soonIds = new Set(soon.map(e=>e.id));
+  const later = f.filter(e=>!soonIds.has(e.id));
   return `
 <div class="pg" style="padding:64px 0 112px">
   ${webHero()}
@@ -1380,28 +1458,23 @@ const scHome = () => {
       <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
     </div>` : `
   ${eventTicker(f)}
-  ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
-  <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
-  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
-  ${(()=>{ if(S.big) return ''; const bg = bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || a.start.localeCompare(b.start)); return bg.length ? `
-  <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
-    <span class="h3">Wielkie wydarzenia</span>
-    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="bigList">WSZYSTKIE (${bg.length}) →</span>
-  </div>
-  <div class="pad mono" style="padding-bottom:12px">${bg.some(e=>e.city===S.city)?'Najpierw '+esc(S.city)+', potem reszta Polski':'Festiwale i koncerty na stadionach i arenach w całej Polsce'}</div>
-  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
-    ${[...bg.filter(e=>e.city===S.city), ...bg.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...bg.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,9).map(e=>bigCard(e.city===S.city?e:{...e, venue:e.city+' · '+e.venue})).join('')}
-  </div>` : ''; })()}
-  <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
-    <span class="h3">Już niedługo</span>
-    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="go:list">CAŁA LISTA →</span>
-  </div>
-  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
-    ${[...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,6).map(bigCard).join('')}
-  </div>
-  ${f.length>6?`<div class="pad h3" style="padding-bottom:8px">Dalej w kalendarzu</div>
-  <div class="pad calendar-grid" style="padding-bottom:8px">${f.slice(6,14).map(listRow).join('')}</div>
-  <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
+  ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean);
+    return fe.length ? shelf('Polecane', 'Wybrane przez redakcję +1', '', fe.slice(0,8).map((e,i)=>heroCard(e,i)).join(''), 'hero-rail') : ''; })()}
+  ${(()=>{ if(S.big) return '';
+    const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || a.start.localeCompare(b.start)));
+    if(!bg.length) return '';
+    const pick = [...bg.filter(e=>e.city===S.city), ...bg.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...bg.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,10);
+    return shelf('Wielkie wydarzenia',
+      bg.some(e=>e.city===S.city) ? 'Najpierw '+esc(S.city)+', potem reszta Polski' : 'Festiwale, stadiony i areny w całej Polsce',
+      `<button class="shelf-all" data-act="bigList">Wszystkie · ${bg.length}</button>`,
+      pick.map((e,i)=>heroCard(e,i)).join(''), 'hero-rail'); })()}
+  ${shelf('Już niedługo', '', `<button class="shelf-all" data-act="go:list">Cała lista</button>`,
+      soon.map((e,i)=>bigCard(e,i)).join(''))}
+  ${later.length?`<section class="reveal">
+    <h2 class="shelf-title" style="padding-bottom:4px">Dalej w kalendarzu</h2>
+    <div class="calendar-grid">${byDay(later.slice(0,12), listRow)}</div>
+    <div style="padding:18px 0 26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie wydarzenia · ${f.length}</button></div>
+  </section>`:'<div style="height:6px"></div>'}`}
 
   ${DEMO?`
   <div style="margin:0 20px 18px;padding:18px;border-radius:20px;position:relative;overflow:hidden;
@@ -1446,29 +1519,17 @@ const scHome = () => {
 };
 
 /* ---- LISTA WYDARZEŃ ---- */
-const bigListRow = e => {
-  const back = S.pool[e.id]||0;
-  return `
-<div data-act="ev:${e.id}" class="event-row" style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)">
-  <div class="ds" style="flex:none;width:78px;height:98px;border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2)">
-    ${artBox(e)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--bg-rgb),0) 45%,rgba(0,0,0,.8))"></div>
-    <span style="position:absolute;bottom:6px;left:7px;font:700 8px/1 var(--m);letter-spacing:.1em;color:var(--t1)">${esc(e.badge)}</span>
-  </div>
+const bigListRow = e => `
+<div data-act="ev:${e.id}" class="event-row cat-row">
+  <div class="ds cat-thumb">${artBox(e)}</div>
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
-    <span class="mono" style="margin-top:5px">${esc(e.when)}</span>
-    <span class="mono" style="margin-top:4px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${S.big?esc(e.city)+' · ':''}${esc(e.venue)}</span>
-    <div class="row" style="gap:7px;margin-top:8px;flex-wrap:wrap">
-      ${priceTag(e,12)}
-      ${e.sold!=null?`<span class="mono">· ${Math.round(e.sold*100)}% sprzedane</span>`:`<span class="mono">· ${esc(CAT_PL[e.cat]||'')}</span>`}
-      ${back?`<span style="font:500 9px/1 var(--m);letter-spacing:.06em;padding:4px 7px;border-radius:6px;
-        background:var(--pink-dim);border:1px solid var(--pink-line);color:var(--t1)">${back} Z PULI ZWROTÓW</span>`:''}
-    </div>
+    <span class="ev-sub" style="margin-top:5px">${esc(e.ongoing ? 'trwa '+e.tag : (S.sort==='date' ? (e.time||'cały dzień') : e.when))}</span>
+    <span class="ev-sub" style="margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${subLine(e, S.big)}</span>
+    <div class="ev-foot" style="margin-top:8px">${extra(e)}${moreTag(e)}</div>
   </div>
   <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
 </div>`;
-};
 
 const scList = () => {
   const f = sorted(filtered());
@@ -1531,7 +1592,7 @@ const scList = () => {
       <span class="body">Zmień kategorię albo wyczyść wyszukiwanie.</span>
       <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
     </div>`:`
-  <div class="pad catalog-grid">${f.slice(0,S.limit).map(bigListRow).join('')}</div>
+  <div class="pad catalog-grid">${S.sort==='date' ? byDay(f.slice(0,S.limit), bigListRow) : f.slice(0,S.limit).map(bigListRow).join('')}</div>
   ${f.length>S.limit?`<div class="pad catalog-more" style="padding-top:16px"><button class="btn g" data-act="more" style="height:46px;font:500 13px/1 var(--d)">Pokaż więcej (${f.length-S.limit})</button></div>`:''}
   <div class="pad" style="padding-top:20px">
     <div class="card" style="padding:16px;display:flex;gap:12px;align-items:center">
@@ -1547,8 +1608,8 @@ const scList = () => {
 const mapsUrl = e => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([e.venue,e.address||e.city].join(', '));
 const scLive = e => `
 <div class="pg event-detail" style="padding-bottom:118px">
-  <div class="event-art ds" style="position:relative;height:340px;overflow:hidden">
-    ${artBox(e)}
+  <div class="event-art ds" style="position:relative;height:420px;overflow:hidden">
+    ${artBox(e,true)}
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 32%)"></div>
     <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
     <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('share',17)}</button>
@@ -1582,6 +1643,12 @@ const scLive = e => `
       <button class="chip ${ACC.featured.includes(e.id)?'on':''}" data-act="curate:${e.id}:${ACC.featured.includes(e.id)?'clear':'feature'}" style="padding:7px 12px;font-size:12px">${ACC.featured.includes(e.id)?'Polecane':'Poleć'}</button>
       <button class="chip" data-act="curate:${e.id}:hide" style="padding:7px 12px;font-size:12px">Ukryj</button>
     </div>`:''}
+
+    ${(()=>{ const all = series(e); if(all.length<2) return ''; return `<div class="col" style="gap:10px">
+      <span class="eyebrow">Terminy · ${all.length}</span>
+      <div class="terms sc">${all.slice(0,30).map(x=>{ const d=new Date(x.day+'T12:00'); return `<button class="term ${x.id===e.id?'on':''}" data-act="evSwap:${x.id}">
+        <span>${DNI[d.getDay()]}</span><b>${d.getDate()}</b><span>${MIES[d.getMonth()]}${x.time?' · '+esc(x.time):''}</span></button>`; }).join('')}</div>
+    </div>`; })()}
 
     ${e.desc?`<div class="col" style="gap:8px">
       <div class="body" style="${S.descOpen===e.id?'':'display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden'}">${esc(e.desc)}</div>
@@ -1768,7 +1835,29 @@ function webHero(){
   </section>`;
 }
 
-function scDownloads(){ return `<div class="pg" style="padding:40px 20px"><div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><h1 class="h2">Aplikacja +1</h1></div><div class="col" style="gap:18px;max-width:640px"><p class="body">Przygotowujemy aplikację na Androida i iPhone’a. Pobieranie nie jest jeszcze dostępne.</p><div class="card" style="padding:20px"><h2 class="h3">Zamknięte testy</h2><p class="body" style="margin-top:12px">Osoby z dostępem mogą już obejrzeć prototyp aplikacji.</p>${ACC.preview?'<a class="btn p" href="/preview" style="margin-top:16px;text-decoration:none">Otwórz podgląd aplikacji</a>':`<button class="btn g" data-act="${ACC.user?'go:profile':'authgo:login'}" style="margin-top:16px">${ACC.user?'Moje konto':'Zaloguj się'}</button>`}</div></div></div>`; }
+function scDownloads(){
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent), android = /android/i.test(navigator.userAgent);
+  const access = ACC.preview
+    ? `<a class="btn p" href="/preview" style="text-decoration:none;max-width:360px">Otwórz aplikację +1</a>`
+    : ACC.user
+      ? `<div class="card" style="padding:16px"><span class="h4">Twoje konto czeka na zaproszenie</span><p class="body" style="margin-top:6px">Testy są zamknięte. Gdy administrator nada Ci dostęp, tutaj pojawi się przycisk instalacji.</p></div>`
+      : `<button class="btn p" data-act="authgo:login" style="max-width:360px">Zaloguj się, żeby zainstalować</button>`;
+  const step = (title, steps, on) => `<div class="dl-card" style="${on?'border-color:var(--pink-line)':''}">
+    <div class="row" style="justify-content:space-between"><span class="h3">${title}</span>${on?'<span class="ev-more">Twój telefon</span>':''}</div><ol>${steps.map(x=>`<li><span>${x}</span></li>`).join('')}</ol></div>`;
+  return `<div class="pg"><div class="dl">
+  <section class="dl-hero ds reveal in">
+    <span class="eyebrow pink">Zamknięte testy · za darmo</span>
+    <h1>+1 w Twojej<br><span>kieszeni.</span></h1>
+    <p>Aplikacja ma własny wygląd: dolne menu, bilety, portfel i powiadomienia. Instalujesz ją prosto ze strony — bez sklepu, bez opłat — a działa też bez zasięgu.</p>
+    <div class="dl-badges"><span>Android</span><span>iPhone</span><span>Ikona na ekranie</span><span>Działa offline</span></div>
+  </section>
+  ${access}
+  <div class="dl-grid">
+    ${step('Android', ['<b>Zaloguj się</b> kontem z zaproszeniem do testów.', 'Otwórz <b>plusoneapp.pl/preview</b> w Chrome.', 'Stuknij <b>Instaluj</b> na dole ekranu albo w menu ⋮ wybierz <b>Zainstaluj aplikację</b>.', 'Ikona +1 pojawi się na ekranie telefonu.'], android)}
+    ${step('iPhone', ['Otwórz <b>plusoneapp.pl/preview</b> w <b>Safari</b>.', 'Stuknij <b>Udostępnij</b> (kwadrat ze strzałką).', 'Wybierz <b>Do ekranu początkowego</b> i <b>Dodaj</b>.', 'Uruchom +1 z ikony i <b>zaloguj się raz</b> w aplikacji.'], ios)}
+  </div>
+  <p class="body" style="color:var(--t3)">Chcesz dołączyć do testów? Załóż konto i napisz do nas — dostęp nadaje administrator.</p>
+</div></div>`; }
 
 function renderWebChrome(){
   $('#web-header').innerHTML = `<div class="web-header-inner">
@@ -1805,6 +1894,7 @@ function render(){
   if(pg && S.dir) pg.classList.add(S.dir);
   // karty wjeżdżają po kolei tylko przy wejściu na ekran albo po wczytaniu danych, nie przy każdym filtrze
   if(pg && (S.dir || S._animOnce)) pg.classList.add('anim');
+  else $$('.reveal').forEach(x=>x.classList.add('in'));
   S._animOnce = false;
 
   const nav = $('#nav');
@@ -1812,7 +1902,7 @@ function render(){
     nav.classList.remove('hide');
     const active = S.screen==='ticket' ? 'tickets' : (S.screen==='bar' ? 'wallet' : S.screen);
     nav.innerHTML = NAV.map(n => n.fab
-      ? (DEMO ? FAB_HOME.includes(S.screen) : !payDay()
+      ? (!(DEMO ? !FAB_HOME.includes(S.screen) : payDay())
         ? `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Strona główna +1">${FAB_SVG}</button></div>`
         : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać">
            <span class="halo"></span><span class="fabtxt">PAY</span></button></div>`)
@@ -1830,6 +1920,7 @@ function render(){
   attachGestures();
 }
 
+let LAST_EL = null;
 function bind(root){
   $$('[data-act]', root).forEach(el=>{
     if(el.__b) return; el.__b = true;
@@ -1840,7 +1931,7 @@ function bind(root){
       });
     }
     el.addEventListener('click', e=>{
-      e.stopPropagation();
+      e.stopPropagation(); LAST_EL = el;
       act(el.getAttribute('data-act'));
     });
   });
@@ -1852,7 +1943,8 @@ function act(a){
   switch(cmd){
     case 'go': go(p1); break;
     case 'back': back(); break;
-    case 'ev': openEvent(p1); break;
+    case 'ev': openEvent(p1, LAST_EL); break;
+    case 'evSwap': S.eventId=p1; S.dir=null; render(); break;
     case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.big=false; S.limit=40;
       if(S.screen==='home'){ if(!DEMO) window.scrollTo({top:0,behavior:'smooth'}); $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
     case 'mapWhen': MAP.when=p1; haptic(5); sfxTap(); S.dir=null; render(); break;
@@ -2327,6 +2419,7 @@ function attachGestures(){
   }
 
   if(S.screen==='map') attachMap();
+  attachRails();
 
   // Enter w polach formularzy
   $$('[data-enter]').forEach(i=>{ i.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); act(i.dataset.enter); } }; });
@@ -2413,6 +2506,48 @@ function attachGestures(){
         t.style.transform=`perspective(800px) rotateY(${-d*13}deg) scale(${1-Math.abs(d)*.07})`; }); };
     st.onscroll=upd; upd();
   }
+}
+
+/* ---- paski kart: strzałki, kropki, powolne samoczynne przewijanie karuzeli ---- */
+let RAIL_T = [], REVEAL = null;
+function attachRails(){
+  RAIL_T.forEach(clearInterval); RAIL_T = [];
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  $$('[data-rail]').forEach(rail=>{
+    const wrap = rail.closest('.shelf'), dots = wrap && $('.rail-dots', wrap), cards = [...rail.children];
+    const step = () => (cards[0]?.offsetWidth || 260) + parseFloat(getComputedStyle(rail).columnGap || 12);
+    const idx = () => Math.round(rail.scrollLeft / step());
+    const perView = () => Math.max(1, Math.round(rail.clientWidth / step()));
+    const pages = () => Math.max(1, cards.length - perView() + 1);
+    const paint = () => {
+      if(!dots) return;
+      const n = pages(), i = Math.min(idx(), n-1);
+      if(dots.childElementCount !== n) dots.innerHTML = n>1 ? Array.from({length:n},()=>'<i></i>').join('') : '';
+      [...dots.children].forEach((d,k)=>d.classList.toggle('on', k===i));
+      $$('.rail-arrow', wrap).forEach(b=>b.disabled = b.dataset.railGo<0 ? rail.scrollLeft<4 : rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-4);
+    };
+    rail.addEventListener('scroll', ()=>requestAnimationFrame(paint), {passive:true});
+    $$('.rail-arrow', wrap).forEach(b=>b.onclick = e=>{ e.stopPropagation(); rail.scrollBy({left:+b.dataset.railGo*step()*perView(), behavior:'smooth'}); });
+    paint();
+    // karuzela wielkich wydarzeń sama przesuwa się co kilka sekund, dopóki nikt jej nie dotyka
+    if(rail.classList.contains('hero-rail') && !still && cards.length>1){
+      let busy = false;
+      ['pointerdown','pointerenter','focusin','touchstart'].forEach(ev=>rail.addEventListener(ev, ()=>busy=true, {passive:true}));
+      rail.addEventListener('pointerleave', ()=>busy=false);
+      RAIL_T.push(setInterval(()=>{
+        if(busy || document.hidden || !rail.isConnected) return;
+        const r = rail.getBoundingClientRect(); if(r.bottom<0 || r.top>innerHeight) return;
+        const next = idx()+1 >= pages() ? 0 : idx()+1;
+        rail.scrollTo({left:next*step(), behavior:'smooth'});
+      }, 5200));
+    }
+  });
+  // sekcje płynnie pojawiają się przy przewijaniu
+  REVEAL?.disconnect();
+  const els = $$('.reveal:not(.in)');
+  if(!('IntersectionObserver' in window) || still){ els.forEach(x=>x.classList.add('in')); return; }
+  REVEAL = new IntersectionObserver(es=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add('in'); REVEAL.unobserve(x.target); } }), {rootMargin:'0px 0px -8% 0px'});
+  els.forEach(x=>REVEAL.observe(x));
 }
 
 /* =========================================================
