@@ -496,18 +496,13 @@ const CONTACTS = [
 
 /* Funkcje demo (bilety, portfel, PAY, zaproszenia, logowanie) są jeszcze makietą.
    Publicznie ich nie pokazujemy; włącza je ?demo (wyłącza ?demo=0), zapamiętane w sesji. */
-const DEMO = (()=>{
-  try{
-    const q = new URLSearchParams(location.search);
-    if(q.has('demo')) sessionStorage.setItem('demo', q.get('demo')==='0' ? '' : '1');
-    return !!sessionStorage.getItem('demo');
-  }catch(e){ return /[?&]demo(?!=0)/.test(location.search); }
-})();
+/* Publiczna witryna. Prototyp jest dostępny wyłącznie przez chronione /preview. */
+const DEMO = false;
 document.body.classList.toggle('demo', DEMO);
 
 /* ---------------- state ---------------- */
 const S = {
-  screen:DEMO?'login':matchMedia('(min-width:761px)').matches?'home':(()=>{try{return localStorage.getItem('entered')?'home':'start'}catch(e){return 'start'}})(), prev:'home', eventId:'unsound',
+  screen:'home', prev:'home', eventId:'unsound',
   qty:{early:0, regular:1, vip:0},
   pm:'blik', recipient:null,
   balance:240, topupAmount:100,
@@ -581,11 +576,12 @@ const ORDER = ['start','login','blik','home','list','invite','event','venue','se
   'tickets','ticket','release','transfer','transferDone','wallet','topup','nfc','scanpay','bar','scanner','wrapped',
   'auth','profile','admin','map'];
 function go(s){
+  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads'].includes(s)) return;
   if(s===S.screen) return;
   S.dir = ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
   S.prev = S.screen; S.screen = s; haptic(6); sfxTap();
   $('#view').scrollTop = 0;
-  if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo(0,0);
+  if(!DEMO) window.scrollTo(0,0);
   render();
 }
 function back(){ const p = S.prev===S.screen ? 'home' : S.prev; S.dir='bwd'; S.prev='home'; S.screen=p; haptic(6); render(); }
@@ -895,6 +891,7 @@ async function apiCall(path, method='GET', data){
 async function loadAccount(){
   try{
     const [me, st] = await Promise.all([apiCall('/api/me'), apiCall('/api/state')]);
+    ACC.preview = (await apiCall('/api/preview-access')).allowed;
     ACC.hidden = new Set(st.hidden); ACC.featured = st.featured;
     if(me.user){ ACC.user = me.user; await mergeMine(me); if(S.screen==='start'){ S.screen='home'; } }
   }catch(e){ ACC.api = false; }
@@ -914,7 +911,7 @@ async function submitAuth(){
       await apiCall('/api/auth/logout','POST',{}).catch(()=>{});
       throw new Error('To konto nie ma uprawnień admina.');
     }
-    ACC.user = res.user; await mergeMine(res); ACC.busy=false; markEntered(); sfxOk(); haptic(16);
+    ACC.user = res.user; await mergeMine(res); ACC.preview=(await apiCall('/api/preview-access')).allowed; ACC.busy=false; markEntered(); sfxOk(); haptic(16);
     if(res.user.city && LIVE.cities[res.user.city]) S.city = res.user.city;
     toast(mode==='register' ? 'Konto założone. Witaj w +1!' : 'Zalogowano'+(res.user.name?' · '+esc(res.user.name):''));
     const next = mode==='admin' ? 'admin' : (S.afterAuth || 'home'); S.afterAuth=null;
@@ -927,7 +924,7 @@ async function submitAuth(){
 
 async function logout(){
   try{ await apiCall('/api/auth/logout','POST',{}) }catch(e){}
-  ACC.user=null; ACC.admin=null; setMine({}); keepMine(); toast('Wylogowano'); S.prev='home'; go('home');
+  ACC.user=null; ACC.preview=false; ACC.admin=null; setMine({}); keepMine(); toast('Wylogowano'); S.prev='home'; go('home');
 }
 
 async function saveProfile(){
@@ -947,7 +944,7 @@ function deleteAccountSheet(){
 async function deleteAccount(){
   try{ await apiCall('/api/me','DELETE',{password:$('#del-pass')?.value||''}); }
   catch(e){ toast(esc(e.message),true); return; }
-  closeSheet(); ACC.user=null; toast('Konto usunięte'); S.prev='home'; go('home');
+  closeSheet(); ACC.user=null; ACC.preview=false; toast('Konto usunięte'); S.prev='home'; go('home');
 }
 
 /* ---- admin ---- */
@@ -969,6 +966,11 @@ async function curate(id, action){
   if(ACC.admin) ACC.admin.at=0;
   S.dir=null; render();
 }
+async function setPreviewAccess(id, allowed){
+  try{await apiCall(`/api/admin/users/${id}/preview`,'POST',{allowed}); toast(allowed?'Nadano dostęp do podglądu':'Odebrano dostęp do podglądu'); adminLoad();}
+  catch(e){toast(esc(e.message),true);}
+}
+
 async function setRole(id, role){
   try{ await apiCall(`/api/admin/users/${id}/role`,'POST',{role}); toast(role==='admin'?'Nadano admina':'Odebrano admina'); }
   catch(e){ toast(esc(e.message),true); }
@@ -1044,6 +1046,7 @@ const scProfile = () => {
     <div class="field"><label>IMIĘ</label><input id="pf-name" value="${esc(u.name||'')}" maxlength="60" autocomplete="given-name" data-enter="saveProfile"></div>
     <button class="btn g" data-act="saveProfile" style="height:44px;font:600 13px/1 var(--d)">Zapisz</button></div>`:''}
   <div class="pad">
+    ${ACC.preview?`<a class="listbtn" href="/preview" style="color:inherit;text-decoration:none">${ic('shield',18)} Podgląd aplikacji · dla testerów</a>`:''}
     ${u?.role==='admin'?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">ADMIN</span>`):''}
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
     ${row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`)}
@@ -1092,6 +1095,7 @@ const scAdmin = () => {
         <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.email)}</span>
         <span class="mono" style="margin-top:3px">od ${new Date(x.created_at).toLocaleDateString('pl-PL')}</span>
       </div>
+      <button class="chip" data-act="previewAccess:${x.id}:${x.preview_access?'revoke':'grant'}" style="padding:7px 12px;font-size:12px">${x.preview_access?'Odbierz podgląd':'Daj podgląd'}</button>
       ${x.id!==ACC.user.id?`<button class="chip" data-act="role:${x.id}:${x.role==='admin'?'user':'admin'}" style="padding:7px 12px;font-size:12px">${x.role==='admin'?'Odbierz admina':'Daj admina'}</button>`:''}
     </div>`).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='curation' ? `
     <span class="body" style="display:block;padding-bottom:10px">Polecaj albo ukrywaj wydarzenia przyciskami na ekranie wydarzenia. Tu możesz to cofnąć.</span>
@@ -2813,7 +2817,7 @@ const SCREENS = {
   select:scSelect, checkout:scCheckout, success:scSuccess, tickets:scTickets, ticket:scTicket,
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, scanner:scScanner, wrapped:scWrapped, scanpay:scScanpay,
-  start:scStart, auth:scAuth, profile:scProfile, admin:scAdmin, map:scMap
+  start:scStart, auth:scAuth, profile:scProfile, admin:scAdmin, map:scMap, downloads:scDownloads
 };
 
 /* =========================================================
@@ -2865,12 +2869,15 @@ function webHero(){
   </section>`;
 }
 
+function scDownloads(){ return `<div class="pg" style="padding:40px 20px"><div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><h1 class="h2">Aplikacja +1</h1></div><div class="col" style="gap:18px;max-width:640px"><p class="body">Przygotowujemy aplikację na Androida i iPhone’a. Pobieranie nie jest jeszcze dostępne.</p><div class="card" style="padding:20px"><h2 class="h3">Zamknięte testy</h2><p class="body" style="margin-top:12px">Osoby z dostępem mogą już obejrzeć prototyp aplikacji.</p>${ACC.preview?'<a class="btn p" href="/preview" style="margin-top:16px;text-decoration:none">Otwórz podgląd aplikacji</a>':`<button class="btn g" data-act="${ACC.user?'go:profile':'authgo:login'}" style="margin-top:16px">${ACC.user?'Moje konto':'Zaloguj się'}</button>`}</div></div></div>`; }
+
 function renderWebChrome(){
   $('#web-header').innerHTML = `<div class="web-header-inner">
     <button class="web-brand" data-act="fabHome" aria-label="+1 — strona główna">${LOGO(48,12)}<span>WHERE ARE<br>WE GOING?</span></button>
     <nav class="web-nav" aria-label="Nawigacja główna">
       <button data-act="go:home" ${S.screen==='home'?'aria-current="page"':''}>Odkrywaj</button>
       <button data-act="go:list" ${S.screen==='list'?'aria-current="page"':''}>Wydarzenia</button>
+      <button data-act="go:downloads" ${S.screen==='downloads'?'aria-current="page"':''}>Aplikacja</button>
       <button data-act="go:map" ${S.screen==='map'?'aria-current="page"':''}>Mapa</button>
       <button data-act="go:tickets" ${S.screen==='tickets'||S.screen==='ticket'?'aria-current="page"':''}>Bilety</button>
       <button data-act="go:wallet" ${WALLET_SOON.includes(S.screen)?'aria-current="page"':''}>Portfel${DEMO?'':' <span style="font:700 8px/1 var(--m);letter-spacing:.08em;padding:3px 5px;border-radius:5px;background:var(--pink-dim);color:var(--pink);vertical-align:2px">WKRÓTCE</span>'}</button>
@@ -2884,7 +2891,7 @@ function renderWebChrome(){
   $('#web-footer').innerHTML = `<div class="web-footer-inner">
     <span>+1 &nbsp; WHERE ARE WE GOING?<br>Wydarzenia w Twoim mieście, w jednym miejscu.</span>
     <button data-act="go:profile">Konto i ustawienia ${ic('chevR',12)}</button>
-    <span>plusoneapp.pl</span>
+    <button data-act="go:downloads">Aplikacja na telefon</button>
   </div>`;
 }
 
@@ -2948,7 +2955,7 @@ function act(a){
     case 'back': back(); break;
     case 'ev': openEvent(p1); break;
     case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.big=false; S.limit=40;
-      if(S.screen==='home'){ if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo({top:0,behavior:'smooth'}); $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
+      if(S.screen==='home'){ if(!DEMO) window.scrollTo({top:0,behavior:'smooth'}); $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
     case 'mapWhen': MAP.when=p1; haptic(5); sfxTap(); S.dir=null; render(); break;
     case 'mapPin': MAP.pinned=a.slice(7); S.dir=null; render(); setTimeout(()=>{ const t=$('#view'); t && t.scrollTo({top:520,behavior:'smooth'}); },60); break;
     case 'mapGo': S.city=a.slice(6); try{localStorage.setItem('city',S.city)}catch(e){}
@@ -2976,6 +2983,7 @@ function act(a){
     case 'adminSearch': S.adminQ=$('#adm-q')?.value||''; adminLoad(); break;
     case 'curate': curate(p1, p2); break;
     case 'role': setRole(p1, p2); break;
+    case 'previewAccess': setPreviewAccess(p1,p2==='grant'); break;
     case 'cat': S.cat = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'price': S.price = S.price===p1 ? 'all' : p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'when': S.when = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;

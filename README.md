@@ -38,11 +38,15 @@ npx serve public               # apka na http://localhost:3000
 
 ## Hosting
 
-### Strona na komputerze i widok mobilny
+### Publiczna witryna i zamknięty prototyp
 
-Oba widoki działają pod `plusoneapp.pl`, korzystają z tego samego katalogu wydarzeń i API kont. Do 760 px pozostaje układ mobilny; od 761 px `public/desktop.css` włącza stronę z górną nawigacją, siatką wydarzeń i dwukolumnowymi szczegółami. Zmiana szerokości okna zachowuje wybrane miasto, filtry i otwarty ekran. Na komputerze nowe wejście otwiera od razu katalog, bez ekranu powitalnego. Tryb `?demo` zachowuje dotychczasowy prototyp.
+`plusoneapp.pl` pokazuje tę samą witrynę w przeglądarce na komputerze i telefonie. Układ dopasowuje się do szerokości; katalog, mapa, bilety, konto i logowanie korzystają z tego samego API. Parametr `?demo` i wcześniej zapamiętany tryb demo nie przełączają publicznej witryny w aplikację.
 
-Lokalnie uruchom Worker z bazą D1 poleceniem opisanym niżej. Sprawdź widoki przy 390, 760, 761, 1024 i 1440 px, w obu motywach: wyszukiwanie, filtry, zmianę miasta, szczegóły wydarzenia, link do sprzedawcy i logowanie. Podział dostępnych funkcji między stronę a aplikację pozostaje kolejnym etapem.
+Prototyp aplikacji jest osobnym dokumentem `private/app.html`, dołączanym do Workera jako tekst, poza katalogiem statycznym `public/`. Adres `/preview` wymaga ważnej sesji i uprawnienia administratora lub wpisu w `preview_access`. Administrator nadaje i odbiera to uprawnienie w **Konto → Panel admina → Użytkownicy → Daj/Odbierz podgląd**. Tester najpierw zakłada zwykłe konto. Przyznanie dostępu nie nadaje praw administratora. Link do prototypu pojawia się w koncie testera i w sekcji **Aplikacja na telefon**. Odpowiedzi podglądu mają `Cache-Control: private, no-store` i zakaz indeksowania.
+
+Przed uruchomieniem zastosuj wszystkie migracje D1, w tym `0003_preview_access.sql`. Bez dostępnej bazy podgląd pozostaje zamknięty. Publiczna witryna i prototyp mają osobne dokumenty — zmiany wyglądu strony nie powinny automatycznie modyfikować makiet aplikacji.
+
+Sekcja **Aplikacja na telefon** informuje o przygotowywanej aplikacji; nie oferuje jeszcze plików do instalacji. Następny etap to pakiet Capacitor dla Androida (APK do testów lub Google Play) i iOS (TestFlight dla zaproszonych testerów). iOS wymaga konta Apple Developer, podpisania wersji i kompilacji na macOS/Xcode. Sam manifest WWW nie tworzy pakietu APK ani aplikacji iOS. TestFlight i konta sklepowe nie są skonfigurowane w tym repozytorium.
 
 - Domena **plusoneapp.pl**: rejestrator GoDaddy, DNS w Cloudflare.
 - Strona: **Cloudflare Workers** (static assets, `wrangler.jsonc`), publikowany jest tylko folder `public/`. `public/_headers` ustawia cache.

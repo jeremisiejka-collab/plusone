@@ -2,6 +2,8 @@
    /api/* obsługuje ten plik, resztę (apka, data/events.json) serwują statyczne pliki z public/.
    Baza: D1 (binding DB), schemat w migrations/. */
 
+import previewHtml from '../private/app.html';
+
 const DAY = 864e5;
 const SESSION_DAYS = 60;
 const PBKDF2_ITER = 100000; // maksimum dozwolone w Workers
@@ -158,6 +160,7 @@ async function deleteMe(req, env, user) {
   if (!(await checkPassword(String(b.password || ''), u.pass))) return fail(401, 'Złe hasło.');
   await env.DB.batch([
     env.DB.prepare('DELETE FROM saved WHERE user_id = ?').bind(user.id),
+    env.DB.prepare('DELETE FROM preview_access WHERE user_id = ?').bind(user.id),
     env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id),
     env.DB.prepare('UPDATE curation SET by_user = NULL WHERE by_user = ?').bind(user.id),
     env.DB.prepare('DELETE FROM users WHERE id = ?').bind(user.id)
@@ -216,9 +219,31 @@ async function adminUsers(req, env) {
   const q = '%' + cleanText(url.searchParams.get('q'), 100).toLowerCase() + '%';
   const { results } = await env.DB.prepare(
     `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at, u.last_seen,
-            (SELECT COUNT(*) FROM saved s WHERE s.user_id = u.id) AS saves
+            (SELECT COUNT(*) FROM saved s WHERE s.user_id = u.id) AS saves,
+            EXISTS(SELECT 1 FROM preview_access p WHERE p.user_id = u.id) AS preview_access
      FROM users u WHERE lower(u.email) LIKE ? OR lower(u.name) LIKE ? ORDER BY u.created_at DESC LIMIT 200`).bind(q, q).all();
   return json({ users: results });
+}
+
+async function canPreview(env, user) {
+  return !!user && (user.role === 'admin' || !!(await env.DB.prepare('SELECT 1 FROM preview_access WHERE user_id = ?').bind(user.id).first()));
+}
+
+async function adminPreviewAccess(req, env, id) {
+  const b = await body(req);
+  if (typeof b.allowed !== 'boolean') return fail(400, 'Podaj allowed: true lub false.');
+  if (!await env.DB.prepare('SELECT 1 FROM users WHERE id = ?').bind(+id).first()) return fail(404, 'Nie ma takiego użytkownika.');
+  if (b.allowed) await env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(+id, Date.now()).run();
+  else await env.DB.prepare('DELETE FROM preview_access WHERE user_id = ?').bind(+id).run();
+  return json({ ok: true, allowed: b.allowed });
+}
+
+async function preview(req, env) {
+  const headers = { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex, nofollow', 'Vary': 'Cookie' };
+  if (!env.DB) return new Response('Podgląd jest chwilowo niedostępny. <a href="/">Wróć do witryny</a>', { status: 503, headers });
+  const user = await currentUser(req, env);
+  if (!await canPreview(env, user)) return new Response(`<!doctype html><html lang="pl"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Podgląd +1</title><body style="font:18px/1.6 system-ui;max-width:560px;margin:15vh auto;padding:24px"><h1>Podgląd dla testerów</h1><p>${user?'Twoje konto nie ma jeszcze dostępu. Poproś administratora o zaproszenie.':'Zaloguj się na witrynie kontem z dostępem do testów.'}</p><a href="/">Wróć do witryny</a></body></html>`, { status: user ? 403 : 401, headers });
+  return new Response(previewHtml, { headers });
 }
 
 async function adminSetRole(req, env, user, id) {
@@ -265,6 +290,7 @@ async function api(req, env) {
   if (path === '/api/auth/logout' && m === 'POST') return logout(req, env);
 
   const user = await currentUser(req, env);
+  if (path === '/api/preview-access' && m === 'GET') return json({ allowed: await canPreview(env, user) });
   if (path === '/api/me' && m === 'GET') return me(req, env, user);
   if (!user) return fail(401, 'Zaloguj się.');
 
@@ -276,6 +302,8 @@ async function api(req, env) {
     if (user.role !== 'admin') return fail(403, 'Tylko dla admina.');
     if (path === '/api/admin/stats' && m === 'GET') return adminStats(req, env);
     if (path === '/api/admin/users' && m === 'GET') return adminUsers(req, env);
+    const previewUser = path.match(/^\/api\/admin\/users\/(\d+)\/preview$/);
+    if (previewUser && m === 'POST') return adminPreviewAccess(req, env, previewUser[1]);
     const r = path.match(/^\/api\/admin\/users\/(\d+)\/role$/);
     if (r && m === 'POST') return adminSetRole(req, env, user, r[1]);
     if (path === '/api/admin/curation' && m === 'POST') return adminCurate(req, env, user);
@@ -286,6 +314,10 @@ async function api(req, env) {
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
+    if (url.pathname === '/preview' || url.pathname.startsWith('/preview/')) {
+      try { return await preview(req, env); }
+      catch (e) { console.error(e); return new Response('Podgląd jest chwilowo niedostępny.', { status: 503, headers: { 'Cache-Control': 'no-store' } }); }
+    }
     if (url.pathname.startsWith('/api/')) {
       try { return await api(req, env); }
       catch (e) { console.error(e); return fail(500, 'Coś poszło nie tak. Spróbuj ponownie.'); }

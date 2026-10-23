@@ -4,10 +4,11 @@
   "account_id": "3b85c6d89850b97817458147e0fd71f6",
   "compatibility_date": "2026-10-01",
   "main": "worker/index.js",
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*"],
+    "run_worker_first": ["/api/*", "/preview", "/preview/*"],
     // nieznane adresy (np. stare linki) otwierają apkę zamiast pustej strony
     "not_found_handling": "single-page-application"
   },
