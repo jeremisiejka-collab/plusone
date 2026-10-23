@@ -2349,6 +2349,7 @@ const TXS = [
 /* ---- PORTFEL: publicznie zapowiedź (pełny prototyp w ?demo) ---- */
 const WALLET_SOON = ['wallet','topup','bar','nfc','scanpay'];
 const walletSoon = () => !DEMO && WALLET_SOON.includes(S.screen);
+const WALLET_MARK = `<svg class="wallet-mark" width="90" height="57" viewBox="20.15 31.2 59.7 37.6" aria-hidden="true" style="position:absolute;right:18px;top:18px;opacity:.12;pointer-events:none">${GLYPH(PINK_HEX)}</svg>`;
 const scWalletSoon = () => `
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad col" style="gap:18px;max-width:760px;margin:0 auto">
@@ -2358,7 +2359,7 @@ const scWalletSoon = () => `
     </div>
     <div class="ds" style="border-radius:24px;padding:24px;position:relative;overflow:hidden;
       background:linear-gradient(150deg,#2a0013,#0d0009 70%);border:1px solid var(--pink-line)">
-      <div style="position:absolute;right:-30px;top:-30px;opacity:.14">${LOGO(150,0)}</div>
+      ${WALLET_MARK}
       <span class="eyebrow pink">Portfel +1</span>
       <div style="font:600 26px/1.15 var(--d);letter-spacing:-.02em;margin-top:12px;max-width:300px;color:#fff">Płać na imprezie jednym stuknięciem.</div>
       <span class="body" style="display:block;margin-top:10px;max-width:340px;color:rgba(255,255,255,.72)">Doładujesz PLUSY przez BLIK, zapłacisz telefonem przy barze i w szatni, a niewykorzystane saldo wróci do Ciebie po evencie.</span>
@@ -2382,7 +2383,7 @@ const scWallet = () => `
   <div class="pad">
     <div style="border-radius:24px;padding:24px;background:linear-gradient(150deg,var(--promo1),var(--promo2) 60%,var(--promo2));
       border:1px solid var(--pink-line);position:relative;overflow:hidden">
-      <div style="position:absolute;right:-30px;top:-30px;opacity:.12">${LOGO(150,0)}</div>
+      ${WALLET_MARK}
       <span class="eyebrow pink">Saldo PLUSÓW</span>
       <div class="row" style="align-items:baseline;gap:8px;margin-top:12px">
         <span id="bal" style="font:700 46px/1 var(--d);letter-spacing:-.03em">${pl(S.balance)}</span>
@@ -2853,9 +2854,7 @@ const FAB_HOME = ['home','list','map','cities','profile','mytickets','scan','peo
 const payDay = () => ['tickets','wallet'].includes(S.screen) && [...MINE.going].some(id => EVENTS.find(e=>e.id===id)?.day===localDay());
 const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','org','plan','mywrapped',...STAFF_SCREENS];
 const STAFF_NAV = [{k:'staffStats',ic:'bolt',l:'STATYSTYKI'},{fab:true},{k:'staffActivity',ic:'clock',l:'HISTORIA'}];
-const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000">
-  <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
-  <rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>`;
+const FAB_SVG = `<svg width="38" height="38" viewBox="0 0 100 100" aria-hidden="true">${GLYPH('#000')}</svg>`;
 
 /* ekrany "aparatowe"/immersyjne zostają ciemne także w trybie dziennym */
 const DARK_SCREENS = ['ticket','nfc','scanner','wrapped','scanpay'];
