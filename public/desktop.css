@@ -264,7 +264,7 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
 /* strona „Aplikacja na telefon” */
 .dl { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
 .dl-hero { position: relative; overflow: hidden; border-radius: 28px; padding: 30px 24px; color: #fff;
-  background: radial-gradient(120% 90% at 85% 0%, #ff005955, transparent 60%), linear-gradient(160deg, #1a0710, #000 70%); border: 1px solid rgba(255,255,255,.1); }
+  background: #000; border: 1px solid rgba(255,255,255,.12); }
 .dl-hero h1 { font: 600 clamp(34px, 6vw, 56px)/1.02 var(--d); letter-spacing: -.04em; margin-top: 14px; }
 .dl-hero h1 span { color: #FF0059; }
 .dl-hero p { color: rgba(255,255,255,.72); margin-top: 14px; max-width: 460px; font: 400 15px/1.6 var(--d); }

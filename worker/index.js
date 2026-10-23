@@ -247,7 +247,7 @@ const gatePage = (user) => `<!doctype html><html lang="pl"><head><meta charset="
 <meta name="apple-mobile-web-app-title" content="+1"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/favicon.svg">
 <title>+1 — aplikacja testowa</title>
 <style>
-*{box-sizing:border-box;margin:0}body{min-height:100dvh;display:grid;place-items:center;background:radial-gradient(120% 70% at 50% 0%,#2a0013,#000 60%);color:#fff;
+*{box-sizing:border-box;margin:0}body{min-height:100dvh;display:grid;place-items:center;background:#000;color:#fff;
 font:16px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;padding:max(24px,env(safe-area-inset-top)) 22px max(24px,env(safe-area-inset-bottom))}
 main{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px}
 svg{width:72px;height:72px;border-radius:18px;align-self:center;margin-bottom:8px}
