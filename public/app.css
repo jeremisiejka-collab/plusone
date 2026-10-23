@@ -136,6 +136,10 @@
 .person-card .mono { font-size: 10px; }
 .person-card .chip { padding: 10px; font-size: 11px; }
 @media (max-width: 760px) {
-  #app-topbar { top: max(12px, env(safe-area-inset-top)); }
-  #shell.has-app-topbar #view > .pg { padding-top: calc(76px + env(safe-area-inset-top)) !important; }
+  /* pasek przypięty od samej krawędzi ekranu: pełne tło, nic nie prześwituje nad nim */
+  #app-topbar { top: 0; left: 0; right: 0; height: 44px; box-sizing: content-box; padding: max(52px, env(safe-area-inset-top)) 20px 10px; border-bottom: 1px solid transparent; transition: border-color .2s; }
+  html.standalone #app-topbar { padding-top: max(10px, env(safe-area-inset-top)); }
+  #app-topbar.scrolled { border-bottom-color: var(--line); }
+  #shell.has-app-topbar #view > .pg { padding-top: calc(max(52px, env(safe-area-inset-top)) + 70px) !important; }
+  html.standalone #shell.has-app-topbar #view > .pg { padding-top: calc(max(10px, env(safe-area-inset-top)) + 70px) !important; }
 }

@@ -332,8 +332,8 @@ html.standalone #view [style*="top:52px"]{top:12px !important}
 @keyframes shim{from{background-position:180% 0}to{background-position:-40% 0}}
 
 /* ---- marquee ---- */
-.mq{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px 0}
-.mq-track{display:flex;width:max-content;animation:slide var(--ticker-duration,150s) linear infinite;font:600 12px/1 var(--m);letter-spacing:.18em;color:var(--t2)}
+.mq{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px 0}
+.mq-track{display:flex;width:max-content;animation:slide var(--ticker-duration,150s) linear infinite;font:600 10px/1 var(--m);letter-spacing:.18em;color:var(--t2)}
 .mq-group{flex:none;min-width:100vw;padding-right:3rem}
 .mq:hover .mq-track,.mq:focus .mq-track{animation-play-state:paused}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -2896,6 +2896,8 @@ function renderAppChrome(){
       <button class="app-account" data-act="go:profile" aria-label="Konto">${ic('user',20)}</button>
     </div>` : '';
   $('#web-header').innerHTML=''; $('#web-footer').innerHTML='';
+  // cienka linia pod paskiem dopiero, gdy treść przewija się pod nim
+  const v=$('#view'); v.onscroll=()=>header.classList.toggle('scrolled',v.scrollTop>4); v.onscroll();
 }
 
 function render(){

@@ -1,7 +1,7 @@
 /* +1 — service worker aplikacji testowej (/app).
    Ekran aplikacji i wydarzenia: najpierw sieć, bez zasięgu ostatnia zapisana wersja.
    Zapisujemy tylko udane odpowiedzi — strona logowania (401/403) nigdy nie trafia do pamięci. */
-const CACHE = 'plusone-app-v5';
+const CACHE = 'plusone-app-v6';
 const SHELL = ['/app', '/data/events.json', '/icon-512.png', '/apple-touch-icon.png', '/favicon.svg', '/vendor/fonts/fonts.css'];
 
 self.addEventListener('install', e => {
