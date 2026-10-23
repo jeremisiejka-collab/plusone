@@ -7,6 +7,8 @@
 <script>
 /* motyw ustawiany przed narysowaniem strony (bez mignięcia): wybór użytkownika albo ustawienie systemu */
 (function(){
+  /* uruchomione z ikony na ekranie telefonu */
+  if(navigator.standalone || matchMedia('(display-mode: standalone)').matches) document.documentElement.classList.add('standalone');
   var t=null; try{t=localStorage.getItem('theme')}catch(e){}
   if(t!=='light'&&t!=='dark') t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
   document.documentElement.dataset.theme=t;
@@ -19,7 +21,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="+1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Wszystkie imprezy, koncerty, teatr i stand-up w Warszawie i całej Polsce w jednym miejscu. Codziennie aktualne.">
@@ -99,6 +101,22 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
   /* dolne menu nad paskiem gestów iPhone'a, bez pustego pasa pod spodem */
   #nav{height:calc(68px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
 }
+
+/* Aplikacja z ikony: nieprzezroczysty pasek statusu (black). Przy przezroczystym iOS 26 skraca widok o wysokość
+   paska i pod dolnym menu zostaje czarny pas (WebKit 301108). Pasek zajmuje teraz własne miejsce, więc zdejmujemy
+   40 px górnego odstępu, który ekrany zostawiały na udawany pasek statusu. */
+html.standalone #status{display:none}
+html.standalone #offline{top:0}
+html.standalone .hdr{margin-top:12px}
+html.standalone .pg[style*="padding:64px"]{padding-top:24px !important}
+html.standalone .pg[style*="padding:116px"]{padding-top:76px !important}
+html.standalone .pg[style*="padding:96px"]{padding-top:56px !important}
+html.standalone .pg[style*="padding:88px"]{padding-top:48px !important}
+html.standalone .pg[style*="padding:80px"]{padding-top:40px !important}
+html.standalone #view [style*="top:64px"]{top:24px !important}
+html.standalone #view [style*="top:78px"]{top:38px !important}
+html.standalone #view [style*="top:62px"]{top:22px !important}
+html.standalone #view [style*="top:52px"]{top:12px !important}
 
 /* status bar */
 #status{position:absolute;top:0;left:0;right:0;height:52px;z-index:60;display:flex;align-items:center;
