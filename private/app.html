@@ -84,7 +84,8 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
   html,body{background:var(--bg)}
   #desk{padding:0;gap:0;background:var(--bg);min-height:100dvh}
   #deskbar,#jumpbar{display:none}
-  #shell{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
+  /* przypięte do krawędzi ekranu: w aplikacji z ikony iPhone liczy 100dvh bez paska statusu, przez co menu wisiało nad dolną krawędzią */
+  #shell{position:fixed;inset:0;width:auto;height:auto;border-radius:0;box-shadow:none}
   /* prawdziwy telefon ma własny pasek statusu — udawany zostaje tylko w demo */
   body:not(.demo) #status{display:none}
   /* aplikacja na telefonie: miejsce na systemowy pasek statusu zostaje, udawany zegar i bateria znikają */
