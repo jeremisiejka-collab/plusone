@@ -6,7 +6,7 @@
 /* ---- „Zobacz jako”: główny administrator ogląda aplikację oczami innej roli (tylko widok) ---- */
 function viewAs(){
   if(!ACC.user?.owner) return null;
-  try{ const role = sessionStorage.getItem('viewAs'); return ['user','staff','admin'].includes(role) ? role : null; }catch(e){ return null; }
+  try{ const role = sessionStorage.getItem('viewAs'); return ['user','staff','organizer','admin'].includes(role) ? role : null; }catch(e){ return null; }
 }
 function effectiveRole(){ return viewAs() || (ACC.user?.owner || ACC.user?.role==='admin' ? 'admin' : ACC.user?.org ? 'organizer' : ACC.user?.scan ? 'staff' : 'user'); }
 function setViewAs(v){

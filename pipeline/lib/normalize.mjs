@@ -61,9 +61,11 @@ export function parsePrice(v) {
 }
 
 /* Usuwamy całe sekwencje emoji, w tym flagi, odcienie skóry i znaki łączone.
-   Zwykłe tekstowe znaki praw autorskich pozostają tekstem. */
+   Zwykłe tekstowe znaki praw autorskich pozostają tekstem.
+   Bloki „Różne symbole” i „Dingbaty” (★ ♫ ✔ ➜) wycinamy jawnie: przynależność części z nich
+   do Extended_Pictographic zależy od wersji Unicode w Node, przez co lokalnie i w CI wynik był inny. */
 export function stripEmoji(s) {
-  return String(s).replace(/(?:[#*0-9]\uFE0F?\u20E3|[\p{Extended_Pictographic}\p{Regional_Indicator}\p{Emoji_Modifier}])[\uFE0E\uFE0F\u{E0020}-\u{E007F}]*(?:\u200D[\p{Extended_Pictographic}\p{Regional_Indicator}\p{Emoji_Modifier}][\uFE0E\uFE0F\u{E0020}-\u{E007F}]*)*/gu,
+  return String(s).replace(/(?:[#*0-9]\uFE0F?\u20E3|[\p{Extended_Pictographic}\p{Regional_Indicator}\p{Emoji_Modifier}\u2600-\u27BF])[\uFE0E\uFE0F\u{E0020}-\u{E007F}]*(?:\u200D[\p{Extended_Pictographic}\p{Regional_Indicator}\p{Emoji_Modifier}][\uFE0E\uFE0F\u{E0020}-\u{E007F}]*)*/gu,
     match => /^[©®™]$/.test(match) ? match : '').replace(/[ \t]{2,}/g, ' ').trim();
 }
 
