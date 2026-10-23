@@ -24,6 +24,7 @@ Aplikacja z wydarzeniami — imprezy, koncerty, teatr, stand-up, festiwale — n
 | Resident Advisor | kluby i elektronika — cała Polska | `pipeline/sources/ra.mjs` |
 | go2warsaw.pl | wystawy, koncerty, spotkania w Warszawie (oficjalny serwis miasta) | `pipeline/sources/go2warsaw.mjs` |
 
+- **Grafiki**: pipeline zapisuje `imageRatio` (szerokość/wysokość, `pipeline/lib/images.mjs`); karty w aplikacji mają kształt plakatu, bez przycinania i pasów.
 - **Wielkie wydarzenia** (`big` w events.json): festiwale oraz koncerty na stadionach i arenach albo z biletami od 350 zł — reguła `isBig()` w `pipeline/lib/normalize.mjs`.
 - **Mapa**: granice województw w `public/data/poland.json`, współrzędne miejscowości (GeoNames) w `pipeline/data/places.json`; pipeline dopisuje do events.json pole `geo` (`pipeline/lib/geo.mjs`).
 
@@ -42,16 +43,17 @@ npx serve public               # apka na http://localhost:3000
 
 `plusoneapp.pl` pokazuje tę samą witrynę w przeglądarce na komputerze i telefonie. Układ dopasowuje się do szerokości; katalog, mapa, bilety, konto i logowanie korzystają z tego samego API. Parametr `?demo` i wcześniej zapamiętany tryb demo nie przełączają publicznej witryny w aplikację.
 
-Prototyp aplikacji jest osobnym dokumentem `private/app.html`, dołączanym do Workera jako tekst, poza katalogiem statycznym `public/`. Adres `/preview` wymaga ważnej sesji i uprawnienia administratora lub wpisu w `preview_access`. Administrator nadaje i odbiera to uprawnienie w **Konto → Panel admina → Użytkownicy → Daj/Odbierz podgląd**. Tester najpierw zakłada zwykłe konto. Przyznanie dostępu nie nadaje praw administratora. Link do prototypu pojawia się w koncie testera i w sekcji **Aplikacja na telefon**. Odpowiedzi podglądu mają `Cache-Control: private, no-store` i zakaz indeksowania.
+Prototyp aplikacji jest osobnym dokumentem `private/app.html`, dołączanym do Workera jako tekst, poza katalogiem statycznym `public/`. Adres `/app` wymaga ważnej sesji i uprawnienia administratora lub wpisu w `preview_access`. Administrator nadaje i odbiera to uprawnienie w **Konto → Panel admina → Użytkownicy → Daj/Odbierz podgląd**. Tester najpierw zakłada zwykłe konto. Przyznanie dostępu nie nadaje praw administratora. Link do prototypu pojawia się w koncie testera i w sekcji **Aplikacja na telefon**. Odpowiedzi podglądu mają `Cache-Control: private, no-store` i zakaz indeksowania.
 
 Przed uruchomieniem zastosuj wszystkie migracje D1, w tym `0003_preview_access.sql`. Bez dostępnej bazy podgląd pozostaje zamknięty. Publiczna witryna i prototyp mają osobne dokumenty — zmiany wyglądu strony nie powinny automatycznie modyfikować makiet aplikacji.
 
 ### Aplikacja na telefon (PWA, zamknięte testy)
 
-`/preview` to instalowalna aplikacja (PWA) — za darmo, na Androidzie i iPhonie, bez sklepu:
+`/app` to instalowalna aplikacja (PWA) — za darmo, na Androidzie i iPhonie, bez sklepu:
 
-- `public/app.webmanifest` (zakres `/preview`) i `public/app-sw.js` (service worker: ekran aplikacji i `events.json` najpierw z sieci, bez zasięgu z pamięci; strona logowania nie jest zapisywana).
-- Bez sesji `/preview` pokazuje własny formularz logowania. Aplikacja dodana do ekranu iPhone'a nie widzi ciasteczek z Safari, więc tester loguje się raz w aplikacji.
+- `public/app.webmanifest` (zakres `/app`) i `public/app-sw.js` (service worker: ekran aplikacji i `events.json` najpierw z sieci, bez zasięgu z pamięci; strona logowania nie jest zapisywana).
+- Strona główna uruchomiona z ikony na ekranie telefonu przekierowuje na `/app`, więc ikona zawsze otwiera aplikację, nie stronę WWW. `/preview` przekierowuje na `/app`.
+- Bez sesji `/app` pokazuje własny formularz logowania. Aplikacja dodana do ekranu iPhone'a nie widzi ciasteczek z Safari, więc tester loguje się raz w aplikacji.
 - **Android**: Chrome → przycisk „Instaluj” w aplikacji albo menu ⋮ → „Zainstaluj aplikację”. **iPhone**: Safari → Udostępnij → „Do ekranu początkowego”.
 - Instrukcja dla testerów jest w zakładce **Aplikacja** na stronie.
 

@@ -102,7 +102,7 @@
   .web-hero-meta { position: static; margin-top: 18px; font-size: 9px; }
   body:not(.demo) .calendar-grid, body:not(.demo) .catalog-grid { grid-template-columns: minmax(0,1fr); }
   body:not(.demo) .pg.event-detail { grid-template-columns: minmax(0,1fr); gap: 24px; }
-  body:not(.demo) .event-art { position: relative !important; top: auto; min-height: 0; height: auto !important; aspect-ratio: 4/5; max-height: 72dvh; margin: 0 -16px; border-radius: 0; }
+  body:not(.demo) .event-art { position: relative !important; top: auto; min-height: 0; height: auto !important; margin: 0 -16px; border-radius: 0; }
   body:not(.demo) #toast { left: 16px; right: 16px; bottom: 20px; }
   body:not(.demo) #sheet { width: calc(100vw - 24px); top: 10dvh; max-height: 80dvh; padding: 20px; }
   #web-footer { margin: 0 16px; padding: 24px 0; }
@@ -145,16 +145,15 @@
   .web-print-solid, .web-print-outline { animation: none; }
 }
 
-/* ===== Karty wydarzeń, paski i przejścia ===== */
+/* ===== Karty wydarzeń, paski i przejścia =====
+   Zasada: karta ma kształt plakatu (--r = szerokość/wysokość grafiki). Żadnych rozmytych pasów ani gradientów na grafice.
+   W pasku karty mają wspólną wysokość (--h), szerokość wynika z proporcji; bardzo szerokie grafiki są niższe, nie przycięte. */
 .art { position: absolute; inset: 0; overflow: hidden; }
 .art > svg { position: absolute; inset: 0; }
 .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
   opacity: 0; transform: scale(1.03); filter: blur(6px); transition: opacity .6s ease, transform .9s cubic-bezier(.2,.7,.2,1), filter .6s ease; }
 .art img.on { opacity: 1; transform: none; filter: none; }
-/* cały plakat na rozmytym, przyciemnionym tle — tekst plakatu nie jest ucięty */
-.art-blur { position: absolute; inset: -12%; background-size: cover; background-position: center; filter: blur(28px) saturate(1.3) brightness(.55); opacity: 0; transition: opacity .5s; }
-.art.fit .art-blur { opacity: 1; }
-.art.fit img { object-fit: contain; }
+.art:has(img.on) > svg { display: none; }
 
 .shelf { margin-bottom: 34px; }
 .shelf-hd { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding-bottom: 14px; }
@@ -167,7 +166,7 @@
 .shelf-all:hover::after { transform: translateX(3px); }
 
 .rail-wrap { position: relative; }
-.rail { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+.rail { display: flex; align-items: flex-start; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
   scroll-padding-inline: 16px; padding: 4px 16px 6px; margin: -4px -16px 0; }
 .rail > * { scroll-snap-align: start; flex: none; }
 .rail-arrow { display: none; }
@@ -175,46 +174,40 @@
 .rail-dots i { width: 6px; height: 6px; border-radius: 6px; background: var(--line-2); transition: width .35s cubic-bezier(.2,.7,.2,1), background .35s; }
 .rail-dots i.on { width: 22px; background: var(--pink); }
 
-/* karta */
-.ev { width: min(62vw, 250px); cursor: pointer; -webkit-user-select: none; user-select: none; }
-.ev-media { position: relative; aspect-ratio: 4/5; border-radius: 18px; overflow: hidden; background: var(--surface-2);
-  box-shadow: 0 1px 0 rgba(var(--fg),.06) inset; transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s; }
+/* karta: szerokość = wysokość × proporcje plakatu, z limitem szerokości */
+.ev { --r: .8; --h: 250px; --maxw: 84vw; width: min(calc(var(--h) * var(--r)), var(--maxw)); min-width: 150px; cursor: pointer;
+  -webkit-user-select: none; user-select: none; transition: width .45s cubic-bezier(.2,.7,.2,1); }
+.ev-media { position: relative; width: 100%; aspect-ratio: var(--r); border-radius: 16px; overflow: hidden; background: var(--surface-2);
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s, aspect-ratio .45s; }
 .ev:active .ev-media { transform: scale(.97); }
-.ev-tag { position: absolute; top: 10px; left: 10px; z-index: 2; display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 10px; border-radius: 100px; font: 600 11px/1 var(--d); letter-spacing: .01em; color: #fff;
-  background: rgba(10,10,12,.5); backdrop-filter: blur(14px) saturate(1.4); -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  border: 1px solid rgba(255,255,255,.14); }
-.ev-tag.now::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 0 0 rgba(255,0,89,.6); animation: livedot 2s infinite; }
+.ev-tag { position: absolute; top: 8px; left: 8px; z-index: 2; display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 9px; border-radius: 100px; font: 600 11px/1 var(--d); letter-spacing: .01em; color: #fff;
+  background: rgba(10,10,12,.62); backdrop-filter: blur(12px) saturate(1.4); -webkit-backdrop-filter: blur(12px) saturate(1.4); }
+.ev-tag.now::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--pink); animation: livedot 2s infinite; }
 @keyframes livedot { 0% { box-shadow: 0 0 0 0 rgba(255,0,89,.6); } 70%, 100% { box-shadow: 0 0 0 7px rgba(255,0,89,0); } }
-.ev-body { padding: 12px 2px 0; display: flex; flex-direction: column; gap: 5px; }
-.ev-title { font: 600 16px/1.22 var(--d); letter-spacing: -.015em; text-wrap: balance; }
+.ev-body { padding: 11px 2px 0; display: flex; flex-direction: column; gap: 5px; }
+.ev-title { font: 600 15px/1.22 var(--d); letter-spacing: -.015em; text-wrap: balance; }
 .ev-sub { font: 400 13px/1.35 var(--d); color: var(--t2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ev-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 18px; }
 .ev-price { font: 600 13px/1 var(--d); color: var(--pink); }
 .ev-cat { font: 500 12px/1 var(--d); color: var(--t3); }
 .ev-more { font: 600 11px/1 var(--d); padding: 4px 8px; border-radius: 100px; background: var(--pink-dim); color: var(--pink); }
+.ev-kicker { font: 600 10px/1 var(--m); letter-spacing: .14em; text-transform: uppercase; color: var(--pink); }
 
-/* duża karta z tytułem na zdjęciu */
-.ev-hero { width: min(84vw, 380px); }
-.ev-hero .ev-media { border-radius: 22px; }
-.ev-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(0,0,0,0) 42%, rgba(0,0,0,.55) 68%, rgba(0,0,0,.9) 100%); }
-.ev-over { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 18px; color: #fff; display: flex; flex-direction: column; gap: 6px; }
-.ev-kicker { font: 600 10px/1 var(--m); letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.7); }
-.ev-hero .ev-title { font-size: 22px; line-height: 1.12; letter-spacing: -.025em; text-shadow: 0 2px 18px rgba(0,0,0,.4); }
-.ev-hero .ev-sub { color: rgba(255,255,255,.75); }
-/* aktywna karta karuzeli delikatnie się przybliża */
-.hero-rail .art img.on, .hero-rail .art-blur { transition: transform 6s ease-out, opacity .6s; }
+/* wielkie wydarzenia: większe karty */
+.ev-hero { --h: 340px; --maxw: 86vw; }
+.ev-hero .ev-media { border-radius: 20px; }
+.ev-hero .ev-title { font-size: 19px; line-height: 1.15; letter-spacing: -.02em; }
 
 @media (hover: hover) {
   .ev:hover .ev-media { transform: translateY(-4px); box-shadow: 0 18px 40px -18px rgba(0,0,0,.6); }
-  .ev:hover .art img.on { transform: scale(1.045); transition: transform 1.2s cubic-bezier(.2,.7,.2,1), opacity .6s; }
-  .ev:hover .art.fit img.on { transform: scale(1.02); }
+  .ev:hover .art img.on { transform: scale(1.035); transition: transform 1.2s cubic-bezier(.2,.7,.2,1), opacity .6s; }
 }
 
-/* lista z nagłówkami dni */
+/* listy: miniatura też w kształcie plakatu (stała wysokość) */
 .day-hd { grid-column: 1 / -1; padding: 22px 0 6px; font: 600 12px/1 var(--m); letter-spacing: .1em; text-transform: uppercase; color: var(--pink); }
 .cat-row { display: flex; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
-.cat-thumb { flex: none; width: 78px; height: 98px; border-radius: 14px; overflow: hidden; position: relative; background: var(--surface-2); }
+.cat-thumb { --r: .8; flex: none; height: 96px; width: clamp(64px, calc(96px * var(--r)), 150px); border-radius: 12px; overflow: hidden; position: relative; background: var(--surface-2); }
 
 /* terminy na stronie wydarzenia */
 .terms { display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px 4px; }
@@ -225,13 +218,16 @@
 .term.on b { color: #000; }
 .term:active { transform: scale(.95); }
 
+/* strona wydarzenia: okładka w proporcjach plakatu */
+body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var(--r); background: var(--surface-2); }
+
 /* pojawianie się sekcji i kart po kolei */
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
 .reveal.in { opacity: 1; transform: none; }
-.reveal .ev { opacity: 0; transform: translateX(26px); transition: opacity .6s ease, transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: calc(min(var(--i, 0), 6) * 70ms + 120ms); }
-.reveal.in .ev { opacity: 1; transform: none; }
+.reveal .ev { opacity: 0; translate: 26px 0; transition: opacity .6s ease, translate .7s cubic-bezier(.2,.7,.2,1), width .45s cubic-bezier(.2,.7,.2,1); transition-delay: calc(min(var(--i, 0), 6) * 70ms + 120ms), calc(min(var(--i, 0), 6) * 70ms + 120ms), 0s; }
+.reveal.in .ev { opacity: 1; translate: 0 0; }
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal .ev { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .reveal, .reveal .ev { opacity: 1 !important; transform: none !important; translate: none !important; transition: none !important; }
   .art img { transition: none; filter: none; transform: none; }
 }
 
@@ -247,13 +243,13 @@
 @media (min-width: 761px) {
   .rail { margin: -4px 0 0; padding: 4px 0 18px; scroll-padding-inline: 0; gap: 20px; scrollbar-width: none; }
   .rail::-webkit-scrollbar { display: none; }
-  .ev { width: calc((100% - 3 * 20px) / 4); }
-  .ev-hero { width: calc((100% - 2 * 20px) / 3); }
+  .ev { --h: 300px; --maxw: 560px; }
+  .ev-hero { --h: 400px; --maxw: 720px; }
   .shelf { margin-bottom: 48px; }
   .shelf-title { font-size: 30px; }
-  .ev-title { font-size: 18px; }
-  .ev-hero .ev-title { font-size: 26px; }
-  .rail-arrow { display: grid; place-items: center; position: absolute; top: calc(50% - 30px); z-index: 5; width: 46px; height: 46px; border-radius: 50%;
+  .ev-title { font-size: 17px; }
+  .ev-hero .ev-title { font-size: 22px; }
+  .rail-arrow { display: grid; place-items: center; position: absolute; top: calc(50% - 40px); z-index: 5; width: 46px; height: 46px; border-radius: 50%;
     background: rgba(var(--bg-rgb), .82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid var(--line-2); color: var(--t1);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,.5); opacity: 0; transition: opacity .25s, transform .25s; }
   .rail-arrow.l { left: -22px; } .rail-arrow.r { right: -22px; }
@@ -261,16 +257,9 @@
   .rail-arrow:hover { transform: scale(1.08); border-color: var(--pink); }
   .rail-dots { display: none; }
   .terms { margin: 0; padding: 0 0 4px; }
-  body:not(.demo) .event-art { border-radius: 22px; }
+  /* okładka przyklejona po lewej: cały plakat mieści się w oknie */
+  body:not(.demo) .event-art { min-height: 0 !important; width: min(100%, calc((100dvh - 144px) * var(--r))); justify-self: center; border-radius: 22px; }
 }
-@media (min-width: 1200px) {
-  .ev { width: calc((100% - 4 * 20px) / 5); }
-  .ev.ev-hero { width: calc((100% - 2 * 20px) / 3); }
-}
-/* zastępczy plakat w dużej karcie: bez napisu, który dublowałby tytuł */
-.ev-hero .art > svg text { display: none; }
-.ev-hero .art.fit img { object-position: 50% 24%; }
-.art.fit > svg { display: none; }
 
 /* strona „Aplikacja na telefon” */
 .dl { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
@@ -288,3 +277,13 @@
 .dl-card li::before { content: counter(s); flex: none; width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: var(--pink-dim); color: var(--pink); font: 700 12px/1 var(--d); }
 .dl-card li b { color: var(--t1); font-weight: 600; }
 @media (min-width: 761px) { .dl-grid { grid-template-columns: 1fr 1fr; } .dl-hero { padding: 48px; } }
+
+/* „półka”: plakaty różnej wysokości stoją na wspólnej linii, podpisy w jednym rzędzie pod nimi */
+.rail { align-items: stretch; }
+.rail > .ev { display: flex; flex-direction: column; justify-content: flex-end; }
+.ev-body { flex: none; height: 98px; overflow: hidden; }
+.ev-hero .ev-body { height: 104px; }
+@media (min-width: 761px) { .ev-body { height: 104px; } .ev-hero .ev-body { height: 112px; } }
+/* aplikacja (/app): te same karty w paskach .event-grid */
+.event-grid { align-items: stretch; }
+.event-grid > .ev { flex: none; display: flex; flex-direction: column; justify-content: flex-end; }

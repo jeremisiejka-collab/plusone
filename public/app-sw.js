@@ -1,8 +1,8 @@
-/* +1 — service worker aplikacji testowej (/preview).
+/* +1 — service worker aplikacji testowej (/app).
    Ekran aplikacji i wydarzenia: najpierw sieć, bez zasięgu ostatnia zapisana wersja.
    Zapisujemy tylko udane odpowiedzi — strona logowania (401/403) nigdy nie trafia do pamięci. */
-const CACHE = 'plusone-app-v1';
-const SHELL = ['/preview', '/data/events.json', '/icon-512.png', '/apple-touch-icon.png', '/favicon.svg'];
+const CACHE = 'plusone-app-v2';
+const SHELL = ['/app', '/data/events.json', '/icon-512.png', '/apple-touch-icon.png', '/favicon.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.all(SHELL.map(u =>
@@ -24,7 +24,7 @@ self.addEventListener('fetch', e => {
   const isApp = same && (req.mode === 'navigate' || url.pathname === '/data/events.json');
   const isStatic = same ? /\.(png|svg|webmanifest)$/.test(url.pathname) : url.hostname.endsWith('fonts.gstatic.com') || url.hostname.endsWith('fonts.googleapis.com');
   if (!isApp && !isStatic) return;
-  const key = req.mode === 'navigate' ? '/preview' : req;
+  const key = req.mode === 'navigate' ? '/app' : req;
   if (isApp) {
     e.respondWith(fetch(req).then(r => {
       if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(key, copy)); }

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { nowLocal, CATEGORIES, isBig } from './lib/normalize.mjs';
 import { dedup } from './lib/dedup.mjs';
 import { cityGeo } from './lib/geo.mjs';
+import { measureImages } from './lib/images.mjs';
 import ra from './sources/ra.mjs';
 import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
@@ -56,6 +57,9 @@ const stamp = new Date().toISOString();
 const events = dedup(valid)
   .map(e => ({ ...e, big: isBig(e), firstSeen: firstSeen.get(e.id) || stamp }))
   .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
+
+const img = await measureImages(events, prevEvents);
+console.log(`Grafiki: zmierzono ${img.measured} nowych, bez proporcji ${img.missing}`);
 
 const cities = {};
 for (const e of events) cities[e.city] = (cities[e.city] || 0) + 1;

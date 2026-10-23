@@ -77,7 +77,8 @@ export default async function ebilet() {
         tags: [t.subcategoryName].filter(Boolean),
         artists: t.artists,
         priceFrom: null,
-        image: t.imageLandscape || t.imagePortrait,
+        // plakat (pion) zamiast poziomego baneru — w aplikacji karty są pionowe
+        image: t.imagePortrait || t.imageLandscape,
         description: t.metaDescription,
         url
       }));

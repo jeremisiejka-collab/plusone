@@ -450,7 +450,7 @@ function liveEvent(x){
     when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
     badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
     from:x.priceFrom, lineup:x.artists||[], tags:x.tags||[], desc:x.description||'',
-    image:x.image, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
+    image:x.image, ratio:x.imageRatio, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
     hue: [...x.id].reduce((a,c)=>(a*31+c.charCodeAt(0))%360, 7), sold:null
   };
 }
@@ -510,7 +510,7 @@ document.body.classList.toggle('demo', DEMO);
 
 /* ---------------- state ---------------- */
 const S = {
-  /* tester jest już zalogowany przy wejściu na /preview — na telefonie od razu ekran główny; na komputerze pokaz od makiety logowania */
+  /* tester jest już zalogowany przy wejściu na /app — na telefonie od razu ekran główny; na komputerze pokaz od makiety logowania */
   screen:DEMO?(matchMedia('(max-width:760px)').matches?'home':'login'):matchMedia('(min-width:761px)').matches?'home':(()=>{try{return localStorage.getItem('entered')?'home':'start'}catch(e){return 'start'}})(), prev:'home', eventId:'unsound',
   qty:{early:0, regular:1, vip:0},
   pm:'blik', recipient:null,
@@ -730,17 +730,25 @@ const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
 /* zdjęcia już wczytane nie mrugają przy przerysowaniu */
 const IMG_OK = new Set();
-/* plakat o innych proporcjach niż ramka pokazujemy w całości na rozmytym tle (style .art w desktop.css) */
-const IMG_FIT = new Map();
+/* karta przyjmuje kształt plakatu (imageRatio z pipeline) — bez przycinania i bez rozmytych pasów; style .ev w desktop.css */
+const IMG_R = new Map();
+const ratioOf = e => {
+  if(!e.image) return .8;
+  const m = e.image.match(/c_fill,w_(\d+),h_(\d+)/) || e.image.match(/(\d{3,4})[-_ ]?x[-_ ]?(\d{3,4})/i);
+  const r = IMG_R.get(e.image) || e.ratio || (m && m[1]/m[2]);
+  return r ? clamp(+r, .5, 2.2) : null;
+};
+const arStyle = e => `--r:${(ratioOf(e)||.8).toFixed(3)}`;
 function artLoad(img){
-  const k = img.dataset.k, box = img.closest('.art');
-  IMG_OK.add(k); img.classList.add('on');
-  if(!box || !box.hasAttribute('data-fit') || !img.naturalWidth) return;
-  const fit = Math.abs(Math.log((img.naturalWidth/img.naturalHeight) / (box.clientWidth/box.clientHeight || 1))) > .32;
-  IMG_FIT.set(k, fit); box.classList.toggle('fit', fit);
+  const k = img.dataset.k; IMG_OK.add(k); img.classList.add('on');
+  if(!img.naturalWidth) return;
+  const r = img.naturalWidth/img.naturalHeight, known = IMG_R.has(k);
+  IMG_R.set(k, r);
+  const box = img.closest('[data-ar]');
+  if(box && !known) box.style.setProperty('--r', clamp(r,.5,2.2).toFixed(3));
 }
-const artBox = (e, fit=false) => e.image
-  ? `<div class="art${IMG_FIT.get(e.image)?' fit':''}" ${fit?'data-fit':''} style="background:hsl(${e.hue} 34% 8%)">${art(e)}${fit?`<div class="art-blur" style="background-image:url('${esc(e.image.replace(/'/g,'%27'))}')"></div>`:''}<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+const artBox = e => e.image
+  ? `<div class="art" style="background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
       data-k="${esc(e.image)}" class="${IMG_OK.has(e.image)?'on':''}" onload="artLoad(this)" onerror="this.remove()"></div>`
   : `<div class="art">${art(e)}</div>`;
 const cover = e => `background:hsl(${e.hue} 34% 8%)`;
@@ -1363,17 +1371,15 @@ const loadingBox = () => LIVE.state==='error' ? `
         <div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:10px;width:45%"></div></div></div>`).join('')}
     </div>`;
 const bigCard = e => `
-<div data-act="ev:${e.id}" class="event-card" style="flex:none;width:228px;scroll-snap-align:start;cursor:pointer">
-  <div class="ds event-img" style="position:relative;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:var(--surface-2)">
-    ${e.real ? artBox(e,true) : coverArt(e)}
+<div data-act="ev:${e.id}" class="ev event-card" data-ar style="--h:270px;--maxw:300px;scroll-snap-align:start;${arStyle(e)}">
+  <div class="ev-media ds">
+    ${e.real ? artBox(e) : coverArt(e)}
     <div class="ev-tag${e.real&&e.day===localDay()&&!e.ongoing?' now':''}">${esc(e.real ? e.tag+(e.time&&!e.ongoing&&!e.multi?' · '+e.time:'') : e.badge)}</div>
-    ${e.sold!=null?`<div style="position:absolute;top:10px;right:10px;padding:6px 9px;border-radius:8px;background:rgba(0,0,0,.55);
-      backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${Math.round(e.sold*100)}% sprzedane</div>`:''}
   </div>
-  <div class="col" style="padding:12px 2px 0;gap:5px">
-    <span class="clamp2" style="font:600 16px/1.22 var(--d);letter-spacing:-.015em">${esc(e.name)}</span>
-    <span style="font:400 13px/1.35 var(--d);color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.venue)}</span>
-    <span class="row" style="gap:8px">${e.from!=null?priceTag(e):`<span class="ev-cat">${esc(CAT_PL[e.cat]||'')}</span>`}${e.more?`<span class="ev-more">+${e.more} ${terms(e.more)}</span>`:''}</span>
+  <div class="ev-body">
+    <span class="ev-title clamp2">${esc(e.name)}</span>
+    <span class="ev-sub">${esc(e.venue)}</span>
+    <span class="ev-foot">${e.from!=null?priceTag(e):`<span class="ev-cat">${esc(CAT_PL[e.cat]||'')}</span>`}${e.more?`<span class="ev-more">+${e.more} ${terms(e.more)}</span>`:''}</span>
   </div>
 </div>`;
 
@@ -1737,9 +1743,8 @@ const scSecret = (e) => {
 const mapsUrl = e => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([e.venue,e.address||e.city].join(', '));
 const scLive = e => `
 <div class="pg event-detail" style="padding-bottom:118px">
-  <div class="event-art ds" style="position:relative;height:340px;overflow:hidden">
+  <div class="event-art ds" data-ar style="position:relative;overflow:hidden;aspect-ratio:var(--r);${arStyle(e)}">
     ${artBox(e)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 32%)"></div>
     <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
     <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('share',17)}</button>
   </div>
@@ -3588,8 +3593,8 @@ function installHint(){
   if(standalone || skip || innerWidth>760 || (!INSTALL && !ios)) return;
   const el = document.createElement('div'); el.id='installbar';
   el.style.cssText='position:absolute;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:140;display:flex;gap:12px;align-items:center;padding:12px 12px 12px 14px;border-radius:18px;background:rgba(20,20,24,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.5);animation:pop .3s';
-  el.innerHTML = `${LOGO(40,10)}<div class="col" style="flex:1;min-width:0"><span style="font:600 14px/1.2 var(--d)">Zainstaluj +1 na telefonie</span>
-    <span style="font:400 12px/1.35 var(--d);color:rgba(255,255,255,.7);margin-top:3px">${INSTALL?'Ikona na ekranie, pełny ekran, działa offline.':'Stuknij <b>Udostępnij</b> ⎋ w Safari, potem <b>Do ekranu początkowego</b>.'}</span></div>
+  el.innerHTML = `${LOGO(40,10)}<div class="col" style="flex:1;min-width:0"><span style="font:600 14px/1.2 var(--d)">Dodaj +1 do ekranu telefonu</span>
+    <span style="font:400 12px/1.35 var(--d);color:rgba(255,255,255,.7);margin-top:3px">${INSTALL?'Ikona na ekranie, pełny ekran, działa offline.':'W Safari stuknij <b>Udostępnij</b> (kwadrat ze strzałką, czasem w menu ⋯), potem <b>Do ekranu początkowego</b>.'}</span></div>
     ${INSTALL?'<button id="installgo" style="height:36px;padding:0 14px;border-radius:11px;background:var(--pink);color:#000;font:700 13px/1 var(--d)">Instaluj</button>':''}
     <button id="installx" aria-label="Zamknij" style="width:28px;height:28px;color:rgba(255,255,255,.6);font-size:18px">×</button>`;
   $('#shell').appendChild(el);
@@ -3611,7 +3616,7 @@ matchMedia('(min-width:761px)').addEventListener('change', e=>{
 render();
 loadLive();
 /* aplikacja instalowana na ekranie telefonu (PWA): działa też bez zasięgu na ostatnich danych */
-if('serviceWorker' in navigator) navigator.serviceWorker.register('/app-sw.js', {scope:'/preview'}).catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/app-sw.js', {scope:'/app'}).catch(()=>{});
 installHint();
 loadAccount();
 setTimeout(()=>{ $('#splash').classList.add('out'); }, 1550);

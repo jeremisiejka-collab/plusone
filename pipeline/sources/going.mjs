@@ -2,11 +2,13 @@
    Korzysta z publicznego indeksu wyszukiwarki Algolia, którego używa sama strona. */
 import { request, sleep } from '../lib/http.mjs';
 import { utcToLocal, guessCategory, makeEvent } from '../lib/normalize.mjs';
+import { CLOUD_FULL } from '../lib/images.mjs';
 
 const APP = 'FAFFKUSLK0';
 const KEY = '2116b4baed0596249c1f98b9a20dfc6c'; // publiczny klucz "search-only" ze strony goingapp.pl
 const URL = `https://${APP.toLowerCase()}-dsn.algolia.net/1/indexes/search-main/query`;
-const CLOUD = 'https://res.cloudinary.com/dr89d8ldb/image/upload/c_fill,w_800,h_600,q_auto,f_auto/';
+// grafika w oryginalnych proporcjach (bez przycinania do 4:3); pipeline/lib/images.mjs wraca do 800×600, gdyby to nie działało
+const CLOUD = `https://res.cloudinary.com/dr89d8ldb/image/upload/${CLOUD_FULL}/`;
 const MAX = 1000; // Algolia nie zwraca więcej niż 1000 wyników na zapytanie
 
 async function query(filters, page = 0, hitsPerPage = MAX) {

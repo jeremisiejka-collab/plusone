@@ -269,9 +269,11 @@ ${user
        <div class="err" id="m" role="alert"></div>
        <button id="b">Wejdź do aplikacji</button>
      </form>`}
+<p id="ios" style="display:none;font-size:13px">Na iPhonie: w Safari stuknij <b>Udostępnij</b> → <b>Do ekranu początkowego</b>. Ikona +1 otworzy aplikację.</p>
 <a href="/">Przejdź do strony plusoneapp.pl</a>
 </main><script>
 const f=document.getElementById('f'),o=document.getElementById('out');
+if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone) document.getElementById('ios').style.display='block';
 if(f) f.onsubmit=async ev=>{ev.preventDefault();const b=document.getElementById('b'),m=document.getElementById('m');b.disabled=true;m.textContent='';
   try{const r=await fetch('/api/auth/login',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({email:document.getElementById('e').value.trim(),password:document.getElementById('p').value})});
@@ -356,7 +358,9 @@ async function api(req, env) {
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
-    if (url.pathname === '/preview' || url.pathname.startsWith('/preview/')) {
+    // stary adres aplikacji testowej
+    if (url.pathname === '/preview' || url.pathname.startsWith('/preview/')) return Response.redirect(new URL('/app', url), 301);
+    if (url.pathname === '/app' || url.pathname.startsWith('/app/')) {
       try { return await preview(req, env); }
       catch (e) { console.error(e); return new Response('Podgląd jest chwilowo niedostępny.', { status: 503, headers: { 'Cache-Control': 'no-store' } }); }
     }

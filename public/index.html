@@ -7,6 +7,8 @@
 <script>
 /* motyw ustawiany przed narysowaniem strony (bez mignięcia): wybór użytkownika albo ustawienie systemu */
 (function(){
+  /* uruchomione z ikony na ekranie telefonu = aplikacja, nie strona WWW */
+  if(matchMedia('(display-mode: standalone)').matches || navigator.standalone){ location.replace('/app'); return; }
   var t=null; try{t=localStorage.getItem('theme')}catch(e){}
   if(t!=='light'&&t!=='dark') t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
   document.documentElement.dataset.theme=t;
@@ -434,7 +436,7 @@ function liveEvent(x){
     when: rel + (time&&!ongoing?' · '+time:''), date:`${d.getDate()} ${MIES_D[d.getMonth()]}`+(multi?' (wiele terminów)':''), time,
     badge: day===localDay() ? 'DZIŚ' : day===addDays(1) ? 'JUTRO' : (CAT_PL[x.category]||'').toUpperCase(),
     from:x.priceFrom, lineup:x.artists||[], tags:x.tags||[], desc:x.description||'',
-    image:x.image, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
+    image:x.image, ratio:x.imageRatio, links:x.links||[], organizer:(x.sources||[]).map(s=>SRC_PL[s]||s).join(' · '),
     hue: [...x.id].reduce((a,c)=>(a*31+c.charCodeAt(0))%360, 7), sold:null
   };
 }
@@ -489,7 +491,7 @@ const CONTACTS = [
 
 /* Funkcje demo (bilety, portfel, PAY, zaproszenia, logowanie) są jeszcze makietą.
    Publicznie ich nie pokazujemy; włącza je ?demo (wyłącza ?demo=0), zapamiętane w sesji. */
-/* Publiczna witryna. Prototyp jest dostępny wyłącznie przez chronione /preview. */
+/* Publiczna witryna. Prototyp jest dostępny wyłącznie przez chronione /app. */
 const DEMO = false;
 document.body.classList.toggle('demo', DEMO);
 
@@ -738,17 +740,26 @@ const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
 /* zdjęcia już wczytane nie mrugają przy przerysowaniu */
 const IMG_OK = new Set();
-/* plakat o innych proporcjach niż ramka (np. poziomy baner w pionowej karcie) pokazujemy w całości na rozmytym tle */
-const IMG_FIT = new Map();
+/* Karta przyjmuje kształt plakatu (proporcje z pipeline: imageRatio), więc grafika nie jest ani ucięta,
+   ani otoczona rozmytymi pasami. Gdy proporcji jeszcze nie znamy, poprawiamy kształt po wczytaniu obrazka. */
+const IMG_R = new Map();
+const ratioOf = e => {
+  if(!e.image) return .8;
+  const m = e.image.match(/c_fill,w_(\d+),h_(\d+)/) || e.image.match(/(\d{3,4})[-_ ]?x[-_ ]?(\d{3,4})/i);
+  const r = IMG_R.get(e.image) || e.ratio || (m && m[1]/m[2]);
+  return r ? clamp(+r, .5, 2.2) : null;
+};
+const arStyle = e => `--r:${(ratioOf(e)||.8).toFixed(3)}`;
 function artLoad(img){
-  const k = img.dataset.k, box = img.closest('.art');
-  IMG_OK.add(k); img.classList.add('on');
-  if(!box || !box.hasAttribute('data-fit') || !img.naturalWidth) return;
-  const fit = Math.abs(Math.log((img.naturalWidth/img.naturalHeight) / (box.clientWidth/box.clientHeight || 1))) > .32;
-  IMG_FIT.set(k, fit); box.classList.toggle('fit', fit);
+  const k = img.dataset.k; IMG_OK.add(k); img.classList.add('on');
+  if(!img.naturalWidth) return;
+  const r = img.naturalWidth/img.naturalHeight, known = IMG_R.has(k);
+  IMG_R.set(k, r);
+  const box = img.closest('[data-ar]');
+  if(box && !known) box.style.setProperty('--r', clamp(r,.5,2.2).toFixed(3));
 }
-const artBox = (e, fit=false) => e.image
-  ? `<div class="art${IMG_FIT.get(e.image)?' fit':''}" ${fit?'data-fit':''} style="background:hsl(${e.hue} 34% 8%)">${art(e)}${fit?`<div class="art-blur" style="background-image:url('${esc(e.image.replace(/'/g,'%27'))}')"></div>`:''}<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+const artBox = e => e.image
+  ? `<div class="art" style="background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
       data-k="${esc(e.image)}" class="${IMG_OK.has(e.image)?'on':''}" onload="artLoad(this)" onerror="this.remove()"></div>`
   : `<div class="art">${art(e)}</div>`;
 const cover = e => `background:hsl(${e.hue} 34% 8%)`;
@@ -1026,7 +1037,7 @@ const scProfile = () => {
     <div class="field"><label>IMIĘ</label><input id="pf-name" value="${esc(u.name||'')}" maxlength="60" autocomplete="given-name" data-enter="saveProfile"></div>
     <button class="btn g" data-act="saveProfile" style="height:44px;font:600 13px/1 var(--d)">Zapisz</button></div>`:''}
   <div class="pad">
-    ${ACC.preview?`<a class="listbtn" href="/preview" style="color:inherit;text-decoration:none">${ic('shield',18)} Podgląd aplikacji · dla testerów</a>`:''}
+    ${ACC.preview?`<a class="listbtn" href="/app" style="color:inherit;text-decoration:none">${ic('shield',18)} Podgląd aplikacji · dla testerów</a>`:''}
     ${u?.role==='admin'?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">ADMIN</span>`):''}
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
     ${row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`)}
@@ -1348,8 +1359,8 @@ const moreTag = e => e.more ? `<span class="ev-more">+${e.more} ${terms(e.more)}
 
 /* karta w poziomym pasku */
 const bigCard = (e, i=0, withCity=false) => `
-<article data-act="ev:${e.id}" class="ev" style="--i:${i}">
-  <div class="ev-media ds">${artBox(e,true)}${dateTag(e)}</div>
+<article data-act="ev:${e.id}" class="ev" data-ar style="--i:${i};${arStyle(e)}">
+  <div class="ev-media ds">${artBox(e)}${dateTag(e)}</div>
   <div class="ev-body">
     <h3 class="ev-title clamp2">${esc(e.name)}</h3>
     <p class="ev-sub">${subLine(e, withCity)}</p>
@@ -1357,17 +1368,14 @@ const bigCard = (e, i=0, withCity=false) => `
   </div>
 </article>`;
 
-/* duża karta z tytułem na zdjęciu (karuzela wielkich wydarzeń) */
+/* duża karta wielkich wydarzeń: plakat w całości, opis pod spodem */
 const heroCard = (e, i=0) => `
-<article data-act="ev:${e.id}" class="ev ev-hero" style="--i:${i}">
-  <div class="ev-media ds">${artBox(e,true)}
-    <div class="ev-shade"></div>
-    ${dateTag(e)}
-    <div class="ev-over">
-      <span class="ev-kicker">${esc(CAT_PL[e.cat]||'')}${e.city!==S.city?' · '+esc(e.city):''}</span>
-      <h3 class="ev-title clamp2">${esc(e.name)}</h3>
-      <p class="ev-sub">${esc(e.venue)}${e.more?' · +'+e.more+' '+terms(e.more):''}</p>
-    </div>
+<article data-act="ev:${e.id}" class="ev ev-hero" data-ar style="--i:${i};${arStyle(e)}">
+  <div class="ev-media ds">${artBox(e)}${dateTag(e)}</div>
+  <div class="ev-body">
+    <span class="ev-kicker">${esc(CAT_PL[e.cat]||'')}${e.city!==S.city?' · '+esc(e.city):''}</span>
+    <h3 class="ev-title clamp2">${esc(e.name)}</h3>
+    <p class="ev-sub">${esc(e.venue)}${e.more?' · +'+e.more+' '+terms(e.more):''}</p>
   </div>
 </article>`;
 
@@ -1521,7 +1529,7 @@ const scHome = () => {
 /* ---- LISTA WYDARZEŃ ---- */
 const bigListRow = e => `
 <div data-act="ev:${e.id}" class="event-row cat-row">
-  <div class="ds cat-thumb">${artBox(e)}</div>
+  <div class="ds cat-thumb" data-ar style="${arStyle(e)}">${artBox(e)}</div>
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
     <span class="ev-sub" style="margin-top:5px">${esc(e.ongoing ? 'trwa '+e.tag : (S.sort==='date' ? (e.time||'cały dzień') : e.when))}</span>
@@ -1608,9 +1616,8 @@ const scList = () => {
 const mapsUrl = e => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([e.venue,e.address||e.city].join(', '));
 const scLive = e => `
 <div class="pg event-detail" style="padding-bottom:118px">
-  <div class="event-art ds" style="position:relative;height:420px;overflow:hidden">
-    ${artBox(e,true)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 32%)"></div>
+  <div class="event-art ds" data-ar style="position:relative;overflow:hidden;${arStyle(e)}">
+    ${artBox(e)}
     <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
     <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('share',17)}</button>
   </div>
@@ -1837,11 +1844,10 @@ function webHero(){
 
 function scDownloads(){
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent), android = /android/i.test(navigator.userAgent);
-  const access = ACC.preview
-    ? `<a class="btn p" href="/preview" style="text-decoration:none;max-width:360px">Otwórz aplikację +1</a>`
-    : ACC.user
-      ? `<div class="card" style="padding:16px"><span class="h4">Twoje konto czeka na zaproszenie</span><p class="body" style="margin-top:6px">Testy są zamknięte. Gdy administrator nada Ci dostęp, tutaj pojawi się przycisk instalacji.</p></div>`
-      : `<button class="btn p" data-act="authgo:login" style="max-width:360px">Zaloguj się, żeby zainstalować</button>`;
+  const access = ACC.user && !ACC.preview
+    ? `<div class="card" style="padding:16px"><span class="h4">Twoje konto czeka na zaproszenie</span><p class="body" style="margin-top:6px">Testy są zamknięte. Gdy administrator nada Ci dostęp, przycisk poniżej otworzy aplikację.</p></div>`
+    : '';
+  const cta = `<a class="btn p" href="/app" style="display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;max-width:380px">${ic('plane',18)} Pobierz aplikację +1</a>`;
   const step = (title, steps, on) => `<div class="dl-card" style="${on?'border-color:var(--pink-line)':''}">
     <div class="row" style="justify-content:space-between"><span class="h3">${title}</span>${on?'<span class="ev-more">Twój telefon</span>':''}</div><ol>${steps.map(x=>`<li><span>${x}</span></li>`).join('')}</ol></div>`;
   return `<div class="pg"><div class="dl">
@@ -1851,10 +1857,10 @@ function scDownloads(){
     <p>Aplikacja ma własny wygląd: dolne menu, bilety, portfel i powiadomienia. Instalujesz ją prosto ze strony — bez sklepu, bez opłat — a działa też bez zasięgu.</p>
     <div class="dl-badges"><span>Android</span><span>iPhone</span><span>Ikona na ekranie</span><span>Działa offline</span></div>
   </section>
-  ${access}
+  ${access}${cta}
   <div class="dl-grid">
-    ${step('Android', ['<b>Zaloguj się</b> kontem z zaproszeniem do testów.', 'Otwórz <b>plusoneapp.pl/preview</b> w Chrome.', 'Stuknij <b>Instaluj</b> na dole ekranu albo w menu ⋮ wybierz <b>Zainstaluj aplikację</b>.', 'Ikona +1 pojawi się na ekranie telefonu.'], android)}
-    ${step('iPhone', ['Otwórz <b>plusoneapp.pl/preview</b> w <b>Safari</b>.', 'Stuknij <b>Udostępnij</b> (kwadrat ze strzałką).', 'Wybierz <b>Do ekranu początkowego</b> i <b>Dodaj</b>.', 'Uruchom +1 z ikony i <b>zaloguj się raz</b> w aplikacji.'], ios)}
+    ${step('Android', ['Stuknij <b>Pobierz aplikację</b> (otworzy się <b>plusoneapp.pl/app</b>) i zaloguj się kontem z zaproszeniem.', 'Stuknij <b>Instaluj</b> na dole ekranu albo w menu ⋮ wybierz <b>Zainstaluj aplikację</b>.', 'Ikona +1 pojawi się na ekranie telefonu.'], android)}
+    ${step('iPhone', ['W <b>Safari</b> stuknij <b>Pobierz aplikację</b> — otworzy się <b>plusoneapp.pl/app</b>, czyli wersja aplikacji (nie strona).', 'Stuknij <b>Udostępnij</b> (kwadrat ze strzałką, czasem w menu ⋯).', 'Wybierz <b>Do ekranu początkowego</b> i <b>Dodaj</b>.', 'Uruchom +1 z ikony i <b>zaloguj się raz</b> w aplikacji. Masz już ikonę ze strony? Ona też otworzy teraz aplikację.'], ios)}
   </div>
   <p class="body" style="color:var(--t3)">Chcesz dołączyć do testów? Załóż konto i napisz do nas — dostęp nadaje administrator.</p>
 </div></div>`; }
