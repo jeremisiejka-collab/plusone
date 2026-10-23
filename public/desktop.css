@@ -56,7 +56,8 @@
   body:not(.demo) .mq-track { font-size: 10px; color: var(--t3); }
   body:not(.demo) .event-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px !important; padding: 0 0 40px !important; overflow: visible !important; }
   body:not(.demo) .event-card { width: auto !important; min-width: 0; transition: transform .2s; }
-  body:not(.demo) .event-card > div { height: 360px !important; border-radius: 16px !important; }
+  body:not(.demo) .event-card > .event-img { height: 250px !important; border-radius: 16px !important; }
+  body:not(.demo) .event-card .clamp2 { font-size: 19px !important; }
   body:not(.demo) .event-card:hover { transform: translateY(-5px); }
   body:not(.demo) .calendar-grid,
   body:not(.demo) .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }

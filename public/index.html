@@ -163,6 +163,7 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
   background:rgba(18,18,22,.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);
   opacity:0;transform:translateY(6px);transition:.2s;pointer-events:none}
 .regcard.on{opacity:1;transform:none}
+.sc[style*="scroll-snap-type"]{scroll-padding-inline:20px}
 .clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .body{font:400 14px/1.5 var(--d);color:var(--t2)}
 .mono{font:400 11px/1.3 var(--m);color:var(--t3);letter-spacing:.02em}
@@ -1247,7 +1248,8 @@ function catList(){
   return ['Wszystko', ...Object.keys(CAT_PL).filter(c=>n[c]).sort((a,b)=>n[b]-n[a])];
 }
 const catLabel = c => c==='Wszystko' ? 'Wszystko' : CAT_PL[c]||c;
-const price = e => e.from==null ? 'ceny u sprzedawcy' : e.from===0 ? 'wstęp wolny' : 'od '+zl(e.from);
+const price = e => e.from==null ? 'Cena u sprzedawcy' : e.from===0 ? 'Wstęp wolny' : 'od '+zl(e.from);
+const priceTag = (e, size=13) => `<span style="font:${e.from==null?500:600} ${size}px/1 var(--d);color:${e.from==null?'var(--t3)':PINK}">${price(e)}</span>`;
 const loadingBox = () => LIVE.state==='error' ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
       <span class="h3">Nie udało się pobrać wydarzeń</span>
@@ -1260,19 +1262,18 @@ const loadingBox = () => LIVE.state==='error' ? `
         <div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:10px;width:45%"></div></div></div>`).join('')}
     </div>`;
 const bigCard = e => `
-<div data-act="ev:${e.id}" class="ds event-card" style="flex:none;width:270px;scroll-snap-align:start">
-  <div style="position:relative;height:330px;border-radius:20px;overflow:hidden;background:var(--surface-2)">
+<div data-act="ev:${e.id}" class="event-card" style="flex:none;width:262px;scroll-snap-align:start;cursor:pointer">
+  <div class="ds event-img" style="position:relative;height:196px;border-radius:18px;overflow:hidden;background:var(--surface-2)">
     ${coverArt(e)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--bg-rgb),0) 38%,rgba(0,0,0,.88) 100%)"></div>
-    <div style="position:absolute;top:12px;left:12px;padding:6px 10px;border-radius:8px;background:${PINK};color:#000;
+    <div style="position:absolute;top:10px;left:10px;padding:6px 9px;border-radius:8px;background:${PINK};color:#000;
       font:700 10px/1 var(--m);letter-spacing:.08em">${esc(e.badge)}</div>
-    <div style="position:absolute;top:12px;right:12px;padding:6px 9px;border-radius:8px;background:rgba(0,0,0,.55);
-      backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${e.sold!=null?Math.round(e.sold*100)+'% sprzedane':esc(CAT_PL[e.cat]||'')}</div>
-    <div style="position:absolute;bottom:14px;left:14px;right:14px" class="col">
-      <span class="clamp2" style="font:600 21px/1.1 var(--d);letter-spacing:-.02em">${esc(e.name)}</span>
-      <span class="mono" style="color:rgba(var(--fg),.7);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
-      <span style="font:600 13px/1 var(--d);color:${PINK};margin-top:6px">${price(e)}</span>
-    </div>
+    ${e.sold!=null?`<div style="position:absolute;top:10px;right:10px;padding:6px 9px;border-radius:8px;background:rgba(0,0,0,.55);
+      backdrop-filter:blur(8px);font:500 10px/1 var(--m);letter-spacing:.06em">${Math.round(e.sold*100)}% sprzedane</div>`:''}
+  </div>
+  <div class="col" style="padding:12px 2px 0;gap:6px">
+    <span class="clamp2" style="font:600 17px/1.22 var(--d);letter-spacing:-.01em">${esc(e.name)}</span>
+    <span class="mono" style="color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
+    ${priceTag(e)}
   </div>
 </div>`;
 
@@ -1283,7 +1284,7 @@ const listRow = e => `
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
     <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
-    <span style="font:500 12px/1 var(--d);color:rgba(var(--fg),.75);margin-top:5px">${price(e)}</span>
+    <span style="margin-top:6px">${priceTag(e,12)}</span>
   </div>
   <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
 </div>`;
@@ -1420,7 +1421,7 @@ const bigListRow = e => {
     <span class="mono" style="margin-top:5px">${esc(e.when)}</span>
     <span class="mono" style="margin-top:4px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${S.big?esc(e.city)+' · ':''}${esc(e.venue)}</span>
     <div class="row" style="gap:7px;margin-top:8px;flex-wrap:wrap">
-      <span style="font:600 12px/1 var(--d);color:${PINK}">${price(e)}</span>
+      ${priceTag(e,12)}
       ${e.sold!=null?`<span class="mono">· ${Math.round(e.sold*100)}% sprzedane</span>`:`<span class="mono">· ${esc(CAT_PL[e.cat]||'')}</span>`}
       ${back?`<span style="font:500 9px/1 var(--m);letter-spacing:.06em;padding:4px 7px;border-radius:6px;
         background:var(--pink-dim);border:1px solid var(--pink-line);color:var(--t1)">${back} Z PULI ZWROTÓW</span>`:''}
@@ -1636,32 +1637,40 @@ const scSecret = (e) => {
 const mapsUrl = e => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([e.venue,e.address||e.city].join(', '));
 const scLive = e => `
 <div class="pg event-detail" style="padding-bottom:118px">
-  <div class="event-art" style="position:relative;height:430px">
+  <div class="event-art ds" style="position:relative;height:340px;overflow:hidden">
     ${artBox(e)}
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,rgba(var(--bg-rgb),0) 30%,rgba(var(--bg-rgb),.95) 100%)"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,0) 32%)"></div>
     <button class="back" data-act="back" style="position:absolute;top:64px;left:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('chevL',18)}</button>
     <button class="back" data-act="share" style="position:absolute;top:64px;right:16px;background:rgba(0,0,0,.5);backdrop-filter:blur(10px);color:#fff;border-color:rgba(255,255,255,.18)">${ic('share',17)}</button>
-    <div style="position:absolute;bottom:20px;left:20px;right:20px" class="col">
-      <span style="padding:6px 10px;border-radius:8px;background:${PINK};color:#000;font:700 10px/1 var(--m);letter-spacing:.08em;align-self:flex-start">${esc(e.badge)}</span>
-      <div class="h1" style="font-size:${e.name.length>40?26:34}px;margin-top:12px">${esc(e.name)}</div>
-      <span class="mono" style="color:rgba(var(--fg),.7);margin-top:8px">${esc(e.date)}${e.time?' · '+esc(e.time):''} · ${esc(e.city)}</span>
-    </div>
   </div>
 
   <div class="pad col event-info" style="gap:18px;padding-top:20px">
+    <div class="col" style="gap:10px">
+      <div class="row" style="gap:6px;flex-wrap:wrap">
+        <span style="padding:6px 10px;border-radius:8px;background:${PINK};color:#000;font:700 10px/1 var(--m);letter-spacing:.08em">${esc(e.badge)}</span>
+        ${CAT_PL[e.cat]&&e.badge!==(CAT_PL[e.cat]||'').toUpperCase()?`<span style="padding:6px 10px;border-radius:8px;background:var(--surface-2);font:600 10px/1 var(--m);letter-spacing:.08em;color:var(--t2)">${esc(CAT_PL[e.cat].toUpperCase())}</span>`:''}
+      </div>
+      <h1 class="h1" style="font-size:${e.name.length>48?26:e.name.length>28?30:36}px;line-height:1.08">${esc(e.name)}</h1>
+    </div>
+    <div class="card" style="padding:4px 16px">
+      ${[['clock', e.date+(e.time?', godz. '+e.time:''), e.multi?'wiele terminów':['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'][new Date(e.day+'T12:00').getDay()]+(e.day===localDay()?' · dziś':e.day===addDays(1)?' · jutro':'')],
+         ['pin', e.venue, (e.address||e.city)+' · pokaż na mapie', mapsUrl(e)],
+         ['ticket', e.from==null?'Cena u sprzedawcy':e.from===0?'Wstęp wolny':'Bilety od '+zl(e.from), e.links.length>1?e.links.length+' sprzedawców':(SRC_PL[e.links[0].source]||'')]]
+        .map(([i,t,sub,href],k)=>`<${href?`a href="${href}" target="_blank" rel="noopener"`:'div'} class="row" style="gap:14px;padding:12px 0;color:inherit;text-decoration:none;${k?'border-top:1px solid var(--line)':''}">
+          <span style="width:36px;height:36px;border-radius:11px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1);flex:none">${ic(i,17)}</span>
+          <div class="col" style="min-width:0;flex:1"><span style="font:600 15px/1.25 var(--d)">${esc(t)}</span>${sub?`<span class="mono" style="margin-top:3px">${esc(sub)}</span>`:''}</div>
+          ${href?`<span style="color:var(--t3);display:flex">${ic('chevR',16)}</span>`:''}</${href?'a':'div'}>`).join('')}
+    </div>
     ${isAdmin()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
       <span class="mono" style="flex:1;color:${PINK}">ADMIN</span>
       <button class="chip ${ACC.featured.includes(e.id)?'on':''}" data-act="curate:${e.id}:${ACC.featured.includes(e.id)?'clear':'feature'}" style="padding:7px 12px;font-size:12px">${ACC.featured.includes(e.id)?'Polecane':'Poleć'}</button>
       <button class="chip" data-act="curate:${e.id}:hide" style="padding:7px 12px;font-size:12px">Ukryj</button>
     </div>`:''}
-    <a href="${mapsUrl(e)}" target="_blank" rel="noopener" class="card" style="padding:16px;display:flex;gap:14px;align-items:center;color:inherit;text-decoration:none">
-      <span style="width:42px;height:42px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1)">${ic('pin',18)}</span>
-      <div class="col" style="flex:1;min-width:0"><span class="h4">${esc(e.venue)}</span>
-        <span class="mono" style="margin-top:4px">${esc(e.address||e.city)}</span></div>
-      <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
-    </a>
 
-    ${e.desc?`<div class="body">${esc(e.desc)}</div>`:''}
+    ${e.desc?`<div class="col" style="gap:8px">
+      <div class="body" style="${S.descOpen===e.id?'':'display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden'}">${esc(e.desc)}</div>
+      ${e.desc.length>260?`<button class="mono" data-act="descToggle:${e.id}" style="align-self:flex-start;color:${PINK};letter-spacing:.04em">${S.descOpen===e.id?'ZWIŃ':'CZYTAJ WIĘCEJ'}</button>`:''}
+    </div>`:''}
 
     ${e.lineup.length?`<div class="col" style="gap:10px">
       <span class="eyebrow">Line-up</span>
@@ -1685,7 +1694,7 @@ const scLive = e => `
     </div>
 <div class="event-buy" style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
   <a class="btn p" href="${esc(e.links[0].url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">
-    Kup bilet · ${price(e)}</a>
+    Kup bilet${e.from!=null?' · '+price(e):' · '+esc(SRC_PL[e.links[0].source]||'u sprzedawcy')}</a>
 </div>
   </div>
 </div>`;
@@ -2755,6 +2764,7 @@ function act(a){
       S.cat='Wszystko'; S.query=''; S.price='all'; S.limit=40; S.when = MAP.when==='all' ? 'all' : MAP.when; S.prev='map'; go('list'); break;
     case 'big': S.big=!S.big; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'bigList': S.big=true; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40; go('list'); break;
+    case 'descToggle': S.descOpen = S.descOpen===p1 ? null : p1; S.dir=null; render(); break;
     case 'guest': markEntered(); S.prev='home'; go('home'); break;
     case 'authgo': ACC.authMode=p1; ACC.authErr=''; go('auth'); break;
     case 'authmode': ACC.authMode=p1; ACC.authErr=''; S.dir=null; render(); break;
