@@ -4,7 +4,7 @@
 import { writeFile, readFile, mkdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { nowLocal, CATEGORIES, isBig } from './lib/normalize.mjs';
+import { nowLocal, CATEGORIES, isBig, cleanEventText } from './lib/normalize.mjs';
 import { dedup } from './lib/dedup.mjs';
 import { cityGeo } from './lib/geo.mjs';
 import { measureImages } from './lib/images.mjs';
@@ -48,7 +48,7 @@ for (const [name, fn] of Object.entries(SOURCES)) {
 
 const now = nowLocal();
 const today = now.slice(0, 10);
-const valid = raw.filter(e =>
+const valid = raw.map(cleanEventText).filter(e =>
   e.title && e.start && e.city && e.links[0].url &&
   // odrzuć minione: koniec (albo start) przed dziś
   (e.end || e.start).slice(0, 10) >= today

@@ -1320,11 +1320,11 @@ const heroCard = (e, i=0) => `
 </article>`;
 
 /* poziomy pasek kart: przewijanie palcem, strzałki na komputerze, kropki postępu */
-const shelf = (title, sub, link, cards, cls='') => `
+const shelf = (title, sub, link, cards, cls='', next='') => `
 <section class="shelf reveal">
   <div class="shelf-hd"><div class="col" style="gap:4px;min-width:0"><h2 class="shelf-title">${title}</h2>${sub?`<p class="shelf-sub">${sub}</p>`:''}</div>${link||''}</div>
   <div class="rail-wrap">
-    <div class="rail sc ${cls}" data-rail>${cards}</div>
+    <div class="rail sc ${cls}" data-rail ${next?`data-rail-next="${next}"`:''}>${cards}</div>
     <button class="rail-arrow l" data-rail-go="-1" aria-label="Poprzednie">${ic('chevL',20)}</button>
     <button class="rail-arrow r" data-rail-go="1" aria-label="Następne">${ic('chevR',20)}</button>
   </div>
@@ -1352,9 +1352,21 @@ function byDay(list, row){
   return out;
 }
 
+/* Kilka propozycji na każdy z siedmiu najbliższych dni z wydarzeniami. */
+function upcomingPreview(events){
+  const days = new Map();
+  for(const e of [...events].sort((a,b)=>a.day.localeCompare(b.day)||a.start.localeCompare(b.start))){
+    if(!days.has(e.day)) days.set(e.day, []);
+    days.get(e.day).push(e);
+  }
+  return [...days.values()].slice(0,7).flatMap(day => day
+    .sort((a,b)=>Number(!!b.image&&!b.multi)-Number(!!a.image&&!a.multi)||a.start.localeCompare(b.start))
+    .slice(0,3).sort((a,b)=>a.start.localeCompare(b.start)));
+}
+
 const scHome = () => {
   const f = collapse(inCity());
-  const soon = [...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,10), soonIds = new Set(soon.map(e=>e.id));
+  const soon = upcomingPreview(f), soonIds = new Set(soon.map(e=>e.id));
   const later = f.filter(e=>!soonIds.has(e.id));
   return `
 <div class="pg" style="padding:64px 0 112px">
@@ -1396,8 +1408,8 @@ const scHome = () => {
     return fe.length ? shelf('Polecane', 'Wybrane przez redakcję +1', '', fe.slice(0,8).map((e,i)=>heroCard(e,i)).join(''), 'hero-rail') : ''; })()}
   ${(()=>{ const tp = topPicks(); return tp.length ? shelf('Na topie',
       'Najfajniejsze najbliższe wydarzenia', `<button class="shelf-all" data-act="surprise">Zaskocz mnie</button>`, tp.map((e,i)=>heroCard(e,i)).join(''), 'hero-rail') : ''; })()}
-  ${shelf('Już niedługo', '', `<button class="shelf-all" data-act="go:list">Cała lista</button>`,
-      soon.map((e,i)=>bigCard(e,i)).join(''))}
+  ${shelf('Już niedługo', 'Wybór wydarzeń na najbliższe dni', `<button class="shelf-all" data-act="upcomingList">Cała lista</button>`,
+      soon.map((e,i)=>bigCard(e,i)).join('') + `<button class="rail-more" data-act="upcomingList">${ic('chevR',28)}<span>Więcej wydarzeń</span><span class="shelf-sub">Przejdź do pełnej listy</span></button>`, '', 'upcomingList')}
   ${(()=>{
     const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || (b.hot-a.hot) || a.start.localeCompare(b.start)));
     if(!bg.length) return '';
@@ -1891,6 +1903,7 @@ function act(a){
       S.cat='Wszystko'; S.query=''; S.price='all'; S.limit=40; S.when = MAP.when==='all' ? 'all' : MAP.when; S.prev='map'; go('list'); break;
     case 'big': S.big=!S.big; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'bigList': S.big=true; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40; go('list'); break;
+    case 'upcomingList': S.big=false; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.sort='date'; S.limit=40; go('list'); break;
     case 'descToggle': S.descOpen = S.descOpen===p1 ? null : p1; S.dir=null; render(); break;
     case 'walletNotify': S.walletNotify=true; try{localStorage.setItem('walletNotify','1')}catch(e){}
       sfxOk(); haptic(12); toast(ACC.user?'Damy znać na '+esc(ACC.user.email):'Zapisane. Załóż konto, żebyśmy mogli dać znać', true); S.dir=null; render(); break;
@@ -2466,6 +2479,8 @@ function attachRails(){
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   $$('[data-rail]').forEach(rail=>{
     const wrap = rail.closest('.shelf'), dots = wrap && $('.rail-dots', wrap), cards = [...rail.children];
+    const next = rail.dataset.railNext;
+    const atEnd = () => rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-4;
     const step = () => (cards[0]?.offsetWidth || 260) + parseFloat(getComputedStyle(rail).columnGap || 12);
     const idx = () => Math.round(rail.scrollLeft / step());
     const perView = () => Math.max(1, Math.round(rail.clientWidth / step()));
@@ -2475,10 +2490,18 @@ function attachRails(){
       const n = pages(), i = Math.min(idx(), n-1);
       if(dots.childElementCount !== n) dots.innerHTML = n>1 ? Array.from({length:n},()=>'<i></i>').join('') : '';
       [...dots.children].forEach((d,k)=>d.classList.toggle('on', k===i));
-      $$('.rail-arrow', wrap).forEach(b=>b.disabled = b.dataset.railGo<0 ? rail.scrollLeft<4 : rail.scrollLeft+rail.clientWidth>=rail.scrollWidth-4);
+      $$('.rail-arrow', wrap).forEach(b=>{
+        const forward = +b.dataset.railGo>0;
+        b.disabled = forward ? !next&&atEnd() : rail.scrollLeft<4;
+        if(forward) b.setAttribute('aria-label', next&&atEnd() ? 'Zobacz wszystkie wydarzenia' : 'Następne');
+      });
     };
     rail.addEventListener('scroll', ()=>requestAnimationFrame(paint), {passive:true});
-    $$('.rail-arrow', wrap).forEach(b=>b.onclick = e=>{ e.stopPropagation(); rail.scrollBy({left:+b.dataset.railGo*step()*perView(), behavior:'smooth'}); });
+    $$('.rail-arrow', wrap).forEach(b=>b.onclick = e=>{
+      e.stopPropagation();
+      if(+b.dataset.railGo>0 && next && atEnd()){ act(next); return; }
+      rail.scrollBy({left:+b.dataset.railGo*(next ? rail.clientWidth*.85 : step()*perView()), behavior:'smooth'});
+    });
     paint();
     // karuzela wielkich wydarzeń sama przesuwa się co kilka sekund, dopóki nikt jej nie dotyka
     if(rail.classList.contains('hero-rail') && !still && cards.length>1){

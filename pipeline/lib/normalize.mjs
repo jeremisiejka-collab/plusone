@@ -60,13 +60,36 @@ export function parsePrice(v) {
   return n;
 }
 
+/* Usuwamy całe sekwencje emoji, w tym flagi, odcienie skóry i znaki łączone.
+   Zwykłe tekstowe znaki praw autorskich pozostają tekstem. */
+export function stripEmoji(s) {
+  return String(s).replace(/(?:[#*0-9]\uFE0F?\u20E3|[\p{Extended_Pictographic}\p{Regional_Indicator}\p{Emoji_Modifier}])[\uFE0E\uFE0F\u{E0020}-\u{E007F}]*(?:\u200D[\p{Extended_Pictographic}\p{Regional_Indicator}\p{Emoji_Modifier}][\uFE0E\uFE0F\u{E0020}-\u{E007F}]*)*/gu,
+    match => /^[©®™]$/.test(match) ? match : '').replace(/[ \t]{2,}/g, ' ').trim();
+}
+
 export function clean(s, max) {
   if (!s) return '';
   let t = String(s).replace(/<[^>]+>/g, ' ').replace(/%26(#?\w+;)/g, '&$1')
-    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&#x([\da-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
-    .replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+    .replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&amp;/g, '&')
+    .replace(/&#(?:x([\da-f]+)|(\d+));/gi, (_, hex, decimal) => {
+      const cp = parseInt(hex || decimal, hex ? 16 : 10);
+      return cp <= 0x10FFFF && !(cp >= 0xD800 && cp <= 0xDFFF) ? String.fromCodePoint(cp) : '\uFFFD';
+    }).replace(/\s+/g, ' ').trim();
+  t = stripEmoji(t);
   if (max && t.length > max) t = t.slice(0, max).replace(/\s\S*$/, '') + '…';
   return t;
+}
+
+/* Także dane zachowane z poprzedniego importu przechodzą tę samą regułę. */
+export function cleanEventText(event) {
+  const result = { ...event };
+  for (const key of ['title', 'city', 'venue', 'address', 'description']) {
+    if (typeof result[key] === 'string') result[key] = clean(result[key]);
+  }
+  for (const key of ['tags', 'artists']) {
+    if (Array.isArray(result[key])) result[key] = [...new Set(result[key].map(s => clean(s)).filter(Boolean))];
+  }
+  return result;
 }
 
 /* kategoria na podstawie słów kluczowych z kategorii/tagów/tytułu źródła */

@@ -26,6 +26,9 @@ jobs:
       - name: Pobierz i przetwórz wydarzenia
         run: node pipeline/run.mjs
 
+      - name: Sprawdź treści bez emoji
+        run: npm test
+
       - name: Zapisz zmiany
         run: |
           git config user.name "plusone-bot"

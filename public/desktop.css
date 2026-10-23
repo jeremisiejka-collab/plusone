@@ -179,6 +179,8 @@
 .rail { display: flex; align-items: flex-start; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
   scroll-padding-inline: 16px; padding: 4px 16px 6px; margin: -4px -16px 0; }
 .rail > * { scroll-snap-align: start; flex: none; }
+.rail-more { width: 220px; min-height: 250px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; border: 1px solid var(--pink-line); border-radius: 16px; background: var(--pink-dim); color: var(--pink); font: 600 17px/1.3 var(--d); text-align: center; }
+.rail-more:hover { border-color: var(--pink); }
 .rail-arrow { display: none; }
 .rail-dots { display: flex; justify-content: center; gap: 6px; padding-top: 14px; min-height: 20px; }
 .rail-dots i { width: 6px; height: 6px; border-radius: 6px; background: var(--line-2); transition: width .35s cubic-bezier(.2,.7,.2,1), background .35s; }
@@ -255,6 +257,7 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
   .rail::-webkit-scrollbar { display: none; }
   .ev { --h: 300px; --maxw: 560px; }
   .ev-hero { --h: 400px; --maxw: 720px; }
+  .rail-more { min-height: 300px; }
   .shelf { margin-bottom: 48px; }
   .shelf-title { font-size: 30px; }
   .ev-title { font-size: 17px; }
@@ -263,7 +266,7 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
     background: rgba(var(--bg-rgb), .82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid var(--line-2); color: var(--t1);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,.5); opacity: 0; transition: opacity .25s, transform .25s; }
   .rail-arrow.l { left: -22px; } .rail-arrow.r { right: -22px; }
-  .rail-wrap:hover .rail-arrow:not(:disabled) { opacity: 1; }
+  .rail-wrap:hover .rail-arrow:not(:disabled), .rail-wrap:focus-within .rail-arrow:not(:disabled) { opacity: 1; }
   .rail-arrow:hover { transform: scale(1.08); border-color: var(--pink); }
   .rail-dots { display: none; }
   .terms { margin: 0; padding: 0 0 4px; }

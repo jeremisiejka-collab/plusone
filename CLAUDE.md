@@ -3,6 +3,7 @@
 - **Wdrażaj zawsze automatycznie, bez pytania.** Po każdej skończonej i sprawdzonej zmianie: commit, scal do `main` i wypchnij `main`. Push na `main` uruchamia `.github/workflows/deploy.yml`, który publikuje stronę na plusoneapp.pl (Cloudflare Workers).
 - Przed wdrożeniem uruchom stronę lokalnie i sprawdź ją w przeglądarce (telefon i komputer) — bez błędów JS.
 - Komunikacja i teksty w aplikacji po polsku.
+- **Bez emoji na stronie i w aplikacji.** Dotyczy również tytułów i opisów pobieranych z zewnętrznych źródeł. Używaj tekstu lub istniejących ikon SVG; importowane treści muszą być oczyszczane z emoji.
 
 ## Grafiki wydarzeń
 - **Zakaz „kaszet”**: żadnych rozmytych pasów, gradientów ani pustych pól wokół plakatu (góra/dół/boki) i żadnych gradientów nakładanych na grafikę.

@@ -42,6 +42,10 @@ jobs:
         with:
           node-version: 22
 
+      - name: Sprawdź treści bez emoji
+        if: steps.keys.outputs.ok == 'true'
+        run: npm test
+
       - name: Baza danych (D1)
         if: steps.keys.outputs.ok == 'true'
         env:
