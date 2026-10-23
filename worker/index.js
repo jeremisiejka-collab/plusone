@@ -3,6 +3,7 @@
    Baza: D1 (binding DB), schemat w migrations/. */
 
 import previewHtml from '../private/app.html';
+import { smtpSend } from './smtp.js';
 
 const DAY = 864e5;
 const SESSION_DAYS = 60;
@@ -356,20 +357,66 @@ async function adminSetPerms(req, env, user, id) {
 
 /* ---------------- zaproszenia ---------------- */
 const INVITE_DAYS = 14;
-const inviteLink = (req, token) => new URL('/app?invite=' + token, req.url).href;
+/* link zawsze po https (poza lokalnym testem) */
+const siteUrl = (req, path) => { const u = new URL(path, req.url); if (u.hostname !== 'localhost') u.protocol = 'https:'; return u.href; };
+const inviteLink = (req, token) => siteUrl(req, '/app?invite=' + token);
 const randomToken = () => b64(crypto.getRandomValues(new Uint8Array(24))).replace(/[+/=]/g, c => ({ '+': '-', '/': '_', '=': '' }[c]));
 
-/* wysyłka przez Resend (https://resend.com), jeśli są ustawione sekrety RESEND_API_KEY i MAIL_FROM; inaczej admin dostaje link do przekazania */
-async function sendMail(env, to, subject, text, html) {
-  if (!env.RESEND_API_KEY || !env.MAIL_FROM) return false;
+/* ---------------- poczta ----------------
+   Najpierw serwer SMTP ustawiony w panelu (Panel admina → Poczta), awaryjnie Resend (sekrety RESEND_API_KEY, MAIL_FROM).
+   Bez żadnego z nich admin dostaje link do przekazania ręcznie. */
+async function mailConfig(env) {
+  const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'smtp'").first().catch(() => null);
+  try { return row ? JSON.parse(row.value) : null; } catch { return null; }
+}
+const hasMailer = async env => !!(await mailConfig(env))?.host || !!(env.RESEND_API_KEY && env.MAIL_FROM);
+
+async function sendMail(env, to, subject, text, html, { raise = false } = {}) {
+  const cfg = await mailConfig(env);
   try {
-    const r = await fetch('https://api.resend.com/emails', {
-      method: 'POST', headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: env.MAIL_FROM, to: [to], subject, text, html })
-    });
-    if (!r.ok) console.error('mail', r.status, await r.text());
-    return r.ok;
-  } catch (e) { console.error('mail', e); return false; }
+    if (cfg?.host) { await smtpSend(cfg, { to, subject, text, html }); return true; }
+    if (env.RESEND_API_KEY && env.MAIL_FROM) {
+      const r = await fetch('https://api.resend.com/emails', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: env.MAIL_FROM, to: [to], subject, text, html })
+      });
+      if (!r.ok) throw new Error('Resend: ' + r.status + ' ' + (await r.text()).slice(0, 200));
+      return true;
+    }
+    if (raise) throw new Error('Poczta nie jest skonfigurowana.');
+    return false;
+  } catch (e) {
+    console.error('mail', e);
+    if (raise) throw e;
+    return false;
+  }
+}
+
+/* GET/POST/DELETE /api/admin/mail — ustawienia SMTP; hasło nigdy nie wraca do przeglądarki */
+async function adminMailGet(env) {
+  const c = await mailConfig(env);
+  return json({ smtp: c ? { host: c.host, port: c.port, secure: c.secure, user: c.user, from: c.from, fromName: c.fromName, hasPass: !!c.pass } : null,
+    resend: !!(env.RESEND_API_KEY && env.MAIL_FROM) });
+}
+async function adminMailSave(req, env) {
+  const b = await body(req), old = await mailConfig(env) || {};
+  const host = cleanText(b.host, 200).toLowerCase(), port = +b.port, from = cleanEmail(b.from);
+  if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(host)) return fail(400, 'Podaj adres serwera, np. smtp.twojadomena.pl');
+  if (![465, 587, 2525, 25].includes(port)) return fail(400, 'Port: 465 (SSL) albo 587 (STARTTLS).');
+  if (port === 25) return fail(400, 'Port 25 jest zablokowany w Cloudflare — użyj 465 albo 587.');
+  if (!EMAIL_RE.test(from)) return fail(400, 'Podaj adres nadawcy.');
+  const cfg = { host, port, secure: ['ssl', 'starttls', 'none'].includes(b.secure) ? b.secure : (port === 465 ? 'ssl' : 'starttls'),
+    user: cleanText(b.user, 200), pass: b.pass ? String(b.pass).slice(0, 500) : old.pass || '', from, fromName: cleanText(b.fromName, 80) || '+1' };
+  await env.DB.prepare("INSERT INTO settings (key, value) VALUES ('smtp', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").bind(JSON.stringify(cfg)).run();
+  return adminMailGet(env);
+}
+async function adminMailTest(req, env, user) {
+  const b = await body(req), to = EMAIL_RE.test(cleanEmail(b.to)) ? cleanEmail(b.to) : user.email;
+  try {
+    await sendMail(env, to, 'Test poczty +1', 'Działa! Zaproszenia z +1 będą wychodzić z tego adresu.',
+      '<div style="font:16px/1.6 sans-serif"><b>Działa!</b> Zaproszenia z +1 będą wychodzić z tego adresu.</div>', { raise: true });
+    return json({ ok: true, to });
+  } catch (e) { return fail(502, e.message); }
 }
 
 const inviteMail = (link, by, perms) => {
@@ -401,7 +448,7 @@ async function adminInvite(req, env, user) {
     if (perms.curate) ops.push(env.DB.prepare('UPDATE users SET perm_curate = 1 WHERE id = ?').bind(ex.id));
     if (perms.admin) ops.push(env.DB.prepare("UPDATE users SET role = 'admin' WHERE id = ?").bind(ex.id));
     if (ops.length) await env.DB.batch(ops);
-    const link = new URL('/app', req.url).href, m = inviteMail(link, by, perms);
+    const link = siteUrl(req, '/app'), m = inviteMail(link, by, perms);
     const emailed = await sendMail(env, email, m.subject, m.text, m.html);
     return json({ ok: true, existing: true, link, emailed, mail: { subject: m.subject, text: m.text } });
   }
@@ -418,7 +465,7 @@ async function adminInvites(req, env) {
   const { results } = await env.DB.prepare(
     `SELECT i.rowid AS id, i.email, i.preview, i.curate, i.admin, i.created_at, i.expires_at, i.used_at, u.email AS by_email
      FROM invites i LEFT JOIN users u ON u.id = i.invited_by ORDER BY i.created_at DESC LIMIT 100`).all();
-  return json({ invites: results, mailer: !!(env.RESEND_API_KEY && env.MAIL_FROM) });
+  return json({ invites: results, mailer: await hasMailer(env) });
 }
 
 async function adminRevokeInvite(req, env, id) {
@@ -512,6 +559,13 @@ async function api(req, env) {
     const r = path.match(/^\/api\/admin\/users\/(\d+)\/perms$/);
     if (r && m === 'POST') return adminSetPerms(req, env, user, r[1]);
     if (path === '/api/admin/invites' && m === 'GET') return adminInvites(req, env);
+    if (path.startsWith('/api/admin/mail')) {
+      if (!isOwner(user)) return fail(403, 'Pocztę ustawia główny administrator.');
+      if (path === '/api/admin/mail' && m === 'GET') return adminMailGet(env);
+      if (path === '/api/admin/mail' && m === 'POST') return adminMailSave(req, env);
+      if (path === '/api/admin/mail' && m === 'DELETE') { await env.DB.prepare("DELETE FROM settings WHERE key = 'smtp'").run(); return adminMailGet(env); }
+      if (path === '/api/admin/mail/test' && m === 'POST') return adminMailTest(req, env, user);
+    }
     if (path === '/api/admin/invites' && m === 'POST') return adminInvite(req, env, user);
     const inv = path.match(/^\/api\/admin\/invites\/(\d+)$/);
     if (inv && m === 'DELETE') return adminRevokeInvite(req, env, inv[1]);

@@ -302,3 +302,4 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
 .perm.on .perm-box { background: var(--pink); border-color: var(--pink); }
 .badge { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 6px; font: 600 10px/1 var(--d); background: var(--pink-dim); color: var(--pink); }
 .badge.off { background: var(--surface-3); color: var(--t3); }
+.sel { height: 50px; border-radius: 14px; padding: 0 14px; background: var(--surface-2); border: 1px solid var(--line-2); font: 400 15px/1 var(--d); color: var(--t1); width: 100%; }

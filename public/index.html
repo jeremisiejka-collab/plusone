@@ -1004,9 +1004,10 @@ async function revokeInvite(id){
 /* ---- admin ---- */
 async function adminLoad(){
   try{
-    const [stats, users, st, inv] = await Promise.all([apiCall('/api/admin/stats'), apiCall('/api/admin/users?q='+encodeURIComponent(S.adminQ||'')), apiCall('/api/state'), apiCall('/api/admin/invites')]);
+    const [stats, users, st, inv, mail] = await Promise.all([apiCall('/api/admin/stats'), apiCall('/api/admin/users?q='+encodeURIComponent(S.adminQ||'')), apiCall('/api/state'), apiCall('/api/admin/invites'),
+      isOwner() ? apiCall('/api/admin/mail') : null]);
     ACC.hidden=new Set(st.hidden); ACC.featured=st.featured;
-    ACC.admin={stats, users:users.users, invites:inv.invites, mailer:inv.mailer, at:Date.now()};
+    ACC.admin={stats, users:users.users, invites:inv.invites, mailer:inv.mailer, mail, at:Date.now()};
   }catch(e){ ACC.admin={error:e.message, at:Date.now()}; }
   S.dir=null; render();
 }
@@ -1102,13 +1103,53 @@ const scProfile = () => {
 </div>`;
 };
 
+/* ---- PANEL ADMINA: poczta (SMTP skrzynki, z której wychodzą zaproszenia) ---- */
+const adminMailTab = A => {
+  const c = A.mail?.smtp || {};
+  const f = (id, label, val, attrs='') => `<div class="field"><label>${label}</label><input id="${id}" value="${esc(val??'')}" ${attrs}></div>`;
+  return `<div id="mail-form" class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px">
+    <div class="row" style="justify-content:space-between;gap:10px"><span class="h3">Poczta</span>
+      <span class="badge ${A.mail?.smtp?'':'off'}">${A.mail?.smtp?'podłączona':A.mail?.resend?'Resend':'niepodłączona'}</span></div>
+    <span class="body" style="font-size:13px">Zaloguj skrzynkę, z której mają wychodzić zaproszenia (np. kontakt@tooday.pl). Dane serwera SMTP znajdziesz w ustawieniach poczty u dostawcy —
+      np. home.pl: <b>serwerXXXXXX.home.pl</b>, OVH: <b>ssl0.ovh.net</b>, Google Workspace: <b>smtp.gmail.com</b> z hasłem aplikacji, Microsoft 365: <b>smtp.office365.com</b> (587).</span>
+    ${f('ml-host','SERWER SMTP',c.host,'placeholder="smtp.twojadomena.pl" autocapitalize="off"')}
+    <div class="row" style="gap:10px">
+      <div class="field" style="flex:1"><label>PORT</label><select id="ml-port" class="sel">${[[465,'465 · SSL/TLS'],[587,'587 · STARTTLS']].map(([v,l])=>`<option value="${v}" ${+c.port===v?'selected':''}>${l}</option>`).join('')}</select></div>
+    </div>
+    ${f('ml-user','LOGIN (ZWYKLE ADRES E-MAIL)',c.user,'autocapitalize="off" autocomplete="off"')}
+    ${f('ml-pass','HASŁO DO SKRZYNKI','', `type="password" autocomplete="new-password" placeholder="${c.hasPass?'zapisane — wpisz, żeby zmienić':''}"`)}
+    ${f('ml-from','ADRES NADAWCY',c.from||c.user,'type="email" autocapitalize="off"')}
+    ${f('ml-name','NAZWA NADAWCY',c.fromName||'+1')}
+    <button class="btn p" data-act="saveMail">Zapisz</button>
+    ${A.mail?.smtp?`<div class="row" style="gap:8px;flex-wrap:wrap">
+      <button class="chip on" data-act="testMail">Wyślij test na ${esc(ACC.user.email)}</button>
+      <button class="chip" data-act="dropMail">Odłącz</button></div>`:''}
+    <span class="mono" style="line-height:1.5">Hasło jest zapisane na serwerze +1 i nie wraca do przeglądarki. Ustawia je tylko główny administrator.</span>
+  </div>`;
+};
+async function saveMail(){
+  const v = id => $('#'+id)?.value.trim();
+  try{
+    ACC.admin.mail = await apiCall('/api/admin/mail','POST',{host:v('ml-host'), port:+v('ml-port'), user:v('ml-user'), pass:$('#ml-pass')?.value||'', from:v('ml-from'), fromName:v('ml-name')});
+    toast('Zapisano — wyślij test, żeby sprawdzić'); sfxOk(); ACC.admin.mailer = true; S.dir=null; render();
+  }catch(e){ toast(esc(e.message),true); }
+}
+async function testMail(){
+  toast('Wysyłam…',true,1500);
+  try{ const r = await apiCall('/api/admin/mail/test','POST',{}); toast('Wysłano na '+esc(r.to)+' — sprawdź skrzynkę'); sfxOk(); }
+  catch(e){ toast(esc(e.message),true,6000); }
+}
+async function dropMail(){
+  try{ ACC.admin.mail = await apiCall('/api/admin/mail','DELETE',{}); ACC.admin.at=0; toast('Poczta odłączona'); adminLoad(); }catch(e){ toast(esc(e.message),true); }
+}
+
 /* ---- PANEL ADMINA: zaproszenia ---- */
 const adminInvitesTab = A => {
   const L = S.lastInvite, now = Date.now();
   return `
   <div id="inv-form" class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px">
     <span class="h3">Zaproś do +1</span>
-    <span class="body" style="font-size:13px">${A.mailer?'Zaproszenie przyjdzie mailem z linkiem. Osoba ustawia hasło i od razu ma wybrane uprawnienia.':'Wysyłka maili nie jest jeszcze podłączona — po utworzeniu zaproszenia skopiuj link albo wyślij go ze swojej poczty.'}</span>
+    <span class="body" style="font-size:13px">${A.mailer?'Zaproszenie przyjdzie mailem z linkiem. Osoba ustawia hasło i od razu ma wybrane uprawnienia.':'Wysyłka maili nie jest jeszcze podłączona'+(isOwner()?' (zakładka Poczta)':'')+' — po utworzeniu zaproszenia skopiuj link albo wyślij go ze swojej poczty.'}</span>
     <div class="field"><label>E-MAIL</label><input id="inv-email" type="email" inputmode="email" autocapitalize="off" placeholder="ktos@przyklad.pl" data-enter="sendInvite"></div>
     <div class="col" style="gap:8px">${['preview','curate','admin'].map(k=>permToggle(k, k==='preview', !permAllowed(k))).join('')}</div>
     <button class="btn p" data-act="sendInvite">${A.mailer?'Wyślij zaproszenie':'Utwórz zaproszenie'}</button>
@@ -1150,7 +1191,7 @@ const scAdmin = () => {
   <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4" style="flex:1">Panel admina</span>
     <button class="mono" data-act="adminReload" style="color:${PINK}">ODŚWIEŻ</button></div>
   <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:16px 20px">
-    ${[['stats','Statystyki'],['users','Użytkownicy'],['invites','Zaproszenia'],['curation','Moderacja'],['data','Dane']].map(([k,l])=>
+    ${[['stats','Statystyki'],['users','Użytkownicy'],['invites','Zaproszenia'],...(isOwner()?[['mail','Poczta']]:[]),['curation','Moderacja'],['data','Dane']].map(([k,l])=>
       `<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}
   </div>
   <div class="pad">
@@ -1170,7 +1211,7 @@ const scAdmin = () => {
           .filter(Boolean).map(t=>`<span class="badge">${t}</span>`).join('') || '<span class="mono">użytkownik</span>'}<span class="mono">· od ${new Date(x.created_at).toLocaleDateString('pl-PL')}</span></span>
       </div>
       <button class="chip" data-act="perms:${x.id}" style="padding:7px 12px;font-size:12px">Uprawnienia</button>
-    </div>`; }).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='invites' ? adminInvitesTab(A) : tab==='curation' ? `
+    </div>`; }).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='invites' ? adminInvitesTab(A) : tab==='mail' ? adminMailTab(A) : tab==='curation' ? `
     <span class="body" style="display:block;padding-bottom:10px">Polecaj albo ukrywaj wydarzenia przyciskami na ekranie wydarzenia. Tu możesz to cofnąć.</span>
     <div class="h4" style="padding:10px 0 4px">Polecane</div>${curList(ACC.featured,'Usuń z polecanych')}
     <div class="h4" style="padding:20px 0 4px">Ukryte</div>${curList([...ACC.hidden],'Przywróć')}` : `
@@ -2066,6 +2107,9 @@ function act(a){
     case 'passwordSheet': passwordSheet(); break;
     case 'savePassword': savePassword(); break;
     case 'sendInvite': sendInvite(); break;
+    case 'saveMail': saveMail(); break;
+    case 'testMail': testMail(); break;
+    case 'dropMail': dropMail(); break;
     case 'revokeInvite': revokeInvite(p1); break;
     case 'copyInvite': try{ navigator.clipboard.writeText(S.lastInvite.link); toast('Link skopiowany'); }catch(e){ toast('Skopiuj link ręcznie',true); } break;
     case 'shareInvite': navigator.share ? navigator.share({title:S.lastInvite.mail.subject, text:S.lastInvite.mail.text}).catch(()=>{}) : act('copyInvite'); break;
