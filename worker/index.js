@@ -94,7 +94,7 @@ async function register(req, env) {
     .bind(email, name, await hashPassword(password), role, city, now, now).run();
   const id = res.meta.last_row_id;
   const set = await startSession(env, id);
-  return json({ user: { id, email, name, role, city, createdAt: now }, saved: [] }, 201, { 'Set-Cookie': set });
+  return json({ user: { id, email, name, role, city, createdAt: now }, saved: [], going: [] }, 201, { 'Set-Cookie': set });
 }
 
 async function login(req, env) {
@@ -120,7 +120,7 @@ async function login(req, env) {
     env.DB.prepare('DELETE FROM sessions WHERE user_id = ? AND expires_at < ?').bind(u.id, Date.now())
   ]);
   const set = await startSession(env, u.id);
-  return json({ user: publicUser(u), saved: await savedIds(env, u.id) }, 200, { 'Set-Cookie': set });
+  return json({ user: publicUser(u), ...await savedIds(env, u.id) }, 200, { 'Set-Cookie': set });
 }
 
 async function logout(req, env) {
@@ -129,15 +129,19 @@ async function logout(req, env) {
   return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
 }
 
+/* { saved: [...], going: [...] } — "Zapisane" i "Mam bilet" użytkownika */
 async function savedIds(env, userId) {
-  const { results } = await env.DB.prepare('SELECT event_id FROM saved WHERE user_id = ? ORDER BY created_at DESC').bind(userId).all();
-  return results.map(r => r.event_id);
+  const { results } = await env.DB.prepare('SELECT event_id, kind FROM saved WHERE user_id = ? ORDER BY created_at DESC').bind(userId).all();
+  return {
+    saved: results.filter(r => r.kind !== 'going').map(r => r.event_id),
+    going: results.filter(r => r.kind === 'going').map(r => r.event_id)
+  };
 }
 
 async function me(req, env, user) {
-  if (!user) return json({ user: null, saved: [] });
+  if (!user) return json({ user: null, saved: [], going: [] });
   await env.DB.prepare('UPDATE users SET last_seen = ? WHERE id = ?').bind(Date.now(), user.id).run();
-  return json({ user: publicUser(user), saved: await savedIds(env, user.id) });
+  return json({ user: publicUser(user), ...await savedIds(env, user.id) });
 }
 
 async function updateMe(req, env, user) {
@@ -168,11 +172,13 @@ async function toggleSaved(req, env, user) {
   if (b.on) {
     const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM saved WHERE user_id = ?').bind(user.id).first('n');
     if (n >= 1000) return fail(400, 'Masz już 1000 zapisanych wydarzeń.');
-    await env.DB.prepare('INSERT OR IGNORE INTO saved (user_id, event_id, created_at) VALUES (?, ?, ?)').bind(user.id, id, Date.now()).run();
+    const kind = b.kind === 'going' ? 'going' : 'saved';
+    await env.DB.prepare(`INSERT INTO saved (user_id, event_id, created_at, kind) VALUES (?, ?, ?, ?)
+      ON CONFLICT(user_id, event_id) DO UPDATE SET kind = excluded.kind`).bind(user.id, id, Date.now(), kind).run();
   } else {
     await env.DB.prepare('DELETE FROM saved WHERE user_id = ? AND event_id = ?').bind(user.id, id).run();
   }
-  return json({ saved: await savedIds(env, user.id) });
+  return json(await savedIds(env, user.id));
 }
 
 /* publiczne: decyzje admina + popularność (ile osób zapisało) */

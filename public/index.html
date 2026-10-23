@@ -164,6 +164,32 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
   opacity:0;transform:translateY(6px);transition:.2s;pointer-events:none}
 .regcard.on{opacity:1;transform:none}
 .sc[style*="scroll-snap-type"]{scroll-padding-inline:20px}
+.mine-act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:12px 4px;border-radius:16px;
+  background:var(--surface);border:1px solid var(--line);color:var(--t1);text-decoration:none;transition:transform .15s,background .2s,border-color .2s,color .2s}
+.mine-act span{font:500 11px/1 var(--d);color:var(--t2);white-space:nowrap}
+.mine-act:active{transform:scale(.95)}
+.mine-act.on{background:var(--pink-dim);border-color:var(--pink-line);color:var(--pink)}
+.mine-act.on span{color:var(--pink)}
+.mine-act.on svg path,.mine-btn.on svg path{fill:currentColor;fill-opacity:.18}
+.pop svg{animation:popin .45s cubic-bezier(.3,1.7,.5,1)}
+@keyframes popin{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+/* animacje: karty wjeżdżają po kolei, zdjęcia płynnie się pojawiają, przyciski reagują na dotyk */
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.anim .event-card,.anim .event-row,.anim .mine-row{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+.anim .event-grid > :nth-child(2),.anim .pad > .event-row:nth-child(2){animation-delay:.05s}
+.anim .event-grid > :nth-child(3),.anim .pad > .event-row:nth-child(3){animation-delay:.1s}
+.anim .event-grid > :nth-child(4),.anim .pad > .event-row:nth-child(4){animation-delay:.15s}
+.anim .event-grid > :nth-child(5),.anim .pad > .event-row:nth-child(5){animation-delay:.2s}
+.anim .event-grid > :nth-child(n+6),.anim .pad > .event-row:nth-child(n+6){animation-delay:.25s}
+.event-card .event-img img{transition:opacity .5s,transform .6s cubic-bezier(.2,.7,.3,1)}
+.event-card:active .event-img{transform:scale(.98)}
+.event-img{transition:transform .2s}
+@media (hover:hover){ .event-card:hover .event-img img{transform:scale(1.04)} }
+.next-ticket{animation:rise .55s cubic-bezier(.2,.7,.3,1) both}
+.mine-empty > span:first-child{animation:floaty 3.2s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.btn:active,.chip:active{transform:scale(.97)}
+.chip{transition:background .2s,color .2s,border-color .2s,transform .12s}
 .clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .body{font:400 14px/1.5 var(--d);color:var(--t2)}
 .mono{font:400 11px/1.3 var(--m);color:var(--t3);letter-spacing:.02em}
@@ -427,6 +453,7 @@ async function loadLive(){
     const d = await r.json();
     for(let i=EVENTS.length-1;i>=0;i--) if(EVENTS[i].real) EVENTS.splice(i,1);
     EVENTS.push(...d.events.map(liveEvent));
+    S._animOnce = true;
     LIVE.cities = d.cities; LIVE.updatedAt = d.updatedAt; LIVE.sources = d.sources; LIVE.count = d.count; LIVE.geo = d.geo; LIVE.state = 'ok';
     if(!LIVE.cities[S.city]) S.city = 'Warszawa';
   }catch(e){ LIVE.state = 'error'; }
@@ -697,9 +724,11 @@ function poster(e){
 
 const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
+/* zdjęcia już wczytane nie mrugają przy przerysowaniu */
+const IMG_OK = new Set();
 const artBox = e => e.image
   ? `<div style="position:absolute;inset:0;background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" referrerpolicy="no-referrer"
-      onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block"></div>`
+      data-k="${esc(e.image)}" onload="this.style.opacity=1;IMG_OK.add(this.dataset.k)" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;${IMG_OK.has(e.image)?'':'opacity:0;transition:opacity .5s'}"></div>`
   : `<div style="position:absolute;inset:0">${art(e)}</div>`;
 const cover = e => `background:hsl(${e.hue} 34% 8%)`;
 
@@ -711,6 +740,7 @@ const IP = {
   wallet:'M3 8a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z|M16 12.5h3',
   search:'M11 11m-6 0a6 6 0 1 0 12 0a6 6 0 1 0-12 0|M15.5 15.5 20 20',
   map:'M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z|M9 3v15|M15 6v15',
+  heart:'M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z',
   user:'M12 8m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0|M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6',
   shield:'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z',
   logout:'M15 4h4v16h-4|M10 8l-4 4 4 4|M6 12h10',
@@ -803,6 +833,53 @@ const scBlik = () => {
    KONTO: logowanie użytkownika i admina (API /api/* w worker/index.js)
    ========================================================= */
 const ACC = { user:null, api:true, hidden:new Set(), featured:[], authMode:'login', authErr:'', busy:false, admin:null };
+/* "Mam bilet" (going) i "Zapisane" (saved): gość trzyma je na telefonie, po zalogowaniu przechodzą na konto */
+const MINE = (()=>{ try{ const m=JSON.parse(localStorage.getItem('mine')||'{}'); return {saved:new Set(m.saved||[]), going:new Set(m.going||[])} }
+  catch(e){ return {saved:new Set(), going:new Set()} } })();
+const keepMine = () => { try{ localStorage.setItem('mine', JSON.stringify({saved:[...MINE.saved], going:[...MINE.going]})) }catch(e){} };
+const setMine = r => { MINE.saved = new Set(r.saved||[]); MINE.going = new Set(r.going||[]); };
+
+/* po zalogowaniu: zapisy z telefonu dołączamy do konta */
+async function mergeMine(res){
+  const local = [...[...MINE.going].map(id=>[id,'going']), ...[...MINE.saved].map(id=>[id,'saved'])]
+    .filter(([id,k]) => !(res.going||[]).includes(id) && !(k==='saved' && (res.saved||[]).includes(id))).slice(0,60);
+  let cur = res;
+  for(const [id,kind] of local){ try{ cur = await apiCall('/api/saved','POST',{eventId:id,on:true,kind}) }catch(e){} }
+  setMine(cur);
+  try{ localStorage.removeItem('mine') }catch(e){}
+}
+
+async function toggleMine(id, kind){
+  const set = MINE[kind], on = !set.has(id);
+  if(on){ set.add(id); (kind==='going' ? MINE.saved : MINE.going).delete(id); } else set.delete(id);
+  haptic(on?16:6); on ? sfxOk() : sfxTap();
+  S.popId = on ? id+kind : null; S.dir=null; render();
+  if(on) toast(kind==='going' ? 'Dodane do Twoich biletów' : 'Zapisane', true, 1800);
+  if(ACC.user){
+    try{ setMine(await apiCall('/api/saved','POST',{eventId:id, on, kind})) }
+    catch(e){ toast(esc(e.message),true); }
+    S.dir=null; render();
+  } else keepMine();
+}
+
+/* plik .ics do kalendarza w telefonie */
+function addToCalendar(e){
+  const t = s => s.replace(/[-:]/g,'').slice(0,13)+'00';
+  const start = e.start || (e.day+'T19:00'), d = new Date(start); d.setHours(d.getHours()+3);
+  const end = `${localDay(d)}T${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  const x = s => String(s||'').replace(/[\\,;]/g,m=>'\\'+m).replace(/\n/g,'\\n');
+  const url = (e.links[0]||{}).url||'';
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//plusoneapp.pl//PL','BEGIN:VEVENT',
+    'UID:'+e.id+'@plusoneapp.pl','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z',
+    'DTSTART;TZID=Europe/Warsaw:'+t(start),'DTEND;TZID=Europe/Warsaw:'+t(end),
+    'SUMMARY:'+x(e.name),'LOCATION:'+x([e.venue,e.address||e.city].join(', ')),'DESCRIPTION:'+x(url),'URL:'+url,
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));
+  a.download = (e.name.replace(/[^\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ -]/g,'').slice(0,40)||'wydarzenie')+'.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+  toast('Plik kalendarza pobrany — otwórz go, żeby dodać wydarzenie', true);
+}
 const isAdmin = () => ACC.user?.role==='admin';
 const entered = () => { try{ return !!localStorage.getItem('entered') }catch(e){ return false } };
 const markEntered = () => { try{ localStorage.setItem('entered','1') }catch(e){} };
@@ -819,7 +896,7 @@ async function loadAccount(){
   try{
     const [me, st] = await Promise.all([apiCall('/api/me'), apiCall('/api/state')]);
     ACC.hidden = new Set(st.hidden); ACC.featured = st.featured;
-    if(me.user){ ACC.user = me.user; if(S.screen==='start'){ S.screen='home'; } }
+    if(me.user){ ACC.user = me.user; await mergeMine(me); if(S.screen==='start'){ S.screen='home'; } }
   }catch(e){ ACC.api = false; }
   S.dir=null; render();
 }
@@ -837,10 +914,11 @@ async function submitAuth(){
       await apiCall('/api/auth/logout','POST',{}).catch(()=>{});
       throw new Error('To konto nie ma uprawnień admina.');
     }
-    ACC.user = res.user; ACC.busy=false; markEntered(); sfxOk(); haptic(16);
+    ACC.user = res.user; await mergeMine(res); ACC.busy=false; markEntered(); sfxOk(); haptic(16);
     if(res.user.city && LIVE.cities[res.user.city]) S.city = res.user.city;
     toast(mode==='register' ? 'Konto założone. Witaj w +1!' : 'Zalogowano'+(res.user.name?' · '+esc(res.user.name):''));
-    S.prev='home'; go(mode==='admin' ? 'admin' : 'home');
+    const next = mode==='admin' ? 'admin' : (S.afterAuth || 'home'); S.afterAuth=null;
+    S.prev='home'; go(next);
   }catch(e){
     ACC.busy=false; ACC.authErr=e.message; sfxErr(); S.dir=null; render();
     const f=$('#au-email'); if(f){ f.value=email||''; if($('#au-name')) $('#au-name').value=name||''; }
@@ -849,7 +927,7 @@ async function submitAuth(){
 
 async function logout(){
   try{ await apiCall('/api/auth/logout','POST',{}) }catch(e){}
-  ACC.user=null; ACC.admin=null; toast('Wylogowano'); S.prev='home'; go('home');
+  ACC.user=null; ACC.admin=null; setMine({}); keepMine(); toast('Wylogowano'); S.prev='home'; go('home');
 }
 
 async function saveProfile(){
@@ -968,6 +1046,8 @@ const scProfile = () => {
   <div class="pad">
     ${u?.role==='admin'?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">ADMIN</span>`):''}
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
+    ${row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`)}
+    ${row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`)}
     ${row('pin','Miasto','sheetCity',`<span class="mono">${esc(S.city)}</span>`)}
     ${u?row('logout','Wyloguj się','logout'):''}
   </div>
@@ -1231,7 +1311,7 @@ function inCity(){ return EVENTS.filter(e=>e.real && e.city===S.city && e.day>=l
 function bigAll(){ return EVENTS.filter(e=>e.real && e.big && e.day>=localDay() && !ACC.hidden.has(e.id)); }
 function filtered(){
   const q = fold(S.query.trim());
-  return (S.big ? bigAll() : inCity()).filter(e=>{
+  return (S.big ? bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1)) : inCity()).filter(e=>{
     const okCat = S.cat==='Wszystko' || e.cat===S.cat;
     const okQ = !q || fold(e.name+' '+e.venue+' '+e.lineup.join(' ')+' '+(CAT_PL[e.cat]||'')+' '+e.tags.join(' ')).includes(q);
     return okCat && okQ && okWhen(e) && okPrice(e);
@@ -1344,14 +1424,14 @@ const scHome = () => {
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
-  ${(()=>{ if(S.big) return ''; const bg = bigAll(); return bg.length ? `
+  ${(()=>{ if(S.big) return ''; const bg = bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || a.start.localeCompare(b.start)); return bg.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
     <span class="h3">Wielkie wydarzenia</span>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="bigList">WSZYSTKIE (${bg.length}) →</span>
   </div>
-  <div class="pad mono" style="padding-bottom:12px">Festiwale i koncerty na stadionach i arenach w całej Polsce</div>
+  <div class="pad mono" style="padding-bottom:12px">${bg.some(e=>e.city===S.city)?'Najpierw '+esc(S.city)+', potem reszta Polski':'Festiwale i koncerty na stadionach i arenach w całej Polsce'}</div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
-    ${[...bg.filter(e=>e.image&&!e.multi), ...bg.filter(e=>!e.image||e.multi)].slice(0,8).map(e=>bigCard({...e, venue:e.city+' · '+e.venue})).join('')}
+    ${[...bg.filter(e=>e.city===S.city), ...bg.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...bg.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,9).map(e=>bigCard(e.city===S.city?e:{...e, venue:e.city+' · '+e.venue})).join('')}
   </div>` : ''; })()}
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
     <span class="h3">Już niedługo</span>
@@ -1661,6 +1741,12 @@ const scLive = e => `
           <div class="col" style="min-width:0;flex:1"><span style="font:600 15px/1.25 var(--d)">${esc(t)}</span>${sub?`<span class="mono" style="margin-top:3px">${esc(sub)}</span>`:''}</div>
           ${href?`<span style="color:var(--t3);display:flex">${ic('chevR',16)}</span>`:''}</${href?'a':'div'}>`).join('')}
     </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:8px">
+      ${[[MINE.going.has(e.id)?'Mam bilet ✓':'Mam bilet','ticket','mine:going:'+e.id, MINE.going.has(e.id), 'going'],
+         [MINE.saved.has(e.id)?'Zapisane':'Zapisz','heart','mine:saved:'+e.id, MINE.saved.has(e.id), 'saved'],
+         ['Kalendarz','clock','calNext:'+e.id],['Udostępnij','share','share']]
+        .map(([l,i,a,on,k])=>`<button class="mine-act ${on?'on':''} ${on&&S.popId===e.id+k?'pop':''}" data-act="${a}">${ic(i,18)}<span>${l}</span></button>`).join('')}
+    </div>
     ${isAdmin()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
       <span class="mono" style="flex:1;color:${PINK}">ADMIN</span>
       <button class="chip ${ACC.featured.includes(e.id)?'on':''}" data-act="curate:${e.id}:${ACC.featured.includes(e.id)?'clear':'feature'}" style="padding:7px 12px;font-size:12px">${ACC.featured.includes(e.id)?'Polecane':'Poleć'}</button>
@@ -1694,7 +1780,7 @@ const scLive = e => `
     </div>
 <div class="event-buy" style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
   <a class="btn p" href="${esc(e.links[0].url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">
-    Kup bilet${e.from!=null?' · '+price(e):' · '+esc(SRC_PL[e.links[0].source]||'u sprzedawcy')}</a>
+    ${e.from===0?'Szczegóły u organizatora':'Kup bilet'+(e.from!=null?' · '+price(e):' · '+esc(SRC_PL[e.links[0].source]||'u sprzedawcy'))}</a>
 </div>
   </div>
 </div>`;
@@ -1947,6 +2033,76 @@ const scSuccess = () => `
 </div>`;
 
 /* ---- BILETY (stack) ---- */
+/* ---- MOJE BILETY (publicznie): "Mam bilet" + "Zapisane" ---- */
+function countdown(e){
+  if(e.day===localDay()) return e.time ? 'dziś, '+e.time : 'dziś';
+  const d = Math.round((new Date(e.day+'T12:00') - new Date(localDay()+'T12:00'))/864e5);
+  return d===1 ? 'jutro' + (e.time?', '+e.time:'') : d<7 ? 'za '+d+' dni' : d<35 ? 'za '+Math.round(d/7)+' tyg.' : 'za '+Math.round(d/30)+' mies.';
+}
+const mineRow = (e, kind) => `
+<div class="event-row mine-row" style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)">
+  <div data-act="ev:${e.id}" class="ds" style="flex:none;width:74px;height:92px;border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2);cursor:pointer">${artBox(e)}</div>
+  <div data-act="ev:${e.id}" class="col" style="flex:1;min-width:0;gap:4px;cursor:pointer">
+    <span class="mono" style="color:${PINK};letter-spacing:.06em">${esc(countdown(e).toUpperCase())}</span>
+    <span class="h4 clamp2">${esc(e.name)}</span>
+    <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.when)} · ${esc(e.venue)}</span>
+  </div>
+  <button class="mine-btn on" data-act="mine:${kind}:${e.id}" aria-label="Usuń" style="width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--pink-dim);color:${PINK}">${ic(kind==='going'?'ticket':'heart',18)}</button>
+</div>`;
+
+const scMyTickets = () => {
+  const tab = S.mineTab || 'going';
+  const byId = id => EVENTS.find(e=>e.real && e.id===id);
+  const list = k => [...MINE[k]].map(byId).filter(Boolean).sort((a,b)=>a.start.localeCompare(b.start));
+  const going = list('going'), saved = list('saved');
+  const up = (tab==='going'?going:saved).filter(e=>e.day>=localDay() || (e.multi)), past = (tab==='going'?going:[]).filter(e=>e.day<localDay() && !e.multi);
+  const next = tab==='going' && up[0];
+  return `
+<div class="pg" style="padding:64px 0 112px">
+  <div class="pad col" style="gap:14px;padding-bottom:16px;max-width:900px;margin:0 auto">
+    <div class="h2">Moje bilety</div>
+    <div class="seg"><button class="${tab==='going'?'on':''}" data-act="mineTab:going">Mam bilet${going.length?' · '+going.length:''}</button>
+      <button class="${tab==='saved'?'on':''}" data-act="mineTab:saved">Zapisane${saved.length?' · '+saved.length:''}</button></div>
+  </div>
+  <div class="pad" style="max-width:900px;margin:0 auto">
+  ${LIVE.state!=='ok' ? loadingBox() : !up.length && !past.length ? `
+    <div class="col mine-empty" style="align-items:center;text-align:center;gap:12px;padding:42px 10px 10px">
+      <span style="width:72px;height:72px;border-radius:24px;background:var(--pink-dim);border:1px solid var(--pink-line);display:grid;place-items:center;color:${PINK}">${ic(tab==='going'?'ticket':'heart',30,1.6)}</span>
+      <span class="h3">${tab==='going'?'Tu będą Twoje bilety':'Nic jeszcze nie zapisałeś'}</span>
+      <span class="body" style="max-width:340px">${tab==='going'
+        ? 'Kupiłeś bilet? Na stronie wydarzenia stuknij „Mam bilet” — będziesz mieć je tu z odliczaniem, dojazdem i kalendarzem.'
+        : 'Stuknij „Zapisz” przy wydarzeniu, które Cię ciekawi. Wrócisz do niego jednym kliknięciem.'}</span>
+      <button class="btn p" data-act="go:list" style="height:48px;max-width:320px;font:600 15px/1 var(--d);margin-top:6px">Przeglądaj wydarzenia</button>
+    </div>` : `
+    ${next ? `
+    <div data-act="ev:${next.id}" class="ds next-ticket" style="position:relative;border-radius:22px;overflow:hidden;height:220px;margin-bottom:8px;cursor:pointer;background:var(--surface-2)">
+      ${artBox(next)}
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.88) 100%)"></div>
+      <div style="position:absolute;left:18px;right:18px;bottom:16px" class="col">
+        <span class="mono" style="color:#fff;opacity:.8;letter-spacing:.12em">NAJBLIŻSZE</span>
+        <span style="font:700 30px/1 var(--d);color:${PINK_HEX};margin-top:6px;letter-spacing:-.02em">${esc(countdown(next))}</span>
+        <span class="clamp2" style="font:600 18px/1.2 var(--d);color:#fff;margin-top:8px">${esc(next.name)}</span>
+        <span class="mono" style="color:rgba(255,255,255,.7);margin-top:5px">${esc(next.venue)} · ${esc(next.city)}</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-bottom:6px">
+      <a class="mine-act" href="${esc((next.links[0]||{}).url||'#')}" target="_blank" rel="noopener">${ic('ticket',18)}<span>Bilet</span></a>
+      <a class="mine-act" href="${mapsUrl(next)}" target="_blank" rel="noopener">${ic('pin',18)}<span>Dojazd</span></a>
+      <button class="mine-act" data-act="calNext:${next.id}">${ic('clock',18)}<span>Kalendarz</span></button>
+    </div>` : ''}
+    ${up.slice(next?1:0).map(e=>mineRow(e,tab)).join('')}
+    ${past.length ? `<div class="eyebrow" style="padding:22px 0 4px">Minione</div><div style="opacity:.6">${past.map(e=>mineRow(e,tab)).join('')}</div>` : ''}`}
+  ${!ACC.user ? `
+    <div class="card" style="margin-top:22px;padding:16px;display:flex;gap:14px;align-items:center">
+      <span style="width:40px;height:40px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;flex:none">${ic('user',18)}</span>
+      <div class="col" style="flex:1;min-width:0"><span class="h4">Masz to tylko na tym urządzeniu</span>
+        <span class="mono" style="margin-top:4px;line-height:1.4">Załóż konto, a bilety i zapisane będą na telefonie i komputerze.</span></div>
+      <button class="chip on" data-act="authFrom:tickets" style="padding:8px 12px;font-size:12px;flex:none">Załóż konto</button>
+    </div>` : ''}
+  </div>
+</div>`;
+};
+
 const scTickets = () => `
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad" style="padding-bottom:18px"><div class="h2">Bilety</div>
@@ -2674,6 +2830,8 @@ const NAV = [
 ];
 /* środkowy przycisk: na ekranach z wydarzeniami logo +1 (strona główna), gdzie indziej PAY */
 const FAB_HOME = ['home','list','map','profile'];
+/* publicznie PAY tylko w dniu wydarzenia, na które masz bilet (na Biletach i w Portfelu) */
+const payDay = () => ['tickets','wallet'].includes(S.screen) && [...MINE.going].some(id => EVENTS.find(e=>e.id===id)?.day===localDay());
 const NAV_ON = ['home','list','map','tickets','ticket','wallet','bar','profile'];
 const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000">
   <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
@@ -2733,19 +2891,22 @@ function renderWebChrome(){
 function render(){
   if(S.screen!=='scanpay') stopCam();
   $('#shell').classList.toggle('ds', DARK_SCREENS.includes(S.screen) && !walletSoon());
-  const fn = walletSoon() ? scWalletSoon : (SCREENS[S.screen] || scHome);
+  const fn = walletSoon() ? scWalletSoon : (!DEMO && S.screen==='tickets') ? scMyTickets : (SCREENS[S.screen] || scHome);
   $('#view').innerHTML = fn();
   renderWebChrome();
   const pg = $('#view').firstElementChild;
   if(pg) pg.dataset.screen = S.screen;
   if(pg && S.dir) pg.classList.add(S.dir);
+  // karty wjeżdżają po kolei tylko przy wejściu na ekran albo po wczytaniu danych, nie przy każdym filtrze
+  if(pg && (S.dir || S._animOnce)) pg.classList.add('anim');
+  S._animOnce = false;
 
   const nav = $('#nav');
   if(NAV_ON.includes(S.screen)){
     nav.classList.remove('hide');
     const active = S.screen==='ticket' ? 'tickets' : (S.screen==='bar' ? 'wallet' : S.screen);
     nav.innerHTML = NAV.map(n => n.fab
-      ? (FAB_HOME.includes(S.screen) || walletSoon()
+      ? (DEMO ? FAB_HOME.includes(S.screen) : !payDay()
         ? `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Strona główna +1">${FAB_SVG}</button></div>`
         : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać">
            <span class="halo"></span><span class="fabtxt">PAY</span></button></div>`)
@@ -2797,6 +2958,11 @@ function act(a){
     case 'descToggle': S.descOpen = S.descOpen===p1 ? null : p1; S.dir=null; render(); break;
     case 'walletNotify': S.walletNotify=true; try{localStorage.setItem('walletNotify','1')}catch(e){}
       sfxOk(); haptic(12); toast(ACC.user?'Damy znać na '+esc(ACC.user.email):'Zapisane. Załóż konto, żebyśmy mogli dać znać', true); S.dir=null; render(); break;
+    case 'mine': toggleMine(a.slice(5+p1.length+1), p1); break;
+    case 'mineTab': S.mineTab=p1; S.dir=null; render(); break;
+    case 'calNext': addToCalendar(EVENTS.find(e=>e.id===a.slice(8))); break;
+    case 'authFrom': S.afterAuth=p1; ACC.authMode='register'; ACC.authErr=''; go('auth'); break;
+    case 'mineSaved': S.mineTab='saved'; go('tickets'); break;
     case 'guest': markEntered(); S.prev='home'; go('home'); break;
     case 'authgo': ACC.authMode=p1; ACC.authErr=''; go('auth'); break;
     case 'authmode': ACC.authMode=p1; ACC.authErr=''; S.dir=null; render(); break;

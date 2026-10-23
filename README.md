@@ -54,10 +54,10 @@ Lokalnie uruchom Worker z bazą D1 poleceniem opisanym niżej. Sprawdź widoki p
 - API w `worker/index.js` (Cloudflare Worker, ścieżki `/api/*`), baza **D1** `plusone`, schemat w `migrations/`.
 - Rejestracja e-mail + hasło (PBKDF2), sesja w ciasteczku HttpOnly na 60 dni, limit prób logowania.
 - Role: `user` i `admin`. Admin z konfiguracji: `ADMIN_EMAIL_SHA256` w `wrangler.jsonc` (sha256 adresu e-mail); kolejnych adminów nadaje się w panelu.
-- Gość może zapisywać wydarzenia na telefonie; po zalogowaniu przenoszą się na konto.
+- **Moje bilety**: na wydarzeniu „Mam bilet” i „Zapisz” (tabela `saved`, kolumna `kind` = `going`/`saved`, migracja `0002`). Gość trzyma je w `localStorage`, po zalogowaniu przechodzą na konto. Zakładka Bilety pokazuje najbliższe wydarzenie z odliczaniem, dojazdem i plikiem do kalendarza; PAY pojawia się tylko w dniu wydarzenia z biletem.
 - Panel admina (Profil → Panel admina): statystyki, użytkownicy i role, polecanie/ukrywanie wydarzeń, stan źródeł danych.
 - Lokalnie: `npx wrangler d1 migrations apply plusone --local && npx wrangler dev`.
 
 ## Demo
 
-Bilety, portfel, PAY, BLIK i zaproszenia +1 to wciąż makiety (bez realnych płatności). Publicznie są ukryte; pokazuje je `?demo`, chowa `?demo=0`.
+Portfel, PAY, BLIK i zaproszenia +1 to wciąż makiety (publicznie Portfel ma ekran „Wkrótce”) (bez realnych płatności). Publicznie są ukryte; pokazuje je `?demo`, chowa `?demo=0`.
