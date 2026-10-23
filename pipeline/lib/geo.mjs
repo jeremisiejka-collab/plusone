@@ -13,7 +13,7 @@ function inRing(x, y, ring) {
   return inside;
 }
 
-/* { miasto: [x, y, indeks województwa] } dla miast, które da się znaleźć w Polsce */
+/* { miasto: [x, y, indeks województwa, lat, lon] } dla miast, które da się znaleźć w Polsce */
 export async function cityGeo(cities, placesPath, mapPath) {
   const places = JSON.parse(await readFile(placesPath, 'utf8'));
   const map = JSON.parse(await readFile(mapPath, 'utf8'));
@@ -26,7 +26,8 @@ export async function cityGeo(cities, placesPath, mapPath) {
     const y = +((-(p[0] - lat0) - miny) * s + pad).toFixed(1);
     // wyspy i zatoki: liczy się dowolny pierścień zewnętrzny regionu
     const region = map.regions.findIndex(r => r.rings.some(ring => inRing(x, y, ring)));
-    if (region >= 0) out[city] = [x, y, region];
+    // [x, y] — punkt na mapie SVG, region — województwo, [lat, lon] — prawdziwe współrzędne (mapa z przybliżaniem w aplikacji)
+    if (region >= 0) out[city] = [x, y, region, p[0], p[1]];
   }
   return out;
 }

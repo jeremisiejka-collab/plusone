@@ -2749,6 +2749,8 @@ $('#view').addEventListener('click', ()=>{ if(!AC) beep(1,.001,'sine',.0001); },
 matchMedia('(min-width:761px)').addEventListener('change', e=>{
   if(e.matches && !DEMO && S.screen==='start') go('home');
 });
+/* ?register — link „Zarejestruj się” z aplikacji otwiera od razu zakładanie konta */
+if(/[?&]register\b/.test(location.search)){ ACC.authMode='register'; S.prev='home'; S.screen='auth'; }
 render();
 loadLive();
 loadAccount();

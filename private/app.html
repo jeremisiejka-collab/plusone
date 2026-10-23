@@ -118,6 +118,23 @@ html.standalone #view [style*="top:78px"]{top:38px !important}
 html.standalone #view [style*="top:62px"]{top:22px !important}
 html.standalone #view [style*="top:52px"]{top:12px !important}
 
+/* ---- mapa miast (Leaflet): bąbelki z liczbą wydarzeń jak w mapie paczkomatów ---- */
+#citymap{height:min(54vh,460px);margin:0 20px;border-radius:24px;overflow:hidden;border:1px solid var(--line);background:var(--surface-2);position:relative;z-index:1}
+#citymap .leaflet-control-attribution{font:400 9px/1.4 var(--d);background:rgba(var(--bg-rgb),.6);color:var(--t3)}
+#citymap .leaflet-control-attribution a{color:var(--t2)}
+#citymap .leaflet-control-zoom{border:0;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#citymap .leaflet-control-zoom a{background:var(--surface);color:var(--t1);border-color:var(--line);width:36px;height:36px;line-height:36px}
+.cbub{display:flex;align-items:center;justify-content:center;min-width:34px;height:34px;padding:0 9px;border-radius:17px;background:var(--pink);color:#000;
+  font:700 13px/1 var(--d);box-shadow:0 0 0 4px rgba(255,0,89,.25),0 8px 20px rgba(0,0,0,.4);transform:translate(-50%,-50%);white-space:nowrap;transition:transform .15s}
+.cbub.cl{background:#fff;color:#000;box-shadow:0 0 0 6px rgba(255,255,255,.22),0 8px 20px rgba(0,0,0,.45);height:40px;min-width:40px;border-radius:20px;font-size:14px}
+.cbub i{font-style:normal;font-weight:600;margin-left:6px;opacity:.75}
+.cbub:active{transform:translate(-50%,-50%) scale(.92)}
+.csearch{height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)}
+.ccity{width:100%;display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);text-align:left;color:var(--t1)}
+.morebtn{width:100%;margin-top:16px;height:54px;border-radius:17px;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--pink-dim);border:1px solid var(--pink-line);color:var(--t1);font:600 15px/1 var(--d)}
+.morebtn svg{color:var(--pink)}
+
 /* status bar */
 #status{position:absolute;top:0;left:0;right:0;height:52px;z-index:60;display:flex;align-items:center;
   justify-content:space-between;padding:0 26px;pointer-events:none}
@@ -278,7 +295,7 @@ html.standalone #view [style*="top:52px"]{top:12px !important}
 #sheetwrap{position:absolute;inset:0;z-index:150;display:none}
 #sheetwrap.on{display:block}
 #scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px)}
-#sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:26px 26px 0 0;
+#sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);color:var(--t1);border-radius:26px 26px 0 0;
   border-top:1px solid var(--line-2);padding:10px 20px 30px;max-height:82%;overflow-y:auto;
   transition:transform .28s cubic-bezier(.2,.8,.3,1)}
 .grab{width:38px;height:4px;border-radius:3px;background:rgba(var(--fg),.2);margin:0 auto 16px}
@@ -604,7 +621,7 @@ function toast(msg, dark=false, ms=2200){
 
 const ORDER = ['start','login','blik','home','list','invite','event','venue','select','checkout','success',
   'tickets','ticket','release','transfer','transferDone','wallet','topup','nfc','scanpay','bar','scanner','wrapped',
-  'auth','profile','admin','map'];
+  'auth','profile','admin','map','cities'];
 function go(s){
   if(s===S.screen) return;
   S.dir = ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
@@ -2844,7 +2861,7 @@ const SCREENS = {
   select:scSelect, checkout:scCheckout, success:scSuccess, tickets:scTickets, ticket:scTicket,
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, scanner:scScanner, wrapped:scWrapped, scanpay:scScanpay,
-  start:scStart, auth:scAuth, profile:scProfile, admin:scAdmin, map:scMap
+  start:scStart, auth:scAuth, profile:scProfile, admin:scAdmin, map:scMap, cities:()=>scCities()
 };
 
 /* =========================================================
@@ -2860,10 +2877,10 @@ const NAV = [
   {k:'profile',ic:'user',   l:'KONTO'}
 ];
 /* środkowy przycisk: na ekranach z wydarzeniami logo +1 (strona główna), gdzie indziej PAY */
-const FAB_HOME = ['home','list','map','profile'];
+const FAB_HOME = ['home','list','map','cities','profile'];
 /* publicznie PAY tylko w dniu wydarzenia, na które masz bilet (na Biletach i w Portfelu) */
 const payDay = () => ['tickets','wallet'].includes(S.screen) && [...MINE.going].some(id => EVENTS.find(e=>e.id===id)?.day===localDay());
-const NAV_ON = ['home','list','map','tickets','ticket','wallet','bar','profile'];
+const NAV_ON = ['home','list','map','cities','tickets','ticket','wallet','bar','profile'];
 const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000">
   <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
   <rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>`;
@@ -2982,7 +2999,7 @@ function act(a){
       if(S.screen==='home'){ if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo({top:0,behavior:'smooth'}); $('#view').scrollTo({top:0,behavior:'smooth'}); S.dir=null; render(); } else { S.prev='home'; go('home'); } break;
     case 'mapWhen': MAP.when=p1; haptic(5); sfxTap(); S.dir=null; render(); break;
     case 'mapPin': MAP.pinned=a.slice(7); S.dir=null; render(); setTimeout(()=>{ const t=$('#view'); t && t.scrollTo({top:520,behavior:'smooth'}); },60); break;
-    case 'mapGo': S.city=a.slice(6); try{localStorage.setItem('city',S.city)}catch(e){}
+    case 'mapGo': closeSheet(); S.city=a.slice(6); try{localStorage.setItem('city',S.city)}catch(e){}
       S.cat='Wszystko'; S.query=''; S.price='all'; S.limit=40; S.when = MAP.when==='all' ? 'all' : MAP.when; S.prev='map'; go('list'); break;
     case 'big': S.big=!S.big; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'bigList': S.big=true; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40; go('list'); break;
@@ -3013,6 +3030,10 @@ function act(a){
     case 'city': S.city = a.slice(5); S.cat='Wszystko'; S.limit=40; try{localStorage.setItem('city',S.city)}catch(e){}
       closeSheet(); S.dir=null; render(); break;
     case 'more': S.limit += 60; S.dir=null; render(); break;
+    case 'moreCities': closeSheet(); setTimeout(()=>go('cities'), 180); break;
+    case 'cityCard': cityCard(a.slice(9)); break;
+    case 'cityPick': S.city=a.slice(9); S.cat='Wszystko'; S.limit=40; try{localStorage.setItem('city',S.city)}catch(e){}
+      closeSheet(); toast('Miasto: '+esc(S.city), true, 1600); S.prev='home'; go('home'); break;
     case 'reload': LIVE.state='loading'; render(); loadLive(); break;
     case 'clearQ': S.query=''; render(); break;
     case 'resetFilters': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.big=false; render(); break;
@@ -3314,15 +3335,106 @@ function splitSheet(){
     </div>
     <button class="btn p" data-act="sendSplit">Poproś o 34 PLUSY</button></div>`);
 }
+/* 10 największych miast Polski (liczba mieszkańców), z liczbą wydarzeń */
+const CITY_TOP = ['Warszawa','Kraków','Wrocław','Łódź','Poznań','Gdańsk','Szczecin','Bydgoszcz','Lublin','Białystok'];
+const cityRow = (c, n) => `<button data-act="city:${esc(c)}" class="ccity">
+  <span style="flex:1;font:500 16px/1.2 var(--d);${c===S.city?'color:'+PINK:''}">${esc(c)}</span>
+  <span class="mono">${n?pl(n)+' wydarzeń':'brak wydarzeń'}</span></button>`;
 function citySheet(){
-  const list = Object.entries(LIVE.cities).slice(0,14);
-  sheet(`<div class="col" style="gap:14px"><span class="h3">Miasto</span>
-    <div class="sc" style="max-height:56vh;overflow-y:auto">
-    ${list.length ? list.map(([c,n])=>
-      `<button data-act="city:${esc(c)}" class="row" style="justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);width:100%">
-        <span style="font:500 15px/1 var(--d);${c===S.city?'color:'+PINK:''}">${esc(c)}</span>
-        <span class="mono">${n} wydarzeń</span></button>`).join('') : '<span class="mono">Ładuję listę miast…</span>'}</div></div>`);
+  const top = [...(CITY_TOP.includes(S.city) ? [] : [S.city]), ...CITY_TOP];
+  sheet(`<div class="col" style="gap:6px"><span class="h3">Miasto</span>
+    <div>${LIVE.state==='ok' ? top.map(c=>cityRow(c, LIVE.cities[c]||0)).join('') : '<span class="mono">Ładuję listę miast…</span>'}</div>
+    <button class="morebtn" data-act="moreCities">${ic('map',19)} Pokaż więcej miast</button></div>`);
 }
+
+/* ---- MIASTA: mapa Polski z przybliżaniem, wyszukiwarka i lista wszystkich miast ---- */
+const CMAP = { map:null, cluster:null, view:null, lib:null };
+const allCities = () => Object.entries(LIVE.cities).map(([c,n])=>({c, n, g:(LIVE.geo||{})[c]})).sort((a,b)=>b.n-a.n);
+function loadLeaflet(){
+  if(CMAP.lib) return CMAP.lib;
+  const css = h => { const l=document.createElement('link'); l.rel='stylesheet'; l.href=h; document.head.appendChild(l); };
+  const js = h => new Promise((ok,no)=>{ const t=document.createElement('script'); t.src=h; t.onload=ok; t.onerror=no; document.head.appendChild(t); });
+  // Leaflet 1.9.4 + markercluster 1.5.3 z naszego serwera (public/vendor/leaflet)
+  css('/vendor/leaflet/leaflet.css'); css('/vendor/leaflet/MarkerCluster.css');
+  CMAP.lib = js('/vendor/leaflet/leaflet.js').then(()=>js('/vendor/leaflet/leaflet.markercluster.js'));
+  CMAP.lib.catch(()=>{ CMAP.lib=null; });
+  return CMAP.lib;
+}
+const scCities = () => {
+  const list = LIVE.state==='ok' ? allCities() : [];
+  return `
+<div class="pg" style="padding:64px 0 112px">
+  <div class="pad row" style="gap:12px;padding-bottom:14px">
+    <button class="back" data-act="back" aria-label="Wróć">${ic('chevL',18)}</button>
+    <div class="col" style="gap:3px"><div class="h2">Miasta</div>
+      <span class="mono">${list.length?`${list.length} miast · ${pl(list.reduce((s,x)=>s+x.n,0))} wydarzeń`:'Ładuję…'}</span></div>
+  </div>
+  <div class="pad" style="padding-bottom:14px"><div class="csearch">
+    <span style="color:var(--t2);display:flex">${ic('search',17)}</span>
+    <input id="cq" placeholder="Szukaj miasta" autocomplete="off" aria-label="Szukaj miasta" style="flex:1;font:400 16px/1 var(--d);color:var(--t1)">
+  </div></div>
+  <div id="citymap"><div class="mono" style="position:absolute;inset:0;display:grid;place-items:center">Ładuję mapę…</div></div>
+  <div class="pad mono" style="padding-top:10px;line-height:1.5">Przybliż mapę palcami. Stuknij liczbę, żeby zobaczyć miasto.</div>
+  <div class="pad" id="clist" style="padding-top:14px">
+    ${list.map(x=>`<button data-act="cityCard:${esc(x.c)}" class="ccity" data-name="${esc(fold(x.c))}">
+      <span style="flex:1;font:500 16px/1.2 var(--d);${x.c===S.city?'color:'+PINK:''}">${esc(x.c)}</span>
+      <span class="mono" style="color:var(--t1)">${pl(x.n)}</span><span style="color:var(--t3);display:flex">${ic('chevR',16)}</span></button>`).join('')}
+  </div>
+</div>`;
+};
+
+/* menu miasta po stuknięciu w mapę albo listę */
+function cityCard(c){
+  const n = LIVE.cities[c]||0;
+  const next = collapse(EVENTS.filter(e=>e.real && e.city===c && e.day>=localDay() && !ACC.hidden.has(e.id))).slice(0,3);
+  sheet(`<div class="col" style="gap:12px">
+    <div class="row" style="justify-content:space-between;align-items:baseline"><span class="h3">${esc(c)}</span>
+      <span class="mono" style="color:${PINK}">${pl(n)} wydarzeń</span></div>
+    <div>${next.map(listRow).join('')}</div>
+    <button class="btn p" data-act="cityPick:${esc(c)}" style="height:52px;font:600 15px/1 var(--d)">Wybierz ${esc(c)}</button>
+    <button class="btn g" data-act="mapGo:${esc(c)}" style="height:48px;font:500 14px/1 var(--d)">Wszystkie wydarzenia →</button></div>`);
+}
+
+function attachCities(){
+  const box = $('#citymap'); if(!box) return;
+  // wyszukiwarka: filtr listy i przelot mapy do miasta
+  const q = $('#cq');
+  if(q) q.oninput = () => {
+    const v = fold(q.value.trim());
+    $$('#clist .ccity').forEach(b=>b.style.display = !v || b.dataset.name.includes(v) ? '' : 'none');
+    const hit = v && allCities().find(x=>x.g && fold(x.c).startsWith(v));
+    if(hit && CMAP.map) CMAP.map.flyTo([hit.g[3], hit.g[4]], 11, {duration:.8});
+  };
+  if(LIVE.state!=='ok'){ return; }
+  loadLeaflet().then(()=>{
+    if(!box.isConnected) return;
+    if(CMAP.map){ try{ CMAP.view = {c:CMAP.map.getCenter(), z:CMAP.map.getZoom()}; CMAP.map.remove(); }catch(e){} }
+    box.innerHTML = '';
+    const dark = document.documentElement.dataset.theme !== 'light';
+    const map = L.map(box, {zoomControl:true, attributionControl:true, minZoom:5, maxZoom:14,
+      maxBounds:[[47.5,11.5],[56.2,26.5]], maxBoundsViscosity:.8, zoomSnap:.5});
+    L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark?'dark_all':'light_all'}/{z}/{x}/{y}{r}.png`, {subdomains:'abcd', maxZoom:19,
+      attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
+    // liczby się sumują: z daleka województwo, po przybliżeniu pojedyncze miasta
+    const cluster = L.markerClusterGroup({showCoverageOnHover:false, maxClusterRadius:56, spiderfyOnMaxZoom:false,
+      iconCreateFunction: cl => { const n = cl.getAllChildMarkers().reduce((s,m)=>s+m.options.count,0);
+        return L.divIcon({className:'', html:`<div class="cbub cl">${pl(n)}</div>`, iconSize:[0,0]}); }});
+    for(const x of allCities()) if(x.g && x.g[3]!=null){
+      const m = L.marker([x.g[3], x.g[4]], {count:x.n, title:x.c, icon:L.divIcon({className:'', iconSize:[0,0],
+        html:`<div class="cbub">${pl(x.n)}</div>`})});
+      m.on('click', ()=>{ haptic(8); cityCard(x.c); });
+      cluster.addLayer(m);
+    }
+    map.addLayer(cluster);
+    if(CMAP.view) map.setView(CMAP.view.c, CMAP.view.z); else map.fitBounds([[49.0,14.1],[54.85,24.15]]);
+    // z bliska pokazuj też nazwę miasta obok liczby
+    const names = () => { const z = map.getZoom(); cluster.eachLayer(m=>{ const el=m.getElement && m.getElement(); const b=el&&el.querySelector('.cbub');
+      if(b) b.innerHTML = pl(m.options.count) + (z>=9 ? `<i>${esc(m.options.title)}</i>` : ''); }); };
+    map.on('zoomend moveend', names); cluster.on('animationend', names); setTimeout(names, 50);
+    CMAP.map = map; CMAP.cluster = cluster;
+  }).catch(()=>{ box.innerHTML = '<div class="mono" style="position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center">Nie udało się wczytać mapy. Sprawdź połączenie.</div>'; });
+}
+
 function notifSheet(){
   sheet(`<div class="col" style="gap:12px"><span class="h3">Powiadomienia</span>
     ${[['Kaja wysłała Ci bilet na TAAKI SET','2 min temu'],
@@ -3451,6 +3563,7 @@ function attachGestures(){
   }
 
   if(S.screen==='map') attachMap();
+  if(S.screen==='cities') attachCities();
 
   // Enter w polach formularzy
   $$('[data-enter]').forEach(i=>{ i.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); act(i.dataset.enter); } }; });

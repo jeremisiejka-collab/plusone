@@ -265,10 +265,10 @@ const escHtml = s => String(s).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt
 const gatePage = ({ mode, user, email, token, note }) => {
   const field = (id, label, type, ac, extra = '') => `<label>${label}<input id="${id}" type="${type}" autocomplete="${ac}" ${extra}${extra.includes('data-optional') ? '' : ' required'}></label>`;
   const forms = {
-    login: `<p>Zaloguj się kontem, które dostało zaproszenie do testów.</p>
+    login: `<p>Zaloguj się, żeby zobaczyć, co dziś się dzieje.</p>
       <form id="f" data-mode="login">${field('e', 'E-MAIL', 'email', 'email', 'autocapitalize="off"')}${field('p', 'HASŁO', 'password', 'current-password')}
       <div class="err" id="m" role="alert">${note ? escHtml(note) : ''}</div><button id="b">Wejdź do aplikacji</button></form>`,
-    denied: `<p>Konto <b>${escHtml(user?.email || '')}</b> nie ma jeszcze dostępu. Poproś administratora o zaproszenie do testów.</p>
+    denied: `<p>Konto <b>${escHtml(user?.email || '')}</b> czeka na aktywację. Damy znać, gdy będzie gotowe.</p>
       <button id="out">Zaloguj się innym kontem</button>`,
     invite: `<p>Zaproszenie dla <b>${escHtml(email || '')}</b>. Ustaw hasło — to wszystko.</p>
       <form id="f" data-mode="invite" data-token="${escHtml(token || '')}">${field('n', 'IMIĘ (OPCJONALNIE)', 'text', 'given-name', 'maxlength="60" data-optional')}${field('p', 'HASŁO (MIN. 8 ZNAKÓW)', 'password', 'new-password', 'minlength="8"')}
@@ -282,24 +282,27 @@ const gatePage = ({ mode, user, email, token, note }) => {
 <meta name="robots" content="noindex,nofollow"><link rel="manifest" href="/app.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="+1"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="icon" href="/favicon.svg">
-<title>+1 — aplikacja</title>
+<title>+1</title>
 <style>
 *{box-sizing:border-box;margin:0}body{min-height:100dvh;display:grid;place-items:center;background:#000;color:#fff;
 font:16px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;padding:max(24px,env(safe-area-inset-top)) 22px max(24px,env(safe-area-inset-bottom))}
 main{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px}form{display:flex;flex-direction:column;gap:12px}
-svg{width:72px;height:72px;border-radius:18px;align-self:center;margin-bottom:8px}
-h1{font-size:28px;line-height:1.1;letter-spacing:-.02em;text-align:center}p{color:rgba(255,255,255,.7);text-align:center;font-size:15px}
+svg{width:84px;height:84px;border-radius:22px;align-self:center;margin-bottom:6px}
+h1{font-size:40px;line-height:1.02;letter-spacing:-.035em;text-align:center;font-weight:700}h1 span{color:#FF0059}
+p{color:rgba(255,255,255,.66);text-align:center;font-size:15px}
+.reg{font-size:15px;color:rgba(255,255,255,.66);margin-top:4px}.reg a{color:#FF0059;font-weight:700;text-decoration:none;font-size:15px}
+a.site{color:rgba(255,255,255,.4);font-size:13px;text-decoration:none;letter-spacing:.04em}
 label{display:flex;flex-direction:column;gap:6px;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.7)}
 input{height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;padding:0 16px;font:inherit;outline:0}
 input:focus{border-color:#FF0059}button{height:54px;border:0;border-radius:16px;background:#FF0059;color:#000;font-weight:700;font-size:16px;cursor:pointer}
 button:disabled{opacity:.6}.err{color:#ff7aa5;font-size:14px;text-align:center;min-height:20px}a{color:rgba(255,255,255,.6);text-align:center;font-size:14px}
 </style></head><body><main>
 <svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#000"/><g fill="#FF0059" transform="translate(6.45 8.3)"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
-<h1>${mode === 'invite' ? 'Witaj w +1' : mode === 'change' ? 'Nowe hasło' : 'Aplikacja +1<br>dla testerów'}</h1>
+<h1>${mode === 'invite' ? 'Witaj w +1' : mode === 'change' ? 'Nowe hasło' : mode === 'denied' ? 'Już prawie' : 'Gdzie dziś<br><span>idziemy?</span>'}</h1>
 ${forms[mode]}
-<p id="ios" style="display:none;font-size:13px">Na iPhonie: w Safari stuknij <b>Udostępnij</b> → <b>Do ekranu początkowego</b>. Ikona +1 otworzy aplikację.</p>
-${mode === 'login' ? '<p style="font-size:13px">Nie masz konta? Załóż je na stronie, a potem poproś o dostęp do testów.</p>' : ''}
-<a href="/?web" target="_blank" rel="noopener">Przejdź do strony plusoneapp.pl</a>
+<p id="ios" style="display:none;font-size:13px">Dodaj +1 do ekranu: w Safari stuknij <b>Udostępnij</b> → <b>Do ekranu początkowego</b>.</p>
+${mode === 'login' ? '<p class="reg">Nie masz konta? <a href="/?web&amp;register" target="_blank" rel="noopener">Zarejestruj się</a></p>' : ''}
+<a class="site" href="/?web" target="_blank" rel="noopener">plusoneapp.pl</a>
 </main><script>
 const $=id=>document.getElementById(id),f=$('f'),o=$('out');
 if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone) $('ios').style.display='block';
@@ -420,7 +423,7 @@ async function adminMailTest(req, env, user) {
 }
 
 const inviteMail = (link, by, perms) => {
-  const what = [perms.preview && 'aplikacji +1 (testy)', perms.curate && 'moderowania wydarzeń', perms.admin && 'panelu administratora'].filter(Boolean).join(', ');
+  const what = [perms.preview && 'aplikacji +1', perms.curate && 'moderowania wydarzeń', perms.admin && 'panelu administratora'].filter(Boolean).join(', ');
   const text = `Cześć!\n\n${by} zaprasza Cię do +1 — dostęp do: ${what}.\n\nOtwórz link, ustaw hasło i gotowe (link ważny ${INVITE_DAYS} dni):\n${link}\n\nNa iPhonie otwórz go w Safari, a potem Udostępnij → Do ekranu początkowego.\n\n+1 · plusoneapp.pl`;
   const html = `<div style="font:16px/1.6 -apple-system,Segoe UI,sans-serif;max-width:480px;margin:auto;padding:24px;color:#111">
 <div style="width:56px;height:56px;border-radius:14px;background:#000;color:#FF0059;font:700 28px/56px sans-serif;text-align:center">+1</div>
