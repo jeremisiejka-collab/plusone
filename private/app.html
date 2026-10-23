@@ -975,8 +975,12 @@ async function apiCall(path, method='GET', data){
 }
 
 async function loadAccount(){
+  const acc = Promise.all([apiCall('/api/me'), apiCall('/api/state')]);
+  // słaby zasięg: po 5 s pokazujemy aplikację (i bilety offline), konto dociąga się w tle
+  const slow = await Promise.race([acc.then(()=>false,()=>false), new Promise(r=>setTimeout(r,5000,true))]);
+  if(slow && !ACC.loaded){ ACC.loaded=true; if(S.screen==='loading') S.screen='home'; S.dir=null; render(); }
   try{
-    const [me, st] = await Promise.all([apiCall('/api/me'), apiCall('/api/state')]);
+    const [me, st] = await acc;
     ACC.hidden = new Set(st.hidden); ACC.featured = st.featured;
     if(me.user){ ACC.user = me.user; await mergeMine(me); if(S.screen==='start'){ S.screen='home'; } }
   }catch(e){ ACC.api = false; }
@@ -1419,7 +1423,7 @@ const scHome = () => {
   <div class="pad col app-welcome">
     <span class="eyebrow pink">Twój następny dobry wieczór</span>
     <h1 class="h1">Gdzie dziś<br>idziemy?</h1>
-    <button class="btn g" data-act="go:list">Odkryj wydarzenia ${ic('chevR',18)}</button>
+    <button class="btn g" data-act="upcomingList">Odkryj wydarzenia ${ic('chevR',18)}</button>
   </div>
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
@@ -1442,7 +1446,7 @@ const scHome = () => {
   </div>` : ''; })()}
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
     <span class="h3">Już niedługo</span>
-    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="go:list">CAŁA LISTA →</span>
+    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="upcomingList">CAŁA LISTA →</span>
   </div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
     ${[...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,6).map(bigCard).join('')}
@@ -1459,7 +1463,7 @@ const scHome = () => {
   </div>` : ''; })()}
   ${f.length>6?`<div class="pad h3" style="padding-bottom:8px">Dalej w kalendarzu</div>
   <div class="pad calendar-grid" style="padding-bottom:8px">${f.slice(6,14).map(listRow).join('')}</div>
-  <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
+  <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="upcomingList" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
 
   ${DEMO?`
   <div style="margin:0 20px 18px;padding:18px;border-radius:20px;position:relative;overflow:hidden;
@@ -2088,7 +2092,7 @@ const scMyTickets = () => {
       <span class="body" style="max-width:340px">${tab==='going'
         ? 'Kupiłeś bilet? Na stronie wydarzenia stuknij „Mam bilet” — będziesz mieć je tu z odliczaniem, dojazdem i kalendarzem.'
         : 'Stuknij „Zapisz” przy wydarzeniu, które Cię ciekawi. Wrócisz do niego jednym kliknięciem.'}</span>
-      <button class="btn p" data-act="go:list" style="height:48px;max-width:320px;font:600 15px/1 var(--d);margin-top:6px">Przeglądaj wydarzenia</button>
+      <button class="btn p" data-act="upcomingList" style="height:48px;max-width:320px;font:600 15px/1 var(--d);margin-top:6px">Przeglądaj wydarzenia</button>
     </div>` : `
     ${next ? `
     <div data-act="ev:${next.id}" class="ds next-ticket" style="position:relative;border-radius:22px;overflow:hidden;height:220px;margin-bottom:8px;cursor:pointer;background:var(--surface-2)">
@@ -2971,6 +2975,7 @@ function act(a){
     case 'mapGo': closeSheet(); S.city=a.slice(6); try{localStorage.setItem('city',S.city)}catch(e){}
       S.cat='Wszystko'; S.query=''; S.price='all'; S.limit=40; S.when = MAP.when==='all' ? 'all' : MAP.when; S.prev='map'; go('list'); break;
     case 'big': S.big=!S.big; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
+    case 'upcomingList': S.big=false; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.sort='date'; S.limit=40; go('list'); break;
     case 'bigList': S.big=true; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40; go('list'); break;
     case 'descToggle': S.descOpen = S.descOpen===p1 ? null : p1; S.dir=null; render(); break;
     case 'walletNotify': S.walletNotify=true; try{localStorage.setItem('walletNotify','1')}catch(e){}

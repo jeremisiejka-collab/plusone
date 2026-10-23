@@ -75,7 +75,7 @@ export function clean(s, max) {
     .replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').replace(/&amp;/g, '&')
     .replace(/&#(?:x([\da-f]+)|(\d+));/gi, (_, hex, decimal) => {
       const cp = parseInt(hex || decimal, hex ? 16 : 10);
-      return cp <= 0x10FFFF && !(cp >= 0xD800 && cp <= 0xDFFF) ? String.fromCodePoint(cp) : '\uFFFD';
+      return cp === 0 ? '' : cp <= 0x10FFFF && !(cp >= 0xD800 && cp <= 0xDFFF) ? String.fromCodePoint(cp) : '\uFFFD';
     }).replace(/\s+/g, ' ').trim();
   t = stripEmoji(t);
   if (max && t.length > max) t = t.slice(0, max).replace(/\s\S*$/, '') + '…';
@@ -86,10 +86,10 @@ export function clean(s, max) {
 export function cleanEventText(event) {
   const result = { ...event };
   for (const key of ['title', 'city', 'venue', 'address', 'description']) {
-    if (typeof result[key] === 'string') result[key] = clean(result[key]);
+    if (typeof result[key] === 'string') result[key] = stripEmoji(result[key]);
   }
   for (const key of ['tags', 'artists']) {
-    if (Array.isArray(result[key])) result[key] = [...new Set(result[key].map(s => clean(s)).filter(Boolean))];
+    if (Array.isArray(result[key])) result[key] = [...new Set(result[key].map(s => stripEmoji(s)).filter(Boolean))];
   }
   return result;
 }

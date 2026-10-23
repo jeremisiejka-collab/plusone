@@ -1399,7 +1399,7 @@ const scHome = () => {
     </div>
   </div>
   <div class="pad home-browse">
-    <button class="btn g" data-act="go:list">${ic('search',18)} Znajdź wydarzenie</button>
+    <button class="btn g" data-act="upcomingList">${ic('search',18)} Znajdź wydarzenie</button>
   </div>
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
@@ -1426,7 +1426,7 @@ const scHome = () => {
   ${later.length?`<section class="reveal">
     <h2 class="shelf-title" style="padding-bottom:4px">Dalej w kalendarzu</h2>
     <div class="calendar-grid">${byDay(later.slice(0,12), listRow)}</div>
-    <div style="padding:18px 0 26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie wydarzenia · ${f.length}</button></div>
+    <div style="padding:18px 0 26px"><button class="btn g" data-act="upcomingList" style="height:46px;font:500 13px/1 var(--d)">Wszystkie wydarzenia · ${f.length}</button></div>
   </section>`:'<div style="height:6px"></div>'}`}
 
   ${DEMO?`
@@ -1679,7 +1679,7 @@ const scMyTickets = () => {
       <span class="body" style="max-width:340px">${tab==='going'
         ? 'Kupiłeś bilet? Na stronie wydarzenia stuknij „Mam bilet” — będziesz mieć je tu z odliczaniem, dojazdem i kalendarzem.'
         : 'Stuknij „Zapisz” przy wydarzeniu, które Cię ciekawi. Wrócisz do niego jednym kliknięciem.'}</span>
-      <button class="btn p" data-act="go:list" style="height:48px;max-width:320px;font:600 15px/1 var(--d);margin-top:6px">Przeglądaj wydarzenia</button>
+      <button class="btn p" data-act="upcomingList" style="height:48px;max-width:320px;font:600 15px/1 var(--d);margin-top:6px">Przeglądaj wydarzenia</button>
     </div>` : `
     ${next ? `
     <div data-act="ev:${next.id}" class="ds next-ticket" style="position:relative;border-radius:22px;overflow:hidden;height:220px;margin-bottom:8px;cursor:pointer;background:var(--surface-2)">
