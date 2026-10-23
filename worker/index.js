@@ -270,7 +270,8 @@ ${user
        <button id="b">Wejdź do aplikacji</button>
      </form>`}
 <p id="ios" style="display:none;font-size:13px">Na iPhonie: w Safari stuknij <b>Udostępnij</b> → <b>Do ekranu początkowego</b>. Ikona +1 otworzy aplikację.</p>
-<a href="/">Przejdź do strony plusoneapp.pl</a>
+<p style="font-size:13px">Nie masz konta? Załóż je na stronie, a potem poproś o dostęp do testów.</p>
+<a href="/?web" target="_blank" rel="noopener">Przejdź do strony plusoneapp.pl</a>
 </main><script>
 const f=document.getElementById('f'),o=document.getElementById('out');
 if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone) document.getElementById('ios').style.display='block';
@@ -284,7 +285,7 @@ if(o) o.onclick=async()=>{await fetch('/api/auth/logout',{method:'POST',credenti
 
 async function preview(req, env) {
   const headers = { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex, nofollow', 'Vary': 'Cookie' };
-  if (!env.DB) return new Response('Podgląd jest chwilowo niedostępny. <a href="/">Wróć do witryny</a>', { status: 503, headers });
+  if (!env.DB) return new Response('Podgląd jest chwilowo niedostępny. <a href="/?web" target="_blank">Wróć do witryny</a>', { status: 503, headers });
   const user = await currentUser(req, env);
   if (!await canPreview(env, user)) return new Response(gatePage(user), { status: user ? 403 : 401, headers });
   return new Response(previewHtml, { headers });

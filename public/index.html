@@ -8,7 +8,8 @@
 /* motyw ustawiany przed narysowaniem strony (bez mignięcia): wybór użytkownika albo ustawienie systemu */
 (function(){
   /* uruchomione z ikony na ekranie telefonu = aplikacja, nie strona WWW */
-  if(matchMedia('(display-mode: standalone)').matches || navigator.standalone){ location.replace('/app'); return; }
+  // ?web = świadome przejście z aplikacji na stronę (bez tego wracałoby do /app w kółko)
+  if((matchMedia('(display-mode: standalone)').matches || navigator.standalone) && !/[?&]web\b/.test(location.search)){ location.replace('/app'); return; }
   var t=null; try{t=localStorage.getItem('theme')}catch(e){}
   if(t!=='light'&&t!=='dark') t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
   document.documentElement.dataset.theme=t;
