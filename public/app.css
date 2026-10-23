@@ -117,3 +117,25 @@
 @media (prefers-reduced-motion: reduce) {
   .web-print-solid, .web-print-outline { animation: none; }
 }
+/* Nawigacja aplikacji: konto u góry, cztery zakładki wokół +1. */
+#app-topbar { position: absolute; top: 56px; left: 20px; right: 20px; height: 44px; z-index: 45; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--t1); background: var(--bg); }
+#app-topbar[hidden] { display: none; }
+.app-context, .app-top-actions { display: flex; align-items: center; gap: 10px; }
+.app-context > button { font-size: 14px; font-weight: 500; }
+.app-context .eyebrow { font-size: 9px; }
+.app-top-actions > button { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 14px; border: 1px solid var(--line); }
+.app-top-actions .app-account { background: var(--surface-2); }
+#shell.has-app-topbar #view > .pg { padding-top: 116px !important; }
+#nav button { letter-spacing: 0; font-size: 9px; }
+.app-welcome { gap: 14px; margin-bottom: 28px; }
+.app-welcome .btn { display: flex; justify-content: space-between; padding: 0 16px; margin-top: 6px; }
+.social-card { margin: 0 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.person-card { display: flex; align-items: center; gap: 10px; padding: 16px 12px; }
+.person-avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--pink-dim); color: var(--pink); font-weight: 600; flex: none; }
+.person-card strong { font-size: 14px; }
+.person-card .mono { font-size: 10px; }
+.person-card .chip { padding: 10px; font-size: 11px; }
+@media (max-width: 760px) {
+  #app-topbar { top: max(12px, env(safe-area-inset-top)); }
+  #shell.has-app-topbar #view > .pg { padding-top: calc(76px + env(safe-area-inset-top)) !important; }
+}

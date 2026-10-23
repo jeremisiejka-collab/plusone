@@ -7,7 +7,8 @@ const PREM = { follows:null, notif:null, unread:0, crew:{}, plan:{}, wrapped:nul
 
 /* ---------- start: po zalogowaniu ---------- */
 async function premiumAfterLogin(){
-  if(!ACC.user) return;
+  // obsługa biletów ma w aplikacji tylko swój pulpit — bez funkcji dla widzów
+  if(!ACC.user || (typeof appStaffMode==='function' && appStaffMode())) return;
   loadFollows(); loadNotif();
   const q = new URLSearchParams(location.search);
   if(q.get('join')) joinSheet(q.get('join'));
@@ -48,7 +49,18 @@ function followsSheet(){
       <span style="flex:1;font:500 15px/1.3 var(--d)" ${k==='event'?`data-act="ev:${esc(x.value)}"`:''}>${esc(label(x))}</span>
       <button class="chip" data-act="unfollow:${k}:${esc(x.value)}" style="padding:6px 10px;font-size:12px">Usuń</button></div>`).join('')}`:''; }).join('')}
     ${f.length?'':'<span class="body">Nic jeszcze nie obserwujesz. Stuknij „Obserwuj” przy wydarzeniu albo przy mieście na mapie Miasta.</span>'}
-    <button class="btn g" data-act="go:cities" style="height:48px;margin-top:8px;font:500 14px/1 var(--d)">Obserwuj miasto lub okolicę →</button></div>`);
+    <button class="btn g" data-act="followCities" style="height:48px;margin-top:8px;font:500 14px/1 var(--d)">Obserwuj miasto lub okolicę →</button></div>`);
+}
+/* wybór miast do obserwowania: samo miasto albo okolica + 30 km */
+function followCitySheet(){
+  const top = typeof CITY_TOP!=='undefined' ? CITY_TOP : [];
+  const cities = [...new Set([S.city, ...top, ...Object.keys(LIVE.cities||{}).sort((a,b)=>a.localeCompare(b,'pl'))])];
+  sheet(`<div class="col" style="gap:6px"><span class="h3">Obserwuj miasto</span>
+    <span class="body" style="font-size:13px">„Miasto” — alerty z tego miasta. „+30 km” — także z okolicznych miejscowości.</span>
+    <div>${cities.map(c=>`<div class="row" style="gap:8px;padding:10px 0;border-bottom:1px solid var(--line)">
+      <span style="flex:1;font:500 15px/1.2 var(--d)">${esc(c)}</span>
+      <button class="chip ${following('city',c)?'on':''}" data-act="fcCity:${esc(c)}" style="padding:6px 10px;font-size:12px">Miasto</button>
+      <button class="chip ${following('area',c)?'on':''}" data-act="fcArea:${esc(c)}" style="padding:6px 10px;font-size:12px">+30 km</button></div>`).join('')}</div></div>`);
 }
 
 /* ---------- powiadomienia ---------- */
@@ -262,6 +274,9 @@ function premiumAct(cmd, p1, p2, a){
     case 'followArea': follow('area', a.slice(11), !following('area', a.slice(11)), 30); closeSheet(); return true;
     case 'unfollow': follow(p1, a.slice(10+p1.length), false).then(()=>followsSheet()); return true;
     case 'followsSheet': followsSheet(); return true;
+    case 'followCities': followCitySheet(); return true;
+    case 'fcCity': follow('city', a.slice(7), !following('city', a.slice(7))).then(followCitySheet); return true;
+    case 'fcArea': follow('area', a.slice(7), !following('area', a.slice(7)), 30).then(followCitySheet); return true;
     case 'notifSettings': notifSettings(); return true;
     case 'prefToggle': apiCall('/api/me','PATCH',{[p1]:!ACC.user[p1]}).then(r=>{ ACC.user=r.user; notifSettings(); }).catch(e=>toast(esc(e.message),true)); return true;
     case 'crewInvite': crewInvite(a.slice(11)); return true;

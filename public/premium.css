@@ -16,3 +16,4 @@
 .wcard span:last-child:not(.mono) { font: 400 12px/1.35 var(--d); color: rgba(255,255,255,.75); }
 .wcard:first-child { grid-column: 1 / -1; min-height: 150px; }
 .wcard:first-child b { font-size: 54px; }
+.notifdot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 0 2px var(--bg); }

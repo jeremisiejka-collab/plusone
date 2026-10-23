@@ -66,6 +66,9 @@ Następny krok (opcjonalnie): pakiet APK przez Capacitor/TWA dla Androida. Natyw
 
 ## Konta i panel admina
 
+- W aplikacji `/app` obsługa biletów ma osobny pulpit: skaner pod środkowym przyciskiem +1, statystyki i historię z bieżącej sesji. Nie widzi katalogu, zakupów ani portfela. „Zobacz jako → Obsługa biletów” odtwarza ten sam układ.
+- Użytkownik aplikacji ma cztery zakładki wokół +1 (Odkryj, Wydarzenia, Bilety, Portfel), a konto w prawym górnym rogu. Miasto wybiera z listy, bez mapy. Obserwowanie profili pokazowych jest częścią prototypu i zapisuje się lokalnie dla danego konta testera; nie tworzy relacji między prawdziwymi kontami.
+- W witrynie filtry i wyszukiwanie są w zakładce **Wydarzenia**. **Odkrywaj** pokazuje niezależny przegląd, w tym **Duże wydarzenia** poniżej **Już niedługo**. Mapa witryny podąża za jasnym i ciemnym motywem.
 - API w `worker/index.js` (Cloudflare Worker, ścieżki `/api/*`), baza **D1** `plusone`, schemat w `migrations/`.
 - Rejestracja e-mail + hasło (PBKDF2), sesja w ciasteczku HttpOnly na 60 dni, limit prób logowania.
 - Role (Panel admina → Użytkownicy → Rola): **Użytkownik**, **Obsługa biletów** (`perm_scan`: skaner biletów aparatem), **Administrator** (`role = 'admin'`: panel, użytkownicy, zaproszenia, moderacja). **Główny administrator** (`owner`) jako jedyny nadaje i odbiera admina, ma „Zobacz jako” (podgląd widoku innej roli). Dostęp do aplikacji: `preview_access`.

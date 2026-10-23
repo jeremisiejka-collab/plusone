@@ -4,8 +4,13 @@
    (S, ACC, LIVE, EVENTS, sheet, toast, apiCall, ic, esc, render, go…) dopiero w chwili wywołania. */
 
 /* ---- „Zobacz jako”: główny administrator ogląda aplikację oczami innej roli (tylko widok) ---- */
-function viewAs(){ try{ return sessionStorage.getItem('viewAs') || null; }catch(e){ return null; } }
+function viewAs(){
+  if(!ACC.user?.owner) return null;
+  try{ const role = sessionStorage.getItem('viewAs'); return ['user','staff','admin'].includes(role) ? role : null; }catch(e){ return null; }
+}
+function effectiveRole(){ return viewAs() || (ACC.user?.owner || ACC.user?.role==='admin' ? 'admin' : ACC.user?.org ? 'organizer' : ACC.user?.scan ? 'staff' : 'user'); }
 function setViewAs(v){
+  if(!realOwner() || (v && !['user','staff','organizer','admin'].includes(v))) return;
   try{ v ? sessionStorage.setItem('viewAs', v) : sessionStorage.removeItem('viewAs'); }catch(e){}
   closeSheet(); toast(v ? 'Widok: '+roleName(v) : 'Wróciłeś do swojego konta', true, 1800);
   S.dir=null; S.prev='home'; S.screen='home'; render();
@@ -67,8 +72,39 @@ async function ticketSheet(eventId){
 }
 
 /* ---- SKANER BILETÓW (obsługa biletów i administratorzy) ---- */
-const SCAN = { stream:null, raf:0, last:'', lastAt:0, busy:false, result:null, count:0, detector:null };
-const canScanNow = () => viewAs() ? viewAs()!=='user' : !!(ACC.user && (ACC.user.scan || ACC.user.org || isAdmin()));
+const SCAN = { stream:null, raf:0, last:'', lastAt:0, busy:false, result:null, count:0, detector:null, history:[], cameraRequest:0 };
+const canScanNow = () => !!ACC.user && effectiveRole()!=='user';
+const staffHeader = title => `<div class="pad col" style="gap:8px;margin-bottom:24px"><span class="eyebrow pink">Obsługa biletów</span><h1 class="h2">${title}</h1></div>`;
+const staffStats = () => `<div class="staff-stats">
+  <div class="card"><span class="mono">Wpuszczeni</span><strong>${SCAN.count}</strong></div>
+  <div class="card"><span class="mono">Odrzucone</span><strong>${SCAN.history.filter(r=>['used','invalid'].includes(r.status)).length}</strong></div>
+</div>`;
+const scStaff = () => `<div class="pg staff-page" style="padding:64px 0 112px">
+  ${staffHeader('Gotowi na wejście?')}
+  <div class="pad col" style="gap:20px">
+    <button class="staff-scan" data-act="go:scan"><span>${ic('scan',54)}</span><strong>Skanuj bilety</strong><span>Skieruj aparat na kod QR</span></button>
+    ${staffStats()}
+    <p class="mono">Statystyki z bieżącej sesji skanowania.</p>
+  </div>
+</div>`;
+const scStaffStats = () => `<div class="pg staff-page" style="padding:64px 0 112px">
+  ${staffHeader('Statystyki wejścia')}
+  <div class="pad col" style="gap:18px">${staffStats()}
+    <p class="body">Bieżąca sesja na tym urządzeniu. Cofnięte wejścia nie są wliczane do wpuszczonych.</p>
+    <button class="btn g" data-act="go:staffActivity">Zobacz historię skanów</button>
+  </div>
+</div>`;
+const scStaffActivity = () => `<div class="pg staff-page" style="padding:64px 0 112px">
+  ${staffHeader('Historia skanów')}
+  <div class="pad col" style="gap:12px">
+    ${SCAN.history.length ? [...SCAN.history].reverse().map(r=>`<div class="staff-entry card">
+      <span class="staff-entry-icon ${r.status==='ok'?'ok':''}">${ic(r.status==='ok'?'check':r.status==='undone'?'undo':'cross',20)}</span>
+      <div class="col" style="gap:5px;flex:1"><strong>${esc({ok:'Wpuszczono',used:'Bilet już użyty',invalid:'Nieważny bilet',undone:'Cofnięto wejście',error:'Nie udało się sprawdzić'}[r.status]||'Sprawdzenie biletu')}</strong>
+        <span class="mono">${esc(r.name||r.email||'Kod biletu')}</span></div>
+      <time class="mono">${new Date(r.at).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})}</time>
+    </div>`).join('') : `<div class="card staff-empty">${ic('clock',32)}<h2 class="h3">Pierwszy skan przed Tobą</h2><p class="body">Tutaj pojawią się wyniki sprawdzeń z bieżącej sesji.</p></div>`}
+  </div>
+</div>`;
 const scScan = () => {
   if(!canScanNow()) return `<div class="pg pad col" style="padding-top:120px;gap:14px"><span class="h3">Skaner jest dla obsługi biletów</span>
     <span class="body">Poproś administratora o rolę „Obsługa biletów”.</span><button class="btn g" data-act="back" style="height:48px">Wróć</button></div>`;
@@ -77,7 +113,7 @@ const scScan = () => {
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad row" style="gap:12px;padding-bottom:14px">
     <button class="back" data-act="back" aria-label="Wróć">${ic('chevL',18)}</button>
-    <div class="col" style="gap:3px;flex:1"><div class="h2">Skaner biletów</div><span class="mono" id="scancount">${SCAN.count?SCAN.count+' wpuszczonych dziś':'Skieruj aparat na kod QR'}</span></div>
+    <div class="col" style="gap:3px;flex:1"><div class="h2">Skaner biletów</div><span class="mono" id="scancount">${SCAN.count?SCAN.count+' wpuszczonych w tej sesji':'Skieruj aparat na kod QR'}</span></div>
   </div>
   <div class="pad"><div class="scanbox ds">
     <video id="scanvid" playsinline muted autoplay></video>
@@ -101,31 +137,43 @@ function scanResultHtml(r){
     ${r.status==='ok'?`<button class="chip" data-act="scanUndo:${esc(r.code)}" style="margin-top:6px;background:rgba(0,0,0,.25);color:#fff;border-color:rgba(255,255,255,.4)">Cofnij</button>`:''}`;
 }
 async function scanCheck(code, undo=false){
-  if(SCAN.busy) return; SCAN.busy = true;
+  if(SCAN.busy || !canScanNow()) return; SCAN.busy = true;
   let r;
   try{ r = await apiCall('/api/scan','POST',{code, undo}); }catch(e){ r = {status:'error', message:e.message}; }
   r.code = code; SCAN.result = r; SCAN.busy = false;
+  SCAN.history.push({status:r.status, name:r.name, email:r.email, at:Date.now()});
   if(r.status==='ok'){ SCAN.count++; sfxOk(); haptic(30); } else if(r.status==='undone'){ SCAN.count=Math.max(0,SCAN.count-1); sfxTap(); } else { sfxErr(); haptic([60,60,60]); }
   const box = $('#scanres'); if(box){ box.className = 'scanres on '+r.status; box.innerHTML = scanResultHtml(r); bind(box); }
-  const c = $('#scancount'); if(c) c.textContent = SCAN.count+' wpuszczonych dziś';
+  const c = $('#scancount'); if(c) c.textContent = SCAN.count+' wpuszczonych w tej sesji';
   clearTimeout(SCAN.hide); SCAN.hide = setTimeout(()=>{ const b=$('#scanres'); if(b){ b.className='scanres'; } SCAN.result=null; }, r.status==='ok'?2600:4000);
 }
 async function startScan(){
-  const v = $('#scanvid'), msg = $('#scanmsg'); if(!v || SCAN.stream) return;
+  const v = $('#scanvid'), msg = $('#scanmsg'); if(!v || !canScanNow()) return;
+  if(SCAN.stream && v.srcObject===SCAN.stream) return;
+  stopScan();
+  const cameraRequest = SCAN.cameraRequest;
   try{
     if(!navigator.mediaDevices?.getUserMedia) throw new Error('Ta przeglądarka nie daje dostępu do aparatu.');
-    SCAN.stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}, width:{ideal:1280}}, audio:false});
-    if(!v.isConnected){ stopScan(); return; }
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}, width:{ideal:1280}}, audio:false});
+    if(cameraRequest!==SCAN.cameraRequest || !v.isConnected || S.screen!=='scan' || !canScanNow()) { stream.getTracks().forEach(t=>t.stop()); return; }
+    SCAN.stream = stream;
     v.srcObject = SCAN.stream; await v.play().catch(()=>{});
     if('BarcodeDetector' in window){ try{ SCAN.detector = new BarcodeDetector({formats:['qr_code']}); }catch(e){ SCAN.detector=null; } }
     if(!SCAN.detector) await loadLib('/vendor/qr/jsQR.js');
+    if(cameraRequest!==SCAN.cameraRequest || !v.isConnected) return;
   }catch(e){
+    if(cameraRequest!==SCAN.cameraRequest) return;
     stopScan();
-    if(msg) msg.innerHTML = `<b>Brak dostępu do aparatu</b><span>${esc(e.name==='NotAllowedError'?'Zezwól na aparat w ustawieniach przeglądarki (Safari: aA → Ustawienia witryny → Kamera).':e.message||'')}</span>`;
+    const reason = {NotAllowedError:'Zezwól na aparat w ustawieniach przeglądarki lub wpisz kod poniżej.',
+      NotFoundError:'Nie znaleziono aparatu. Możesz wpisać kod poniżej.',
+      NotReadableError:'Aparat jest zajęty. Zamknij inną aplikację korzystającą z kamery lub wpisz kod poniżej.'}[e.name]
+      || 'Nie udało się uruchomić aparatu. Możesz wpisać kod poniżej.';
+    if(msg) msg.innerHTML = `<b>Brak dostępu do aparatu</b><span>${esc(reason)}</span>`;
     return;
   }
   const c = document.createElement('canvas'), ctx = c.getContext('2d', {willReadFrequently:true});
   const tick = async () => {
+    if(cameraRequest!==SCAN.cameraRequest) return;
     if(!SCAN.stream || !v.isConnected){ stopScan(); return; }
     if(v.readyState >= 2 && !SCAN.busy && !SCAN.result){
       let code = null;
@@ -138,6 +186,7 @@ async function startScan(){
           code = r?.data || null;
         }
       }catch(e){}
+      if(cameraRequest!==SCAN.cameraRequest || S.screen!=='scan') return;
       if(code && !(code===SCAN.last && Date.now()-SCAN.lastAt < 4000)){ SCAN.last = code; SCAN.lastAt = Date.now(); scanCheck(code.trim()); }
     }
     SCAN.raf = setTimeout(tick, 160);
@@ -145,6 +194,7 @@ async function startScan(){
   tick();
 }
 function stopScan(){
+  SCAN.cameraRequest++;
   clearTimeout(SCAN.raf); SCAN.raf = 0;
   if(SCAN.stream){ try{ SCAN.stream.getTracks().forEach(t=>t.stop()); }catch(e){} SCAN.stream = null; }
 }
@@ -387,7 +437,7 @@ const adminOrgsTab = A => {
 
 /* ---- PANEL ORGANIZATORA: wydarzenia, statystyki, lista gości ---- */
 const ORG = { data:null, user:null, at:0 };
-const isOrgNow = () => viewAs() ? ['organizer','admin'].includes(viewAs()) : !!(ACC.user && (ACC.user.org || isAdmin()));
+const isOrgNow = () => ['organizer','admin'].includes(effectiveRole());
 async function orgLoad(){
   try{ ORG.data = await apiCall('/api/org/me'+(ORG.user?'?user='+ORG.user:'')); }catch(e){ ORG.data = {error:e.message}; }
   ORG.at = Date.now(); S.dir=null; render();

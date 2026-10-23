@@ -392,6 +392,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
       </div>
     </div>
     <div id="offline">TRYB OFFLINE · BILET DZIAŁA BEZ ZASIĘGU</div>
+    <header id="app-topbar" hidden></header>
     <main id="view" class="sc" tabindex="-1"></main>
     <footer id="web-footer" class="web-only"></footer>
     <div id="nav" class="hide"></div>
@@ -553,7 +554,7 @@ document.body.classList.toggle('demo', DEMO);
 /* ---------------- state ---------------- */
 const S = {
   /* tester jest już zalogowany przy wejściu na /app — na telefonie od razu ekran główny; na komputerze pokaz od makiety logowania */
-  screen:DEMO?(matchMedia('(max-width:760px)').matches?'home':'login'):matchMedia('(min-width:761px)').matches?'home':(()=>{try{return localStorage.getItem('entered')?'home':'start'}catch(e){return 'start'}})(), prev:'home', eventId:'unsound',
+  screen:'loading', prev:'home', eventId:'unsound',
   qty:{early:0, regular:1, vip:0},
   pm:'blik', recipient:null,
   balance:240, topupAmount:100,
@@ -626,7 +627,18 @@ function toast(msg, dark=false, ms=2200){
 const ORDER = ['start','login','blik','home','list','invite','event','venue','select','checkout','success',
   'tickets','ticket','release','transfer','transferDone','wallet','topup','nfc','scanpay','bar','scanner','wrapped',
   'auth','profile','admin','map','cities'];
+function appStaffMode(){ return effectiveRole()==='staff'; }
+const STAFF_SCREENS = ['staff','staffStats','staffActivity','scan','profile'];
+function appScreen(s){
+  if(!ACC.loaded) return 'loading';
+  if(appStaffMode()) return STAFF_SCREENS.includes(s) ? s : 'staff';
+  if(['staff','staffStats','staffActivity'].includes(s)) return 'home';
+  if(s==='map' || s==='cities') return 'list';
+  if(s==='scanner') return canScanNow() ? 'scan' : 'home';
+  return s;
+}
 function go(s){
+  s=appScreen(s);
   if(s===S.screen) return;
   S.dir = ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
   S.prev = S.screen; S.screen = s; haptic(6); sfxTap();
@@ -634,7 +646,7 @@ function go(s){
   if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo(0,0);
   render();
 }
-function back(){ const p = S.prev===S.screen ? 'home' : S.prev; S.dir='bwd'; S.prev='home'; S.screen=p; haptic(6); render(); }
+function back(){ const p = S.prev===S.screen ? 'home' : S.prev; S.dir='bwd'; S.prev='home'; S.screen=appScreen(p); haptic(6); render(); }
 function openEvent(id){ S.eventId=id; S.qty={early:0,regular:1,vip:0}; S.sector=null; S.seats=[]; go('event'); }
 
 /* ---------------- pricing ---------------- */
@@ -830,6 +842,28 @@ function ic(name, size=20, sw=1.7){
 
 const coverArt = e => artBox(e);
 
+/* Osoby w prototypie: lokalny wybór, osobno dla każdego konta testera. */
+function followingIds(){
+  try{ const ids=JSON.parse(localStorage.getItem('plusone-preview-following:'+ACC.user?.id)||'[]');
+    return Array.isArray(ids)?ids.filter(id=>CONTACTS.some(c=>c.id===id)):[]; }catch(e){ return []; }
+}
+function toggleFollow(id){
+  if(!CONTACTS.some(c=>c.id===id)) return;
+  const ids=followingIds(), on=!ids.includes(id);
+  try{localStorage.setItem('plusone-preview-following:'+ACC.user?.id,JSON.stringify(on?[...ids,id]:ids.filter(x=>x!==id)));}
+  catch(e){toast('Nie udało się zapisać obserwowania na tym urządzeniu',true);return;}
+  haptic(8); S.dir=null; render();
+}
+const scPeople = () => `<div class="pg" style="padding:64px 0 112px">
+  <div class="pad col" style="gap:10px;margin-bottom:24px"><span class="eyebrow pink">Twoi ludzie</span><h1 class="h2">Dołącz do znajomych</h1>
+    <p class="body">Profile pokazowe. Obserwowanie zapisuje się na tym urządzeniu.</p></div>
+  <div class="pad col" style="gap:12px">${CONTACTS.map(c=>{const following=followingIds().includes(c.id);return `
+    <div class="card person-card"><span class="person-avatar">${esc(c.name[0])}</span>
+      <div class="col" style="gap:5px;flex:1;min-width:0"><strong>${esc(c.name)}</strong><span class="mono">${esc(['Muzyka na żywo','Kluby i elektronika','Kultura i teatr','Festiwale'][c.id])}</span></div>
+      <button class="chip ${following?'on':''}" data-act="follow:${c.id}" aria-pressed="${following}" aria-label="${following?'Przestań obserwować':'Obserwuj'} ${esc(c.name)}">${following?'Obserwujesz':'Obserwuj'}</button>
+    </div>`;}).join('')}</div>
+</div>`;
+
 /* ---- LOGIN ---- */
 const scLogin = () => `
 <div class="pg" style="display:flex;flex-direction:column;justify-content:space-between;padding:116px 26px 44px;
@@ -878,7 +912,7 @@ const scBlik = () => {
 /* =========================================================
    KONTO: logowanie użytkownika i admina (API /api/* w worker/index.js)
    ========================================================= */
-const ACC = { user:null, api:true, hidden:new Set(), featured:[], authMode:'login', authErr:'', busy:false, admin:null };
+const ACC = { loaded:false, user:null, api:true, hidden:new Set(), featured:[], authMode:'login', authErr:'', busy:false, admin:null };
 /* "Mam bilet" (going) i "Zapisane" (saved): gość trzyma je na telefonie, po zalogowaniu przechodzą na konto */
 const MINE = (()=>{ try{ const m=JSON.parse(localStorage.getItem('mine')||'{}'); return {saved:new Set(m.saved||[]), going:new Set(m.going||[])} }
   catch(e){ return {saved:new Set(), going:new Set()} } })();
@@ -948,6 +982,8 @@ async function loadAccount(){
     ACC.hidden = new Set(st.hidden); ACC.featured = st.featured;
     if(me.user){ ACC.user = me.user; await mergeMine(me); if(S.screen==='start'){ S.screen='home'; } }
   }catch(e){ ACC.api = false; }
+  ACC.loaded=true;
+  if(S.screen==='loading') S.screen='home';
   S.dir=null; render();
   premiumAfterLogin();
 }
@@ -1059,7 +1095,7 @@ const scProfile = () => {
       <div class="col" style="gap:4px;min-width:0">
         <span class="h2" style="font-size:22px">${u?esc(u.name||'Twoje konto'):'Gość'}</span>
         <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u?esc(u.email):'Przeglądasz bez konta'}</span>
-        ${u?.role==='admin'?`<span style="align-self:flex-start;margin-top:2px;padding:4px 8px;border-radius:6px;background:${PINK};color:#000;font:700 9px/1 var(--m);letter-spacing:.1em">ADMIN</span>`:''}
+        ${u?`<span style="align-self:flex-start;margin-top:2px;padding:4px 8px;border-radius:6px;background:${PINK};color:#000;font:700 9px/1 var(--m);letter-spacing:.1em">${esc(roleName(effectiveRole()))}</span>`:''}
       </div>
     </div>
     ${!u?`<div class="row" style="gap:10px">
@@ -1074,14 +1110,14 @@ const scProfile = () => {
     ${isOrgNow()?row('star','Panel organizatora','orgMine',`<span class="mono" style="color:${PINK}">ORGANIZATOR</span>`):''}
     ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
     ${realOwner()?row('users','Zobacz jako…','viewAsSheet',`<span class="mono">${viewAs()?esc(roleName(viewAs())):'Ty'}</span>`):''}
-    ${u?row('ticket','Moje bilety z kodem QR','go:mytickets',''):''}
-    ${premiumRows(u, row)}
+    ${u&&!appStaffMode()?row('ticket','Moje bilety z kodem QR','go:mytickets',''):''}
+    ${!appStaffMode()?premiumRows(u, row):''}
     ${u?row('lock','Zmień hasło','passwordSheet'):''}
 
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
-    ${row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`)}
-    ${row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`)}
-    ${row('pin','Miasto','sheetCity',`<span class="mono">${esc(S.city)}</span>`)}
+    ${!appStaffMode()?row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`):''}
+    ${!appStaffMode()?row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`):''}
+    ${!appStaffMode()?row('pin','Miasto','sheetCity',`<span class="mono">${esc(S.city)}</span>`):''}
     ${u?row('logout','Wyloguj się','logout'):''}
   </div>
   ${u?`<div class="pad" style="padding-top:26px"><button class="mono" data-act="deleteAccountSheet" style="color:var(--t3)">Usuń konto</button></div>`:''}
@@ -1368,7 +1404,7 @@ const listRow = e => `
 </div>`;
 
 const scHome = () => {
-  const f = filtered();
+  const f = collapse(inCity());
   return `
 <div class="pg" style="padding:64px 0 112px">
   ${webHero()}
@@ -1382,47 +1418,22 @@ const scHome = () => {
       </div>
     </div>
   </div>
-  <div class="row pad mobile-toolbar" style="justify-content:space-between;padding-bottom:18px">
-    <div class="col" style="gap:2px">
-      <span class="eyebrow">Lokalizacja</span>
-      <span style="font:600 19px/1.1 var(--d);letter-spacing:-.02em" data-act="sheetCity">${esc(S.city)} ▾</span>
-    </div>
-    <div class="row" style="gap:8px">
-    <button data-act="theme" aria-label="Zmień motyw" style="width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:var(--t1)">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
-    <button data-act="go:profile" aria-label="Konto" style="width:40px;height:40px;border-radius:14px;display:grid;place-items:center;
-      ${ACC.user?`background:${PINK};color:#000;font:700 16px/1 var(--d)`:'border:1px solid var(--line-2);color:var(--t1)'}">${ACC.user?esc((ACC.user.name||ACC.user.email)[0].toUpperCase()):ic('user',18)}</button>
-    ${DEMO?`<div data-act="sheetNotif" style="position:relative;width:40px;height:40px;border-radius:14px;border:1px solid var(--line-2);display:grid;place-items:center;color:var(--t1)">${ic('bell',18)}
-      <span id="notifdot" style="position:absolute;top:9px;right:10px;width:7px;height:7px;border-radius:50%;background:${PINK};${!ACC.user||PREM.unread?'':'display:none'}"></span></div>`:''}
-    </div>
-  </div>
-  <div class="pad search-wrap" style="padding-bottom:16px">
-    <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)">
-      <span style="color:var(--t2);display:flex">${ic('search',17)}</span>
-      <input id="q" aria-label="Szukaj wydarzeń, artystów i miejsc" placeholder="Szukaj wydarzeń, artystów, miejsc" value="${esc(S.query)}"
-        style="flex:1;font:400 14px/1 var(--d);color:var(--t1)" autocomplete="off">
-      ${S.query?`<span data-act="clearQ" style="color:var(--t3);display:flex">${ic('cross',16)}</span>`:''}
-    </div>
-  </div>
-  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 10px">
-    ${catList().map(c=>`<button class="chip ${S.cat===c?'on':''}" data-act="cat:${c}">${catLabel(c)}</button>`).join('')}
-  </div>
-  <div class="sc filter-row" style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 22px">
-    ${WHEN.map(([k,l])=>`<button class="chip ${S.when===k?'on':''}" data-act="when:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
-    <span style="flex:none;width:1px;margin:4px 2px;background:var(--line-2)"></span>
-    ${PRICE.map(([k,l])=>`<button class="chip ${S.price===k?'on':''}" data-act="price:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
-    <button class="chip ${S.big?'on':''}" data-act="big" style="padding:7px 12px;font-size:12px">Duże wydarzenia</button>
+  <div class="pad col app-welcome">
+    <span class="eyebrow pink">Twój następny dobry wieczór</span>
+    <h1 class="h1">Gdzie dziś<br>idziemy?</h1>
+    <button class="btn g" data-act="go:list">Odkryj wydarzenia ${ic('chevR',18)}</button>
   </div>
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
       <span class="h3">Nic nie pasuje</span>
-      <span class="body">Zmień filtry albo wyczyść wyszukiwanie — w mieście ${esc(S.city)} mamy ${inCity().length} nadchodzących wydarzeń.</span>
-      <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
+      <span class="body">Nie ma jeszcze nadchodzących wydarzeń w mieście ${esc(S.city)}. Sprawdź inne miasto.</span>
+      <button class="chip on" data-act="sheetCity" style="margin-top:6px">Zmień miasto</button>
     </div>` : `
   ${eventTicker(f)}
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
-  ${(()=>{ if(S.big || S.cat!=='Wszystko' || S.query) return ''; const tp = topPicks(); return tp.length ? `
+  ${(()=>{ const tp = topPicks(); return tp.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
     <span class="h3">Na topie</span>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="surprise">ZASKOCZ MNIE →</span>
@@ -1431,16 +1442,6 @@ const scHome = () => {
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
     ${tp.map(e=>bigCard(e.city===S.city?e:{...e, venue:e.city+' · '+e.venue})).join('')}
   </div>` : ''; })()}
-  ${(()=>{ if(S.big) return ''; const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || (b.hot-a.hot) || a.start.localeCompare(b.start))); return bg.length ? `
-  <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
-    <span class="h3">Wielkie wydarzenia</span>
-    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="bigList">WSZYSTKIE (${bg.length}) →</span>
-  </div>
-  <div class="pad mono" style="padding-bottom:12px">${bg.some(e=>e.city===S.city)?'Najpierw '+esc(S.city)+', potem reszta Polski':'Festiwale i koncerty na stadionach i arenach w całej Polsce'}</div>
-  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
-    ${(()=>{ const shown = new Set(S.cat==='Wszystko' && !S.query ? topPicks().map(e=>seriesKey(e)) : []), rest = bg.filter(e=>!shown.has(seriesKey(e)));
-      return [...rest.filter(e=>e.city===S.city), ...rest.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...rest.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,9).map(e=>bigCard(e.city===S.city?e:{...e, venue:e.city+' · '+e.venue})).join(''); })()}
-  </div>` : ''; })()}
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
     <span class="h3">Już niedługo</span>
     <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="go:list">CAŁA LISTA →</span>
@@ -1448,6 +1449,16 @@ const scHome = () => {
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
     ${[...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,6).map(bigCard).join('')}
   </div>
+  ${(()=>{  const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || (b.hot-a.hot) || a.start.localeCompare(b.start))); return bg.length ? `
+  <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
+    <span class="h3">Duże wydarzenia</span>
+    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="bigList">WSZYSTKIE (${bg.length}) →</span>
+  </div>
+  <div class="pad mono" style="padding-bottom:12px">${bg.some(e=>e.city===S.city)?'Najpierw '+esc(S.city)+', potem reszta Polski':'Festiwale i koncerty na stadionach i arenach w całej Polsce'}</div>
+  <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
+    ${(()=>{ const shown = new Set(topPicks().map(e=>seriesKey(e))), rest = bg.filter(e=>!shown.has(seriesKey(e)));
+      return [...rest.filter(e=>e.city===S.city), ...rest.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...rest.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,9).map(e=>bigCard(e.city===S.city?e:{...e, venue:e.city+' · '+e.venue})).join(''); })()}
+  </div>` : ''; })()}
   ${f.length>6?`<div class="pad h3" style="padding-bottom:8px">Dalej w kalendarzu</div>
   <div class="pad calendar-grid" style="padding-bottom:8px">${f.slice(6,14).map(listRow).join('')}</div>
   <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="go:list" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
@@ -1471,15 +1482,11 @@ const scHome = () => {
     </div>
   </div>
 
-  <div class="card pad" style="margin:0 20px;padding:20px;display:flex;flex-direction:column;gap:12px">
-    <span class="eyebrow pink">Friends are going</span>
-    <span style="font:600 17px/1.25 var(--d);letter-spacing:-.01em">4 osoby, które obserwujesz, idą na UNSOUND WARSAW</span>
-    <div class="row" style="gap:-8px">
-      ${['K','B','O','T'].map((l,i)=>`<span style="width:34px;height:34px;border-radius:50%;background:hsl(${i*70+300} 60% 45%);
-        border:2px solid #0f0f12;display:grid;place-items:center;font:600 13px/1 var(--d);margin-left:${i?-10:0}px">${l}</span>`).join('')}
-      <span class="mono" style="margin-left:12px">Kaja, Bruno, Ola +1</span>
-    </div>
-    <button class="btn p" data-act="ev:unsound" style="height:46px;font:600 14px/1 var(--d);margin-top:4px">Zobacz event</button>
+  <div class="card pad social-card">
+    <span class="eyebrow pink">Twoi ludzie</span>
+    <h2 class="h3">Razem jest lepiej.</h2>
+    <p class="body">${followingIds().length ? 'Obserwujesz '+followingIds().length+' osoby. Zobacz, gdzie się wybierają.' : 'Odkrywaj profile i miej plany znajomych pod ręką.'}</p>
+    <button class="btn g" data-act="go:people">${followingIds().length?'Zobacz obserwowanych':'Znajdź znajomych'}</button>
   </div>
 
   <div class="pad" style="padding-top:22px">
@@ -2824,8 +2831,10 @@ const SCREENS = {
   login:scLogin, blik:scBlik, home:scHome, list:scList, invite:scInvite, event:scEvent, venue:scVenue,
   select:scSelect, checkout:scCheckout, success:scSuccess, tickets:scTickets, ticket:scTicket,
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
-  nfc:scNfc, bar:scBar, scanner:scScanner, wrapped:scWrapped, scanpay:scScanpay,
-  start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), map:scMap, cities:()=>scCities(), scan:()=>scScan(), mytickets:()=>scMyTickets(), org:()=>scOrg(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped()
+  nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
+  start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), scan:()=>scScan(), mytickets:()=>scMyTickets(),
+  staff:()=>scStaff(), org:()=>scOrg(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scPeople(),
+  loading:()=>'<div class="pg pad" style="padding-top:120px"><p class="body">Otwieram Twoje +1…</p></div>'
 };
 
 /* =========================================================
@@ -2833,18 +2842,17 @@ const SCREENS = {
    ========================================================= */
 const NAV = [
   {k:'home',   ic:'home',   l:'ODKRYJ'},
-  {k:'list',   ic:'list',   l:'EVENTY'},
-  {k:'map',    ic:'map',    l:'MAPA'},
+  {k:'list',   ic:'list',   l:'WYDARZENIA'},
   {fab:true},
   {k:'tickets',ic:'ticket', l:'BILETY'},
-  {k:'wallet', ic:'wallet', l:'PORTFEL'},
-  {k:'profile',ic:'user',   l:'KONTO'}
+  {k:'wallet', ic:'wallet', l:'PORTFEL'}
 ];
 /* środkowy przycisk: na ekranach z wydarzeniami logo +1 (strona główna), gdzie indziej PAY */
-const FAB_HOME = ['home','list','map','cities','profile','mytickets','scan','org','plan','mywrapped'];
+const FAB_HOME = ['home','list','map','cities','profile','mytickets','scan','people','org','plan','mywrapped'];
 /* publicznie PAY tylko w dniu wydarzenia, na które masz bilet (na Biletach i w Portfelu) */
 const payDay = () => ['tickets','wallet'].includes(S.screen) && [...MINE.going].some(id => EVENTS.find(e=>e.id===id)?.day===localDay());
-const NAV_ON = ['home','list','map','cities','tickets','ticket','wallet','bar','profile','mytickets','scan','org','plan','mywrapped'];
+const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','org','plan','mywrapped',...STAFF_SCREENS];
+const STAFF_NAV = [{k:'staffStats',ic:'bolt',l:'STATYSTYKI'},{fab:true},{k:'staffActivity',ic:'clock',l:'HISTORIA'}];
 const FAB_SVG = `<svg width="36" height="36" viewBox="0 0 100 100"><g fill="#000">
   <rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/>
   <rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>`;
@@ -2877,35 +2885,30 @@ function webHero(){
   </section>`;
 }
 
-function renderWebChrome(){
-  $('#web-header').innerHTML = `<div class="web-header-inner">
-    <button class="web-brand" data-act="fabHome" aria-label="+1 — strona główna">${LOGO(48,12)}<span>WHERE ARE<br>WE GOING?</span></button>
-    <nav class="web-nav" aria-label="Nawigacja główna">
-      <button data-act="go:home" ${S.screen==='home'?'aria-current="page"':''}>Odkrywaj</button>
-      <button data-act="go:list" ${S.screen==='list'?'aria-current="page"':''}>Wydarzenia</button>
-      <button data-act="go:map" ${S.screen==='map'?'aria-current="page"':''}>Mapa</button>
-      <button data-act="go:tickets" ${S.screen==='tickets'||S.screen==='ticket'?'aria-current="page"':''}>Bilety</button>
-      <button data-act="go:wallet" ${WALLET_SOON.includes(S.screen)?'aria-current="page"':''}>Portfel${DEMO?'':' <span style="font:700 8px/1 var(--m);letter-spacing:.08em;padding:3px 5px;border-radius:5px;background:var(--pink-dim);color:var(--pink);vertical-align:2px">WKRÓTCE</span>'}</button>
-    </nav>
-    <div class="web-actions">
-      <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
-      <button class="web-theme" data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
-      <button class="web-account" data-act="${ACC.user?'go:profile':'authgo:login'}">${ic('user',16)}${ACC.user?'Moje konto':'Zaloguj się'}</button>
-    </div>
-  </div>`;
-  $('#web-footer').innerHTML = `<div class="web-footer-inner">
-    <span>+1 &nbsp; WHERE ARE WE GOING?<br>Wydarzenia w Twoim mieście, w jednym miejscu.</span>
-    <button data-act="go:profile">Konto i ustawienia ${ic('chevR',12)}</button>
-    <span>plusoneapp.pl</span>
-  </div>`;
+function renderAppChrome(){
+  const header=$('#app-topbar'), show=NAV_ON.includes(S.screen) && S.screen!=='profile';
+  header.hidden=!show;
+  $('#shell').classList.toggle('has-app-topbar',show);
+  header.innerHTML=show ? `<div class="app-context">
+    ${LOGO(32,9)}
+    ${appStaffMode()?'<span class="eyebrow">Obsługa biletów</span>': ['home','list'].includes(S.screen)
+      ? `<button data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${esc(S.city)} ▾</button>` : '<span class="eyebrow">Twoje +1</span>'}
+    </div><div class="app-top-actions">
+      <button data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
+      ${ACC.user && !appStaffMode()?`<button data-act="sheetNotif" aria-label="Powiadomienia" style="position:relative">${ic('bell',18)}<span id="notifdot" class="notifdot" style="${PREM.unread?'':'display:none'}"></span></button>`:''}
+      <button class="app-account" data-act="go:profile" aria-label="Konto">${ic('user',20)}</button>
+    </div>` : '';
+  $('#web-header').innerHTML=''; $('#web-footer').innerHTML='';
 }
 
 function render(){
+  S.screen=appScreen(S.screen);
+  if(SCAN.stream) stopScan();
   if(S.screen!=='scanpay') stopCam();
   $('#shell').classList.toggle('ds', DARK_SCREENS.includes(S.screen) && !walletSoon());
   const fn = walletSoon() ? scWalletSoon : (!DEMO && S.screen==='tickets') ? scMyTickets : (SCREENS[S.screen] || scHome);
   $('#view').innerHTML = fn();
-  renderWebChrome();
+  renderAppChrome();
   const pg = $('#view').firstElementChild;
   if(pg) pg.dataset.screen = S.screen;
   if(pg && S.dir) pg.classList.add(S.dir);
@@ -2917,19 +2920,21 @@ function render(){
   if(NAV_ON.includes(S.screen)){
     nav.classList.remove('hide');
     const active = S.screen==='ticket' ? 'tickets' : (S.screen==='bar' ? 'wallet' : S.screen);
-    nav.innerHTML = NAV.map(n => n.fab
-      ? (!(DEMO ? !FAB_HOME.includes(S.screen) : payDay())
-        ? `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Strona główna +1">${FAB_SVG}</button></div>`
-        : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać">
-           <span class="halo"></span><span class="fabtxt">PAY</span></button></div>`)
-      : `<button data-act="go:${n.k}" class="${active===n.k?'on':''}">
+    nav.setAttribute('aria-label',appStaffMode()?'Nawigacja obsługi biletów':'Nawigacja aplikacji');
+    nav.innerHTML = (appStaffMode()?STAFF_NAV:NAV).map(n => n.fab
+      ? (appStaffMode()
+        ? `<div class="fabslot"><button class="fab" data-act="go:scan" aria-label="Skanuj bilety +1">${FAB_SVG}</button></div>`
+        : (!(DEMO ? !FAB_HOME.includes(S.screen) : payDay())
+          ? `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Strona główna +1">${FAB_SVG}</button></div>`
+          : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać"><span class="halo"></span><span class="fabtxt">PAY</span></button></div>`))
+      : `<button data-act="go:${n.k}" class="${active===n.k?'on':''}" ${active===n.k?'aria-current="page"':''}>
           ${ic(n.ic,21)}<span>${n.l}</span></button>`).join('');
   } else nav.classList.add('hide');
 
   $('#offline').classList.toggle('on', S.offline);
   $('#netic').classList.toggle('off', S.offline);
 
-  $('#jumpbar').innerHTML = Object.keys(SCREENS).map(k=>
+  $('#jumpbar').innerHTML = (appStaffMode() ? STAFF_SCREENS : Object.keys(SCREENS).filter(k=>!['loading',...STAFF_SCREENS].includes(k))).map(k=>
     `<button class="jump ${S.screen===k?'on':''}" data-act="go:${k}">${k}</button>`).join('');
 
   bind(document);
@@ -2957,6 +2962,7 @@ function act(a){
   const [cmd, p1, p2] = a.split(':');
   switch(cmd){
     case 'go': go(p1); break;
+    case 'follow': toggleFollow(Number(p1)); break;
     case 'back': back(); break;
     case 'ev': openEvent(p1); break;
     case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.big=false; S.limit=40;
@@ -3306,10 +3312,9 @@ const cityRow = (c, n) => `<button data-act="city:${esc(c)}" class="ccity">
   <span style="flex:1;font:500 16px/1.2 var(--d);${c===S.city?'color:'+PINK:''}">${esc(c)}</span>
   <span class="mono">${n?pl(n)+' wydarzeń':'brak wydarzeń'}</span></button>`;
 function citySheet(){
-  const top = [...(CITY_TOP.includes(S.city) ? [] : [S.city]), ...CITY_TOP];
-  sheet(`<div class="col" style="gap:6px"><span class="h3">Miasto</span>
-    <div>${LIVE.state==='ok' ? top.map(c=>cityRow(c, LIVE.cities[c]||0)).join('') : '<span class="mono">Ładuję listę miast…</span>'}</div>
-    <button class="morebtn" data-act="moreCities">${ic('map',19)} Pokaż więcej miast</button></div>`);
+  const cities=[...new Set([S.city,...CITY_TOP,...Object.keys(LIVE.cities||{}).sort((a,b)=>a.localeCompare(b,'pl'))])];
+  sheet(`<div class="col" style="gap:6px"><span class="h3">Wybierz miasto</span>
+    <div>${LIVE.state==='ok' ? cities.map(c=>cityRow(c, LIVE.cities[c]||0)).join('') : '<span class="mono">Ładuję listę miast…</span>'}</div></div>`);
 }
 
 /* ---- MIASTA: mapa Polski z przybliżaniem, wyszukiwarka i lista wszystkich miast ---- */
@@ -3680,7 +3685,7 @@ function installHint(){
   const el = document.createElement('div'); el.id='installbar';
   el.style.cssText='position:absolute;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:140;display:flex;gap:12px;align-items:center;padding:12px 12px 12px 14px;border-radius:18px;background:rgba(20,20,24,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.5);animation:pop .3s';
   el.innerHTML = `${LOGO(40,10)}<div class="col" style="flex:1;min-width:0"><span style="font:600 14px/1.2 var(--d)">Dodaj +1 do ekranu telefonu</span>
-    <span style="font:400 12px/1.35 var(--d);color:rgba(255,255,255,.7);margin-top:3px">${INSTALL?'Ikona na ekranie, pełny ekran, działa offline.':'W Safari stuknij <b>Udostępnij</b> (kwadrat ze strzałką, czasem w menu ⋯), potem <b>Do ekranu początkowego</b>.'}</span></div>
+    <span style="font:400 12px/1.35 var(--d);color:rgba(255,255,255,.7);margin-top:3px">${INSTALL?'Ikona na ekranie, pełny ekran, działa offline.':'W Safari stuknij <b>Udostępnij</b>, potem <b>Do ekranu początkowego</b>.'}</span></div>
     ${INSTALL?'<button id="installgo" style="height:36px;padding:0 14px;border-radius:11px;background:var(--pink);color:#000;font:700 13px/1 var(--d)">Instaluj</button>':''}
     <button id="installx" aria-label="Zamknij" style="width:28px;height:28px;color:rgba(255,255,255,.6);font-size:18px">×</button>`;
   $('#shell').appendChild(el);
