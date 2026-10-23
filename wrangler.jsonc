@@ -8,7 +8,7 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/app", "/app/*", "/preview", "/preview/*"],
+    "run_worker_first": ["/api/*", "/app", "/app/*", "/preview", "/preview/*", "/t/*"],
     // nieznane adresy (np. stare linki) otwierają apkę zamiast pustej strony
     "not_found_handling": "single-page-application"
   },
@@ -28,6 +28,8 @@
     "ADMIN_EMAIL_SHA256": "f5b0a493b81b1b8b4876cf0a4e60842484aef9dc06f0e7e07886843c6760e28d"
   },
   "observability": { "enabled": true },
+  // alerty co 6 h (worker/premium.js → runAlerts) i newsletter w czwartek ok. 10:00 (NEWSLETTER_CRON)
+  "triggers": { "crons": ["17 */6 * * *", "3 8 * * 4"] },
   "workers_dev": true,           // zapasowy adres plusone.jeremi-3b8.workers.dev
   "preview_urls": false,
   // domena w Cloudflare (DNS i certyfikat ustawiają się same przy publikacji)

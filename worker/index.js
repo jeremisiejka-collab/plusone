@@ -4,6 +4,7 @@
 
 import previewHtml from '../private/app.html';
 import { smtpSend } from './smtp.js';
+import { premiumApi, scanGuest, crewInfo, forgotPassword, resetPassword, findReset, adminOrganizers, adminNewsletter, mailDetect, scheduled, guestTicketPage, initPremium } from './premium.js';
 
 const DAY = 864e5;
 const SESSION_DAYS = 60;
@@ -57,7 +58,7 @@ async function currentUser(req, env) {
   const token = cookie(req, 'sid');
   if (!token) return null;
   const row = await env.DB.prepare(
-    `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at, u.owner, u.perm_curate, u.perm_scan, u.must_change FROM sessions s JOIN users u ON u.id = s.user_id
+    `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at, u.owner, u.perm_curate, u.perm_scan, u.perm_org, u.must_change, u.interests, u.notify_email, u.newsletter FROM sessions s JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = ? AND s.expires_at > ?`).bind(await sha256(token), Date.now()).first();
   return row || null;
 }
@@ -66,11 +67,14 @@ async function currentUser(req, env) {
 const isOwner = u => !!u && !!u.owner;
 const isAdmin = u => !!u && (u.role === 'admin' || !!u.owner);
 const canCurate = u => isAdmin(u) || (!!u && !!u.perm_curate);
-const canScan = u => isAdmin(u) || (!!u && !!u.perm_scan);
+const canScan = u => isAdmin(u) || (!!u && (!!u.perm_scan || !!u.perm_org));
+const isOrg = u => isAdmin(u) || (!!u && !!u.perm_org);
+const parseList = s => { try { const a = JSON.parse(s || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
 /* rola do wyświetlenia: admin > obsługa biletów > użytkownik */
-const roleOf = u => isAdmin(u) ? 'admin' : u.perm_scan ? 'staff' : 'user';
+const roleOf = u => isAdmin(u) ? 'admin' : u.perm_org ? 'organizer' : u.perm_scan ? 'staff' : 'user';
 const publicUser = u => ({ id: u.id, email: u.email, name: u.name, role: u.role, city: u.city, createdAt: u.created_at,
-  owner: !!u.owner, curate: canCurate(u), scan: canScan(u), level: roleOf(u), mustChange: !!u.must_change });
+  owner: !!u.owner, curate: canCurate(u), scan: canScan(u), org: isOrg(u), level: roleOf(u), mustChange: !!u.must_change,
+  interests: parseList(u.interests), notifyEmail: u.notify_email !== 0, newsletter: !!u.newsletter });
 
 /* ---------------- walidacja ---------------- */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -81,6 +85,10 @@ const EVENT_ID_RE = /^[a-z0-9]+-[\w.-]{1,120}$/;
 async function body(req) {
   try { return await req.json(); } catch { return {}; }
 }
+
+/* zainteresowania wybierane przy rejestracji (te same klucze w aplikacji: INTERESTS w public/premium.js) */
+const INTEREST_KEYS = ['clubbing', 'koncerty', 'festiwale', 'teatr', 'standup', 'kino', 'sztuka', 'klasyka', 'sport', 'dzieci', 'rap', 'rock', 'jazz', 'techno', 'pop'];
+const cleanInterests = a => Array.isArray(a) ? [...new Set(a.filter(k => INTEREST_KEYS.includes(k)))] : [];
 
 /* czy e-mail jest na liście adminów (w konfiguracji trzymamy tylko skróty sha256) */
 async function isAdminEmail(env, email) {
@@ -101,11 +109,12 @@ async function register(req, env) {
   const role = (await isAdminEmail(env, email)) ? 'admin' : 'user';
   const city = cleanText(b.city, 60) || null;
   const now = Date.now();
-  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, city, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?)')
-    .bind(email, name, await hashPassword(password), role, city, now, now).run();
+  const interests = JSON.stringify(cleanInterests(b.interests)), newsletter = b.newsletter ? 1 : 0;
+  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, city, interests, newsletter, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(email, name, await hashPassword(password), role, city, interests, newsletter, now, now).run();
   const id = res.meta.last_row_id;
   const set = await startSession(env, id);
-  return json({ user: { id, email, name, role, city, createdAt: now }, saved: [], going: [] }, 201, { 'Set-Cookie': set });
+  return json({ user: publicUser({ id, email, name, role, city, created_at: now, interests, newsletter }), saved: [], going: [] }, 201, { 'Set-Cookie': set });
 }
 
 async function login(req, env) {
@@ -159,8 +168,12 @@ async function updateMe(req, env, user) {
   const b = await body(req);
   const name = b.name !== undefined ? cleanText(b.name, 60) : user.name;
   const city = b.city !== undefined ? (cleanText(b.city, 60) || null) : user.city;
-  await env.DB.prepare('UPDATE users SET name = ?, city = ? WHERE id = ?').bind(name, city, user.id).run();
-  return json({ user: publicUser({ ...user, name, city }) });
+  const interests = b.interests !== undefined ? JSON.stringify(cleanInterests(b.interests)) : user.interests;
+  const notify_email = b.notifyEmail !== undefined ? (b.notifyEmail ? 1 : 0) : user.notify_email;
+  const newsletter = b.newsletter !== undefined ? (b.newsletter ? 1 : 0) : user.newsletter;
+  await env.DB.prepare('UPDATE users SET name = ?, city = ?, interests = ?, notify_email = ?, newsletter = ? WHERE id = ?')
+    .bind(name, city, interests, notify_email, newsletter, user.id).run();
+  return json({ user: publicUser({ ...user, name, city, interests, notify_email, newsletter }) });
 }
 
 async function changePassword(req, env, user) {
@@ -202,8 +215,11 @@ async function toggleSaved(req, env, user) {
     const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM saved WHERE user_id = ?').bind(user.id).first('n');
     if (n >= 1000) return fail(400, 'Masz już 1000 zapisanych wydarzeń.');
     const kind = b.kind === 'going' ? 'going' : 'saved';
-    await env.DB.prepare(`INSERT INTO saved (user_id, event_id, created_at, kind) VALUES (?, ?, ?, ?)
-      ON CONFLICT(user_id, event_id) DO UPDATE SET kind = excluded.kind`).bind(user.id, id, Date.now(), kind).run();
+    // krótkie dane wydarzenia do podsumowania wyjść („Twoje wyjścia” w aplikacji)
+    const m = b.meta && typeof b.meta === 'object' ? JSON.stringify({ t: cleanText(b.meta.t, 140), c: cleanText(b.meta.c, 20), v: cleanText(b.meta.v, 100),
+      city: cleanText(b.meta.city, 60), d: cleanText(b.meta.d, 16), a: (Array.isArray(b.meta.a) ? b.meta.a : []).slice(0, 5).map(x => cleanText(x, 60)) }) : null;
+    await env.DB.prepare(`INSERT INTO saved (user_id, event_id, created_at, kind, meta) VALUES (?, ?, ?, ?, ?)
+      ON CONFLICT(user_id, event_id) DO UPDATE SET kind = excluded.kind, meta = COALESCE(excluded.meta, saved.meta)`).bind(user.id, id, Date.now(), kind, m).run();
   } else {
     await env.DB.prepare('DELETE FROM saved WHERE user_id = ? AND event_id = ?').bind(user.id, id).run();
   }
@@ -244,7 +260,8 @@ async function adminUsers(req, env) {
   const url = new URL(req.url);
   const q = '%' + cleanText(url.searchParams.get('q'), 100).toLowerCase() + '%';
   const { results } = await env.DB.prepare(
-    `SELECT u.id, u.email, u.name, u.role, u.owner, u.perm_curate, u.perm_scan, u.must_change, u.city, u.created_at, u.last_seen,
+    `SELECT u.id, u.email, u.name, u.role, u.owner, u.perm_curate, u.perm_scan, u.perm_org, u.must_change,
+            (SELECT json_group_array(venue) FROM org_venues o WHERE o.user_id = u.id) AS venues, u.city, u.created_at, u.last_seen,
             (SELECT COUNT(*) FROM saved s WHERE s.user_id = u.id) AS saves,
             EXISTS(SELECT 1 FROM preview_access p WHERE p.user_id = u.id) AS preview_access
      FROM users u WHERE lower(u.email) LIKE ? OR lower(u.name) LIKE ? ORDER BY u.created_at DESC LIMIT 200`).bind(q, q).all();
@@ -252,7 +269,7 @@ async function adminUsers(req, env) {
 }
 
 async function canPreview(env, user) {
-  return !!user && (isAdmin(user) || canScan(user) || !!(await env.DB.prepare('SELECT 1 FROM preview_access WHERE user_id = ?').bind(user.id).first()));
+  return !!user && (isAdmin(user) || canScan(user) || isOrg(user) || !!(await env.DB.prepare('SELECT 1 FROM preview_access WHERE user_id = ?').bind(user.id).first()));
 }
 
 async function adminPreviewAccess(req, env, id) {
@@ -278,6 +295,12 @@ const gatePage = ({ mode, user, email, token, note }) => {
     invite: `<p>Zaproszenie dla <b>${escHtml(email || '')}</b>. Ustaw hasło — to wszystko.</p>
       <form id="f" data-mode="invite" data-token="${escHtml(token || '')}">${field('n', 'IMIĘ (OPCJONALNIE)', 'text', 'given-name', 'maxlength="60" data-optional')}${field('p', 'HASŁO (MIN. 8 ZNAKÓW)', 'password', 'new-password', 'minlength="8"')}
       <div class="err" id="m" role="alert"></div><button id="b">Przyjmij zaproszenie</button></form>`,
+    reset: `<p>Ustaw nowe hasło do konta <b>${escHtml(email || '')}</b>.</p>
+      <form id="f" data-mode="reset" data-token="${escHtml(token || '')}">${field('p', 'NOWE HASŁO (MIN. 8 ZNAKÓW)', 'password', 'new-password', 'minlength="8"')}
+      <div class="err" id="m" role="alert"></div><button id="b">Zapisz i wejdź</button></form>`,
+    forgot: `<p>Podaj e-mail konta — wyślemy link do ustawienia nowego hasła.</p>
+      <form id="f" data-mode="forgot">${field('e', 'E-MAIL', 'email', 'email', 'autocapitalize="off"')}
+      <div class="err" id="m" role="alert"></div><button id="b">Wyślij link</button></form>`,
     change: `<p>Konto <b>${escHtml(user?.email || '')}</b> ma hasło startowe. Ustaw własne, żeby przejść dalej.</p>
       <form id="f" data-mode="change">${field('c', 'OBECNE HASŁO', 'password', 'current-password')}${field('p', 'NOWE HASŁO (MIN. 8 ZNAKÓW)', 'password', 'new-password', 'minlength="8"')}
       <div class="err" id="m" role="alert"></div><button id="b">Zapisz i wejdź</button></form>`
@@ -303,10 +326,10 @@ input:focus{border-color:#FF0059}button{height:54px;border:0;border-radius:16px;
 button:disabled{opacity:.6}.err{color:#ff7aa5;font-size:14px;text-align:center;min-height:20px}a{color:rgba(255,255,255,.6);text-align:center;font-size:14px}
 </style></head><body><main>
 <svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#000"/><g fill="#FF0059" transform="translate(6.45 8.3)"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
-<h1>${mode === 'invite' ? 'Witaj w +1' : mode === 'change' ? 'Nowe hasło' : mode === 'denied' ? 'Już prawie' : 'Gdzie dziś<br><span>idziemy?</span>'}</h1>
+<h1>${mode === 'invite' ? 'Witaj w +1' : mode === 'change' || mode === 'reset' || mode === 'forgot' ? 'Nowe hasło' : mode === 'denied' ? 'Już prawie' : 'Gdzie dziś<br><span>idziemy?</span>'}</h1>
 ${forms[mode]}
 <p id="ios" style="display:none;font-size:13px">Dodaj +1 do ekranu: w Safari stuknij <b>Udostępnij</b> → <b>Do ekranu początkowego</b>.</p>
-${mode === 'login' ? '<p class="reg">Nie masz konta? <a href="/?web&amp;register" target="_blank" rel="noopener">Zarejestruj się</a></p>' : ''}
+${mode === 'login' ? '<p class="reg">Nie masz konta? <a href="/?web&amp;register" target="_blank" rel="noopener">Zarejestruj się</a></p><p class="reg" style="margin-top:-6px"><a href="/app?forgot" style="color:rgba(255,255,255,.55);font-weight:500">Nie pamiętasz hasła?</a></p>' : ''}
 <a class="site" href="/?web" target="_blank" rel="noopener">plusoneapp.pl</a>
 </main><script>
 const $=id=>document.getElementById(id),f=$('f'),o=$('out');
@@ -318,6 +341,8 @@ if(f) f.onsubmit=async ev=>{ev.preventDefault();const b=$('b'),m=$('m'),k=f.data
     if(k==='login') await post('/api/auth/login',{email:$('e').value.trim(),password:$('p').value});
     if(k==='invite'){ await post('/api/invite/accept',{token:f.dataset.token,name:$('n').value.trim(),password:$('p').value}); location.replace('/app'); return; }
     if(k==='change') await post('/api/me/password',{current:$('c').value,password:$('p').value});
+    if(k==='reset'){ await post('/api/auth/reset',{token:f.dataset.token,password:$('p').value}); location.replace('/app'); return; }
+    if(k==='forgot'){ await post('/api/auth/forgot',{email:$('e').value.trim()}); m.style.color='#9ff0c4'; m.textContent='Jeśli konto istnieje, link jest już w skrzynce.'; b.disabled=false; return; }
     location.reload();
   }catch(e){m.textContent=e.message;b.disabled=false;}};
 if(o) o.onclick=async()=>{await post('/api/auth/logout',{}).catch(()=>{});location.reload();};
@@ -328,12 +353,18 @@ async function preview(req, env) {
   const headers = { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex, nofollow', 'Vary': 'Cookie' };
   if (!env.DB) return new Response('Podgląd jest chwilowo niedostępny. <a href="/?web" target="_blank">Wróć do witryny</a>', { status: 503, headers });
   const url = new URL(req.url), token = url.searchParams.get('invite');
+  if (url.searchParams.has('forgot')) return new Response(gatePage({ mode: 'forgot' }), { headers });
+  const reset = url.searchParams.get('reset');
+  if (reset) {
+    const r = await findReset(env, reset);
+    return new Response(gatePage(r ? { mode: 'reset', email: r.email, token: reset } : { mode: 'login', note: 'Link do zmiany hasła wygasł. Poproś o nowy.' }), { headers });
+  }
   if (token) {
     const inv = await findInvite(env, token);
     if (inv) return new Response(gatePage({ mode: 'invite', email: inv.email, token }), { headers });
   }
   const user = await currentUser(req, env);
-  const note = token ? 'Zaproszenie wygasło albo zostało już użyte. Zaloguj się.' : '';
+  const note = token ? 'Zaproszenie wygasło albo zostało już użyte. Zaloguj się.' : url.searchParams.has('join') ? 'Zaloguj się, żeby dołączyć do znajomego.' : '';
   if (!user) return new Response(gatePage({ mode: 'login', note }), { status: 401, headers });
   if (user.must_change) return new Response(gatePage({ mode: 'change', user }), { status: 403, headers });
   if (!await canPreview(env, user)) return new Response(gatePage({ mode: 'denied', user }), { status: 403, headers });
@@ -357,6 +388,12 @@ async function adminSetPerms(req, env, user, id) {
     : env.DB.prepare('DELETE FROM preview_access WHERE user_id = ?').bind(t.id));
   if (typeof b.curate === 'boolean') ops.push(env.DB.prepare('UPDATE users SET perm_curate = ? WHERE id = ?').bind(b.curate ? 1 : 0, t.id));
   if (typeof b.scan === 'boolean') ops.push(env.DB.prepare('UPDATE users SET perm_scan = ? WHERE id = ?').bind(b.scan ? 1 : 0, t.id));
+  if (typeof b.org === 'boolean') ops.push(env.DB.prepare('UPDATE users SET perm_org = ? WHERE id = ?').bind(b.org ? 1 : 0, t.id));
+  if (Array.isArray(b.venues)) {
+    ops.push(env.DB.prepare('DELETE FROM org_venues WHERE user_id = ?').bind(t.id));
+    for (const v of [...new Set(b.venues.map(x => cleanText(x, 120)).filter(Boolean))].slice(0, 30))
+      ops.push(env.DB.prepare('INSERT OR IGNORE INTO org_venues (user_id, venue) VALUES (?, ?)').bind(t.id, v));
+  }
   if (typeof b.admin === 'boolean') ops.push(env.DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(b.admin ? 'admin' : 'user', t.id));
   if (typeof b.owner === 'boolean') ops.push(env.DB.prepare('UPDATE users SET owner = ?' + (b.owner ? ", role = 'admin'" : '') + ' WHERE id = ?').bind(b.owner ? 1 : 0, t.id));
   if (!ops.length) return fail(400, 'Brak zmian.');
@@ -383,7 +420,7 @@ async function scanTicket(req, env, user) {
   if (!/^P1-[\w-]{8,40}$/.test(code)) return json({ status: 'invalid', message: 'To nie jest bilet +1.' });
   const t = await env.DB.prepare(`SELECT t.*, u.email, u.name, s.email AS by_email FROM tickets t JOIN users u ON u.id = t.user_id
     LEFT JOIN users s ON s.id = t.used_by WHERE t.code = ?`).bind(code).first();
-  if (!t) return json({ status: 'invalid', message: 'Nie ma takiego biletu.' });
+  if (!t) return scanGuest(env, user, code, b.undo);
   const who = { name: t.name, email: t.email, eventId: t.event_id };
   if (b.undo) {
     await env.DB.prepare('UPDATE tickets SET used_at = NULL, used_by = NULL WHERE code = ?').bind(code).run();
@@ -464,7 +501,7 @@ async function adminMailTest(req, env, user) {
 }
 
 const inviteMail = (link, by, perms) => {
-  const what = [perms.preview && 'aplikacji +1', perms.scan && 'skanowania biletów', perms.curate && 'moderowania wydarzeń', perms.admin && 'panelu administratora'].filter(Boolean).join(', ');
+  const what = [perms.preview && 'aplikacji +1', perms.org && 'panelu organizatora', perms.scan && !perms.org && 'skanowania biletów', perms.curate && 'moderowania wydarzeń', perms.admin && 'panelu administratora'].filter(Boolean).join(', ');
   const text = `Cześć!\n\n${by} zaprasza Cię do +1 — dostęp do: ${what}.\n\nOtwórz link, ustaw hasło i gotowe (link ważny ${INVITE_DAYS} dni):\n${link}\n\nNa iPhonie otwórz go w Safari, a potem Udostępnij → Do ekranu początkowego.\n\n+1 · plusoneapp.pl`;
   const html = `<div style="font:16px/1.6 -apple-system,Segoe UI,sans-serif;max-width:480px;margin:auto;padding:24px;color:#111">
 <div style="width:56px;height:56px;border-radius:14px;background:#000;color:#FF0059;font:700 28px/56px sans-serif;text-align:center">+1</div>
@@ -480,7 +517,7 @@ async function adminInvite(req, env, user) {
   const b = await body(req);
   const email = cleanEmail(b.email);
   if (!EMAIL_RE.test(email) || email.length > 200) return fail(400, 'Podaj poprawny adres e-mail.');
-  const perms = { preview: b.preview !== false, curate: !!b.curate, admin: !!b.admin, scan: !!b.scan };
+  const perms = { preview: b.preview !== false, curate: !!b.curate, admin: !!b.admin, scan: !!b.scan || !!b.org, org: !!b.org };
   if (perms.admin && !isOwner(user)) return fail(403, 'Admina może zaprosić tylko główny administrator.');
   const by = user.name || user.email;
 
@@ -491,7 +528,8 @@ async function adminInvite(req, env, user) {
     if (perms.preview) ops.push(env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(ex.id, Date.now()));
     if (perms.curate) ops.push(env.DB.prepare('UPDATE users SET perm_curate = 1 WHERE id = ?').bind(ex.id));
     if (perms.admin) ops.push(env.DB.prepare("UPDATE users SET role = 'admin' WHERE id = ?").bind(ex.id));
-    if (perms.scan) ops.push(env.DB.prepare('UPDATE users SET perm_scan = 1 WHERE id = ?').bind(ex.id));
+    if (perms.scan && !perms.org) ops.push(env.DB.prepare('UPDATE users SET perm_scan = 1 WHERE id = ?').bind(ex.id));
+    if (perms.org) ops.push(env.DB.prepare('UPDATE users SET perm_org = 1 WHERE id = ?').bind(ex.id));
     if (ops.length) await env.DB.batch(ops);
     const link = siteUrl(req, '/app'), m = inviteMail(link, by, perms);
     const emailed = await sendMail(env, email, m.subject, m.text, m.html);
@@ -499,8 +537,9 @@ async function adminInvite(req, env, user) {
   }
 
   const token = randomToken(), now = Date.now();
+  // organizator w zaproszeniu: scan = 2 (obsługa = 1)
   await env.DB.prepare('INSERT INTO invites (token_hash, email, preview, curate, admin, scan, invited_by, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(await sha256(token), email, +perms.preview, +perms.curate, +perms.admin, +perms.scan, user.id, now, now + INVITE_DAYS * DAY).run();
+    .bind(await sha256(token), email, +perms.preview, +perms.curate, +perms.admin, perms.org ? 2 : +perms.scan, user.id, now, now + INVITE_DAYS * DAY).run();
   const link = inviteLink(req, token), m = inviteMail(link, by, perms);
   const emailed = await sendMail(env, email, m.subject, m.text, m.html);
   return json({ ok: true, existing: false, link, emailed, mail: { subject: m.subject, text: m.text } }, 201);
@@ -534,8 +573,8 @@ async function acceptInvite(req, env) {
   if (await env.DB.prepare('SELECT 1 FROM users WHERE email = ?').bind(inv.email).first())
     return fail(409, 'To konto już istnieje — zaloguj się.');
   const now = Date.now();
-  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, perm_curate, perm_scan, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(inv.email, name, await hashPassword(password), inv.admin ? 'admin' : 'user', inv.curate, inv.scan || 0, now, now).run();
+  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, perm_curate, perm_scan, perm_org, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(inv.email, name, await hashPassword(password), inv.admin ? 'admin' : 'user', inv.curate, inv.scan === 1 ? 1 : 0, inv.scan === 2 ? 1 : 0, now, now).run();
   const id = res.meta.last_row_id;
   await env.DB.batch([
     env.DB.prepare('UPDATE invites SET used_at = ? WHERE rowid = ?').bind(now, inv.id),
@@ -578,6 +617,9 @@ async function api(req, env) {
   if (path === '/api/auth/login' && m === 'POST') return login(req, env);
   if (path === '/api/auth/logout' && m === 'POST') return logout(req, env);
   if (path === '/api/invite/accept' && m === 'POST') return acceptInvite(req, env);
+  if (path === '/api/auth/forgot' && m === 'POST') return forgotPassword(req, env);
+  if (path === '/api/auth/reset' && m === 'POST') return resetPassword(req, env);
+  if (path === '/api/crew/join' && m === 'GET') return crewInfo(req, env);
 
   const user = await currentUser(req, env);
   if (path === '/api/preview-access' && m === 'GET') return json({ allowed: await canPreview(env, user) });
@@ -589,6 +631,8 @@ async function api(req, env) {
   if (path === '/api/me' && m === 'DELETE') return deleteMe(req, env, user);
   if (path === '/api/saved' && m === 'POST') return toggleSaved(req, env, user);
   if (path === '/api/tickets' && m === 'GET') return myTickets(env, user);
+  const pr = await premiumApi(path, m, req, env, user);
+  if (pr) return pr;
   if (path === '/api/scan' || path === '/api/scan/stats') {
     if (user.must_change) return fail(403, 'Najpierw ustaw nowe hasło.');
     if (!canScan(user)) return fail(403, 'Skanowanie jest dla obsługi biletów.');
@@ -611,12 +655,18 @@ async function api(req, env) {
     const r = path.match(/^\/api\/admin\/users\/(\d+)\/perms$/);
     if (r && m === 'POST') return adminSetPerms(req, env, user, r[1]);
     if (path === '/api/admin/invites' && m === 'GET') return adminInvites(req, env);
+    if (path === '/api/admin/organizers' && m === 'GET') return adminOrganizers(env);
+    if (path === '/api/admin/newsletter' && m === 'POST') {
+      if (!isOwner(user)) return fail(403, 'Newsletter wysyła główny administrator.');
+      return adminNewsletter(req, env, user);
+    }
     if (path.startsWith('/api/admin/mail')) {
       if (!isOwner(user)) return fail(403, 'Pocztę ustawia główny administrator.');
       if (path === '/api/admin/mail' && m === 'GET') return adminMailGet(env);
       if (path === '/api/admin/mail' && m === 'POST') return adminMailSave(req, env);
       if (path === '/api/admin/mail' && m === 'DELETE') { await env.DB.prepare("DELETE FROM settings WHERE key = 'smtp'").run(); return adminMailGet(env); }
       if (path === '/api/admin/mail/test' && m === 'POST') return adminMailTest(req, env, user);
+      if (path === '/api/admin/mail/detect' && m === 'GET') return mailDetect(req);
     }
     if (path === '/api/admin/invites' && m === 'POST') return adminInvite(req, env, user);
     const inv = path.match(/^\/api\/admin\/invites\/(\d+)$/);
@@ -625,11 +675,20 @@ async function api(req, env) {
   return fail(404, 'Nie znaleziono.');
 }
 
+/* wspólne narzędzia dla worker/premium.js */
+initPremium({ json, fail, body, sha256, randomToken, hashPassword, startSession, cleanText, cleanEmail, EMAIL_RE, DAY, siteUrl,
+  sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode });
+
 export default {
+  scheduled(event, env, ctx) { ctx.waitUntil(scheduled(event, env)); },
   async fetch(req, env) {
     const url = new URL(req.url);
     // stary adres aplikacji testowej
     if (url.pathname === '/preview' || url.pathname.startsWith('/preview/')) return Response.redirect(new URL('/app', url), 301);
+    if (url.pathname.startsWith('/t/')) {
+      if (!env.DB) return new Response('Chwilowo niedostępne.', { status: 503 });
+      return guestTicketPage(env, url.pathname.slice(3));
+    }
     if (url.pathname === '/app' || url.pathname.startsWith('/app/')) {
       try { return await preview(req, env); }
       catch (e) { console.error(e); return new Response('Podgląd jest chwilowo niedostępny.', { status: 503, headers: { 'Cache-Control': 'no-store' } }); }

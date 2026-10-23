@@ -1,0 +1,19 @@
+/* funkcje premium aplikacji (public/premium.js) */
+.crewav { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff; font: 700 13px/1 var(--d); border: 2px solid var(--surface); flex: none; }
+.plantl { display: flex; flex-direction: column; gap: 0; padding: 4px 0 4px 18px; border-left: 2px solid var(--line-2); }
+.plantl > div { position: relative; display: flex; flex-direction: column; gap: 3px; padding: 8px 0 12px; }
+.plantl > div::before { content: ''; position: absolute; left: -25px; top: 11px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface-3); border: 2px solid var(--bg); }
+.plantl > div.on::before { background: var(--pink); box-shadow: 0 0 0 4px var(--pink-dim); }
+.plantl b { font: 600 16px/1.25 var(--d); }
+.planrow { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--t1); text-decoration: none; }
+.planrow b { font: 600 15px/1.25 var(--d); }
+.plandot { width: 38px; height: 38px; border-radius: 12px; background: var(--surface-2); display: grid; place-items: center; color: var(--pink); flex: none; }
+.wgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.wcard { padding: 16px; border-radius: 20px; display: flex; flex-direction: column; gap: 6px; min-height: 130px; justify-content: flex-end;
+  background: hsl(var(--h) 70% 14%); border: 1px solid hsl(var(--h) 70% 30% / .6); color: #fff; overflow: hidden; }
+.wcard .mono { color: rgba(255,255,255,.7); }
+.wcard b { font: 700 26px/1.05 var(--d); letter-spacing: -.02em; word-break: break-word; }
+.wcard span:last-child:not(.mono) { font: 400 12px/1.35 var(--d); color: rgba(255,255,255,.75); }
+.wcard:first-child { grid-column: 1 / -1; min-height: 150px; }
+.wcard:first-child b { font-size: 54px; }
+.notifdot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 0 2px var(--bg); }

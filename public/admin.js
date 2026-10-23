@@ -8,9 +8,9 @@ function viewAs(){
   if(!ACC.user?.owner) return null;
   try{ const role = sessionStorage.getItem('viewAs'); return ['user','staff','admin'].includes(role) ? role : null; }catch(e){ return null; }
 }
-function effectiveRole(){ return viewAs() || (ACC.user?.owner || ACC.user?.role==='admin' ? 'admin' : ACC.user?.scan ? 'staff' : 'user'); }
+function effectiveRole(){ return viewAs() || (ACC.user?.owner || ACC.user?.role==='admin' ? 'admin' : ACC.user?.org ? 'organizer' : ACC.user?.scan ? 'staff' : 'user'); }
 function setViewAs(v){
-  if(!realOwner() || (v && !['user','staff','admin'].includes(v))) return;
+  if(!realOwner() || (v && !['user','staff','organizer','admin'].includes(v))) return;
   try{ v ? sessionStorage.setItem('viewAs', v) : sessionStorage.removeItem('viewAs'); }catch(e){}
   closeSheet(); toast(v ? 'Widok: '+roleName(v) : 'Wróciłeś do swojego konta', true, 1800);
   S.dir=null; S.prev='home'; S.screen='home'; render();
@@ -33,6 +33,13 @@ function viewAsBar(){
   if(!bar){ bar = document.createElement('button'); bar.id='viewasbar'; bar.onclick = ()=>viewAsSheet(); document.body.appendChild(bar); }
   bar.innerHTML = `Widok: <b>${roleName(v)}</b> · zmień`;
 }
+
+/* ---- zainteresowania (rejestracja na stronie, edycja i alerty w aplikacji; klucze = INTEREST_KEYS w workerze) ---- */
+const INTERESTS = [['clubbing','Clubbing'],['koncerty','Koncerty'],['festiwale','Festiwale'],['teatr','Teatr'],['standup','Stand-up i kabaret'],
+  ['kino','Kino'],['sztuka','Sztuka i wystawy'],['klasyka','Opera i klasyka'],['sport','Sport'],['dzieci','Dla dzieci'],
+  ['rap','Rap / hip-hop'],['rock','Rock i metal'],['jazz','Jazz i soul'],['techno','Techno / house'],['pop','Pop']];
+const interestChips = (sel=[]) => `<div class="intchips">${INTERESTS.map(([k,l])=>`<button type="button" class="chip ${sel.includes(k)?'on':''}" data-int="${k}" onclick="this.classList.toggle('on')">${l}</button>`).join('')}</div>`;
+const readInterests = root => $$('[data-int].on', root||document).map(b=>b.dataset.int);
 
 /* ---- ładowanie bibliotek z naszego serwera (public/vendor) ---- */
 const LIBS = {};
@@ -214,6 +221,19 @@ function adminAct(cmd, p1, p2, a){
     case 'testMail': testMail(); return true;
     case 'dropMail': dropMail(); return true;
     case 'viewAsSheet': viewAsSheet(); return true;
+    case 'detectMail': detectMail(); return true;
+    case 'toggleNews': apiCall('/api/me','PATCH',{newsletter:!ACC.user.newsletter}).then(r=>{ ACC.user=r.user; toast(r.user.newsletter?'Newsletter włączony — w czwartki na maila':'Newsletter wyłączony', true); S.dir=null; render(); }).catch(e=>toast(esc(e.message),true)); return true;
+    case 'newsTest': apiCall('/api/admin/newsletter','POST',{test:true}).then(r=>toast(r.sent?'Newsletter wysłany do Ciebie':'Nie wysłano — sprawdź główny e-mail',!r.sent)).catch(e=>toast(esc(e.message),true)); return true;
+    case 'newsSend': if(confirm('Wysłać newsletter do wszystkich zapisanych?')) apiCall('/api/admin/newsletter','POST',{}).then(r=>toast('Wysłano: '+r.sent+' z '+r.of)).catch(e=>toast(esc(e.message),true)); return true;
+    case 'alertsRun': apiCall('/api/admin/alerts/run','POST',{}).then(()=>toast('Alerty przeliczone')).catch(e=>toast(esc(e.message),true)); return true;
+    case 'orgSort': S.orgSort=p1; S.dir=null; render(); return true;
+    case 'orgSearch': S.orgQ=$('#org-q')?.value||''; S.dir=null; render(); return true;
+    case 'orgOpen': ORG.user=+p1; ORG.data=null; go('org'); return true;
+    case 'orgMine': ORG.user=null; ORG.data=null; go('org'); return true;
+    case 'orgEvSort': S.orgEvSort=p1; S.dir=null; render(); return true;
+    case 'guests': guestsSheet(a.slice(7)); return true;
+    case 'addGuest': addGuest(a.slice(9)); return true;
+    case 'delGuest': apiCall('/api/org/guests','DELETE',{code:p1}).then(()=>{ toast('Usunięto'); ORG.at=0; guestsSheet(a.slice(10+p1.length)); }).catch(e=>toast(esc(e.message),true)); return true;
     case 'viewAs': setViewAs(p1||null); return true;
     case 'ticketQR': ticketSheet(a.slice(9)); return true;
     case 'scanManual': { const v = ($('#scancode')?.value||'').trim(); if(v) scanCheck(v); return true; }
@@ -243,9 +263,13 @@ async function savePassword(){
    i — tylko dla głównych administratorów — rola głównego administratora. */
 const ROLES = [['user','Użytkownik','Przegląda wydarzenia, zapisuje, ma bilety'],
   ['staff','Obsługa biletów','Skanuje bilety aparatem przy wejściu'],
-  ['admin','Administrator','Panel admina, użytkownicy, zaproszenia, moderacja']];
-const userPerms = x => ({preview:!!x.preview_access, curate:!!x.perm_curate, admin:x.role==='admin'||!!x.owner, owner:!!x.owner, scan:!!x.perm_scan});
-const levelOf = p => p.admin ? 'admin' : p.scan ? 'staff' : 'user';
+  ['organizer','Organizator','Swoje wydarzenia, statystyki, lista gości, skaner'],
+  ['admin','Administrator','Panel admina, użytkownicy, organizatorzy, zaproszenia']];
+const userPerms = x => ({preview:!!x.preview_access, curate:!!x.perm_curate, admin:x.role==='admin'||!!x.owner, owner:!!x.owner, scan:!!x.perm_scan, org:!!x.perm_org,
+  venues: (()=>{ try{ return JSON.parse(x.venues||'[]').filter(Boolean); }catch(e){ return []; } })()});
+const levelOf = p => p.admin ? 'admin' : p.org ? 'organizer' : p.scan ? 'staff' : 'user';
+/* miejsca z wydarzeń (podpowiedzi przy przypisywaniu organizatora) */
+const venueOptions = () => [...new Set(EVENTS.filter(e=>e.real).map(e=>e.venue))].sort().slice(0,3000);
 const roleName = k => (ROLES.find(r=>r[0]===k)||ROLES[0])[1];
 const roleBtn = (k, on, lock) => `<button class="perm ${on?'on':''}" data-role="${k}" ${lock?'disabled':''} aria-pressed="${on}">
   <span class="perm-box" style="border-radius:50%">${on?ic('check',14,2.4):''}</span>
@@ -266,12 +290,17 @@ function permsSheet(id){
   sheet(`<div class="col" style="gap:10px"><span class="h3">Rola</span>
     <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.email)}</span>
     <div class="col" style="gap:8px">${ROLES.map(([k])=>roleBtn(k, lvl===k, lockOwner || self || ((k==='admin'||lvl==='admin') && !isOwner()))).join('')}</div>
+    <div id="org-venues" class="field" style="${lvl==='organizer'?'':'display:none'}"><label>MIEJSCA I NAZWY WYDARZEŃ ORGANIZATORA (PO PRZECINKU)</label>
+      <input id="pv-venues" list="venue-list" value="${esc(p.venues.join(', '))}" placeholder="np. Progresja, Klub Stodoła, Hype Festival" autocapitalize="off">
+      <datalist id="venue-list">${venueOptions().map(v=>`<option value="${esc(v)}">`).join('')}</datalist>
+      <span class="mono" style="line-height:1.5">Organizator widzi wydarzenia, których miejsce albo nazwa zawiera któreś z tych słów.</span></div>
     <div class="col" style="gap:8px;margin-top:6px">
       ${checkBtn('preview','Dostęp do aplikacji','Logowanie w aplikacji na telefon (/app)', p.preview || p.admin || p.scan, lockOwner)}
       ${isOwner()?checkBtn('owner','Główny administrator','Nadaje i odbiera administratora', p.owner, self):''}
     </div>
     <button class="btn p" data-act="savePerms:${x.id}">Zapisz</button></div>`);
   wirePerms($('#sheet'));
+  $$('#sheet [data-role]').forEach(b=>b.addEventListener('click', ()=>{ const v=$('#org-venues'); if(v) v.style.display = readRole($('#sheet'))==='organizer' ? '' : 'none'; }));
 }
 async function savePerms(id){
   const x = ACC.admin?.users?.find(u=>u.id===+id), p = userPerms(x), root = $('#sheet');
@@ -279,6 +308,11 @@ async function savePerms(id){
   if(lvl !== levelOf(p)){
     if((lvl==='admin') !== p.admin) diff.admin = lvl==='admin';
     if((lvl==='staff') !== p.scan) diff.scan = lvl==='staff';
+    if((lvl==='organizer') !== p.org) diff.org = lvl==='organizer';
+  }
+  if(lvl==='organizer'){
+    const v = ($('#pv-venues')?.value||'').split(',').map(x=>x.trim()).filter(Boolean);
+    if(v.join('|') !== p.venues.join('|')) diff.venues = v;
   }
   const prev = readPerm(root,'preview'); if(prev !== p.preview) diff.preview = prev;
   if($('[data-perm="owner"]', root) && !$('[data-perm="owner"]', root).disabled){ const o = readPerm(root,'owner'); if(o !== p.owner) diff.owner = o; }
@@ -292,7 +326,7 @@ async function sendInvite(){
   const root = $('#inv-form'), email = $('#inv-email')?.value.trim(), lvl = readRole(root);
   if(!email){ toast('Wpisz adres e-mail',true); return; }
   try{
-    const r = await apiCall('/api/admin/invites','POST',{email, preview:true, admin:lvl==='admin', scan:lvl==='staff'});
+    const r = await apiCall('/api/admin/invites','POST',{email, preview:true, admin:lvl==='admin', scan:lvl==='staff', org:lvl==='organizer'});
     S.lastInvite = {...r, email}; sfxOk();
     toast(r.emailed ? 'Zaproszenie wysłane na '+esc(email) : r.existing ? 'Uprawnienia nadane' : 'Zaproszenie gotowe — wyślij link', !r.emailed);
     adminLoad();
@@ -305,10 +339,10 @@ async function revokeInvite(id){
 /* ---- admin ---- */
 async function adminLoad(){
   try{
-    const [stats, users, st, inv, mail] = await Promise.all([apiCall('/api/admin/stats'), apiCall('/api/admin/users?q='+encodeURIComponent(S.adminQ||'')), apiCall('/api/state'), apiCall('/api/admin/invites'),
-      isOwner() ? apiCall('/api/admin/mail') : null]);
+    const [stats, users, st, inv, mail, orgs] = await Promise.all([apiCall('/api/admin/stats'), apiCall('/api/admin/users?q='+encodeURIComponent(S.adminQ||'')), apiCall('/api/state'), apiCall('/api/admin/invites'),
+      isOwner() ? apiCall('/api/admin/mail') : null, apiCall('/api/admin/organizers').catch(()=>({organizers:[]}))]);
     ACC.hidden=new Set(st.hidden); ACC.featured=st.featured;
-    ACC.admin={stats, users:users.users, invites:inv.invites, mailer:inv.mailer, mail, at:Date.now()};
+    ACC.admin={stats, users:users.users, invites:inv.invites, mailer:inv.mailer, mail, orgs:orgs.organizers, at:Date.now()};
   }catch(e){ ACC.admin={error:e.message, at:Date.now()}; }
   S.dir=null; render();
 }
@@ -328,15 +362,18 @@ const adminMailTab = A => {
   const c = A.mail?.smtp || {};
   const f = (id, label, val, attrs='') => `<div class="field"><label>${label}</label><input id="${id}" value="${esc(val??'')}" ${attrs}></div>`;
   return `<div id="mail-form" class="card" style="padding:18px;display:flex;flex-direction:column;gap:12px">
-    <div class="row" style="justify-content:space-between;gap:10px"><span class="h3">Poczta</span>
+    <div class="row" style="justify-content:space-between;gap:10px"><span class="h3">Główny e-mail aplikacji</span>
       <span class="badge ${A.mail?.smtp?'':'off'}">${A.mail?.smtp?'podłączona':A.mail?.resend?'Resend':'niepodłączona'}</span></div>
-    <span class="body" style="font-size:13px">Zaloguj skrzynkę, z której mają wychodzić zaproszenia (np. kontakt@tooday.pl). Dane serwera SMTP znajdziesz w ustawieniach poczty u dostawcy —
-      np. home.pl: <b>serwerXXXXXX.home.pl</b>, OVH: <b>ssl0.ovh.net</b>, Google Workspace: <b>smtp.gmail.com</b> z hasłem aplikacji, Microsoft 365: <b>smtp.office365.com</b> (587).</span>
+    <span class="body" style="font-size:13px">Jedna skrzynka, z której +1 wysyła wszystko: zaproszenia, alerty, newsletter, bilety gości i reset hasła.
+      Wpisz adres i hasło — serwer dobierzemy sami.</span>
+    <div class="row" style="gap:8px;align-items:flex-end">
+      <div style="flex:1">${f('ml-user','ADRES E-MAIL (LOGIN)',c.user,'type="email" autocapitalize="off" autocomplete="off" placeholder="kontakt@tooday.pl"')}</div>
+      <button class="chip on" data-act="detectMail" style="height:50px">Dobierz serwer</button></div>
+    <div id="ml-hint" class="mono" style="line-height:1.5;${S.mailHint?'':'display:none'}">${S.mailHint||''}</div>
     ${f('ml-host','SERWER SMTP',c.host,'placeholder="smtp.twojadomena.pl" autocapitalize="off"')}
     <div class="row" style="gap:10px">
       <div class="field" style="flex:1"><label>PORT</label><select id="ml-port" class="sel">${[[465,'465 · SSL/TLS'],[587,'587 · STARTTLS']].map(([v,l])=>`<option value="${v}" ${+c.port===v?'selected':''}>${l}</option>`).join('')}</select></div>
     </div>
-    ${f('ml-user','LOGIN (ZWYKLE ADRES E-MAIL)',c.user,'autocapitalize="off" autocomplete="off"')}
     ${f('ml-pass','HASŁO DO SKRZYNKI','', `type="password" autocomplete="new-password" placeholder="${c.hasPass?'zapisane — wpisz, żeby zmienić':''}"`)}
     ${f('ml-from','ADRES NADAWCY',c.from||c.user,'type="email" autocapitalize="off"')}
     ${f('ml-name','NAZWA NADAWCY',c.fromName||'+1')}
@@ -345,12 +382,31 @@ const adminMailTab = A => {
       <button class="chip on" data-act="testMail">Wyślij test na ${esc(ACC.user.email)}</button>
       <button class="chip" data-act="dropMail">Odłącz</button></div>`:''}
     <span class="mono" style="line-height:1.5">Hasło jest zapisane na serwerze +1 i nie wraca do przeglądarki. Ustawia je tylko główny administrator.</span>
+  </div>
+  <div class="card" style="margin-top:12px;padding:18px;display:flex;flex-direction:column;gap:10px">
+    <span class="h3">Newsletter i alerty</span>
+    <span class="body" style="font-size:13px">„Na topie w Twoim mieście” wychodzi w czwartki ok. 10:00 do osób z włączonym newsletterem. Alerty (nowości z zainteresowań, taniej, przypomnienia) — co 6 godzin.</span>
+    <div class="row" style="gap:8px;flex-wrap:wrap">
+      <button class="chip on" data-act="newsTest">Newsletter: test do mnie</button>
+      <button class="chip" data-act="newsSend">Wyślij newsletter teraz</button>
+      <button class="chip" data-act="alertsRun">Uruchom alerty teraz</button></div>
   </div>`;
 };
+async function detectMail(){
+  const email = $('#ml-user')?.value.trim(); if(!email){ toast('Wpisz adres e-mail',true); return; }
+  try{
+    const r = await apiCall('/api/admin/mail/detect?email='+encodeURIComponent(email));
+    if(r.host) $('#ml-host').value = r.host;
+    if(r.port) $('#ml-port').value = String(r.port);
+    if(!$('#ml-from').value) $('#ml-from').value = email;
+    S.mailHint = (r.provider?'Dostawca: <b>'+esc(r.provider)+'</b>. ':'') + esc(r.note||'Wpisz hasło i zapisz, potem wyślij test.');
+    const h = $('#ml-hint'); if(h){ h.style.display=''; h.innerHTML = S.mailHint; }
+  }catch(e){ toast(esc(e.message),true); }
+}
 async function saveMail(){
   const v = id => $('#'+id)?.value.trim();
   try{
-    ACC.admin.mail = await apiCall('/api/admin/mail','POST',{host:v('ml-host'), port:+v('ml-port'), user:v('ml-user'), pass:$('#ml-pass')?.value||'', from:v('ml-from'), fromName:v('ml-name')});
+    ACC.admin.mail = await apiCall('/api/admin/mail','POST',{host:v('ml-host'), port:+v('ml-port'), user:v('ml-user'), pass:$('#ml-pass')?.value||'', from:v('ml-from')||v('ml-user'), fromName:v('ml-name')});
     toast('Zapisano — wyślij test, żeby sprawdzić'); sfxOk(); ACC.admin.mailer = true; S.dir=null; render();
   }catch(e){ toast(esc(e.message),true); }
 }
@@ -361,6 +417,83 @@ async function testMail(){
 }
 async function dropMail(){
   try{ ACC.admin.mail = await apiCall('/api/admin/mail','DELETE',{}); ACC.admin.at=0; toast('Poczta odłączona'); adminLoad(); }catch(e){ toast(esc(e.message),true); }
+}
+
+/* ---- PANEL ADMINA: organizatorzy (sortowanie, wejście w konkretnego) ---- */
+const ORG_SORT = [['going','Najwięcej chętnych'],['upcoming','Najwięcej wydarzeń'],['name','Nazwa']];
+const adminOrgsTab = A => {
+  const sort = S.orgSort || 'going', q = fold(S.orgQ||'');
+  const list = (A.orgs||[]).filter(o=>!q || fold(o.name+' '+o.email+' '+o.venues.join(' ')).includes(q))
+    .sort((a,b)=> sort==='name' ? (a.name||a.email).localeCompare(b.name||b.email) : (b[sort]-a[sort]));
+  return `<div class="field" style="padding-bottom:10px"><input id="org-q" placeholder="Szukaj organizatora lub miejsca" value="${esc(S.orgQ||'')}" data-enter="orgSearch" autocapitalize="off"></div>
+  <div class="row" style="gap:8px;flex-wrap:wrap;padding-bottom:6px">${ORG_SORT.map(([k,l])=>`<button class="chip ${sort===k?'on':''}" data-act="orgSort:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}</div>
+  ${list.map(o=>`<button class="row" data-act="orgOpen:${o.id}" style="width:100%;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);text-align:left;color:var(--t1)">
+    <span style="width:42px;height:42px;border-radius:13px;background:var(--pink-dim);color:var(--pink);display:grid;place-items:center;font:700 16px/1 var(--d);flex:none">${esc((o.name||o.email)[0].toUpperCase())}</span>
+    <div class="col" style="flex:1;min-width:0"><span class="h4">${esc(o.name||o.email)}</span>
+      <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(o.venues.join(', ')||'brak przypisanych miejsc')}</span></div>
+    <div class="col" style="align-items:flex-end;gap:3px"><b style="font:700 18px/1 var(--d)">${pl(o.going)}</b><span class="mono">chętnych · ${o.upcoming} wyd.</span></div>
+  </button>`).join('') || `<span class="mono" style="display:block;padding:12px 0">Brak organizatorów. Nadaj rolę „Organizator” w zakładce Użytkownicy albo zaproś organizatora.</span>`}`;
+};
+
+/* ---- PANEL ORGANIZATORA: wydarzenia, statystyki, lista gości ---- */
+const ORG = { data:null, user:null, at:0 };
+const isOrgNow = () => ['organizer','admin'].includes(effectiveRole());
+async function orgLoad(){
+  try{ ORG.data = await apiCall('/api/org/me'+(ORG.user?'?user='+ORG.user:'')); }catch(e){ ORG.data = {error:e.message}; }
+  ORG.at = Date.now(); S.dir=null; render();
+}
+const scOrg = () => {
+  if(!isOrgNow()) return `<div class="pg pad col" style="padding-top:120px;gap:14px"><span class="h3">Panel organizatora</span>
+    <span class="body">To miejsce dla organizatorów wydarzeń. Napisz do nas, żeby dostać dostęp.</span><button class="btn g" data-act="back" style="height:48px">Wróć</button></div>`;
+  const D = ORG.data;
+  if(!D || Date.now()-ORG.at>60e3) setTimeout(orgLoad,0);
+  const sort = S.orgEvSort || 'date', t = localDay();
+  const evs = (D?.events||[]).slice().sort((a,b)=> sort==='going' ? b.going-a.going : sort==='hot' ? b.hot-a.hot : a.start.localeCompare(b.start));
+  const up = evs.filter(e=>e.start.slice(0,10)>=t), sum = k => up.reduce((s,e)=>s+(e[k]||0),0);
+  return `
+<div class="pg" style="padding:64px 0 112px">
+  <div class="pad row" style="gap:12px;padding-bottom:14px">
+    <button class="back" data-act="back" aria-label="Wróć">${ic('chevL',18)}</button>
+    <div class="col" style="gap:3px;flex:1;min-width:0"><div class="h2" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(D?.organizer?.name||D?.organizer?.email||'Panel organizatora')}</div>
+      <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc((D?.venues||[]).join(', ')||'')}</span></div>
+  </div>
+  <div class="pad">
+  ${D?.error ? `<div class="err">${esc(D.error)}</div>` : !D ? loadingBox() : !D.venues.length ? `<div class="card" style="padding:16px"><span class="h4">Brak przypisanych miejsc</span>
+    <p class="body" style="margin-top:6px">Administrator przypisuje organizatorowi miejsca i nazwy wydarzeń (Panel admina → Użytkownicy → Rola → Organizator).</p></div>` : `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      ${[['Nadchodzące wydarzenia',up.length],['Idą („Mam bilet”)',sum('going')],['Zapisali',sum('saves')],['Obserwują',sum('followers')],['Goście na liście',sum('guests')],['Wpuszczeni',sum('used')+sum('guestsUsed')]]
+        .map(([l,v])=>`<div class="statc"><span class="mono">${l}</span><b>${pl(v)}</b></div>`).join('')}
+    </div>
+    <div class="row" style="gap:8px;flex-wrap:wrap;padding:18px 0 6px">${[['date','Najbliższe'],['going','Najwięcej chętnych'],['hot','Na topie']].map(([k,l])=>`<button class="chip ${sort===k?'on':''}" data-act="orgEvSort:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
+      <button class="chip" data-act="go:scan" style="padding:7px 12px;font-size:12px">${'Skaner'}</button></div>
+    ${evs.map(e=>`<div class="row" style="gap:12px;padding:14px 0;border-bottom:1px solid var(--line);${e.start.slice(0,10)<t?'opacity:.55':''}">
+      <div class="col" style="flex:1;min-width:0;cursor:pointer" data-act="ev:${esc(e.id)}"><span class="h4 clamp2">${esc(e.title)}</span>
+        <span class="mono" style="margin-top:4px">${esc(e.start.slice(8,10)+'.'+e.start.slice(5,7)+' '+e.start.slice(11,16)+' · '+e.venue)}</span>
+        <span class="row" style="gap:5px;margin-top:6px;flex-wrap:wrap">${[[e.going,'idzie'],[e.saves,'zapisało'],[e.followers,'obserwuje'],[e.guests,'gości'],[e.used+e.guestsUsed,'wpuszczonych']]
+          .filter(x=>x[0]).map(([n,l])=>`<span class="badge">${pl(n)} ${l}</span>`).join('') || '<span class="mono">jeszcze bez zapisów</span>'}</span></div>
+      <button class="chip" data-act="guests:${esc(e.id)}" style="padding:7px 12px;font-size:12px;flex:none">Goście</button></div>`).join('') || '<span class="mono">Brak wydarzeń pasujących do miejsc organizatora.</span>'}`}
+  </div>
+</div>`;
+};
+async function guestsSheet(id){
+  const e = EVENTS.find(x=>x.id===id);
+  let list = [];
+  try{ list = (await apiCall('/api/org/guests?event='+encodeURIComponent(id))).guests; }catch(err){ toast(esc(err.message),true); return; }
+  sheet(`<div class="col" style="gap:12px"><span class="h3">Lista gości</span><span class="mono">${esc(e?e.name:id)}</span>
+    <div class="field"><label>IMIĘ I NAZWISKO</label><input id="gs-name" autocomplete="off"></div>
+    <div class="field"><label>E-MAIL (BILET Z QR PRZYJDZIE MAILEM)</label><input id="gs-email" type="email" autocapitalize="off" data-enter="addGuest:${esc(id)}"></div>
+    <button class="btn p" data-act="addGuest:${esc(id)}" style="height:50px">Dodaj gościa</button>
+    <div>${list.map(g=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
+      <div class="col" style="flex:1;min-width:0"><span class="h4">${esc(g.name)}</span><span class="mono" style="margin-top:3px">${esc(g.email||'bez maila')} · ${g.used_at?'wpuszczony':'czeka'}</span></div>
+      <a class="chip" href="/t/${esc(g.code)}" target="_blank" rel="noopener" style="padding:6px 10px;font-size:12px">QR</a>
+      <button class="chip" data-act="delGuest:${esc(g.code)}:${esc(id)}" style="padding:6px 10px;font-size:12px">Usuń</button></div>`).join('') || '<span class="mono">Na liście nikogo jeszcze nie ma.</span>'}</div></div>`);
+  $$('[data-enter]',$('#sheet')).forEach(i=>{ i.onkeydown = ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); act(i.dataset.enter); } }; });
+}
+async function addGuest(id){
+  const name = $('#gs-name')?.value.trim(), email = $('#gs-email')?.value.trim();
+  try{ const r = await apiCall('/api/org/guests','POST',{eventId:id, name, email});
+    toast(r.emailed ? 'Dodano — bilet poszedł mailem' : 'Dodano — link do biletu: /t/'+esc(r.code), true, 3200); sfxOk(); ORG.at=0; guestsSheet(id); }
+  catch(e){ toast(esc(e.message),true); }
 }
 
 /* ---- PANEL ADMINA: zaproszenia ---- */
@@ -411,7 +544,7 @@ const scAdmin = () => {
   <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4" style="flex:1">Panel admina</span>
     <button class="mono" data-act="adminReload" style="color:${PINK}">ODŚWIEŻ</button></div>
   <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:16px 20px">
-    ${[['stats','Statystyki'],['users','Użytkownicy'],['invites','Zaproszenia'],...(isOwner()?[['mail','Poczta']]:[]),['curation','Moderacja'],['data','Dane']].map(([k,l])=>
+    ${[['stats','Statystyki'],['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']].map(([k,l])=>
       `<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}
   </div>
   <div class="pad">
@@ -431,7 +564,7 @@ const scAdmin = () => {
           .filter(Boolean).map((t,i)=>`<span class="badge ${i?'off':''}">${t}</span>`).join('')}<span class="mono">· od ${new Date(x.created_at).toLocaleDateString('pl-PL')}</span></span>
       </div>
       <button class="chip" data-act="perms:${x.id}" style="padding:7px 12px;font-size:12px">Rola</button>
-    </div>`; }).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='invites' ? adminInvitesTab(A) : tab==='mail' ? adminMailTab(A) : tab==='curation' ? `
+    </div>`; }).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='invites' ? adminInvitesTab(A) : tab==='orgs' ? adminOrgsTab(A) : tab==='mail' ? adminMailTab(A) : tab==='curation' ? `
     <span class="body" style="display:block;padding-bottom:10px">Polecaj albo ukrywaj wydarzenia przyciskami na ekranie wydarzenia. Tu możesz to cofnąć.</span>
     <div class="h4" style="padding:10px 0 4px">Polecane</div>${curList(ACC.featured,'Usuń z polecanych')}
     <div class="h4" style="padding:20px 0 4px">Ukryte</div>${curList([...ACC.hidden],'Przywróć')}` : `

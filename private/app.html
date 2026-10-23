@@ -368,6 +368,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 </style>
 <link rel="stylesheet" href="/app.css">
 <link rel="stylesheet" href="/admin.css">
+<link rel="stylesheet" href="/premium.css">
 </head>
 <body>
 <div id="previewbar" style="padding:10px;text-align:center;background:#ff0059;color:#000;font:600 12px system-ui">Zamknięty podgląd aplikacji · płatności i bilety są demonstracyjne · <a href="/?web" target="_blank" rel="noopener">Wróć do witryny</a></div>
@@ -415,6 +416,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
   <div id="jumpbar" class="ds"></div>
 </div>
 <script src="/admin.js"></script>
+<script src="/premium.js"></script>
 <script>
 /* ============================================================
    +1 — prototyp v2
@@ -934,7 +936,8 @@ async function toggleMine(id, kind){
   S.popId = on ? id+kind : null; S.dir=null; render();
   if(on) toast(kind==='going' ? 'Dodane do Twoich biletów' : 'Zapisane', true, 1800);
   if(ACC.user){
-    try{ setMine(await apiCall('/api/saved','POST',{eventId:id, on, kind})) }
+    const ev = EVENTS.find(x=>x.id===id), meta = ev && {t:ev.name, c:ev.cat, v:ev.venue, city:ev.city, d:ev.start, a:ev.lineup};
+    try{ setMine(await apiCall('/api/saved','POST',{eventId:id, on, kind, meta})) }
     catch(e){ toast(esc(e.message),true); }
     S.dir=null; render();
   } else keepMine();
@@ -982,6 +985,7 @@ async function loadAccount(){
   ACC.loaded=true;
   if(S.screen==='loading') S.screen='home';
   S.dir=null; render();
+  premiumAfterLogin();
 }
 
 async function submitAuth(){
@@ -1103,9 +1107,11 @@ const scProfile = () => {
     <button class="btn g" data-act="saveProfile" style="height:44px;font:600 13px/1 var(--d)">Zapisz</button></div>`:''}
   <div class="pad">
     ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">${isOwner()?'GŁÓWNY ADMIN':'ADMIN'}</span>`):''}
+    ${isOrgNow()?row('star','Panel organizatora','orgMine',`<span class="mono" style="color:${PINK}">ORGANIZATOR</span>`):''}
     ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
     ${realOwner()?row('users','Zobacz jako…','viewAsSheet',`<span class="mono">${viewAs()?esc(roleName(viewAs())):'Ty'}</span>`):''}
     ${u&&!appStaffMode()?row('ticket','Moje bilety z kodem QR','go:mytickets',''):''}
+    ${!appStaffMode()?premiumRows(u, row):''}
     ${u?row('lock','Zmień hasło','passwordSheet'):''}
 
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
@@ -1757,6 +1763,7 @@ const scLive = e => `
         .map(([l,i,a,on,k])=>`<button class="mine-act ${on?'on':''} ${on&&S.popId===e.id+k?'pop':''}" data-act="${a}">${ic(i,18)}<span>${l}</span></button>`).join('')}
     </div>
     ${MINE.going.has(e.id)?`<button class="btn w" data-act="${ACC.user?'ticketQR:'+e.id:'authFrom:event'}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} ${ACC.user?'Pokaż bilet z kodem QR':'Zaloguj się, żeby mieć bilet z kodem QR'}</button>`:''}
+    ${premiumEvent(e)}
     ${isAdmin()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
       <span class="mono" style="flex:1;color:${PINK}">ADMIN</span>
       <button class="chip ${ACC.featured.includes(e.id)?'on':''}" data-act="curate:${e.id}:${ACC.featured.includes(e.id)?'clear':'feature'}" style="padding:7px 12px;font-size:12px">${ACC.featured.includes(e.id)?'Polecane':'Poleć'}</button>
@@ -2827,7 +2834,7 @@ const SCREENS = {
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
   start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), scan:()=>scScan(), mytickets:()=>scMyTickets(),
-  staff:()=>scStaff(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scPeople(),
+  staff:()=>scStaff(), org:()=>scOrg(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scPeople(),
   loading:()=>'<div class="pg pad" style="padding-top:120px"><p class="body">Otwieram Twoje +1…</p></div>'
 };
 
@@ -2842,10 +2849,10 @@ const NAV = [
   {k:'wallet', ic:'wallet', l:'PORTFEL'}
 ];
 /* środkowy przycisk: na ekranach z wydarzeniami logo +1 (strona główna), gdzie indziej PAY */
-const FAB_HOME = ['home','list','map','cities','profile','mytickets','scan','people'];
+const FAB_HOME = ['home','list','map','cities','profile','mytickets','scan','people','org','plan','mywrapped'];
 /* publicznie PAY tylko w dniu wydarzenia, na które masz bilet (na Biletach i w Portfelu) */
 const payDay = () => ['tickets','wallet'].includes(S.screen) && [...MINE.going].some(id => EVENTS.find(e=>e.id===id)?.day===localDay());
-const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people',...STAFF_SCREENS];
+const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','org','plan','mywrapped',...STAFF_SCREENS];
 const STAFF_NAV = [{k:'staffStats',ic:'bolt',l:'STATYSTYKI'},{fab:true},{k:'staffActivity',ic:'clock',l:'HISTORIA'}];
 const FAB_SVG = `<svg width="38" height="38" viewBox="0 0 100 100" aria-hidden="true">${GLYPH('#000')}</svg>`;
 
@@ -2887,6 +2894,7 @@ function renderAppChrome(){
       ? `<button data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${esc(S.city)} ▾</button>` : '<span class="eyebrow">Twoje +1</span>'}
     </div><div class="app-top-actions">
       <button data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
+      ${ACC.user && !appStaffMode()?`<button data-act="sheetNotif" aria-label="Powiadomienia" style="position:relative">${ic('bell',18)}<span id="notifdot" class="notifdot" style="${PREM.unread?'':'display:none'}"></span></button>`:''}
       <button class="app-account" data-act="go:profile" aria-label="Konto">${ic('user',20)}</button>
     </div>` : '';
   $('#web-header').innerHTML=''; $('#web-footer').innerHTML='';
@@ -3051,7 +3059,7 @@ function act(a){
     case 'promo': promoSheet(); break;
     case 'splitSheet': splitSheet(); break;
     case 'sheetCity': citySheet(); break;
-    case 'sheetNotif': notifSheet(); break;
+    case 'sheetNotif': ACC.user ? premiumNotif() : notifSheet(); break;
     case 'theme': setTheme(document.documentElement.dataset.theme==='light'?'dark':'light'); haptic(8); sfxTap(); break;
     case 'closeSheet': closeSheet(); break;
     case 'applyPromo': applyPromo(); break;
@@ -3094,7 +3102,7 @@ function act(a){
     }
     case 'rmode': S.release.mode=p1; haptic(5); sfxTap(); render(); break;
     case 'confirmRelease': doRelease(); break;
-    default: adminAct(cmd, p1, p2, a);
+    default: adminAct(cmd, p1, p2, a) || premiumAct(cmd, p1, p2, a);
   }
 }
 
@@ -3353,6 +3361,7 @@ function cityCard(c){
       <span class="mono" style="color:${PINK}">${pl(n)} wydarzeń</span></div>
     <div>${next.map(listRow).join('')}</div>
     <button class="btn p" data-act="cityPick:${esc(c)}" style="height:52px;font:600 15px/1 var(--d)">Wybierz ${esc(c)}</button>
+    ${premiumCity(c)}
     <button class="btn g" data-act="mapGo:${esc(c)}" style="height:48px;font:500 14px/1 var(--d)">Wszystkie wydarzenia →</button></div>`);
 }
 

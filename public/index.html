@@ -586,7 +586,7 @@ function morph(update, el){
   t.finished.catch(()=>{}).finally(()=>$$('.vt-hero').forEach(x=>x.classList.remove('vt-hero')));
 }
 function go(s, anim=true){
-  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan'].includes(s)) return;
+  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan','org'].includes(s)) return;
   if(s===S.screen) return;
   SCROLL[S.screen] = scrollY_();
   S.dir = !anim ? null : ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
@@ -847,7 +847,8 @@ async function toggleMine(id, kind){
   S.popId = on ? id+kind : null; S.dir=null; render();
   if(on) toast(kind==='going' ? 'Dodane do Twoich biletów' : 'Zapisane', true, 1800);
   if(ACC.user){
-    try{ setMine(await apiCall('/api/saved','POST',{eventId:id, on, kind})) }
+    const ev = EVENTS.find(x=>x.id===id), meta = ev && {t:ev.name, c:ev.cat, v:ev.venue, city:ev.city, d:ev.start, a:ev.lineup};
+    try{ setMine(await apiCall('/api/saved','POST',{eventId:id, on, kind, meta})) }
     catch(e){ toast(esc(e.message),true); }
     S.dir=null; render();
   } else keepMine();
@@ -900,11 +901,12 @@ async function loadAccount(){
 async function submitAuth(){
   if(ACC.busy) return;
   const email=$('#au-email')?.value.trim(), password=$('#au-pass')?.value||'', name=$('#au-name')?.value.trim();
+  if($('[data-int]')) S.regInterests = readInterests(); if($('#au-news')) S.regNews = $('#au-news').checked;
   const mode = ACC.authMode;
   ACC.authErr=''; ACC.busy=true; S.dir=null; render();
   try{
     const res = mode==='register'
-      ? await apiCall('/api/auth/register','POST',{email,password,name,city:S.city})
+      ? await apiCall('/api/auth/register','POST',{email,password,name,city:S.city,interests:readInterests(),newsletter:!!$('#au-news')?.checked})
       : await apiCall('/api/auth/login','POST',{email,password});
     if(mode==='admin' && res.user.role!=='admin'){
       await apiCall('/api/auth/logout','POST',{}).catch(()=>{});
@@ -980,6 +982,8 @@ const scAuth = () => {
     ${!ACC.api?`<div class="err">Logowanie jest chwilowo niedostępne. Spróbuj za moment.</div>`:''}
     ${ACC.authErr?`<div class="err" role="alert">${esc(ACC.authErr)}</div>`:''}
     ${reg?`<div class="field"><label>IMIĘ (OPCJONALNIE)</label><input id="au-name" autocomplete="given-name" maxlength="60"></div>`:''}
+    ${reg?`<div class="field"><label>CO LUBISZ? (DOSTANIESZ ALERTY TYLKO Z TYCH TEMATÓW)</label>${interestChips(S.regInterests||[])}</div>
+      <label class="row" style="gap:10px;font:400 14px/1.4 var(--d);color:var(--t2);cursor:pointer"><input id="au-news" type="checkbox" ${S.regNews===false?'':'checked'} style="width:20px;height:20px;accent-color:var(--pink)"> Co czwartek „Na topie w Twoim mieście” na maila</label>`:''}
     <div class="field"><label>E-MAIL</label><input id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="ty@przyklad.pl"></div>
     <div class="field"><label>HASŁO${reg?' (MIN. 8 ZNAKÓW)':''}</label><input id="au-pass" type="password" autocomplete="${reg?'new-password':'current-password'}" data-enter="submitAuth"></div>
     <button class="btn p" data-act="submitAuth" ${ACC.busy?'disabled style="opacity:.6"':''}>${ACC.busy?'Chwilka…':adm?'Wejdź do panelu':reg?'Załóż konto':'Zaloguj się'}</button>
@@ -1018,6 +1022,7 @@ const scProfile = () => {
   <div class="pad">
     ${ACC.preview?`<a class="listbtn" href="/app" style="color:inherit;text-decoration:none">${ic('shield',18)} Aplikacja na telefon</a>`:''}
     ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">${isOwner()?'GŁÓWNY ADMIN':'ADMIN'}</span>`):''}
+    ${isOrgNow()?row('star','Panel organizatora','orgMine',`<span class="mono" style="color:${PINK}">ORGANIZATOR</span>`):''}
     ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
     ${realOwner()?row('users','Zobacz jako…','viewAsSheet',`<span class="mono">${viewAs()?esc(roleName(viewAs())):'Ty'}</span>`):''}
 
@@ -1025,6 +1030,7 @@ const scProfile = () => {
     ${row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`)}
     ${row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`)}
     ${row('pin','Miasto','sheetCity',`<span class="mono">${esc(S.city)}</span>`)}
+    ${u?row('bell','Newsletter „Na topie”','toggleNews',`<span class="mono" style="color:${u.newsletter?PINK:'var(--t3)'}">${u.newsletter?'WŁĄCZONY':'WYŁĄCZONY'}</span>`):''}
     ${u?row('lock','Zmień hasło','passwordSheet'):''}
     ${u?row('logout','Wyloguj się','logout'):''}
   </div>
@@ -1587,6 +1593,11 @@ const scLive = e => `
         .map(([l,i,a,on,k])=>`<button class="mine-act ${on?'on':''} ${on&&S.popId===e.id+k?'pop':''}" data-act="${a}">${ic(i,18)}<span>${l}</span></button>`).join('')}
     </div>
     ${MINE.going.has(e.id)?`<button class="btn w" data-act="${ACC.user?'ticketQR:'+e.id:'authFrom:event'}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} ${ACC.user?'Pokaż bilet z kodem QR':'Zaloguj się, żeby mieć bilet z kodem QR'}</button>`:''}
+    <button class="card" data-act="go:downloads" style="padding:14px 16px;display:flex;gap:14px;align-items:center;text-align:left;width:100%;color:inherit">
+      <span style="width:40px;height:40px;border-radius:12px;background:var(--pink-dim);display:grid;place-items:center;color:var(--pink);flex:none">${ic('star',18)}</span>
+      <span class="col" style="flex:1;min-width:0"><span class="h4">Więcej w aplikacji +1</span>
+        <span class="mono" style="margin-top:4px;line-height:1.4">Obserwuj i dostawaj alerty o tańszych biletach, idź ze znajomymi, plan na wieczór</span></span>
+      <span style="color:var(--t3);display:flex">${ic('chevR',16)}</span></button>
     ${canCurate()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
       <span class="mono" style="flex:1;color:${PINK}">${isAdmin()?'ADMIN':'MODERATOR'}</span>
       <button class="chip ${ACC.featured.includes(e.id)?'on':''}" data-act="curate:${e.id}:${ACC.featured.includes(e.id)?'clear':'feature'}" style="padding:7px 12px;font-size:12px">${ACC.featured.includes(e.id)?'Polecane':'Poleć'}</button>
@@ -1734,7 +1745,7 @@ const scWalletSoon = () => `
 const SCREENS = {
   home:scHome, list:scList, map:scMap, event:()=>scLive(ev()),
   tickets:scMyTickets, wallet:scWalletSoon,
-  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan()
+  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan(), org:()=>scOrg()
 };
 
 /* =========================================================

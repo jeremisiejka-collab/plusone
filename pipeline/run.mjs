@@ -24,6 +24,16 @@ try { prev = JSON.parse(await readFile(OUT, 'utf8')); } catch { /* pierwszy prze
 const prevEvents = prev?.events || [];
 // wydarzenia z pliku sprzed wprowadzenia firstSeen traktujemy jako "stare"
 const firstSeen = new Map(prevEvents.map(e => [e.id, e.firstSeen || '2000-01-01T00:00:00.000Z']));
+// ceny z poprzedniego przebiegu: spadek ceny = alert „taniej” dla obserwujących (worker/premium.js)
+const prevById = new Map(prevEvents.map(e => [e.id, e]));
+function priceDrop(e, stamp) {
+  const p = prevById.get(e.id);
+  if (!p || e.priceFrom == null) return undefined;
+  if (p.priceFrom != null && e.priceFrom < p.priceFrom) return { was: p.priceFrom, at: stamp };
+  // utrzymujemy informację przez tydzień, dopóki cena nie wróci
+  if (p.priceDrop && e.priceFrom < p.priceDrop.was && Date.now() - Date.parse(p.priceDrop.at) < 7 * 864e5) return p.priceDrop;
+  return undefined;
+}
 
 const only = process.argv.find(a => a.startsWith('--only='))?.slice(7).split(',');
 
@@ -57,7 +67,7 @@ const valid = raw.map(cleanEventText).filter(e =>
 const stamp = new Date().toISOString();
 const events = dedup(valid)
   .map(e => ({ ...e, big: isBig(e), firstSeen: firstSeen.get(e.id) || stamp }))
-  .map(e => ({ ...e, hot: hotScore(e) }))
+  .map(e => ({ ...e, hot: hotScore(e), priceDrop: priceDrop(e, stamp) }))
   .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 
 const img = await measureImages(events, prevEvents);
