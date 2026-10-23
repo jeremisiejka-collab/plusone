@@ -1941,7 +1941,7 @@ const scSuccess = () => `
 const scTickets = () => `
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad" style="padding-bottom:18px"><div class="h2">Bilety</div>
-    <span class="mono" style="display:block;margin-top:6px">Przesuń kartę w bok · dotknij by otworzyć</span></div>
+    <span class="mono" style="display:block;margin-top:6px">${matchMedia('(hover:hover)').matches?'Kliknij bilet, żeby pokazać kod QR':'Przesuń kartę w bok · dotknij by otworzyć'}</span></div>
   <div class="sc" id="stack" style="display:flex;gap:14px;overflow-x:auto;padding:0 20px 24px;scroll-snap-type:x mandatory">
     ${S.owned.map((o,i)=>{const e=EVENTS.find(x=>x.id===o.id); return `
       <div data-act="openTicket:${i}" class="tk ds" style="flex:none;width:290px;scroll-snap-align:center;
