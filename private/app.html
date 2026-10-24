@@ -369,7 +369,7 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 <link rel="stylesheet" href="/premium.css">
 </head>
 <body>
-<div id="previewbar" style="padding:10px;text-align:center;background:#ff0059;color:#000;font:600 12px var(--d)">Zamknięty podgląd aplikacji · płatności i bilety są demonstracyjne · <a href="/?web" target="_blank" rel="noopener">Wróć do witryny</a></div>
+<div id="previewbar" style="padding:10px;text-align:center;background:#ff0059;color:#000;font:600 12px var(--d)">Zamknięty podgląd aplikacji · Portfel już wkrótce · <a href="/?web" target="_blank" rel="noopener">Wróć do witryny</a></div>
 <div id="desk">
   <div id="deskbar" class="ds">
     <svg width="32" height="32" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#000"/><g fill="#FF0059"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
@@ -544,8 +544,7 @@ const CONTACTS = [
   {id:3, name:'Tymek Sz.', handle:'tymek@mail.com'}
 ];
 
-/* Funkcje demo (bilety, portfel, PAY, zaproszenia, logowanie) są jeszcze makietą.
-   Publicznie ich nie pokazujemy; włącza je ?demo (wyłącza ?demo=0), zapamiętane w sesji. */
+/* Klasa demo zachowuje układ aplikacji. Dane konta nie pochodzą z makiet. */
 const DEMO = true;
 document.body.classList.toggle('demo', DEMO);
 
@@ -633,6 +632,11 @@ function appScreen(s){
   if(['staff','staffStats','staffActivity'].includes(s)) return 'home';
   if(s==='map' || s==='cities') return 'list';
   if(s==='scanner') return canScanNow() ? 'scan' : 'home';
+  if(s==='invite' || s==='login') return 'home';
+  if(['select','checkout'].includes(s) || (s==='event' && !ev().real)) return 'list';
+  if(['ticket','release','transfer','transferDone','success'].includes(s)) return 'tickets';
+  if(s==='wrapped') return 'mywrapped';
+  if(WALLET_SOON.includes(s)) return 'wallet';
   return s;
 }
 function go(s){
@@ -1447,35 +1451,14 @@ const scHome = () => {
   <div class="pad calendar-grid" style="padding-bottom:8px">${f.slice(6,14).map(listRow).join('')}</div>
   <div class="pad" style="padding-bottom:26px"><button class="btn g" data-act="upcomingList" style="height:46px;font:500 13px/1 var(--d)">Wszystkie (${f.length}) →</button></div>`:'<div style="height:6px"></div>'}`}
 
-  ${DEMO?`
-  <div style="margin:0 20px 18px;padding:18px;border-radius:20px;position:relative;overflow:hidden;
-    background:linear-gradient(125deg,var(--promo1),var(--promo2) 72%);border:1px solid var(--pink-line)"
-    data-act="${S.invite.accepted?'ev:dom47':'go:invite'}">
-    <div class="pgrid" style="opacity:.4"></div>
-    <div class="row" style="gap:13px;align-items:center;position:relative">
-      <span style="width:44px;height:44px;border-radius:13px;background:rgba(var(--fg),.06);display:grid;place-items:center;color:${PINK}">${ic(S.invite.accepted?'check':'lock',20)}</span>
-      <div class="col" style="flex:1">
-        <span class="eyebrow pink">${S.invite.accepted?'Jesteś na liście':'Zaproszenie'}</span>
-        <span style="font:600 16px/1.25 var(--d);letter-spacing:-.01em;margin-top:6px">
-          ${S.invite.accepted?'DOM 47 · 6 września':'Ktoś wysłał Ci link do ukrytego eventu'}</span>
-        <span class="mono" style="margin-top:6px">${S.invite.accepted
-          ? (S.invite.plus==='ok'?'+1 zaakceptowany · '+esc(S.invite.guest||''):'Możesz poprosić o +1')
-          : 'Nie ma go w wyszukiwarce · wygasa za '+hms(S.invite.left)}</span>
-      </div>
-      <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
-    </div>
-  </div>
-
-
   <div class="pad" style="padding-top:22px">
-    <div data-act="go:wrapped" class="card" style="padding:18px;display:flex;align-items:center;gap:14px">
+    <div data-act="go:mywrapped" class="card" style="padding:18px;display:flex;align-items:center;gap:14px">
       <span style="color:${PINK}">${ic('star',24)}</span>
-      <div class="col" style="flex:1"><span class="h4">+1 Wrapped '26</span>
-        <span class="mono" style="margin-top:4px">17 eventów · 91 km · 34 piwa · 12 slajdów</span></div>
+      <div class="col" style="flex:1"><span class="h4">+1 Wrapped '${String(new Date().getFullYear()).slice(-2)}</span>
+        <span class="mono" style="margin-top:4px">Twoje wydarzenia, miejsca i wspomnienia</span></div>
       <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
     </div>
   </div>
-`:''}
 </div>`;
 };
 
@@ -1507,7 +1490,6 @@ const bigListRow = e => {
 const scList = () => {
   const f = sorted(filtered());
   const sorts = [['date','Najbliższe'],['price','Najtańsze']];
-  const inv = INVITES[0], se = EVENTS.find(x=>x.id===inv.ev);
   return `
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad row" style="justify-content:space-between;align-items:baseline;padding-bottom:16px">
@@ -1541,23 +1523,6 @@ const scList = () => {
     ${sorts.map(([k,l])=>`<button class="chip ${S.sort===k?'on':''}" data-act="sort:${k}"
       style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
   </div>
-
-  ${DEMO?`<div class="pad" style="padding-bottom:20px">
-    <div data-act="${S.invite.accepted?'ev:dom47':'go:invite'}" style="padding:16px;border-radius:18px;position:relative;overflow:hidden;
-      background:linear-gradient(120deg,var(--promo1),var(--promo2) 70%);border:1px solid var(--pink-line)">
-      <div class="pgrid" style="opacity:.35"></div>
-      <div class="row" style="gap:12px;align-items:center;position:relative">
-        <span style="width:40px;height:40px;border-radius:12px;background:rgba(var(--fg),.06);display:grid;place-items:center;color:${PINK}">${ic(S.invite.accepted?'check':'lock',19)}</span>
-        <div class="col" style="flex:1">
-          <span class="h4">${S.invite.accepted?'Jesteś na liście · '+esc(se.name):'Masz 1 zaproszenie'}</span>
-          <span class="mono" style="margin-top:4px">${S.invite.accepted
-            ? 'Tajny event · '+esc(se.date)
-            : 'Link od '+esc(inv.from)+' · wygasa za '+hms(S.invite.left)}</span>
-        </div>
-        <span style="color:var(--t3);display:flex">${ic('chevR',17)}</span>
-      </div>
-    </div>
-  </div>`:''}
 
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0?`
     <div class="pad col" style="gap:12px;padding-top:20px;align-items:flex-start">
@@ -2324,16 +2289,16 @@ const TXS = [
   {t:'Od: Kaja Wrona', m:'Jasna 1 · 12 sie', a:30},
   {t:'Bar 1 · woda', m:'Jasna 1 · 11 sie', a:-8}
 ];
-/* ---- PORTFEL: publicznie zapowiedź (pełny prototyp w ?demo) ---- */
-const WALLET_SOON = ['wallet','topup','bar','nfc','scanpay'];
-const walletSoon = () => !DEMO && WALLET_SOON.includes(S.screen);
+/* ---- PORTFEL: zapowiedź dla wszystkich kont w aplikacji ---- */
+const WALLET_SOON = ['wallet','topup','bar','nfc','scanpay','blik'];
+const walletSoon = () => WALLET_SOON.includes(S.screen);
 const WALLET_MARK = `<svg class="wallet-mark" width="90" height="57" viewBox="20.15 31.2 59.7 37.6" aria-hidden="true" style="position:absolute;right:18px;top:18px;opacity:.12;pointer-events:none">${GLYPH(PINK_HEX)}</svg>`;
 const scWalletSoon = () => `
 <div class="pg" style="padding:64px 0 112px">
   <div class="pad col" style="gap:18px;max-width:760px;margin:0 auto">
     <div class="row" style="gap:10px;align-items:center">
       <div class="h2">Portfel</div>
-      <span style="padding:6px 10px;border-radius:8px;background:${PINK};color:#000;font:700 10px/1 var(--m);letter-spacing:.1em">WKRÓTCE</span>
+      <span style="padding:6px 10px;border-radius:8px;background:${PINK};color:#000;font:700 10px/1 var(--m);letter-spacing:.1em">JUŻ WKRÓTCE</span>
     </div>
     <div class="ds" style="border-radius:24px;padding:24px;position:relative;overflow:hidden;
       background:linear-gradient(150deg,#2a0013,#0d0009 70%);border:1px solid var(--pink-line)">
@@ -2350,8 +2315,7 @@ const scWalletSoon = () => `
           <span style="width:40px;height:40px;border-radius:12px;background:var(--surface-3);display:grid;place-items:center;color:${PINK};flex:none">${ic(i,18)}</span>
           <div class="col" style="min-width:0"><span class="h4">${t}</span><span class="mono" style="margin-top:4px;line-height:1.4">${d}</span></div></div>`).join('')}
     </div>
-    <button class="btn p" data-act="walletNotify" style="height:52px;font:600 15px/1 var(--d)">${S.walletNotify?'Damy znać, gdy ruszy':'Powiadom mnie, gdy ruszy'}</button>
-    <button class="btn g" data-act="go:home" style="height:48px;font:500 14px/1 var(--d)">Wróć do wydarzeń</button>
+    <button class="btn g" data-act="upcomingList" style="height:48px;font:500 14px/1 var(--d)">Odkryj wydarzenia</button>
   </div>
 </div>`;
 
@@ -2808,7 +2772,7 @@ const scScanpay = () => {
 
 const SCREENS = {
   login:scLogin, blik:scBlik, home:scHome, list:scList, invite:scInvite, event:scEvent, venue:scVenue,
-  select:scSelect, checkout:scCheckout, success:scSuccess, tickets:scTickets, ticket:scTicket,
+  select:scSelect, checkout:scCheckout, success:scSuccess, tickets:scMyTickets, ticket:scTicket,
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
   start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), scan:()=>scScan(), mytickets:()=>scMyTickets(),
@@ -2882,7 +2846,7 @@ function render(){
   if(SCAN.stream) stopScan();
   if(S.screen!=='scanpay') stopCam();
   $('#shell').classList.toggle('ds', DARK_SCREENS.includes(S.screen) && !walletSoon());
-  const fn = walletSoon() ? scWalletSoon : (!DEMO && S.screen==='tickets') ? scMyTickets : (SCREENS[S.screen] || scHome);
+  const fn = walletSoon() ? scWalletSoon : (SCREENS[S.screen] || scHome);
   $('#view').innerHTML = fn();
   renderAppChrome();
   const pg = $('#view').firstElementChild;
@@ -2908,7 +2872,7 @@ function render(){
   $('#offline').classList.toggle('on', S.offline);
   $('#netic').classList.toggle('off', S.offline);
 
-  $('#jumpbar').innerHTML = (appStaffMode() ? STAFF_SCREENS : Object.keys(SCREENS).filter(k=>!['loading',...STAFF_SCREENS].includes(k))).map(k=>
+  $('#jumpbar').innerHTML = (appStaffMode() ? STAFF_SCREENS : Object.keys(SCREENS).filter(k=>!['loading',...STAFF_SCREENS].includes(k) && appScreen(k)===k)).map(k=>
     `<button class="jump ${S.screen===k?'on':''}" data-act="go:${k}">${k}</button>`).join('');
 
   bind(document);
