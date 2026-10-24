@@ -734,23 +734,26 @@ const artCache={};
 const art = e => (artCache[e.id] = artCache[e.id] || poster(e));
 /* zdjęcia już wczytane nie mrugają przy przerysowaniu */
 const IMG_OK = new Set();
-/* Karta przyjmuje kształt plakatu (proporcje z pipeline: imageRatio), więc grafika nie jest ani ucięta,
-   ani otoczona rozmytymi pasami. Gdy proporcji jeszcze nie znamy, poprawiamy kształt po wczytaniu obrazka. */
+/* Dwa formaty podglądów; pełny plakat na stronie wydarzenia zachowuje oryginalne proporcje. */
 const IMG_R = new Map();
 const ratioOf = e => {
   if(!e.image) return .8;
   const m = e.image.match(/c_fill,w_(\d+),h_(\d+)/) || e.image.match(/(\d{3,4})[-_ ]?x[-_ ]?(\d{3,4})/i);
   const r = IMG_R.get(e.image) || e.ratio || (m && m[1]/m[2]);
-  return r ? clamp(+r, .5, 2.2) : null;
+  return Number.isFinite(+r) && +r>0 ? +r : null;
 };
+const posterFormat = e => (ratioOf(e)||.75)>1 ? 'landscape' : 'portrait';
 const arStyle = e => `--r:${(ratioOf(e)||.8).toFixed(3)}`;
 function artLoad(img){
   const k = img.dataset.k; IMG_OK.add(k); img.classList.add('on');
   if(!img.naturalWidth) return;
-  const r = img.naturalWidth/img.naturalHeight, known = IMG_R.has(k);
+  const r = img.naturalWidth/img.naturalHeight;
   IMG_R.set(k, r);
   const box = img.closest('[data-ar]');
-  if(box && !known) box.style.setProperty('--r', clamp(r,.5,2.2).toFixed(3));
+  if(box){
+    box.style.setProperty('--r', r.toFixed(3));
+    if(box.hasAttribute('data-poster')) box.dataset.poster = r>1 ? 'landscape' : 'portrait';
+  }
 }
 const artBox = e => e.image
   ? `<div class="art" style="background:hsl(${e.hue} 34% 8%)">${art(e)}<img src="${esc(e.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
@@ -1295,7 +1298,7 @@ const moreTag = e => e.more ? `<span class="ev-more">+${e.more} ${terms(e.more)}
 
 /* karta w poziomym pasku */
 const bigCard = (e, i=0, withCity=false) => `
-<article data-act="ev:${e.id}" class="ev" data-ar style="--i:${i};${arStyle(e)}">
+<article data-act="ev:${e.id}" class="ev" data-ar data-poster="${posterFormat(e)}" style="--i:${i};${arStyle(e)}">
   <div class="ev-media ds">${artBox(e)}${dateTag(e)}</div>
   <div class="ev-body">
     <h3 class="ev-title clamp2">${esc(e.name)}</h3>
@@ -1304,9 +1307,9 @@ const bigCard = (e, i=0, withCity=false) => `
   </div>
 </article>`;
 
-/* duża karta wielkich wydarzeń: plakat w całości, opis pod spodem */
+/* Wyróżniona karta wydarzenia w jednym z dwóch formatów, z opisem pod spodem. */
 const heroCard = (e, i=0) => `
-<article data-act="ev:${e.id}" class="ev ev-hero" data-ar style="--i:${i};${arStyle(e)}">
+<article data-act="ev:${e.id}" class="ev ev-hero" data-ar data-poster="${posterFormat(e)}" style="--i:${i};${arStyle(e)}">
   <div class="ev-media ds">${artBox(e)}${dateTag(e)}</div>
   <div class="ev-body">
     <span class="ev-kicker">${esc(CAT_PL[e.cat]||'')}${e.city!==S.city?' · '+esc(e.city):''}</span>
@@ -1329,7 +1332,7 @@ const shelf = (title, sub, link, cards, cls='', next='') => `
 
 const listRow = e => `
 <div data-act="ev:${e.id}" class="event-row" style="display:flex;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)">
-  <div style="flex:none;width:66px;height:66px;border-radius:14px;overflow:hidden;position:relative;background:var(--surface-2)">
+  <div class="cat-thumb" data-ar data-poster="${posterFormat(e)}" style="${arStyle(e)}">
     ${artBox(e)}</div>
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
@@ -1465,7 +1468,7 @@ const scHome = () => {
 /* ---- LISTA WYDARZEŃ ---- */
 const bigListRow = e => `
 <div data-act="ev:${e.id}" class="event-row cat-row">
-  <div class="ds cat-thumb" data-ar style="${arStyle(e)}">${artBox(e)}</div>
+  <div class="ds cat-thumb" data-ar data-poster="${posterFormat(e)}" style="${arStyle(e)}">${artBox(e)}</div>
   <div style="flex:1;min-width:0" class="col">
     <span class="h4 clamp2">${esc(e.name)}</span>
     <span class="ev-sub" style="margin-top:5px">${esc(e.ongoing ? 'trwa '+e.tag : (S.sort==='date' ? (e.time||'cały dzień') : e.when))}</span>
@@ -1780,9 +1783,9 @@ function webHero(){
 function scDownloads(){
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent), android = /android/i.test(navigator.userAgent);
   const access = ACC.user && !ACC.preview
-    ? `<div class="card" style="padding:16px"><span class="h4">Twoje konto czeka na zaproszenie</span><p class="body" style="margin-top:6px">Możesz zainstalować aplikację już teraz. Skorzystasz z niej po otrzymaniu dostępu do testów.</p></div>`
+    ? `<div class="card" style="padding:16px"><span class="h4">Twoje konto czeka na zaproszenie</span><p class="body" style="margin-top:6px">Testy są zamknięte. Gdy administrator nada Ci dostęp, przycisk poniżej otworzy aplikację.</p></div>`
     : '';
-  const cta = `<button class="btn p" data-act="installApp" style="display:flex;align-items:center;justify-content:center;gap:10px;max-width:380px">${ic('plus',18)} Zainstaluj +1</button>`;
+  const cta = `<a class="btn p" href="/app" style="display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;max-width:380px">${ic('plane',18)} Pobierz aplikację +1</a>`;
   const step = (title, steps, on) => `<div class="dl-card" style="${on?'border-color:var(--pink-line)':''}">
     <div class="row" style="justify-content:space-between"><span class="h3">${title}</span>${on?'<span class="ev-more">Twój telefon</span>':''}</div><ol>${steps.map(x=>`<li><span>${x}</span></li>`).join('')}</ol></div>`;
   return `<div class="pg"><div class="dl">
@@ -1800,69 +1803,6 @@ function scDownloads(){
   <p class="body" style="color:var(--t3)">Chcesz dołączyć do testów? Załóż konto i napisz do nas — dostęp nadaje administrator.</p>
 </div></div>`; }
 
-/* Zachęta do instalacji. Okno systemowe otwieramy dopiero po kliknięciu. */
-const WEB_INSTALL = { prompt:null, ready:false, busy:false, dismissed:false, installed:false };
-const installedApp = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-function installNudgeHidden(){
-  if(installedApp() || WEB_INSTALL.installed || WEB_INSTALL.dismissed) return true;
-  try { return localStorage.getItem('plusoneInstalled')==='1' || Number(localStorage.getItem('webInstallDismissedUntil'))>Date.now(); } catch { return false; }
-}
-function dismissInstallNudge(){
-  WEB_INSTALL.dismissed = true;
-  try { localStorage.setItem('webInstallDismissedUntil', String(Date.now()+7*864e5)); } catch {}
-  $('#web-install')?.remove();
-}
-function renderInstallNudge(){
-  const visible = WEB_INSTALL.ready && !installNudgeHidden() && ['home','list','map','event','tickets','wallet'].includes(S.screen);
-  if(!visible){ $('#web-install')?.remove(); return; }
-  const existing = $('#web-install');
-  if(existing){ $('[data-act="installApp"]', existing).textContent = WEB_INSTALL.prompt ? 'Zainstaluj' : 'Jak zainstalować'; return; }
-  const el = document.createElement('aside'); el.id='web-install';
-  el.setAttribute('aria-labelledby','web-install-title'); el.setAttribute('aria-live','polite');
-  el.innerHTML = `<div class="web-install-head">${LOGO(44,12)}<div><h2 id="web-install-title">Zainstaluj +1</h2><p>Wydarzenia i bilety zawsze pod ręką.</p></div></div>
-    <button class="web-install-close" data-act="dismissInstall" aria-label="Zamknij zachętę do instalacji">${ic('cross',16)}</button>
-    <button class="web-install-go" data-act="installApp">${WEB_INSTALL.prompt?'Zainstaluj':'Jak zainstalować'}</button>`;
-  document.body.appendChild(el); bind(el);
-}
-function installInstructions(){
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
-  const android = /android/i.test(navigator.userAgent);
-  const steps = ios
-    ? ['Otwórz tę stronę w <b>Safari</b> i stuknij <b>Udostępnij</b>.', 'Wybierz <b>Do ekranu początkowego</b>, a następnie <b>Dodaj</b>.']
-    : android
-      ? ['Otwórz tę stronę w <b>Chrome</b> i rozwiń menu przeglądarki.', 'Wybierz <b>Zainstaluj aplikację</b> lub <b>Dodaj do ekranu głównego</b> i potwierdź.']
-      : ['Otwórz tę stronę w <b>Chrome</b> lub <b>Edge</b>.', 'W menu przeglądarki wybierz opcję <b>Zainstaluj tę stronę jako aplikację</b>.'];
-  $('#web-install')?.remove();
-  sheet(`<div class="col" style="gap:16px"><h2 class="h3">Zainstaluj +1</h2>
-    <ol class="install-steps">${steps.map(s=>`<li>${s}</li>`).join('')}</ol>
-    <p class="body">Po instalacji otwórz ikonę +1 i zaloguj się kontem z dostępem do aplikacji.</p>
-    <a class="btn p" href="/app" style="display:flex;align-items:center;justify-content:center;text-decoration:none">Otwórz aplikację</a></div>`);
-}
-async function installApp(){
-  if(WEB_INSTALL.busy) return;
-  if(installedApp() || WEB_INSTALL.installed){ location.assign('/app'); return; }
-  const prompt = WEB_INSTALL.prompt;
-  if(!prompt){ installInstructions(); return; }
-  WEB_INSTALL.busy=true; WEB_INSTALL.prompt=null;
-  try {
-    await prompt.prompt();
-    await prompt.userChoice;
-    dismissInstallNudge();
-  } catch { installInstructions(); }
-  finally { WEB_INSTALL.busy=false; }
-}
-addEventListener('beforeinstallprompt', e=>{
-  e.preventDefault(); WEB_INSTALL.prompt=e; WEB_INSTALL.installed=false;
-  try { localStorage.removeItem('plusoneInstalled'); } catch {}
-  renderInstallNudge();
-});
-addEventListener('appinstalled', ()=>{
-  WEB_INSTALL.prompt=null; WEB_INSTALL.installed=true;
-  try { localStorage.setItem('plusoneInstalled','1'); } catch {}
-  $('#web-install')?.remove();
-});
-matchMedia('(display-mode: standalone)').addEventListener('change', renderInstallNudge);
-
 function renderWebChrome(){
   $('#web-header').innerHTML = `<div class="web-header-inner">
     <button class="web-brand" data-act="fabHome" aria-label="+1 — strona główna">${LOGO(48,12)}<span>WHERE ARE<br>WE GOING?</span></button>
@@ -1877,12 +1817,13 @@ function renderWebChrome(){
       <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
       <button class="web-theme" data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
       <button class="web-account" data-act="${ACC.user?'go:profile':'authgo:login'}" aria-label="${ACC.user?'Moje konto':'Zaloguj się'}">${ic('user',16)}<span>${ACC.user?'Moje konto':'Zaloguj się'}</span></button>
+      <button class="web-app" data-act="go:downloads" ${S.screen==='downloads'?'aria-current="page"':''}>Aplikacja</button>
     </div>
   </div>`;
   $('#web-footer').innerHTML = `<div class="web-footer-inner">
     <span>+1 &nbsp; WHERE ARE WE GOING?<br>Wydarzenia w Twoim mieście, w jednym miejscu.</span>
     <button data-act="go:profile">Konto i ustawienia ${ic('chevR',12)}</button>
-    <button data-act="installApp">Zainstaluj aplikację</button>
+    <button data-act="go:downloads">Aplikacja na telefon</button>
   </div>`;
 }
 
@@ -1892,7 +1833,6 @@ function render(){
   const fn = walletSoon() ? scWalletSoon : (!DEMO && S.screen==='tickets') ? scMyTickets : (SCREENS[S.screen] || scHome);
   $('#view').innerHTML = fn();
   renderWebChrome();
-  renderInstallNudge();
   const pg = $('#view').firstElementChild;
   if(pg) pg.dataset.screen = S.screen;
   if(pg && S.dir) pg.classList.add(S.dir);
@@ -1957,8 +1897,6 @@ function act(a){
       S.cat='Wszystko'; S.query=''; S.price='all'; S.limit=40; S.when = MAP.when==='all' ? 'all' : MAP.when; S.prev='map'; go('list'); break;
     case 'big': S.big=!S.big; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
     case 'bigList': S.big=true; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.limit=40; go('list'); break;
-    case 'installApp': installApp(); break;
-    case 'dismissInstall': dismissInstallNudge(); break;
     case 'upcomingList': S.big=false; S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.sort='date'; S.limit=40; go('list'); break;
     case 'descToggle': S.descOpen = S.descOpen===p1 ? null : p1; S.dir=null; render(); break;
     case 'walletNotify': S.walletNotify=true; try{localStorage.setItem('walletNotify','1')}catch(e){}
@@ -2632,6 +2570,8 @@ setInterval(()=>{
 /* =========================================================
    START
    ========================================================= */
+/* Promowanie instalacji wróci po publikacji w App Store. */
+addEventListener('beforeinstallprompt', e=>e.preventDefault());
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){ if($('#sheetwrap').classList.contains('on')) closeSheet(); else back(); }
 });
@@ -2645,7 +2585,6 @@ if(/[?&]register\b/.test(location.search)){ ACC.authMode='register'; S.prev='hom
 render();
 loadLive();
 loadAccount();
-setTimeout(()=>{ WEB_INSTALL.ready=true; renderInstallNudge(); }, 3500);
 setTimeout(()=>{ $('#splash').classList.add('out'); }, 1550);
 setTimeout(()=>{ const sp=$('#splash'); if(sp) sp.remove(); }, 2150);
 if(DEMO && innerWidth>760) setTimeout(()=>toast('Pasek na dole (desktop) przeskakuje po ekranach', true, 4200), 2600);
