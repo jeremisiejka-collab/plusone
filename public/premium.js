@@ -4,6 +4,8 @@
    Korzysta ze wspólnych nazw aplikacji (S, ACC, EVENTS, MINE, sheet, toast, apiCall, ic, esc, render, go…) w chwili wywołania. */
 
 const PREM = { follows:null, notif:null, unread:0, crew:{}, plan:{}, wrapped:null };
+// Zapowiedź do startu funkcji na naszych wydarzeniach. Backend wymaga też ENCOUNTERS_LIVE=true.
+const ENCOUNTERS_COMING_SOON = true;
 
 /* ---------- start: po zalogowaniu ---------- */
 async function premiumAfterLogin(){
@@ -395,11 +397,11 @@ async function socialRun(fn){
 }
 function socialHome(){
   return `<section class="social-invite card" aria-label="Znajdź swoje plus jeden">
-    <div class="social-symbol" aria-hidden="true"><span>+</span><span>1</span></div>
-    <span class="eyebrow pink">Dobre wyjście zaczyna się od ludzi</span>
+    <div class="social-symbol" aria-hidden="true">${LOGO(36,10)}</div>
+    <span class="eyebrow pink">Poznajmy się na żywo</span>
     <h2 class="h2">Znajdź swoje <span class="pink">+1</span></h2>
-    <p class="body">Ten sam wieczór. Ktoś zupełnie nowy.<br>Włącz +1 i złapcie wspólny sygnał.</p>
-    <button class="btn g" data-act="encounterMain">Daj się zaskoczyć ${ic('chevR',18)}</button>
+    <p class="body">Ten sam wieczór. Ktoś zupełnie nowy.<br>Już wkrótce na naszych wydarzeniach.</p>
+    <span class="social-soon-label">${ic('clock',14)} Już niedługo</span>
   </section>`;
 }
 const socialSteps = () => `<div class="social-steps">
@@ -408,6 +410,7 @@ const socialSteps = () => `<div class="social-steps">
   <div><span>03</span><strong>Pierwsze cześć</strong><p>Wzajemne +1 otwierają rozmowę. Reszta na żywo.</p></div>
 </div>`;
 function scSocial(){
+  if(ENCOUNTERS_COMING_SOON) return scEncounterSoon();
   if(SOCIAL.owner!==(ACC.user?.id||null)) socialReset();
   if(!SOCIAL.data && !SOCIAL.loading && !SOCIAL.error && ACC.user) setTimeout(socialLoad,0);
   const d=SOCIAL.data,p=d?.profile,ev=d?.events||[],matches=d?.matches||[];
@@ -625,8 +628,8 @@ function encounterSignal(signal,small=false){
   return `<svg viewBox="0 0 160 160" width="${small?38:160}" height="${small?38:160}" fill="none" stroke="currentColor" stroke-width="${small?8:4}" stroke-linecap="round" aria-hidden="true">${paths[signal?.shape||0]}<path d="M80 62V98M62 80H98" stroke-width="${small?12:8}"/></svg>`;
 }
 function encounterFab(){
-  const c=ENCOUNTER.owner===ACC.user?.id?ENCOUNTER.current:null,st=c?.state||'idle',signal=c?.signal;
-  const label={waiting:'Twój +1 szuka spotkania',proposed:c?.accepted?'Czekamy na drugą zgodę':'Potwierdź nowe spotkanie',live:'Pokaż Wasz wspólny znak',met:'Zostaw swoje +1 po spotkaniu',connected:'Otwórz Waszą rozmowę'}[st]||'Znajdź swoje plus jeden';
+  const c=!ENCOUNTERS_COMING_SOON&&ENCOUNTER.owner===ACC.user?.id?ENCOUNTER.current:null,st=c?.state||'idle',signal=c?.signal;
+  const label=ENCOUNTERS_COMING_SOON?'Znajdź swoje plus jeden — już niedługo':{waiting:'Twój +1 szuka spotkania',proposed:c?.accepted?'Czekamy na drugą zgodę':'Potwierdź nowe spotkanie',live:'Pokaż Wasz wspólny znak',met:'Zostaw swoje +1 po spotkaniu',connected:'Otwórz Waszą rozmowę'}[st]||'Znajdź swoje plus jeden';
   return `<div class="fabslot"><button class="fab enc-fab enc-${st}" data-act="encounterMain" aria-label="${label}" ${S.screen==='meet'?'aria-current="page"':''} ${signal?`style="--signal:${ENCOUNTER_COLORS[signal.shape]};background:var(--signal)"`:''}>${signal?encounterSignal(signal,true):FAB_SVG}${st==='proposed'?'<span class="enc-fab-dot"></span>':''}</button></div>`;
 }
 function encounterUpdateFab(){
@@ -640,6 +643,7 @@ function encounterRender(resetScroll=false){
   if(focus&&!resetScroll)document.querySelector('.encounter-page [data-act="'+CSS.escape(focus)+'"]')?.focus({preventScroll:true});
 }
 async function encounterLoad(background=false,pulse=false){
+  if(ENCOUNTERS_COMING_SOON)return;
   if(!ACC.user||appStaffMode())return;
   if(SOCIAL.owner!==ACC.user.id)socialReset();
   if(ENCOUNTER.owner!==ACC.user.id)encounterReset();
@@ -663,7 +667,17 @@ const encounterReady=()=>{const e=encounterEvent(),p=SOCIAL.data?.profile;return
 function encounterRibbon(e,change=false){
   return `<div class="enc-event-ribbon"><span class="enc-event-icon">${ic('ticket',19)}</span><div><span class="eyebrow">${e.live===false?'Twój plan':'Ten sam wieczór'}</span><strong>${esc(e.title)}</strong><span>${esc(e.venue)}</span></div>${change?'<button class="chip" data-act="encounterEvents">Zmień</button>':''}</div>`;
 }
+function scEncounterSoon(){
+  return `<div class="pg encounter-page" style="padding:64px 0 112px"><div class="pad enc-content enc-coming-soon">
+    <div class="enc-soon-heading"><span class="social-soon-label">${ic('clock',14)} Już niedługo</span>${LOGO(44,12)}</div>
+    <div class="enc-head"><h1 class="h1">Znajdź swoje +1</h1><p>Ten sam wieczór. Ktoś zupełnie nowy.</p></div>
+    <div class="enc-mini-path" aria-hidden="true"><span>Ty</span><i></i><b>+1</b><i></i><span>Ktoś nowy</span></div>
+    <div class="enc-explainer"><strong>Już wkrótce na naszych wydarzeniach.</strong><p>Przygotowujemy nowy sposób poznawania ludzi na spotkaniach Plus Jeden. Wspólny sygnał pomoże Wam zrobić pierwszy krok — reszta wydarzy się na żywo.</p></div>
+    <button class="btn g" data-act="upcomingList">Odkryj wydarzenia ${ic('chevR',18)}</button>
+    </div></div>`;
+}
 function scEncounter(){
+  if(ENCOUNTERS_COMING_SOON)return scEncounterSoon();
   if(ENCOUNTER.owner!==(ACC.user?.id||null))encounterReset();
   if(ACC.user&&(!ENCOUNTER.current||!SOCIAL.data)&&!ENCOUNTER.loading&&!ENCOUNTER.error)setTimeout(()=>encounterLoad(),0);
   const c=ENCOUNTER.current,st=c?.expiresAt<=Date.now()&&['waiting','proposed','live','met'].includes(c.state)?'closed':c?.state||'idle',p=SOCIAL.data?.profile,events=SOCIAL.data?.events||[];
@@ -738,6 +752,7 @@ async function encounterPost(action){
   if(next.state==='live'||next.state==='connected'){haptic([20,80,20]);sfxOk();}
 }
 function encounterAct(cmd,value){
+  if(ENCOUNTERS_COMING_SOON){if(S.screen!=='meet')go('meet');return true;}
   if(cmd==='encounterMain'&&S.screen!=='meet'){go('meet');encounterLoad();return true;}
   if(cmd==='encounterIntent'||cmd==='encounterPace'){
     ENCOUNTER[cmd==='encounterIntent'?'intent':'pace']=value;haptic(8);encounterRender();return true;

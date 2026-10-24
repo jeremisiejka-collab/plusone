@@ -5,7 +5,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { socialApi, socialAge } from './social.js';
 
 // Prawdziwy SQLite i migracje aplikacji, z interfejsem zgodnym z D1.
-function fixture(t) {
+function fixture(t, { encountersLive = true } = {}) {
   const db = new DatabaseSync(':memory:');
   t.after(() => db.close());
   db.exec('PRAGMA foreign_keys = ON');
@@ -35,7 +35,7 @@ function fixture(t) {
     .run(u.id, 'test-' + u.id + '@example.invalid', 'Osoba ' + u.id, 'unused', u.role, u.perm_scan, Date.now());
   const call = async (suffix, user = users[0], data, method = data === undefined ? 'GET' : 'POST') => {
     const req = new Request('https://plusone.test/api/social/' + suffix, { method, headers: { 'Content-Type': 'application/json' }, body: method === 'GET' ? undefined : JSON.stringify(data) });
-    const r = await socialApi(new URL(req.url).pathname, method, req, { DB }, user);
+    const r = await socialApi(new URL(req.url).pathname, method, req, { DB, ...(encountersLive ? { ENCOUNTERS_LIVE: 'true' } : {}) }, user);
     return { status: r.status, ...await r.json() };
   };
   const addProfile = async (u, override = {}) => {
@@ -317,4 +317,17 @@ test('dobieranie pomija już poznane osoby i znajomych, a blokada usuwa aktywny 
   await f.call('block', f.users[2], { userId: 2 });
   const blocked = await f.call('encounter', f.users[1]);
   assert.equal(blocked.state, 'closed'); assert.equal(blocked.signal, undefined); assert.equal(blocked.person, undefined);
+});
+
+test('przed premierą API pokazuje zapowiedź i nie uruchamia ani nie odświeża dobierania', async t => {
+  const f = fixture(t, { encountersLive: false }), id = await f.ready();
+  const preview = await f.call('encounter');
+  assert.equal(preview.state, 'closed');
+  assert.match(preview.reason, /już wkrótce na naszych wydarzeniach/);
+  for (const action of ['queue', 'pulse', 'accept', 'met', 'keep']) {
+    const r = await f.call('encounter', f.users[0], { action, eventId: id, intent: 'talk', pace: 'calm' });
+    assert.equal(r.status, 503);
+  }
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM social_encounter_queue').get().n, 0);
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM social_encounters').get().n, 0);
 });

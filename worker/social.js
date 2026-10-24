@@ -46,7 +46,13 @@ export async function socialApi(path, method, req, env, user) {
   let b = {};
   if (method !== 'GET') { try { b = await req.json(); } catch { return fail(400, 'Nieprawidłowe dane.'); } }
   if (!b || typeof b !== 'object' || Array.isArray(b)) return fail(400, 'Nieprawidłowe dane.');
-  if (path === '/api/social/encounter') return encounterApi(method, b, env, user, { json, fail, event, active, eligible, profile, publicProfile, blocked });
+  if (path === '/api/social/encounter') {
+    if (env.ENCOUNTERS_LIVE !== 'true') {
+      const message = 'Znajdź swoje +1 — już wkrótce na naszych wydarzeniach.';
+      return method === 'GET' ? json({ state: 'closed', reason: message }) : fail(503, message);
+    }
+    return encounterApi(method, b, env, user, { json, fail, event, active, eligible, profile, publicProfile, blocked });
+  }
   const q = new URL(req.url).searchParams, uid = user.id, eid = clean(b.eventId || q.get('event'), 100);
   const rawTarget = Number(b.userId || q.get('user'));
   const target = Number.isSafeInteger(rawTarget) && rawTarget > 0 ? rawTarget : 0;
