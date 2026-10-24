@@ -10,6 +10,7 @@ async function premiumAfterLogin(){
   // obsługa biletów ma w aplikacji tylko swój pulpit — bez funkcji dla widzów
   if(!ACC.user || (typeof appStaffMode==='function' && appStaffMode())) return;
   loadFollows(); loadNotif();
+  encounterLoad(true);
   const q = new URLSearchParams(location.search);
   pushState().then(st=>{ PREM.push = st; });
   if(q.get('join')) joinSheet(q.get('join'));
@@ -317,7 +318,7 @@ async function shareWrapped(){
 /* ---------- wiersze w Koncie ---------- */
 function premiumRows(u, row){
   if(!u) return '';
-  return row('users','Znajdź swoje +1','go:people','')
+  return row('users','Znajdź swoje +1','encounterMain','')
     + row('bell','Powiadomienia','sheetNotif', PREM.unread?`<span class="mono" style="color:${PINK}">${PREM.unread} NOWE</span>`:'')
     + row('heart','Zainteresowania','interests', `<span class="mono">${(u.interests||[]).length||'wybierz'}</span>`)
     + row('pin','Obserwowane','followsSheet', `<span class="mono">${(PREM.follows||[]).length||''}</span>`)
@@ -327,6 +328,7 @@ function premiumRows(u, row){
 
 /* ---------- akcje ---------- */
 function premiumAct(cmd, p1, p2, a){
+  if(cmd.startsWith('encounter')) return encounterAct(cmd, p1);
   if(cmd.startsWith('social')) return socialAct(cmd, p1, p2);
   switch(cmd){
     case 'interests': interestsSheet(); return true;
@@ -363,8 +365,9 @@ if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('messa
 const SOCIAL = { owner:null, data:null, loading:false, error:'', eventId:null, people:null, tab:'events', busy:false, chat:null };
 const socialDate = t => new Date(t).toLocaleString('pl-PL',{timeZone:'Europe/Warsaw',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});
 const socialError = '<p id="social-error" class="err" role="alert" hidden></p>';
-function socialReset(){ Object.assign(SOCIAL,{owner:ACC.user?.id||null,data:null,loading:false,error:'',eventId:null,people:null,tab:'events',busy:false,chat:null}); }
+function socialReset(){ Object.assign(SOCIAL,{owner:ACC.user?.id||null,data:null,loading:false,error:'',eventId:null,people:null,tab:'events',busy:false,chat:null}); encounterReset(); }
 function socialRender(){
+  if(S.screen==='meet'){encounterRender();return;}
   if(S.screen!=='people') return;
   const top=$('#view').scrollTop,focus=document.activeElement?.closest('.social-page [data-act]')?.getAttribute('data-act');
   S.dir=null;render();$('#view').scrollTop=top;
@@ -395,8 +398,8 @@ function socialHome(){
     <div class="social-symbol" aria-hidden="true"><span>+</span><span>1</span></div>
     <span class="eyebrow pink">Dobre wyjście zaczyna się od ludzi</span>
     <h2 class="h2">Znajdź swoje <span class="pink">+1</span></h2>
-    <p class="body">Na koncert. Do tańca. Do rozmowy.<br>Poznaj kogoś na spotkaniach Plus Jeden.</p>
-    <button class="btn g" data-act="go:people">Zobacz, jak się poznać ${ic('chevR',18)}</button>
+    <p class="body">Ten sam wieczór. Ktoś zupełnie nowy.<br>Włącz +1 i złapcie wspólny sygnał.</p>
+    <button class="btn g" data-act="encounterMain">Daj się zaskoczyć ${ic('chevR',18)}</button>
   </section>`;
 }
 const socialSteps = () => `<div class="social-steps">
@@ -575,7 +578,7 @@ function socialAct(cmd,p1,p2){
         const r=await apiCall('/api/social/code','POST',{});
         sheet(`<div class="col social-form"><span class="eyebrow pink">Tylko dla obsługi na miejscu</span><h2 class="h3">To Twoje +1</h2><p class="body">Pokaż ten kod i dokument ze zdjęciem osobie z obsługi. Nie wysyłaj kodu innym uczestnikom.</p><div class="social-code">${esc(r.code.slice(0,5)+' '+r.code.slice(5))}</div><p class="mono">Ważny do ${new Date(r.expiresAt).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})}. To nie jest bilet wstępu.</p><button class="btn p" data-act="socialCodeDone">Gotowe · odśwież profil</button><button class="social-back" data-act="closeSheet">Zamknij</button></div>`);break;
       }
-      case 'socialCodeDone':closeSheet();await socialLoad();if(SOCIAL.eventId)await socialPeople(SOCIAL.eventId);break;
+      case 'socialCodeDone':closeSheet();await socialLoad();if(S.screen==='meet')await encounterLoad();else if(SOCIAL.eventId)await socialPeople(SOCIAL.eventId);break;
       case 'socialPlus': {
         const person=Array.isArray(SOCIAL.people)&&SOCIAL.people.find(p=>p.id===+p1);if(!person)break;
         const r=await apiCall('/api/social/plus','POST',{eventId:SOCIAL.eventId,userId:+p1,on:!person.sent});
@@ -602,6 +605,189 @@ function socialAct(cmd,p1,p2){
   });
   return true;
 }
+
+/* ---------- Centralne +1: jedno spotkanie, wspólny znak, pierwszy krok ---------- */
+const ENCOUNTER={owner:null,current:null,loading:false,busy:false,error:'',eventId:null,intent:'',pace:''};
+const ENCOUNTER_INTENTS=[['talk','Rozmowa','Złapać wspólny temat','users'],['dance','Taniec','Złapać wspólny rytm','music'],['discover','Odkrywanie','Zobaczyć coś razem','star'],['surprise','Zaskocz mnie','Dajmy szansę chwili','bolt']];
+const ENCOUNTER_PACES=[['calm','Na spokojnie','Bez pośpiechu'],['spontaneous','Spontanicznie','Dajmy się ponieść']];
+const ENCOUNTER_WISH={talk:'rozmowę',dance:'taniec',discover:'wspólne odkrywanie',surprise:'nową znajomość'};
+const ENCOUNTER_COLORS=['#88dfc5','#bcb0ff','#ffbd78','#8ccfff','#f9a9cb','#d5e581'];
+function encounterReset(){Object.assign(ENCOUNTER,{owner:ACC.user?.id||null,current:null,loading:false,busy:false,error:'',eventId:null,intent:'',pace:''});}
+function encounterSignal(signal,small=false){
+  const paths=[
+    '<ellipse cx="80" cy="80" rx="57" ry="29" transform="rotate(-35 80 80)"/><ellipse cx="80" cy="80" rx="57" ry="29" transform="rotate(35 80 80)"/>',
+    '<path d="M20 54Q50 17 80 54T140 54M20 106Q50 143 80 106T140 106"/>',
+    '<path d="M80 15V38M80 122V145M15 80H38M122 80H145M34 34L49 49M111 111L126 126M34 126L49 111M111 49L126 34"/>',
+    '<path d="M51 29A58 58 0 0 1 51 131M38 15A74 74 0 0 1 38 145M63 43A42 42 0 0 1 63 117"/>',
+    '<path d="M20 80V39H52M108 39H140V80M140 108V127H108M52 127H20V108"/><circle cx="80" cy="80" r="56" stroke-dasharray="4 10"/>',
+    '<circle cx="90" cy="65" r="40"/><path d="M18 133L43 108M34 145L59 120M9 110L26 93"/>'
+  ];
+  return `<svg viewBox="0 0 160 160" width="${small?38:160}" height="${small?38:160}" fill="none" stroke="currentColor" stroke-width="${small?8:4}" stroke-linecap="round" aria-hidden="true">${paths[signal?.shape||0]}<path d="M80 62V98M62 80H98" stroke-width="${small?12:8}"/></svg>`;
+}
+function encounterFab(){
+  const c=ENCOUNTER.owner===ACC.user?.id?ENCOUNTER.current:null,st=c?.state||'idle',signal=c?.signal;
+  const label={waiting:'Twój +1 szuka spotkania',proposed:c?.accepted?'Czekamy na drugą zgodę':'Potwierdź nowe spotkanie',live:'Pokaż Wasz wspólny znak',met:'Zostaw swoje +1 po spotkaniu',connected:'Otwórz Waszą rozmowę'}[st]||'Znajdź swoje plus jeden';
+  return `<div class="fabslot"><button class="fab enc-fab enc-${st}" data-act="encounterMain" aria-label="${label}" ${S.screen==='meet'?'aria-current="page"':''} ${signal?`style="--signal:${ENCOUNTER_COLORS[signal.shape]};background:var(--signal)"`:''}>${signal?encounterSignal(signal,true):FAB_SVG}${st==='proposed'?'<span class="enc-fab-dot"></span>':''}</button></div>`;
+}
+function encounterUpdateFab(){
+  if(appStaffMode())return;
+  const slot=$('#nav .fabslot');if(slot){slot.outerHTML=encounterFab();bind($('#nav'));}
+}
+function encounterRender(resetScroll=false){
+  if(S.screen!=='meet'){encounterUpdateFab();return;}
+  const top=$('#view').scrollTop,focus=document.activeElement?.closest('.encounter-page [data-act]')?.getAttribute('data-act');
+  S.dir=null;render();$('#view').scrollTop=resetScroll?0:top;
+  if(focus&&!resetScroll)document.querySelector('.encounter-page [data-act="'+CSS.escape(focus)+'"]')?.focus({preventScroll:true});
+}
+async function encounterLoad(background=false,pulse=false){
+  if(!ACC.user||appStaffMode())return;
+  if(SOCIAL.owner!==ACC.user.id)socialReset();
+  if(ENCOUNTER.owner!==ACC.user.id)encounterReset();
+  if(ENCOUNTER.loading)return;
+  const owner=ACC.user.id;ENCOUNTER.loading=true;
+  try{
+    const [c]=await Promise.all([apiCall('/api/social/encounter',pulse?'POST':'GET',pulse?{action:'pulse'}:undefined),background?Promise.resolve():socialLoad()]);
+    if(ACC.user?.id!==owner)return;
+    if(!background&&!SOCIAL.data)throw new Error(SOCIAL.error||'Nie udało się wczytać profilu. Spróbuj ponownie.');
+    const stageChanged=c.state!==ENCOUNTER.current?.state,changed=JSON.stringify(c)!==JSON.stringify(ENCOUNTER.current)||!!ENCOUNTER.error;
+    ENCOUNTER.current=c;ENCOUNTER.error='';
+    if(c.event)ENCOUNTER.eventId=c.event.id;
+    if(changed){if(c.state!=='live'&&$('#sheetwrap.on .enc-show'))closeSheet();encounterRender(stageChanged);if(c.state==='proposed'&&stageChanged)haptic([20,80,20]);}
+  }catch(e){if(ACC.user?.id===owner){ENCOUNTER.error=e.message;encounterRender();}}
+  finally{if(ACC.user?.id===owner){ENCOUNTER.loading=false;if(S.screen==='meet'&&!ENCOUNTER.current)encounterRender();}}
+}
+const encounterClock=t=>{const s=Math.max(0,Math.ceil((t-Date.now())/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+const encounterTime=c=>`<span class="enc-clock" data-enc-countdown="${c.expiresAt}">${encounterClock(c.expiresAt)}</span>`;
+const encounterEvent=()=>SOCIAL.data?.events.find(e=>e.id===ENCOUNTER.eventId);
+const encounterReady=()=>{const e=encounterEvent(),p=SOCIAL.data?.profile;return e?.live&&e.joined&&e.checkedIn&&p?.verified&&!p.suspended;};
+function encounterRibbon(e,change=false){
+  return `<div class="enc-event-ribbon"><span class="enc-event-icon">${ic('ticket',19)}</span><div><span class="eyebrow">${e.live===false?'Twój plan':'Ten sam wieczór'}</span><strong>${esc(e.title)}</strong><span>${esc(e.venue)}</span></div>${change?'<button class="chip" data-act="encounterEvents">Zmień</button>':''}</div>`;
+}
+function scEncounter(){
+  if(ENCOUNTER.owner!==(ACC.user?.id||null))encounterReset();
+  if(ACC.user&&(!ENCOUNTER.current||!SOCIAL.data)&&!ENCOUNTER.loading&&!ENCOUNTER.error)setTimeout(()=>encounterLoad(),0);
+  const c=ENCOUNTER.current,st=c?.expiresAt<=Date.now()&&['waiting','proposed','live','met'].includes(c.state)?'closed':c?.state||'idle',p=SOCIAL.data?.profile,events=SOCIAL.data?.events||[];
+  if(!ENCOUNTER.eventId){const e=events.find(e=>e.live&&e.checkedIn&&e.joined)||events.find(e=>e.joined);if(e)ENCOUNTER.eventId=e.id;}
+  const e=encounterEvent();
+  return `<div class="pg encounter-page enc-stage-${st}" style="padding:64px 0 112px;${c?.signal?`--signal:${ENCOUNTER_COLORS[c.signal.shape]}`:''}">
+    <div class="pad enc-content">
+      <div class="enc-topline"><span class="eyebrow pink">Znajdź swoje +1</span><button data-act="encounterConnections">Twoje znajomości ${ic('chevR',14)}</button></div>
+      ${ENCOUNTER.error?`<div class="enc-error" role="alert"><p>${esc(ENCOUNTER.error)}</p><button class="chip" data-act="encounterRefresh">Spróbuj ponownie</button></div>`:''}
+      ${!ACC.user?`${encounterIntro()}<div class="enc-explainer"><strong>Jedna osoba. Wspólny sygnał. Pierwsze cześć.</strong><p>Na spotkaniu Plus Jeden wybierasz swój nastrój. Gdy oboje powiecie „tak”, +1 pokaże Wam ten sam znak.</p></div><button class="btn p" data-act="encounterLogin">Wejdź do swojego +1</button>`:
+      !c||!SOCIAL.data?(!ENCOUNTER.error?loadingBox():''):
+      st==='idle'?`${encounterIntro()}
+        <div class="enc-step-label"><span>01</span><strong>Gdzie łapiemy ten moment?</strong></div>
+        ${e?encounterRibbon(e,true):`<button class="enc-event-picker" data-act="encounterEvents">${ic('ticket',22)}<span>Wybierz wydarzenie<small>Spotkania pod szyldem Plus Jeden</small></span>${ic('chevR',18)}</button>`}
+        <div class="enc-step-label"><span>02</span><strong>Na co masz dziś ochotę?</strong></div>
+        <div class="enc-intents" role="group" aria-label="Sposób poznania kogoś">${ENCOUNTER_INTENTS.map(([key,title,sub,icon])=>`<button class="${ENCOUNTER.intent===key?'selected':''}" data-act="encounterIntent:${key}" aria-pressed="${ENCOUNTER.intent===key}">${ic(icon,20)}<strong>${title}</strong><span>${sub}</span></button>`).join('')}</div>
+        <div class="enc-step-label"><span>03</span><strong>W swoim tempie</strong></div>
+        <div class="enc-paces" role="group" aria-label="Tempo spotkania">${ENCOUNTER_PACES.map(([key,title,sub])=>`<button class="${ENCOUNTER.pace===key?'selected':''}" data-act="encounterPace:${key}" aria-pressed="${ENCOUNTER.pace===key}"><strong>${title}</strong><span>${sub}</span></button>`).join('')}</div>
+        ${!p?`<button class="enc-checklist" data-act="socialProfile">${ic('user',20)}<span><strong>Jeszcze kilka słów o Tobie</strong><small>Imię, wiek i początek rozmowy</small></span>${ic('chevR',18)}</button>`:
+          p.suspended?'<p class="err">Profil jest zawieszony. Skontaktuj się z obsługą.</p>':e&&!e.joined?'<button class="btn g" data-act="encounterJoin">Włącz poznawanie na tym wydarzeniu</button>':e&&(!e.checkedIn||!p.verified)?`<button class="enc-checklist" data-act="encounterVerify">${ic('shield',20)}<span><strong>Potwierdź profil przy wejściu</strong><small>Pokaż obsłudze kod i dokument · 18+</small></span>${ic('chevR',18)}</button>`:p.verified?`<div class="enc-verified">${ic('check',14)} ${esc(p.name)}, ${p.age} · wiek potwierdzony</div>`:''}
+        <button class="btn p enc-start" data-act="encounterStart" ${encounterReady()&&ENCOUNTER.intent&&ENCOUNTER.pace?'':'disabled'}>Uruchom moje +1 ${ic('chevR',18)}</button>
+        <p class="enc-note">${e&&!e.live?'Sygnał włączysz po rozpoczęciu tego wydarzenia.':!events.length?'Pierwsze autorskie spotkania są przed nami. Możesz już wybrać swój nastrój i przygotować profil.':'Gotowe? Naciśnij +1. Wybierzemy jedną osobę z tego wydarzenia, która też ma ochotę kogoś poznać.'}</p>`:
+      st==='waiting'?`
+        <div class="enc-head"><span class="eyebrow">Sygnał wysłany</span><h1 class="h1">Dajmy szansę<br>przypadkowi.</h1><p>Ty jesteś tutaj. Ktoś też może czekać na pierwszy krok.</p></div>
+        <div class="enc-dial enc-searching" aria-hidden="true"><span class="enc-orbit"></span><span class="enc-core">${FAB_SVG}</span><span class="enc-satellite"></span></div>
+        ${encounterRibbon(c.event)}<div class="enc-live-status"><span></span> Szukamy osoby na ${ENCOUNTER_WISH[c.intent]||'wspólną chwilę'}</div>
+        <p class="enc-note">Czekamy na realną osobę z tego wydarzenia. Gdy się pojawi, oboje zdecydujecie, czy chcecie się spotkać.</p>
+        <button class="enc-secondary" data-act="encounterCancel">Robię pauzę</button><span class="enc-small">Sygnał aktywny jeszcze ${encounterTime(c)}</span>`:
+      st==='proposed'?`
+        <div class="enc-head"><span class="eyebrow">Wasze ścieżki się przecięły</span><h1 class="h1">Ktoś też<br>jest na tak.</h1><p>Ten sam wieczór. Ochota na ${ENCOUNTER_WISH[c.intent]||'wspólną chwilę'}. Dalej decydujecie Wy.</p></div>
+        <div class="enc-crossing" aria-hidden="true"><span>+</span><span>1</span></div>
+        ${encounterRibbon(c.event)}<div class="enc-consent"><span class="${c.accepted?'confirmed':''}">${ic(c.accepted?'check':'user',18)} ${c.accepted?'Twoje tak jest już po drugiej stronie':'Twój ruch'}</span><span class="enc-small">Na decyzję ${encounterTime(c)}</span></div>
+        <button class="btn p" data-act="encounterAccept" ${c.accepted?'disabled':''}>${c.accepted?'Czekamy na drugie tak':'Wchodzę w to · +1'}</button>
+        <p class="enc-note">Dopiero po dwóch zgodach odsłonimy imię i Wasz wspólny znak.</p><button class="enc-secondary" data-act="encounterCancel">Nie teraz</button>`:
+      st==='live'?`
+        <div class="enc-head"><span class="eyebrow">Macie ten sam sygnał</span><h1 class="h1">Teraz pierwsze<br>cześć.</h1><p>${esc(c.person.name)}, ${c.person.age}, widzi dokładnie ten sam znak. Pokaż swój ekran przy punkcie +1.</p></div>
+        <button class="enc-signal-card" data-act="encounterShow" aria-label="Pokaż duży wspólny znak ${esc(c.signal.word+' '+c.signal.code)}">${encounterSignal(c.signal)}<span>${esc(c.signal.word)} <b>${esc(c.signal.code)}</b></span><small>Powiększ Wasz znak</small></button>
+        <div class="enc-location">${ic('pin',20)}<div><strong>${esc(c.event.meetingPoint)}</strong><span>${esc(c.event.title)}</span></div></div>
+        <div class="enc-mission"><span class="eyebrow">Mały początek</span><p>${esc(c.mission)}</p></div>
+        <button class="btn p" data-act="encounterMet" ${c.met?'disabled':''}>${c.met?'Czekamy na potwierdzenie drugiej osoby':'Znaleźliśmy się'}</button>
+        <span class="enc-small">Wasz znak działa jeszcze ${encounterTime(c)}. Bez pośpiechu — możecie też zrobić pauzę.</span>
+        <div class="enc-bottom-actions"><button data-act="encounterCancel">Zakończ rundę</button><button data-act="socialSafety:${c.person.id}:${esc(c.event.id)}">Zablokuj lub zgłoś</button></div>`:
+      st==='met'||st==='connected'?`
+        <div class="enc-head"><span class="eyebrow">${st==='connected'?'Ta znajomość zostaje z Wami':'Z nieznajomych w znajomych'}</span><h1 class="h1">${st==='connected'?'I już masz<br>swoje +1.':'Dobry początek.<br>Co dalej?'}</h1><p>${st==='connected'?'Oboje chcecie zachować kontakt. Wasza rozmowa czeka w znajomościach.':'Dobrze Wam się rozmawiało? Zostaw swoje +1, jeśli chcesz zachować kontakt po wydarzeniu.'}</p></div>
+        <div class="enc-memory" aria-hidden="true">${encounterSignal(c.signal)}<span>${esc(c.signal.word+' '+c.signal.code)}</span></div>
+        ${encounterRibbon(c.event)}
+        <button class="btn p" data-act="${st==='connected'?'encounterChat':'encounterKeep'}" ${st==='met'&&c.kept?'disabled':''}>${st==='connected'?'Otwórz Waszą rozmowę':c.kept?'Twoje +1 wysłane':'Zostawmy sobie +1'}</button>
+        <p class="enc-note">${st==='connected'?'To Wy decydujecie, jaki będzie kolejny wspólny plan.':c.kept?'Kontakt zapisze się tylko wtedy, gdy druga osoba też tego chce.':'Rozmowa zapisze się dopiero, kiedy oboje zostawicie swoje +1. Samo spotkanie do niczego nie zobowiązuje.'}</p>
+        <button class="enc-secondary" data-act="encounterCancel">${st==='connected'?'Jeszcze jeden nowy wątek':'Na dziś wystarczy'}</button>`:
+      `<div class="enc-head"><span class="eyebrow">Każdy wieczór ma swoje tempo</span><h1 class="h1">Chwila<br>na oddech.</h1><p>${esc(c.reason||'Ta runda się zakończyła.')}</p></div><div class="enc-dial enc-rest" aria-hidden="true"><span class="enc-core">${FAB_SVG}</span></div><button class="btn p" data-act="encounterCancel">Wróć do swojego +1</button>`}
+      ${st==='idle'?'<div class="enc-footer">Jeden wieczór, nowe znajomości. Bez presji.</div>':''}
+    </div></div>`;
+}
+function encounterIntro(){return `<div class="enc-head"><h1 class="h1">Ktoś nowy.<br>Ten sam wieczór.</h1><p>Nie wszystko trzeba planować.<br>Sprawdź, kogo przyniesie Ci to wyjście.</p></div><div class="enc-mini-path" aria-hidden="true"><span>Ty</span><i></i><b>+1</b><i></i><span>Ktoś nowy</span></div>`;}
+async function encounterEvents(){
+  await socialLoad();
+  const events=SOCIAL.data?.events||[];
+  sheet(`<div class="col social-form"><span class="eyebrow pink">Wokół tego samego wydarzenia</span><h2 class="h3">Wybierz swój wieczór</h2>
+    ${events.map(e=>`<button class="enc-event-picker" data-act="encounterEvent:${esc(e.id)}"><span><strong>${esc(e.title)}</strong><small>${esc(e.venue)} · ${esc(e.city)}<br>${e.live?'TRWA TERAZ':socialDate(e.startsAt)}</small></span>${ic('chevR',18)}</button>`).join('')||'<p class="body">Pierwsze autorskie spotkania Plus Jeden pojawią się tutaj. Nie musisz jeszcze wybierać — przygotuj profil i swój nastrój.</p>'}
+    <button class="enc-secondary" data-act="closeSheet">Zamknij</button></div>`);
+}
+function encounterShow(){
+  const c=ENCOUNTER.current;if(!c?.signal||c.state!=='live')return;
+  sheet(`<div class="enc-show" style="--signal:${ENCOUNTER_COLORS[c.signal.shape]}"><span class="eyebrow">Wasz znak rozpoznawczy</span>${encounterSignal(c.signal)}<strong>${esc(c.signal.word)} <span>${esc(c.signal.code)}</span></strong><p>Znajdź ten sam symbol i hasło na drugim ekranie.</p><div>${esc(c.event.meetingPoint)}</div><span class="enc-small">${encounterTime(c)}</span><button class="btn g" data-act="closeSheet">Schowaj znak</button></div>`);
+}
+async function encounterPost(action){
+  const owner=ACC.user?.id,c=ENCOUNTER.current;
+  const next=await apiCall('/api/social/encounter','POST',action==='queue'?{action,eventId:ENCOUNTER.eventId,intent:ENCOUNTER.intent,pace:ENCOUNTER.pace}:{action,token:c?.token||null});
+  if(owner!==ACC.user?.id)return;
+  ENCOUNTER.current=next;ENCOUNTER.error='';encounterRender(next.state!==c?.state);
+  if(action==='cancel')await socialLoad();
+  if(next.state==='live'||next.state==='connected'){haptic([20,80,20]);sfxOk();}
+}
+function encounterAct(cmd,value){
+  if(cmd==='encounterMain'&&S.screen!=='meet'){go('meet');encounterLoad();return true;}
+  if(cmd==='encounterIntent'||cmd==='encounterPace'){
+    ENCOUNTER[cmd==='encounterIntent'?'intent':'pace']=value;haptic(8);encounterRender();return true;
+  }
+  if(cmd==='encounterEvent'){ENCOUNTER.eventId=value;closeSheet();encounterRender();return true;}
+  if(cmd==='encounterLogin'){S.afterAuth='meet';act('authgo:login');return true;}
+  if(cmd==='encounterConnections'){SOCIAL.tab='matches';SOCIAL.eventId=null;go('people');socialLoad();return true;}
+  if(cmd==='encounterShow'){encounterShow();return true;}
+  if(ENCOUNTER.busy)return true;
+  ENCOUNTER.busy=true;
+  (async()=>{
+    try{
+      let action=cmd;
+      if(cmd==='encounterMain'){
+        const c=ENCOUNTER.current;
+        action={waiting:'encounterRefresh',proposed:c?.accepted?'encounterRefresh':'encounterAccept',live:'encounterShow',met:c?.kept?'encounterRefresh':'encounterKeep',connected:'encounterChat',closed:'encounterCancel'}[c?.state]||'encounterStart';
+      }
+      if(action==='encounterShow'){encounterShow();return;}
+      if(action==='encounterRefresh'){await encounterLoad(false,true);return;}
+      if(action==='encounterEvents'){await encounterEvents();return;}
+      if(action==='encounterVerify'){SOCIAL.eventId=ENCOUNTER.eventId;socialAct('socialCode');return;}
+      if(action==='encounterJoin'){await apiCall('/api/social/join','POST',{eventId:ENCOUNTER.eventId,on:true});await socialLoad();encounterRender();return;}
+      if(action==='encounterChat'){
+        const c=ENCOUNTER.current;await socialLoad();await socialChat(c.person.id,c.event.id);return;
+      }
+      if(action==='encounterStart'){
+        if(!ACC.user){S.afterAuth='meet';act('authgo:login');return;}
+        if(!SOCIAL.data?.profile){socialProfile();return;}
+        if(!encounterEvent()){await encounterEvents();return;}
+        if(!encounterReady())throw new Error('Najpierw włącz udział i potwierdź profil przy wejściu na trwające wydarzenie.');
+        if(!ENCOUNTER.intent||!ENCOUNTER.pace)throw new Error('Wybierz swoją ochotę i tempo. To dwa małe kroki przed spotkaniem.');
+        await encounterPost('queue');return;
+      }
+      const actionMap={encounterAccept:'accept',encounterMet:'met',encounterKeep:'keep',encounterCancel:'cancel'};
+      if(actionMap[action])await encounterPost(actionMap[action]);
+    }catch(e){ENCOUNTER.error=e.message;encounterRender();}
+    finally{ENCOUNTER.busy=false;}
+  })();return true;
+}
+setInterval(()=>{
+  if(document.hidden||!ACC.user||appStaffMode()||ENCOUNTER.busy||ENCOUNTER.loading)return;
+  const active=['waiting','proposed','live','met'].includes(ENCOUNTER.current?.state);
+  if(active)encounterLoad(true,true);
+},5000);
+setInterval(()=>{
+  if(document.hidden)return;
+  document.querySelectorAll('[data-enc-countdown]').forEach(el=>{el.textContent=encounterClock(+el.dataset.encCountdown);});
+  const c=ENCOUNTER.current;
+  if(c?.expiresAt<=Date.now()&&['waiting','proposed','live','met'].includes(c.state)&&!ENCOUNTER.loading)encounterLoad(true);
+},1000);
 
 // Krótka rozmowa odświeża się bez kasowania wpisywanej wiadomości.
 setInterval(()=>{

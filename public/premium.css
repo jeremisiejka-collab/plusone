@@ -87,3 +87,104 @@
   .social-profile > div, .social-match > div { min-width: 130px; }
   .social-profile .chip, .social-match .chip { margin-left: 52px; }
 }
+
+/* Jedna runda poznawania: główny +1 jest również wskaźnikiem jej stanu. */
+.encounter-page { --signal: var(--pink); }
+.encounter-page:not(.fwd):not(.bwd) { animation: none; }
+.enc-content { display: flex; flex-direction: column; gap: 22px; }
+.enc-content p { margin: 0; }
+.enc-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.enc-topline > .eyebrow { font-size: 9px; line-height: 1.5; }
+.enc-topline button { display: flex; gap: 4px; align-items: center; min-height: 36px; color: var(--t2); font: 500 11px/1.3 var(--d); }
+.enc-head { display: flex; flex-direction: column; gap: 14px; }
+.enc-head .h1 { font-size: clamp(33px, 9.4vw, 42px); line-height: 1.07; letter-spacing: -.045em; }
+.enc-head > .eyebrow { color: var(--t2); line-height: 1.6; font-size: 9px; }
+.enc-head p { font: 400 14px/1.6 var(--d); color: var(--t2); max-width: 360px; }
+.enc-mini-path { display: flex; align-items: center; gap: 10px; border: 1px solid var(--pink-line); border-radius: 18px; padding: 16px; background: var(--pink-dim); }
+.enc-mini-path span { font: 500 12px/1 var(--d); white-space: nowrap; }
+.enc-mini-path b { color: var(--pink); font: 700 22px/1 var(--d); }
+.enc-mini-path i { flex: 1; height: 1px; background: var(--pink-line); }
+.enc-step-label { display: flex; align-items: center; gap: 12px; margin-bottom: -9px; }
+.enc-step-label > span { color: var(--pink); font: 500 11px/1 var(--m); }
+.enc-step-label > strong { font: 600 15px/1.4 var(--d); }
+.enc-event-ribbon { display: flex; align-items: center; gap: 12px; padding: 15px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+.enc-event-icon { display: grid; place-items: center; width: 34px; height: 42px; border-right: 1px dashed var(--line-2); padding-right: 12px; flex: none; color: var(--pink); }
+.enc-event-ribbon > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+.enc-event-ribbon .eyebrow { font-size: 8px; color: var(--t2); line-height: 1.4; }
+.enc-event-ribbon strong { font: 600 14px/1.35 var(--d); overflow-wrap: anywhere; }
+.enc-event-ribbon div > span:last-child { color: var(--t2); font: 400 11px/1.4 var(--d); }
+.enc-event-ribbon .chip { font-size: 11px; padding: 8px; min-height: 38px; }
+.enc-event-picker { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; padding: 16px; border: 1px solid var(--line-2); border-radius: 18px; background: var(--surface); }
+.enc-event-picker > svg:first-child { color: var(--pink); }
+.enc-event-picker > span { flex: 1; display: flex; flex-direction: column; gap: 6px; font: 600 15px/1.3 var(--d); overflow-wrap: anywhere; }
+.enc-event-picker small { color: var(--t2); font: 400 12px/1.5 var(--d); }
+.enc-intents, .enc-paces { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.enc-intents button, .enc-paces button { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; text-align: left; padding: 16px 14px; border: 1px solid var(--line-2); border-radius: 18px; background: var(--surface); transition: border-color .18s, background .18s; }
+.enc-intents strong, .enc-paces strong { font: 600 14px/1.2 var(--d); }
+.enc-intents span, .enc-paces span { font: 400 11px/1.4 var(--d); color: var(--t2); }
+.enc-intents svg { color: var(--t2); margin-bottom: 4px; }
+.enc-intents button.selected, .enc-paces button.selected { border-color: var(--pink); background: var(--pink-dim); box-shadow: inset 0 0 0 1px var(--pink); }
+.enc-intents button.selected svg { color: var(--pink); }
+.enc-checklist { display: flex; align-items: center; gap: 12px; text-align: left; padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.enc-checklist > span { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.enc-checklist strong { font: 600 14px/1.3 var(--d); }
+.enc-checklist small { font: 400 12px/1.4 var(--d); color: var(--t2); }
+.enc-verified { display: flex; gap: 6px; align-items: center; font: 500 12px/1.5 var(--d); color: var(--t2); }
+.enc-content > .btn { min-height: 54px; height: auto; padding: 14px; font: 600 15px/1.4 var(--d); }
+.enc-start { display: flex; align-items: center; justify-content: space-between; }
+.enc-content .btn:disabled { opacity: .45; cursor: default; }
+.enc-note { color: var(--t2); font: 400 12px/1.6 var(--d); }
+.enc-footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--t3); font: 400 11px/1.5 var(--d); }
+.enc-secondary { min-height: 44px; font: 500 13px/1.5 var(--d); color: var(--t2); text-align: center; }
+.enc-small { font: 400 11px/1.6 var(--d); color: var(--t2); text-align: center; }
+.enc-clock { font: 500 11px/1.5 var(--m); font-variant-numeric: tabular-nums; }
+.enc-dial { width: 228px; height: 228px; position: relative; align-self: center; display: grid; place-items: center; margin: 6px 0; border-radius: 50%; border: 1px solid var(--pink-line); }
+.enc-dial::before { content: ''; position: absolute; inset: 25px; border-radius: 50%; border: 1px dashed var(--line-2); }
+.enc-core { position: relative; width: 92px; height: 92px; background: var(--pink); border-radius: 30px; display: grid; place-items: center; box-shadow: 0 0 0 12px var(--pink-dim); }
+.enc-core svg { width: 52px; height: 52px; }
+.enc-orbit { position: absolute; inset: -1px; border: 2px solid transparent; border-top-color: var(--pink); border-radius: 50%; animation: enc-orbit 8s linear infinite; }
+.enc-satellite { position: absolute; inset: 12px; border-radius: 50%; animation: enc-orbit 8s linear infinite reverse; }
+.enc-satellite::after { content: ''; position: absolute; top: 15px; left: 15px; width: 9px; height: 9px; border: 2px solid var(--bg); border-radius: 50%; background: var(--pink); }
+.enc-live-status { display: flex; align-items: center; justify-content: center; gap: 9px; font: 600 13px/1.5 var(--d); }
+.enc-live-status > span { width: 6px; height: 6px; border-radius: 50%; background: var(--pink); }
+.enc-crossing { align-self: center; display: flex; padding: 24px 0; }
+.enc-crossing > span { width: 116px; height: 116px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--pink-line); font: 600 54px/1 var(--d); background: var(--pink-dim); color: var(--pink); }
+.enc-crossing > span:last-child { margin-left: -26px; background: var(--surface); }
+.enc-consent { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.enc-consent > span:first-child { display: flex; align-items: center; gap: 8px; font: 500 13px/1.4 var(--d); }
+.enc-consent .confirmed { color: var(--pink); }
+.enc-signal-card { display: flex; align-items: center; flex-direction: column; gap: 8px; padding: 26px 20px 22px; border-radius: 28px; background: var(--signal); color: #101014; }
+.enc-signal-card > span { font: 500 18px/1.3 var(--m); letter-spacing: .1em; }
+.enc-signal-card b { font-weight: 700; }
+.enc-signal-card small { font: 500 11px/1.4 var(--d); opacity: .7; margin-top: 3px; }
+.enc-location { display: flex; gap: 12px; padding: 4px 0; }
+.enc-location > svg { color: var(--pink); }
+.enc-location > div { display: flex; flex-direction: column; gap: 5px; }
+.enc-location strong { font: 600 15px/1.4 var(--d); }
+.enc-location span { font: 400 11px/1.5 var(--d); color: var(--t2); }
+.enc-mission { padding: 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--surface); }
+.enc-mission > .eyebrow { font-size: 9px; color: var(--pink); }
+.enc-mission p { font: 500 16px/1.5 var(--d); margin-top: 9px; }
+.enc-bottom-actions { display: flex; justify-content: space-between; gap: 10px; }
+.enc-bottom-actions button { min-height: 44px; font: 500 11px/1.5 var(--d); color: var(--t2); }
+.enc-memory { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 24px; background: var(--signal); border-radius: 28px; color: #101014; }
+.enc-memory svg { width: 116px; height: 116px; }
+.enc-memory > span { font: 500 14px/1.4 var(--m); letter-spacing: .1em; }
+.enc-show { display: flex; align-items: center; flex-direction: column; gap: 20px; text-align: center; padding: 18px 0 6px; }
+.enc-show > svg { width: min(72vw, 280px); height: min(72vw, 280px); padding: 20px; color: #101014; background: var(--signal); border-radius: 30px; }
+.enc-show > strong { font: 600 25px/1.3 var(--m); letter-spacing: .05em; }
+.enc-show p { font: 400 14px/1.5 var(--d); color: var(--t2); margin: 0; max-width: 260px; }
+.enc-show > div { font: 600 16px/1.5 var(--d); }
+.enc-show .btn { width: 100%; font-size: 14px; }
+.enc-explainer { padding: 20px; border: 1px solid var(--line); border-radius: 20px; }
+.enc-explainer strong { font: 600 17px/1.4 var(--d); }
+.enc-explainer p { margin-top: 10px; font: 400 14px/1.6 var(--d); color: var(--t2); }
+.enc-error { display: flex; flex-direction: column; gap: 10px; background: var(--pink-dim); border: 1px solid var(--pink-line); border-radius: 14px; padding: 14px; font: 400 13px/1.5 var(--d); }
+.enc-error .chip { align-self: flex-start; }
+.enc-fab.enc-waiting::after { content: ''; position: absolute; inset: -6px; border: 2px solid transparent; border-top-color: var(--pink); border-bottom-color: var(--pink); border-radius: 25px; animation: enc-orbit 8s linear infinite; pointer-events: none; }
+.enc-fab.enc-live, .enc-fab.enc-met, .enc-fab.enc-connected { color: #101014; box-shadow: 0 0 0 6px var(--bg), 0 5px 25px rgba(var(--fg),.2); }
+.enc-fab-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; border: 3px solid var(--bg); border-radius: 50%; background: var(--t1); }
+.encounter-page button:focus-visible, .enc-show button:focus-visible { outline: 2px solid var(--pink); outline-offset: 4px; }
+@keyframes enc-orbit { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .enc-orbit, .enc-satellite, .enc-fab.enc-waiting::after { animation: none; } }
+@media(max-width:350px) { .enc-intents button, .enc-paces button { padding: 14px 10px; }.enc-intents strong, .enc-paces strong { font-size: 13px; }.enc-topline { gap: 6px; }.enc-topline button { font-size: 10px; } }

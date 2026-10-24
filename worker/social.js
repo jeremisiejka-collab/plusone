@@ -1,6 +1,7 @@
 /* „Znajdź swoje +1”: wyłącznie dobrowolne profile dorosłych uczestników
    autorskich spotkań. Wiek i obecność potwierdza obsługa na miejscu. */
 import { stripEmoji } from '../pipeline/lib/normalize.mjs';
+import { encounterApi } from './encounters.js';
 
 const json = (data, status = 200) => new Response(JSON.stringify(data), {
   status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
@@ -45,6 +46,7 @@ export async function socialApi(path, method, req, env, user) {
   let b = {};
   if (method !== 'GET') { try { b = await req.json(); } catch { return fail(400, 'Nieprawidłowe dane.'); } }
   if (!b || typeof b !== 'object' || Array.isArray(b)) return fail(400, 'Nieprawidłowe dane.');
+  if (path === '/api/social/encounter') return encounterApi(method, b, env, user, { json, fail, event, active, eligible, profile, publicProfile, blocked });
   const q = new URL(req.url).searchParams, uid = user.id, eid = clean(b.eventId || q.get('event'), 100);
   const rawTarget = Number(b.userId || q.get('user'));
   const target = Number.isSafeInteger(rawTarget) && rawTarget > 0 ? rawTarget : 0;
@@ -68,7 +70,8 @@ export async function socialApi(path, method, req, env, user) {
     // Zawieszenia nie da się obejść usuwając sam profil.
     if ((await profile(env, uid))?.suspended) return fail(403, 'Profil jest zawieszony. Skontaktuj się z obsługą spotkania.');
     await env.DB.batch([
-      ...['social_profiles', 'social_attendees', 'social_codes'].map(t => env.DB.prepare(`DELETE FROM ${t} WHERE user_id = ?`).bind(uid)),
+      env.DB.prepare('DELETE FROM social_encounters WHERE user_a = ? OR user_b = ?').bind(uid, uid),
+      ...['social_encounter_queue', 'social_profiles', 'social_attendees', 'social_codes'].map(t => env.DB.prepare(`DELETE FROM ${t} WHERE user_id = ?`).bind(uid)),
       ...['social_pluses', 'social_messages'].map(t => env.DB.prepare(`DELETE FROM ${t} WHERE from_user = ? OR to_user = ?`).bind(uid, uid))
     ]);
     return json({ ok: true });
@@ -83,7 +86,11 @@ export async function socialApi(path, method, req, env, user) {
   if (path === '/api/social/join' && method === 'POST') {
     if (typeof b.on !== 'boolean') return fail(400, 'Wybierz widoczność.');
     if (!b.on) {
-      await env.DB.batch([env.DB.prepare('UPDATE social_attendees SET opted_in = 0 WHERE event_id = ? AND user_id = ?').bind(eid, uid), clearPluses(env, eid, uid)]);
+      await env.DB.batch([
+        env.DB.prepare("UPDATE social_encounters SET status = 'cancelled' WHERE event_id = ? AND (user_a = ? OR user_b = ?)").bind(eid, uid, uid),
+        env.DB.prepare('DELETE FROM social_encounter_queue WHERE event_id = ? AND user_id = ?').bind(eid, uid),
+        env.DB.prepare('UPDATE social_attendees SET opted_in = 0 WHERE event_id = ? AND user_id = ?').bind(eid, uid), clearPluses(env, eid, uid)
+      ]);
       return json({ ok: true });
     }
     const e = await event(env, eid), p = await profile(env, uid);

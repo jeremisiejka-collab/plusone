@@ -20,12 +20,13 @@ function fixture(t) {
         bind(...v) { args = v; return this; },
         async first(key) { const row = stmt.get(...args); return key ? row?.[key] ?? null : row || null; },
         async all() { return { results: stmt.all(...args) }; },
-        async run() { const r = stmt.run(...args); return { meta: { changes: Number(r.changes) } }; }
+        runSync() { const r = stmt.run(...args); return { meta: { changes: Number(r.changes) } }; },
+        async run() { return this.runSync(); }
       };
     },
     async batch(ops) {
       db.exec('BEGIN');
-      try { const r = []; for (const op of ops) r.push(await op.run()); db.exec('COMMIT'); return r; }
+      try { const r = ops.map(op => op.runSync()); db.exec('COMMIT'); return r; }
       catch (e) { db.exec('ROLLBACK'); throw e; }
     }
   };
@@ -196,4 +197,124 @@ test('usunięcie profilu kasuje rozmowy i weryfikację, zachowując konto; usuni
   assert.equal((await f.call('me', f.users[1])).profile.verified, true);
   f.db.prepare('DELETE FROM users WHERE id = 2').run();
   assert.equal((await f.call('me', f.users[1])).profile, null);
+});
+
+const queue = (f, user, eventId, intent = 'talk', pace = 'calm') => f.call('encounter', user, { action: 'queue', eventId, intent, pace });
+const roundAct = (f, user, token, action) => f.call('encounter', user, { action, token });
+async function liveRound(f, id) {
+  await queue(f, f.users[0], id);
+  const r = await queue(f, f.users[1], id);
+  await roundAct(f, f.users[0], r.token, 'accept');
+  const live = await roundAct(f, f.users[1], r.token, 'accept');
+  assert.equal(live.state, 'live'); return live;
+}
+
+test('runda wymaga potwierdzonej obecności i odpowiedzi na oba pytania', async t => {
+  const f = fixture(t), id = await f.addEvent();
+  assert.equal((await queue(f, f.users[0], id)).status, 403);
+  await f.addProfile(f.users[0]); await f.join(f.users[0], id);
+  assert.equal((await queue(f, f.users[0], id)).status, 403);
+  await f.verify(f.users[0], id);
+  assert.equal((await queue(f, f.users[0], id, 'invalid')).status, 400);
+  assert.equal((await queue(f, f.users[0], id, 'talk', '')).status, 400);
+  assert.equal((await queue(f, f.users[0], id)).state, 'waiting');
+  assert.equal((await f.call('encounter')).state, 'waiting');
+});
+
+test('jedna para ma wspólny znak dopiero po dwóch zgodach, a kontakt dopiero po spotkaniu i dwóch plusikach', async t => {
+  const f = fixture(t), id = await f.ready();
+  assert.equal((await queue(f, f.users[0], id)).state, 'waiting');
+  const proposal = await queue(f, f.users[1], id);
+  assert.equal(proposal.state, 'proposed'); assert.equal(proposal.signal, undefined); assert.equal(proposal.person, undefined);
+  assert.equal((await f.call('encounter')).token, proposal.token);
+  // Trzecia osoba nie może odczytać ani przyjąć propozycji innej pary.
+  assert.equal((await queue(f, f.users[2], id)).state, 'waiting');
+  assert.equal((await roundAct(f, f.users[2], proposal.token, 'accept')).status, 409);
+  const yes = await roundAct(f, f.users[0], proposal.token, 'accept');
+  assert.equal(yes.accepted, true); assert.equal(yes.state, 'proposed'); assert.equal(yes.person, undefined);
+  const live = await roundAct(f, f.users[1], proposal.token, 'accept');
+  assert.equal(live.state, 'live');
+  const other = await f.call('encounter');
+  assert.deepEqual(live.signal, other.signal); assert.equal(live.mission, other.mission);
+  assert.equal(live.person.id, 1); assert.equal(other.person.id, 2); assert.equal(live.person.birthDate, undefined);
+  assert.equal((await roundAct(f, f.users[0], proposal.token, 'keep')).status, 409);
+  await roundAct(f, f.users[0], proposal.token, 'met');
+  assert.equal((await f.call('encounter')).state, 'live');
+  assert.equal((await roundAct(f, f.users[1], proposal.token, 'met')).state, 'met');
+  await roundAct(f, f.users[0], proposal.token, 'keep');
+  assert.deepEqual((await f.call('matches')).matches, []);
+  assert.equal((await f.call('messages?event=' + id + '&user=2')).status, 403);
+  assert.equal((await roundAct(f, f.users[1], proposal.token, 'keep')).state, 'connected');
+  assert.equal((await f.call('matches')).matches[0].id, 2);
+  await roundAct(f, f.users[0], proposal.token, 'cancel');
+  assert.equal((await f.call('encounter')).state, 'idle');
+  assert.equal((await f.call('matches')).matches[0].id, 2);
+});
+
+test('równoczesne wejście kilku osób nie przydziela tej samej osoby do dwóch par', async t => {
+  const f = fixture(t), id = await f.ready();
+  await Promise.all(f.users.slice(0, 3).map(u => queue(f, u, id)));
+  const states = await Promise.all(f.users.slice(0, 3).map(u => f.call('encounter', u)));
+  const paired = states.filter(s => s.state === 'proposed');
+  assert.equal(paired.length, 2); assert.equal(paired[0].token, paired[1].token);
+  assert.equal(states.filter(s => s.state === 'waiting').length, 1);
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM social_encounters').get().n, 1);
+  const index = states.findIndex(s => s.state === 'proposed');
+  assert.equal((await queue(f, f.users[index], id)).token, paired[0].token);
+});
+
+test('dobieranie respektuje wydarzenie, intencję, obecność w kolejce i blokady', async t => {
+  const f = fixture(t), id = await f.ready(), other = await f.addEvent();
+  await f.join(f.users[2], other); await f.verify(f.users[2], other);
+  await queue(f, f.users[0], id, 'dance');
+  assert.equal((await queue(f, f.users[1], id, 'talk')).state, 'waiting');
+  assert.equal((await queue(f, f.users[2], other, 'dance')).state, 'waiting');
+  f.db.prepare('UPDATE social_encounter_queue SET heartbeat_at = 0 WHERE user_id = 1').run();
+  assert.equal((await queue(f, f.users[1], id, 'surprise')).state, 'waiting');
+  await f.call('block', f.users[0], { userId: 2 });
+  assert.equal((await f.call('encounter', f.users[0], { action: 'pulse' })).state, 'waiting');
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM social_encounters').get().n, 0);
+});
+
+test('pauza kończy propozycję obojgu i nie dobiera ponownie tej samej osoby', async t => {
+  const f = fixture(t), id = await f.ready();
+  await queue(f, f.users[0], id);
+  const r = await queue(f, f.users[1], id);
+  await roundAct(f, f.users[0], r.token, 'cancel');
+  assert.equal((await f.call('encounter', f.users[1])).state, 'closed');
+  assert.equal((await queue(f, f.users[0], id)).state, 'waiting');
+  assert.equal((await queue(f, f.users[1], id)).state, 'waiting');
+  const next = await queue(f, f.users[2], id);
+  assert.equal(next.state, 'proposed'); assert.notEqual(next.token, r.token);
+});
+
+test('wygasła propozycja, wyłączony udział i usunięcie profilu odcinają rundę', async t => {
+  const f = fixture(t), id = await f.ready();
+  let r = await liveRound(f, id);
+  f.db.prepare('UPDATE social_encounters SET expires_at = 0 WHERE token = ?').run(r.token);
+  assert.equal((await f.call('encounter')).state, 'closed');
+  assert.equal((await roundAct(f, f.users[0], r.token, 'met')).status, 409);
+  await queue(f, f.users[0], id);
+  r = await queue(f, f.users[2], id);
+  await roundAct(f, f.users[0], r.token, 'accept'); await roundAct(f, f.users[2], r.token, 'accept');
+  await f.call('join', f.users[0], { eventId: id, on: false });
+  const closed = await f.call('encounter', f.users[2]);
+  assert.equal(closed.state, 'closed'); assert.equal(closed.person, undefined); assert.equal(closed.signal, undefined);
+  await f.call('me', f.users[0], {}, 'DELETE');
+  assert.equal((await f.call('encounter', f.users[2])).state, 'idle');
+});
+
+test('dobieranie pomija już poznane osoby i znajomych, a blokada usuwa aktywny znak', async t => {
+  const f = fixture(t), id = await f.ready();
+  await f.match(id);
+  await queue(f, f.users[0], id);
+  assert.equal((await queue(f, f.users[1], id)).state, 'waiting');
+  f.db.prepare('INSERT INTO friends (user_id, friend_id, created_at) VALUES (3, 1, ?)').run(Date.now());
+  const r = await queue(f, f.users[2], id);
+  assert.equal(r.state, 'proposed'); // osoba 3 trafia na osobę 2, nie znajomego 1
+  assert.equal((await f.call('encounter', f.users[0])).state, 'waiting');
+  await roundAct(f, f.users[1], r.token, 'accept'); await roundAct(f, f.users[2], r.token, 'accept');
+  await f.call('block', f.users[2], { userId: 2 });
+  const blocked = await f.call('encounter', f.users[1]);
+  assert.equal(blocked.state, 'closed'); assert.equal(blocked.signal, undefined); assert.equal(blocked.person, undefined);
 });

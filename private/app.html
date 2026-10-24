@@ -805,6 +805,7 @@ const IP = {
   bell:'M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6|M10.5 20a2 2 0 0 0 3 0',
   plane:'M3 12.5 21 4l-4 8.5L21 21 3 12.5z',
   bolt:'M13 2 4 14h6l-1 8 9-12h-6z',
+  music:'M9 18V5l11-2v13|M9 8l11-2|M9 18a3 3 0 1 1-3-3c1.7 0 3 1.3 3 3|M20 16a3 3 0 1 1-3-3c1.7 0 3 1.3 3 3',
   share:'M8 15 18 5|M12 5h6v6',
   chevL:'M15 5 8 12l7 7', chevR:'M9 5l7 7-7 7',
   check:'M4.5 12.5 9.5 17.5 19.5 7',
@@ -2811,7 +2812,7 @@ const SCREENS = {
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
   start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), scan:()=>scScan(), mytickets:()=>scMyTickets(),
-  staff:()=>scStaff(), org:()=>scOrg(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(),
+  staff:()=>scStaff(), org:()=>scOrg(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(), meet:()=>scEncounter(),
   loading:()=>'<div class="pg pad" style="padding-top:120px"><p class="body">Otwieram Twoje +1…</p></div>'
 };
 
@@ -2825,11 +2826,8 @@ const NAV = [
   {k:'tickets',ic:'ticket', l:'BILETY'},
   {k:'wallet', ic:'wallet', l:'PORTFEL'}
 ];
-/* środkowy przycisk: na ekranach z wydarzeniami logo +1 (strona główna), gdzie indziej PAY */
-const FAB_HOME = ['home','list','map','cities','profile','mytickets','scan','people','org','plan','mywrapped'];
-/* publicznie PAY tylko w dniu wydarzenia, na które masz bilet (na Biletach i w Portfelu) */
-const payDay = () => ['tickets','wallet'].includes(S.screen) && [...MINE.going].some(id => EVENTS.find(e=>e.id===id)?.day===localDay());
-const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','org','plan','mywrapped',...STAFF_SCREENS];
+/* środkowe +1 prowadzi rundę poznawania; obsługa zachowuje osobny skaner */
+const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped',...STAFF_SCREENS];
 const STAFF_NAV = [{k:'staffStats',ic:'bolt',l:'STATYSTYKI'},{fab:true},{k:'staffActivity',ic:'clock',l:'HISTORIA'}];
 const FAB_SVG = `<svg width="38" height="38" viewBox="0 0 100 100" aria-hidden="true">${GLYPH('#000')}</svg>`;
 
@@ -2902,9 +2900,7 @@ function render(){
     nav.innerHTML = (appStaffMode()?STAFF_NAV:NAV).map(n => n.fab
       ? (appStaffMode()
         ? `<div class="fabslot"><button class="fab" data-act="go:scan" aria-label="Skanuj bilety +1">${FAB_SVG}</button></div>`
-        : (!(DEMO ? !FAB_HOME.includes(S.screen) : payDay())
-          ? `<div class="fabslot"><button class="fab" data-act="go:people" aria-label="Znajdź swoje plus jeden" ${S.screen==='people'?'aria-current="page"':''}>${FAB_SVG}</button></div>`
-          : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać"><span class="halo"></span><span class="fabtxt">PAY</span></button></div>`))
+        : encounterFab())
       : `<button data-act="go:${n.k}" class="${active===n.k?'on':''}" ${active===n.k?'aria-current="page"':''}>
           ${ic(n.ic,21)}<span>${n.l}</span></button>`).join('');
   } else nav.classList.add('hide');
