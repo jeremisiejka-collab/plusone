@@ -840,28 +840,6 @@ function ic(name, size=20, sw=1.7){
 
 const coverArt = e => artBox(e);
 
-/* Osoby w prototypie: lokalny wybór, osobno dla każdego konta testera. */
-function followingIds(){
-  try{ const ids=JSON.parse(localStorage.getItem('plusone-preview-following:'+ACC.user?.id)||'[]');
-    return Array.isArray(ids)?ids.filter(id=>CONTACTS.some(c=>c.id===id)):[]; }catch(e){ return []; }
-}
-function toggleFollow(id){
-  if(!CONTACTS.some(c=>c.id===id)) return;
-  const ids=followingIds(), on=!ids.includes(id);
-  try{localStorage.setItem('plusone-preview-following:'+ACC.user?.id,JSON.stringify(on?[...ids,id]:ids.filter(x=>x!==id)));}
-  catch(e){toast('Nie udało się zapisać obserwowania na tym urządzeniu',true);return;}
-  haptic(8); S.dir=null; render();
-}
-const scPeople = () => `<div class="pg" style="padding:64px 0 112px">
-  <div class="pad col" style="gap:10px;margin-bottom:24px"><span class="eyebrow pink">Twoi ludzie</span><h1 class="h2">Dołącz do znajomych</h1>
-    <p class="body">Profile pokazowe. Obserwowanie zapisuje się na tym urządzeniu.</p></div>
-  <div class="pad col" style="gap:12px">${CONTACTS.map(c=>{const following=followingIds().includes(c.id);return `
-    <div class="card person-card"><span class="person-avatar">${esc(c.name[0])}</span>
-      <div class="col" style="gap:5px;flex:1;min-width:0"><strong>${esc(c.name)}</strong><span class="mono">${esc(['Muzyka na żywo','Kluby i elektronika','Kultura i teatr','Festiwale'][c.id])}</span></div>
-      <button class="chip ${following?'on':''}" data-act="follow:${c.id}" aria-pressed="${following}" aria-label="${following?'Przestań obserwować':'Obserwuj'} ${esc(c.name)}">${following?'Obserwujesz':'Obserwuj'}</button>
-    </div>`;}).join('')}</div>
-</div>`;
-
 /* ---- LOGIN ---- */
 const scLogin = () => `
 <div class="pg" style="display:flex;flex-direction:column;justify-content:space-between;padding:116px 26px 44px;
@@ -1016,7 +994,7 @@ async function submitAuth(){
 
 async function logout(){
   try{ await apiCall('/api/auth/logout','POST',{}) }catch(e){}
-  ACC.user=null; ACC.admin=null; setMine({}); keepMine(); toast('Wylogowano'); S.prev='home'; go('home');
+  ACC.user=null; ACC.admin=null; socialReset(); setMine({}); keepMine(); toast('Wylogowano'); S.prev='home'; go('home');
 }
 
 async function saveProfile(){
@@ -1111,6 +1089,8 @@ const scProfile = () => {
     ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">${isOwner()?'GŁÓWNY ADMIN':'ADMIN'}</span>`):''}
     ${isOrgNow()?row('star','Panel organizatora','orgMine',`<span class="mono" style="color:${PINK}">ORGANIZATOR</span>`):''}
     ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
+    ${canScanNow()?row('shield','Potwierdź profil +1','socialVerify',''):''}
+    ${isAdmin()?row('users','Spotkania Plus Jeden','socialManage',''):''}
     ${realOwner()?row('users','Zobacz jako…','viewAsSheet',`<span class="mono">${viewAs()?esc(roleName(viewAs())):'Ty'}</span>`):''}
     ${u&&!appStaffMode()?row('ticket','Moje bilety z kodem QR','go:mytickets',''):''}
     ${!appStaffMode()?premiumRows(u, row):''}
@@ -1425,6 +1405,7 @@ const scHome = () => {
     <h1 class="h1">Gdzie dziś<br>idziemy?</h1>
     <button class="btn g" data-act="upcomingList">Odkryj wydarzenia ${ic('chevR',18)}</button>
   </div>
+  ${socialHome()}
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
       <span class="h3">Nic nie pasuje</span>
@@ -1484,12 +1465,6 @@ const scHome = () => {
     </div>
   </div>
 
-  <div class="card pad social-card">
-    <span class="eyebrow pink">Twoi ludzie</span>
-    <h2 class="h3">Razem jest lepiej.</h2>
-    <p class="body">${followingIds().length ? 'Obserwujesz '+followingIds().length+' osoby. Zobacz, gdzie się wybierają.' : 'Odkrywaj profile i miej plany znajomych pod ręką.'}</p>
-    <button class="btn g" data-act="go:people">${followingIds().length?'Zobacz obserwowanych':'Znajdź znajomych'}</button>
-  </div>
 
   <div class="pad" style="padding-top:22px">
     <div data-act="go:wrapped" class="card" style="padding:18px;display:flex;align-items:center;gap:14px">
@@ -2836,7 +2811,7 @@ const SCREENS = {
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
   start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), scan:()=>scScan(), mytickets:()=>scMyTickets(),
-  staff:()=>scStaff(), org:()=>scOrg(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scPeople(),
+  staff:()=>scStaff(), org:()=>scOrg(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(),
   loading:()=>'<div class="pg pad" style="padding-top:120px"><p class="body">Otwieram Twoje +1…</p></div>'
 };
 
@@ -2928,7 +2903,7 @@ function render(){
       ? (appStaffMode()
         ? `<div class="fabslot"><button class="fab" data-act="go:scan" aria-label="Skanuj bilety +1">${FAB_SVG}</button></div>`
         : (!(DEMO ? !FAB_HOME.includes(S.screen) : payDay())
-          ? `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Strona główna +1">${FAB_SVG}</button></div>`
+          ? `<div class="fabslot"><button class="fab" data-act="go:people" aria-label="Znajdź swoje plus jeden" ${S.screen==='people'?'aria-current="page"':''}>${FAB_SVG}</button></div>`
           : `<div class="fabslot"><button class="fab" data-act="go:scanpay" aria-label="Skanuj i zapłać"><span class="halo"></span><span class="fabtxt">PAY</span></button></div>`))
       : `<button data-act="go:${n.k}" class="${active===n.k?'on':''}" ${active===n.k?'aria-current="page"':''}>
           ${ic(n.ic,21)}<span>${n.l}</span></button>`).join('');
@@ -2965,7 +2940,6 @@ function act(a){
   const [cmd, p1, p2] = a.split(':');
   switch(cmd){
     case 'go': go(p1); break;
-    case 'follow': toggleFollow(Number(p1)); break;
     case 'back': back(); break;
     case 'ev': openEvent(p1); break;
     case 'fabHome': S.cat='Wszystko'; S.query=''; S.when='all'; S.price='all'; S.big=false; S.limit=40;

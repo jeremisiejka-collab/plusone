@@ -317,7 +317,8 @@ async function shareWrapped(){
 /* ---------- wiersze w Koncie ---------- */
 function premiumRows(u, row){
   if(!u) return '';
-  return row('bell','Powiadomienia','sheetNotif', PREM.unread?`<span class="mono" style="color:${PINK}">${PREM.unread} NOWE</span>`:'')
+  return row('users','Znajdź swoje +1','go:people','')
+    + row('bell','Powiadomienia','sheetNotif', PREM.unread?`<span class="mono" style="color:${PINK}">${PREM.unread} NOWE</span>`:'')
     + row('heart','Zainteresowania','interests', `<span class="mono">${(u.interests||[]).length||'wybierz'}</span>`)
     + row('pin','Obserwowane','followsSheet', `<span class="mono">${(PREM.follows||[]).length||''}</span>`)
     + row('users','Znajomi','friendsSheet','')
@@ -326,6 +327,7 @@ function premiumRows(u, row){
 
 /* ---------- akcje ---------- */
 function premiumAct(cmd, p1, p2, a){
+  if(cmd.startsWith('social')) return socialAct(cmd, p1, p2);
   switch(cmd){
     case 'interests': interestsSheet(); return true;
     case 'saveInterests': saveInterests(); return true;
@@ -356,3 +358,259 @@ if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('messa
   const u = new URL(e.data.url, location.origin), ev = u.searchParams.get('ev');
   if(ev) openEvent(ev); else premiumNotif();
 });
+
+/* ---------- Znajdź swoje +1 — autorskie spotkania, wzajemna zgoda ---------- */
+const SOCIAL = { owner:null, data:null, loading:false, error:'', eventId:null, people:null, tab:'events', busy:false, chat:null };
+const socialDate = t => new Date(t).toLocaleString('pl-PL',{timeZone:'Europe/Warsaw',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'});
+const socialError = '<p id="social-error" class="err" role="alert" hidden></p>';
+function socialReset(){ Object.assign(SOCIAL,{owner:ACC.user?.id||null,data:null,loading:false,error:'',eventId:null,people:null,tab:'events',busy:false,chat:null}); }
+function socialRender(){
+  if(S.screen!=='people') return;
+  const top=$('#view').scrollTop,focus=document.activeElement?.closest('.social-page [data-act]')?.getAttribute('data-act');
+  S.dir=null;render();$('#view').scrollTop=top;
+  if(focus) document.querySelector('.social-page [data-act="'+CSS.escape(focus)+'"]')?.focus({preventScroll:true});
+}
+async function socialLoad(){
+  if(SOCIAL.owner!==(ACC.user?.id||null)) socialReset();
+  if(!ACC.user || SOCIAL.loading) return;
+  const owner=SOCIAL.owner;let changed=!!SOCIAL.error;SOCIAL.loading=true; SOCIAL.error='';
+  try{
+    const [me,ev,mt]=await Promise.all([apiCall('/api/social/me'),apiCall('/api/social/events'),apiCall('/api/social/matches')]);
+    if(owner!==ACC.user?.id) return;
+    const data={...me,...ev,...mt};changed=changed||JSON.stringify(data)!==JSON.stringify(SOCIAL.data);SOCIAL.data=data;
+  }catch(e){ if(owner===ACC.user?.id){SOCIAL.error=e.message;changed=true;} }
+  finally{ if(owner===ACC.user?.id){ SOCIAL.loading=false;if(changed) socialRender(); } }
+}
+async function socialRun(fn){
+  if(SOCIAL.busy) return;
+  SOCIAL.busy=true;
+  const buttons=[...document.querySelectorAll('button[data-act^="social"]')]; buttons.forEach(b=>b.disabled=true);
+  const err=$('#social-error'); if(err) err.hidden=true;
+  try{ await fn(); }
+  catch(e){ const box=$('#social-error'); if(box){box.textContent=e.message;box.hidden=false;} else toast(esc(e.message),true,3500); }
+  finally{ SOCIAL.busy=false;buttons.forEach(b=>b.disabled=false); }
+}
+function socialHome(){
+  return `<section class="social-invite card" aria-label="Znajdź swoje plus jeden">
+    <div class="social-symbol" aria-hidden="true"><span>+</span><span>1</span></div>
+    <span class="eyebrow pink">Dobre wyjście zaczyna się od ludzi</span>
+    <h2 class="h2">Znajdź swoje <span class="pink">+1</span></h2>
+    <p class="body">Na koncert. Do tańca. Do rozmowy.<br>Poznaj kogoś na spotkaniach Plus Jeden.</p>
+    <button class="btn g" data-act="go:people">Zobacz, jak się poznać ${ic('chevR',18)}</button>
+  </section>`;
+}
+const socialSteps = () => `<div class="social-steps">
+  <div><span>01</span><strong>Ten sam plan</strong><p>Wybierz autorskie spotkanie Plus Jeden.</p></div>
+  <div><span>02</span><strong>Mały plusik</strong><p>Na miejscu daj znać, kogo chcesz poznać.</p></div>
+  <div><span>03</span><strong>Pierwsze cześć</strong><p>Wzajemne +1 otwierają rozmowę. Reszta na żywo.</p></div>
+</div>`;
+function scSocial(){
+  if(SOCIAL.owner!==(ACC.user?.id||null)) socialReset();
+  if(!SOCIAL.data && !SOCIAL.loading && !SOCIAL.error && ACC.user) setTimeout(socialLoad,0);
+  const d=SOCIAL.data,p=d?.profile,ev=d?.events||[],matches=d?.matches||[];
+  const selected=ev.find(e=>e.id===SOCIAL.eventId);
+  return `<div class="pg social-page" style="padding:64px 0 112px">
+    <div class="pad col social-heading"><span class="eyebrow pink">Na żywo jest bliżej</span>
+      <h1 class="h1">Znajdź swoje <span class="pink">+1</span></h1>
+      <p class="body">Kogoś do wspólnego wyjścia, tańca albo rozmowy. Jeden mały plus może być początkiem znajomości.</p>
+    </div>
+    <div class="pad col social-content">
+      ${!ACC.user?`${socialSteps()}<button class="btn p" data-act="authgo:login">Zaloguj się i poznaj swoje +1</button>`:
+      SOCIAL.error?`<p class="err" role="alert">${esc(SOCIAL.error)}</p><button class="btn g" data-act="socialRefresh">Spróbuj ponownie</button>`:
+      !d?loadingBox():`
+        <div class="social-profile card"><span class="social-avatar">${p?esc(p.name[0].toUpperCase()):ic('user',24)}</span>
+          <div><strong>${p?esc(p.name)+', '+p.age:'Daj się poznać'}</strong><span class="mono">${p?.suspended?'Profil zawieszony':p?.verified?'Wiek potwierdzony przez obsługę':p?'Wiek do potwierdzenia na miejscu':'Krótki profil, łatwiejsze pierwsze cześć'}</span></div>
+          <button class="chip" data-act="socialProfile">${p?'Edytuj':'Uzupełnij'}</button></div>
+        <div class="social-tabs" role="group" aria-label="Poznawanie ludzi">
+          <button class="chip ${SOCIAL.tab==='events'?'on':''}" aria-pressed="${SOCIAL.tab==='events'}" data-act="socialTab:events">Spotkania</button>
+          <button class="chip ${SOCIAL.tab==='matches'?'on':''}" aria-pressed="${SOCIAL.tab==='matches'}" data-act="socialTab:matches">Twoje +1${matches.length?' · '+matches.length:''}</button>
+          <button class="social-refresh" data-act="socialRefresh" aria-label="Odśwież spotkania i plusiki">${ic('undo',18)}</button>
+        </div>
+        ${SOCIAL.tab==='matches'?`
+          <p class="body">Rozmowa zaczyna się wtedy, gdy oboje dacie sobie plusik.</p>
+          ${matches.map(m=>`<article class="social-match card"><span class="social-avatar">${esc(m.name[0].toUpperCase())}</span><div><h2 class="h4">${esc(m.name)}, ${m.age}</h2><span class="mono">${esc(m.eventTitle)}</span></div>
+            <button class="chip on" data-act="socialChat:${m.id}:${esc(m.eventId)}">Porozmawiaj</button></article>`).join('')||`<div class="social-empty card">${ic('users',28)}<h2 class="h3">Pierwsze +1 przed Tobą</h2><p class="body">Wybierz spotkanie i daj się poznać. Tutaj pojawią się Wasze wzajemne plusiki.</p></div>`}`:
+        selected?socialEventView(selected,p):`
+          <div class="col" style="gap:6px"><h2 class="h3">Spotkajmy się na Plus Jeden</h2><p class="body">Nasze autorskie wydarzenia z przestrzenią na nowe znajomości. Możesz przyjść solo.</p></div>
+          ${ev.map(e=>`<article class="social-event card"><div class="row" style="justify-content:space-between;gap:8px"><span class="eyebrow pink">PLUS JEDEN · 18+</span><span class="mono">${e.live?'TRWA TERAZ':e.joined?'TWÓJ PLAN':''}</span></div>
+            <h3 class="h3">${esc(e.title)}</h3><p class="body">${esc(e.venue)} · ${esc(e.city)}</p><time class="mono">${socialDate(e.startsAt)}</time>
+            <button class="btn ${e.joined?'p':'g'}" data-act="socialPeople:${esc(e.id)}">${e.joined?'Moje +1 na tym spotkaniu':'Poznajmy się tutaj'} ${ic('chevR',18)}</button></article>`).join('')||`
+            <div class="social-empty card"><span class="social-empty-plus" aria-hidden="true">+1</span><h3 class="h3">Pierwsze spotkania przed nami</h3><p class="body">Tutaj pojawią się autorskie wydarzenia Plus Jeden. Już teraz możesz przygotować swój profil.</p><button class="chip" data-act="socialProfile">${p?'Zobacz swój profil':'Przygotuj profil +1'}</button></div>`}
+          ${socialSteps()}`}
+        <p class="social-footnote">Ty decydujesz, kiedy jesteś widoczny. Poznawanie uczestników działa na miejscu, po potwierdzeniu wieku 18+ przez obsługę. Pełnej daty urodzenia nie pokazujemy innym uczestnikom.</p>
+        ${isAdmin()?'<button class="btn g" data-act="socialManage">Zarządzaj spotkaniami Plus Jeden</button>':''}
+      `}
+    </div>
+  </div>`;
+}
+function socialEventView(e,p){
+  const list=SOCIAL.people;
+  return `<button class="social-back" data-act="socialBack">${ic('chevL',16)} Wszystkie spotkania</button>
+    <div class="social-event card"><span class="eyebrow pink">PLUS JEDEN · 18+</span><h2 class="h3">${esc(e.title)}</h2>
+      <p class="body">${esc(e.venue)} · ${esc(e.city)}</p><span class="mono">${socialDate(e.startsAt)}</span>
+      <div class="social-meeting">${ic('pin',18)}<div><strong>Tu mówimy pierwsze cześć</strong><p>${esc(e.meetingPoint)}</p></div></div>
+      ${!e.joined?`<p class="body">Chcesz poznać kogoś na tym spotkaniu? Włącz swój profil dla jego uczestników. To nie jest bilet wstępu.</p><button class="btn p" data-act="socialJoin">${p?'Chcę kogoś poznać':'Najpierw uzupełnij profil'}</button>`:
+        `<div class="social-visibility">${ic('check',18)}<span>${e.checkedIn&&e.live&&p?.verified&&!p?.suspended?'Jesteś widoczny na tym spotkaniu':'Chcesz poznać ludzi na tym spotkaniu'}</span></div>
+        ${!e.checkedIn||!p?.verified?`<p class="body">Przy wejściu pokaż kod profilu i dokument ze zdjęciem. Obsługa sprawdzi imię, wiek i obecność. Nie zapisujemy zdjęcia ani numeru dokumentu.</p><button class="btn p" data-act="socialCode">Pokaż kod obsłudze</button>`:''}
+        ${!e.live?'<p class="mono">Osoby pojawią się po rozpoczęciu spotkania.</p>':''}
+        <button class="social-back" data-act="socialLeaveAsk">Wyłącz poznawanie na tym spotkaniu</button>`}
+    </div>
+    ${e.joined&&e.checkedIn&&p?.verified&&e.live&&!p?.suspended?`
+      <div class="row" style="justify-content:space-between;gap:8px"><h2 class="h3">Kogo dziś poznasz?</h2><button class="chip" data-act="socialPeople:${esc(e.id)}">Odśwież</button></div>
+      <p class="body">Plusik znaczy „chętnie Cię poznam”. Bez presji — rozmowa otworzy się dopiero, gdy druga osoba też da Ci +1.</p>
+      ${list===null?loadingBox():list.error?`<p class="err" role="alert">${esc(list.error)}</p>`:list.map(person=>socialPerson(person,e)).join('')||'<div class="social-empty card"><h3 class="h3">Dajmy sobie chwilę</h3><p class="body">Pozostali uczestnicy jeszcze nie włączyli poznawania. Wróć tu za chwilę albo podejdź do punktu spotkań +1.</p></div>'}`:''}`;
+}
+function socialPerson(p,e){
+  return `<article class="social-person card"><div class="row" style="gap:12px"><span class="social-avatar">${esc(p.name[0].toUpperCase())}</span><div><h3 class="h3">${esc(p.name)}, ${p.age}</h3><span class="social-verified">${ic('shield',13)} Wiek potwierdzony</span></div></div>
+    ${p.bio?`<p class="body">${esc(p.bio)}</p>`:''}<div class="social-opener"><span class="eyebrow">Zacznijmy od…</span><p>${esc(p.opener)}</p></div>
+    ${p.received&&!p.sent?'<span class="social-received">Masz od tej osoby +1</span>':''}
+    <button class="btn ${p.sent&&!p.matched?'g':'p'}" data-act="${p.matched?'socialChat:'+p.id+':'+e.id:'socialPlus:'+p.id}">${p.matched?'Macie swoje +1 · porozmawiajcie':p.sent?'Plusik wysłany · cofnij':p.received?'Odwzajemnij +1':'Daj +1'}</button>
+    <button class="social-back" data-act="socialSafety:${p.id}:${esc(e.id)}">Zablokuj lub zgłoś</button></article>`;
+}
+async function socialPeople(id){
+  const entering=SOCIAL.eventId!==id;
+  SOCIAL.eventId=id; SOCIAL.tab='events';if(entering){SOCIAL.people=null;socialRender();}
+  const e=SOCIAL.data?.events.find(e=>e.id===id), owner=ACC.user?.id;
+  if(!e?.joined||!e.checkedIn||!e.live||!SOCIAL.data?.profile?.verified) return;
+  let changed=false;
+  try{ const r=await apiCall('/api/social/people?event='+encodeURIComponent(id)); if(SOCIAL.eventId===id&&ACC.user?.id===owner){changed=JSON.stringify(SOCIAL.people)!==JSON.stringify(r.people);SOCIAL.people=r.people;} }
+  catch(err){ if(SOCIAL.eventId===id&&ACC.user?.id===owner){ SOCIAL.people={error:err.message};changed=true;} }
+  if(ACC.user?.id===owner&&changed) socialRender();
+}
+function socialField(id,label,value='',attrs=''){
+  return `<div class="field"><label for="${id}">${label}</label><input id="${id}" value="${esc(value)}" ${attrs}></div>`;
+}
+function socialProfile(){
+  const p=SOCIAL.data?.profile;
+  sheet(`<div class="col social-form"><span class="eyebrow pink">Twoje pierwsze cześć</span><h2 class="h3">Daj się poznać</h2>
+    <p class="body">Wystarczy imię i coś, od czego łatwo zacząć rozmowę.</p>
+    ${socialField('so-name','IMIĘ Z DOKUMENTU',p?.name||'',`autocomplete="given-name" maxlength="40" ${p?.verified?'readonly':''}`)}
+    ${socialField('so-birth','DATA URODZENIA',p?.birthDate||'',`type="date" autocomplete="bday" ${p?.verified?'readonly':''}`)}
+    <p class="social-footnote">${p?.verified?'Imię i wiek zostały potwierdzone.':'Wiek potwierdzi obsługa na miejscu, na podstawie dokumentu ze zdjęciem.'} Inni zobaczą tylko wiek, bez daty urodzenia. Spotkania są dla osób 18+.</p>
+    ${socialField('so-bio','KILKA SŁÓW O TOBIE',p?.bio||'','maxlength="160" placeholder="Zawsze pod sceną. Chętnie poznam ekipę na koncerty."')}
+    ${socialField('so-opener','ZACZNIJMY OD…',p?.opener||'','maxlength="100" placeholder="Jaki koncert najchętniej przeżyjesz jeszcze raz?"')}
+    ${socialError}<button class="btn p" data-act="socialSave">Zapisz profil</button>
+    ${p?'<button class="social-back" data-act="socialDeleteAsk">Usuń profil poznawania</button>':''}
+    <button class="social-back" data-act="closeSheet">Zamknij</button></div>`);
+}
+async function socialChat(id,eventId){
+  const match=SOCIAL.data?.matches.find(m=>m.id===id&&m.eventId===eventId);
+  if(!match) throw new Error('Odśwież swoje +1, aby otworzyć rozmowę.');
+  const r=await apiCall('/api/social/messages?event='+encodeURIComponent(eventId)+'&user='+id);
+  SOCIAL.chat={id,eventId};
+  sheet(`<div class="col social-form"><span class="eyebrow pink">Macie swoje +1</span><h2 class="h3">Cześć, ${esc(match.name)}</h2>
+    <div class="social-meeting">${ic('pin',18)}<div><strong>Może pierwsze cześć tutaj?</strong><p>${esc(match.meetingPoint)}</p></div></div>
+    <p class="body">${esc(match.opener)}</p><div id="social-messages" class="social-messages" aria-live="polite">${socialMessages(r.messages)}</div>
+    ${socialField('so-message','WIADOMOŚĆ','','maxlength="500" placeholder="Cześć! Spotkamy się przy punkcie +1?" autocomplete="off"')}
+    ${socialError}<div class="row" style="gap:8px"><button class="btn p" data-act="socialSend">Wyślij</button><button class="btn g" data-act="socialChatRefresh">Odśwież</button></div>
+    <button class="social-back" data-act="socialSafety:${id}:${esc(eventId)}">Zablokuj lub zgłoś</button><button class="social-back" data-act="closeSheet">Zamknij</button></div>`);
+  const box=$('#social-messages'); box.scrollTop=box.scrollHeight;
+}
+const socialMessages = messages => messages.map(m=>`<div class="social-message ${m.mine?'mine':''}"><p>${esc(m.text)}</p><time>${new Date(m.at).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})}</time></div>`).join('')||'<p class="social-footnote">Pierwsza wiadomość przed Wami. Możecie też od razu przywitać się na żywo.</p>';
+async function socialChatRefresh(send=false){
+  const c=SOCIAL.chat; if(!c) return;
+  const text=$('#so-message')?.value||'';
+  const r=send?await apiCall('/api/social/messages','POST',{eventId:c.eventId,userId:c.id,text}):await apiCall('/api/social/messages?event='+encodeURIComponent(c.eventId)+'&user='+c.id);
+  if(SOCIAL.chat!==c||!$('#social-messages')) return;
+  const box=$('#social-messages'),html=socialMessages(r.messages),atEnd=box.scrollHeight-box.scrollTop-box.clientHeight<30;
+  if(box.innerHTML!==html){const top=box.scrollTop;box.innerHTML=html;box.scrollTop=send||atEnd?box.scrollHeight:top;}
+  if(send) $('#so-message').value='';
+}
+function socialSafety(id,eventId){
+  SOCIAL.safety={id,eventId};
+  sheet(`<div class="col social-form"><h2 class="h3">Ty decydujesz o kontakcie</h2><p class="body">Po blokadzie nie zobaczycie swoich profili i nie będziecie mogli do siebie pisać. Ta osoba nie dostanie powiadomienia o blokadzie.</p>
+    <button class="btn g" data-act="socialBlock">Zablokuj osobę</button>
+    ${socialField('so-reason','POWÓD ZGŁOSZENIA','','maxlength="500" placeholder="Opisz, co się wydarzyło"')}
+    <p class="social-footnote">Zgłoszenie trafi do administratorów Plus Jeden i również zablokuje kontakt. Jeśli potrzebujesz pomocy na miejscu, podejdź do obsługi.</p>
+    ${socialError}<button class="btn p" data-act="socialReport">Zgłoś i zablokuj</button><button class="social-back" data-act="closeSheet">Anuluj</button></div>`);
+}
+async function socialVerifySheet(){
+  const {events}=await apiCall('/api/social/events'),live=events.filter(e=>e.live);
+  SOCIAL.verify=null;
+  sheet(`<div class="col social-form"><h2 class="h3">Potwierdź profil +1</h2><p class="body">Sprawdź osobę na miejscu i jej dokument ze zdjęciem. Potwierdzenie profilu nie zastępuje sprawdzenia biletu.</p>
+    ${live.length?`<div class="field"><label for="so-verify-event">TRWAJĄCE SPOTKANIE</label><select id="so-verify-event">${live.map(e=>`<option value="${esc(e.id)}">${esc(e.title+' · '+e.city)}</option>`).join('')}</select></div>
+    ${socialField('so-code','KOD Z TELEFONU UCZESTNIKA','','maxlength="12" autocomplete="off" autocapitalize="characters"')}
+    ${socialError}<button class="btn p" data-act="socialLookup">Sprawdź kod</button>`:'<p class="body">Nie ma teraz trwającego spotkania Plus Jeden. Administrator dodaje spotkania w aplikacji.</p>'}
+    <button class="social-back" data-act="closeSheet">Zamknij</button></div>`);
+}
+async function socialManage(){
+  const [{events},{reports}]=await Promise.all([apiCall('/api/social/events'),apiCall('/api/social/admin/reports')]);
+  sheet(`<div class="col social-form"><span class="eyebrow pink">Panel Plus Jeden</span><h2 class="h3">Spotkania i zgłoszenia</h2>
+    <button class="btn p" data-act="socialCreateSheet">Dodaj autorskie spotkanie</button>
+    ${events.map(e=>`<div class="social-admin-row"><strong>${esc(e.title)}</strong><span class="mono">${socialDate(e.startsAt)} · ${esc(e.city)}</span><button class="chip" data-act="socialCancelAsk:${esc(e.id)}">Wyłącz spotkanie</button></div>`).join('')}
+    <h3 class="h4">Zgłoszenia (${reports.length})</h3>${reports.map(r=>`<div class="social-admin-row"><strong>${esc(r.name||'Usunięty profil')} · ${esc(r.title)}</strong><p class="body">${esc(r.reason)}</p>
+      <button class="chip" data-act="socialResolve:${r.id}">Zamknij zgłoszenie</button><button class="chip" data-act="socialSuspend:${r.id}">Zawieś profil</button></div>`).join('')||'<p class="body">Brak otwartych zgłoszeń.</p>'}
+    ${socialError}<button class="social-back" data-act="closeSheet">Zamknij</button></div>`);
+}
+function socialAct(cmd,p1,p2){
+  if(cmd==='socialProfile'){socialProfile();return true;}
+  if(cmd==='socialTab'){SOCIAL.tab=p1;SOCIAL.eventId=null;socialRender();return true;}
+  if(cmd==='socialBack'){SOCIAL.eventId=null;socialRender();return true;}
+  if(cmd==='socialSafety'){socialSafety(+p1,p2);return true;}
+  if(cmd==='socialDeleteAsk'||cmd==='socialLeaveAsk'||cmd==='socialCancelAsk'){
+    const del=cmd==='socialDeleteAsk',cancel=cmd==='socialCancelAsk';
+    sheet(`<div class="col social-form"><h2 class="h3">${del?'Usunąć profil poznawania?':cancel?'Wyłączyć to spotkanie?':'Wyłączyć poznawanie?'}</h2><p class="body">${del?'Znikną profil, potwierdzenie wieku, plusiki i rozmowy. Twoje konto i bilety zostają.':cancel?'Uczestnicy stracą dostęp do poznawania osób i rozmów na tym spotkaniu.':'Znikniesz z listy uczestników, a plusiki i połączenia z tego spotkania zostaną usunięte.'}</p>${socialError}
+      <button class="btn p" data-act="${del?'socialDelete':cancel?'socialCancel:'+p1:'socialLeave'}">${del?'Usuń profil':cancel?'Wyłącz spotkanie':'Wyłącz poznawanie'}</button><button class="btn g" data-act="closeSheet">Anuluj</button></div>`);return true;
+  }
+  if(cmd==='socialCreateSheet'){
+    sheet(`<div class="col social-form"><h2 class="h3">Autorskie spotkanie Plus Jeden</h2><p class="body">Publikuj wyłącznie wydarzenia organizowane przez Plus Jeden. Wskaż widoczny punkt, w którym uczestnicy mogą się przywitać.</p>
+      ${socialField('so-title','NAZWA SPOTKANIA','','maxlength="100"')}${socialField('so-city','MIASTO',S.city,'maxlength="60"')}${socialField('so-venue','MIEJSCE','','maxlength="100"')}
+      ${socialField('so-point','PUNKT SPOTKAŃ +1','','maxlength="160" placeholder="Np. stolik z oznaczeniem +1 obok wejścia"')}
+      ${socialField('so-start','POCZĄTEK','','type="datetime-local"')}${socialField('so-end','KONIEC','','type="datetime-local"')}
+      <p class="social-footnote">Godziny w strefie tego urządzenia: ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}. Spotkanie może trwać do 48 godzin.</p>${socialError}
+      <button class="btn p" data-act="socialCreate">Opublikuj spotkanie</button><button class="social-back" data-act="socialManage">Wróć</button></div>`);return true;
+  }
+  socialRun(async()=>{
+    switch(cmd){
+      case 'socialRefresh': await socialLoad();if(SOCIAL.eventId) await socialPeople(SOCIAL.eventId);break;
+      case 'socialPeople': await socialPeople(p1);break;
+      case 'socialSave': {
+        await apiCall('/api/social/me','PUT',{name:$('#so-name').value,birthDate:$('#so-birth').value,bio:$('#so-bio').value,opener:$('#so-opener').value});
+        closeSheet();await socialLoad();toast('Profil gotowy. Wybierz spotkanie i poznaj swoje +1.',true);break;
+      }
+      case 'socialDelete': await apiCall('/api/social/me','DELETE',{});closeSheet();socialReset();await socialLoad();break;
+      case 'socialJoin': if(!SOCIAL.data?.profile){socialProfile();break;} await apiCall('/api/social/join','POST',{eventId:SOCIAL.eventId,on:true});await socialLoad();break;
+      case 'socialLeave': await apiCall('/api/social/join','POST',{eventId:SOCIAL.eventId,on:false});closeSheet();SOCIAL.people=null;await socialLoad();break;
+      case 'socialCode': {
+        const r=await apiCall('/api/social/code','POST',{});
+        sheet(`<div class="col social-form"><span class="eyebrow pink">Tylko dla obsługi na miejscu</span><h2 class="h3">To Twoje +1</h2><p class="body">Pokaż ten kod i dokument ze zdjęciem osobie z obsługi. Nie wysyłaj kodu innym uczestnikom.</p><div class="social-code">${esc(r.code.slice(0,5)+' '+r.code.slice(5))}</div><p class="mono">Ważny do ${new Date(r.expiresAt).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})}. To nie jest bilet wstępu.</p><button class="btn p" data-act="socialCodeDone">Gotowe · odśwież profil</button><button class="social-back" data-act="closeSheet">Zamknij</button></div>`);break;
+      }
+      case 'socialCodeDone':closeSheet();await socialLoad();if(SOCIAL.eventId)await socialPeople(SOCIAL.eventId);break;
+      case 'socialPlus': {
+        const person=Array.isArray(SOCIAL.people)&&SOCIAL.people.find(p=>p.id===+p1);if(!person)break;
+        const r=await apiCall('/api/social/plus','POST',{eventId:SOCIAL.eventId,userId:+p1,on:!person.sent});
+        await socialLoad();await socialPeople(SOCIAL.eventId);haptic(20);toast(r.matched?'Macie swoje +1. Możecie się przywitać!':person.sent?'Plusik cofnięty':'Plusik wysłany. Teraz ruch drugiej osoby.',true,3000);break;
+      }
+      case 'socialChat':await socialChat(+p1,p2);break;
+      case 'socialSend':await socialChatRefresh(true);break;
+      case 'socialChatRefresh':await socialChatRefresh();break;
+      case 'socialBlock':case 'socialReport': {
+        const reason=cmd==='socialReport'?$('#so-reason').value.trim():'';if(cmd==='socialReport'&&!reason)throw new Error('Opisz powód zgłoszenia.');
+        await apiCall('/api/social/block','POST',{userId:SOCIAL.safety.id,eventId:SOCIAL.safety.eventId,reason});closeSheet();await socialLoad();if(SOCIAL.eventId)await socialPeople(SOCIAL.eventId);toast(reason?'Zgłoszenie przyjęte. Kontakt zablokowany.':'Kontakt zablokowany.',true);break;
+      }
+      case 'socialVerify':await socialVerifySheet();break;
+      case 'socialLookup': {
+        const code=$('#so-code').value,eventId=$('#so-verify-event').value,r=await apiCall('/api/social/verify','POST',{code,eventId});SOCIAL.verify={code,eventId,...r};
+        sheet(`<div class="col social-form"><h2 class="h3">Sprawdź dokument i osobę</h2><p class="h3">${esc(r.name)} · ${r.age} lat</p><p class="body">Data urodzenia: ${esc(r.birthDate)}</p><p class="body">Porównaj imię i datę z dokumentem ze zdjęciem oraz upewnij się, że dokument należy do osoby przed Tobą. Nie fotografuj dokumentu.</p>${socialError}<button class="btn p" data-act="socialConfirm">Dane i osoba zgodne · potwierdź</button><button class="btn g" data-act="socialVerify">Dane niezgodne · wróć</button></div>`);break;
+      }
+      case 'socialConfirm':await apiCall('/api/social/verify','PUT',{...SOCIAL.verify,confirmed:true});SOCIAL.verify=null;closeSheet();toast('Wiek i obecność potwierdzone.',true);break;
+      case 'socialManage':await socialManage();break;
+      case 'socialCreate':await apiCall('/api/social/admin/events','POST',{title:$('#so-title').value,city:$('#so-city').value,venue:$('#so-venue').value,meetingPoint:$('#so-point').value,startsAt:+new Date($('#so-start').value),endsAt:+new Date($('#so-end').value)});await socialLoad();await socialManage();break;
+      case 'socialCancel':await apiCall('/api/social/admin/events','DELETE',{eventId:p1});await socialLoad();await socialManage();break;
+      case 'socialResolve':case 'socialSuspend':await apiCall('/api/social/admin/reports','POST',{id:+p1,suspend:cmd==='socialSuspend'});await socialManage();break;
+    }
+  });
+  return true;
+}
+
+// Krótka rozmowa odświeża się bez kasowania wpisywanej wiadomości.
+setInterval(()=>{
+  if(document.hidden || SOCIAL.busy || SOCIAL.loading || !ACC.user || SOCIAL.owner!==ACC.user.id) return;
+  if($('#sheetwrap.on')){
+    if($('#social-messages') && SOCIAL.chat) socialChatRefresh().catch(e=>{
+      const box=$('#social-error');if(box){box.textContent=e.message;box.hidden=false;}
+    });
+    return;
+  }
+  if(S.screen==='people') socialLoad().then(()=>{if(SOCIAL.eventId) return socialPeople(SOCIAL.eventId);});
+},15000);

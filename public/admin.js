@@ -83,6 +83,7 @@ const scStaff = () => `<div class="pg staff-page" style="padding:64px 0 112px">
   ${staffHeader('Gotowi na wejście?')}
   <div class="pad col" style="gap:20px">
     <button class="staff-scan" data-act="go:scan"><span>${ic('scan',54)}</span><strong>Skanuj bilety</strong><span>Skieruj aparat na kod QR</span></button>
+    ${typeof socialVerifySheet==='function'?'<button class="btn g" data-act="socialVerify">Potwierdź wiek i obecność +1</button>':''}
     ${staffStats()}
     <p class="mono">Statystyki z bieżącej sesji skanowania.</p>
   </div>

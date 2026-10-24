@@ -11,6 +11,7 @@ export function initPremium(h) {
 }
 
 import { vapidKeys, pushUser } from './push.js';
+import { socialApi } from './social.js';
 
 const SITE = 'https://plusoneapp.pl';
 const fold = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
@@ -414,6 +415,7 @@ export { runAlerts };
 
 /* ---------------- router ---------------- */
 export async function premiumApi(path, m, req, env, user) {
+  if (path.startsWith('/api/social/')) return socialApi(path, m, req, env, user);
   if (path === '/api/follows' && m === 'GET') return follows(env, user);
   if (path === '/api/follows' && m === 'POST') return setFollow(req, env, user);
   if (path === '/api/notifications' && m === 'GET') return notifications(env, user);

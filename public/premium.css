@@ -17,3 +17,73 @@
 .wcard:first-child { grid-column: 1 / -1; min-height: 150px; }
 .wcard:first-child b { font-size: 54px; }
 .notifdot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 0 2px var(--bg); }
+
+/* Znajdź swoje +1 — ważna część aplikacji obok odkrywania wydarzeń. */
+.social-invite { margin: 0 20px 28px; padding: 22px; display: flex; flex-direction: column; gap: 12px; position: relative; overflow: hidden; border-color: var(--pink-line); background: var(--promo1); }
+.social-invite .h2 { font-size: 30px; padding-right: 34px; }
+.social-invite .body { font-size: 14px; max-width: 270px; }
+.social-invite .eyebrow { max-width: 220px; line-height: 1.5; padding-right: 30px; }
+.social-invite .btn, .social-event .btn { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 16px; height: 48px; font: 600 14px/1.25 var(--d); }
+.social-symbol { position: absolute; top: 16px; right: 16px; display: flex; gap: 4px; color: var(--pink); font: 700 36px/1 var(--d); }
+.social-symbol span { display: grid; place-items: center; width: 28px; height: 38px; }
+.social-heading { gap: 12px; padding-bottom: 24px; }
+.social-page:not(.fwd):not(.bwd) { animation: none; }
+.social-heading .h1 { font-size: clamp(34px, 9vw, 44px); }
+.social-content { gap: 18px; }
+.social-page .body { font-size: 14px; line-height: 1.55; }
+.social-page .mono { font-size: 10px; line-height: 1.6; }
+.social-page p, .social-form p { margin: 0; overflow-wrap: anywhere; }
+.social-profile, .social-match { display: flex; align-items: center; gap: 10px; padding: 14px; }
+.social-profile > div, .social-match > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; overflow-wrap: anywhere; }
+.social-profile strong { font: 600 15px/1.2 var(--d); }
+.social-profile .chip, .social-match .chip { flex: none; font-size: 12px; padding: 9px 11px; min-height: 40px; }
+.social-avatar { flex: none; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 15px; background: var(--pink-dim); color: var(--pink); font: 600 20px/1 var(--d); }
+.social-tabs { display: flex; align-items: center; gap: 8px; }
+.social-tabs .chip { min-height: 42px; }
+.social-refresh { margin-left: auto; display: grid; place-items: center; width: 42px; height: 42px; color: var(--t2); }
+.social-event, .social-person { padding: 20px; display: flex; flex-direction: column; gap: 13px; }
+.social-event .h3, .social-person .h3 { overflow-wrap: anywhere; }
+.social-event .btn { justify-content: center; height: auto; min-height: 50px; padding: 12px 14px; }
+.social-steps { display: flex; flex-direction: column; }
+.social-steps > div { display: grid; grid-template-columns: 32px 1fr; column-gap: 12px; row-gap: 5px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.social-steps span { grid-row: 1 / 3; font: 500 12px/1.5 var(--m); color: var(--pink); padding-top: 2px; }
+.social-steps strong { font: 600 16px/1.3 var(--d); }
+.social-steps p { font: 400 13px/1.5 var(--d); color: var(--t2); }
+.social-empty { display: flex; flex-direction: column; align-items: flex-start; padding: 24px; gap: 12px; }
+.social-empty > svg { color: var(--pink); }
+.social-empty-plus { font: 700 44px/1 var(--d); color: var(--pink); }
+.social-footnote { font: 400 12px/1.6 var(--d); color: var(--t2); }
+.social-back { display: flex; align-items: center; justify-content: center; align-self: center; gap: 6px; min-height: 42px; font: 500 13px/1.4 var(--d); color: var(--t2); }
+.social-meeting { display: flex; gap: 10px; border: 1px solid var(--pink-line); border-radius: 14px; background: var(--pink-dim); padding: 14px; }
+.social-meeting > svg { color: var(--pink); margin-top: 2px; }
+.social-meeting strong { font: 600 14px/1.4 var(--d); }
+.social-meeting p { margin-top: 4px; font: 400 13px/1.5 var(--d); color: var(--t2); }
+.social-visibility, .social-verified { display: flex; align-items: center; gap: 6px; font: 500 12px/1.5 var(--d); color: var(--pink); }
+.social-verified { margin-top: 5px; font-size: 11px; }
+.social-opener { background: var(--surface-2); border-radius: 14px; padding: 14px; }
+.social-opener .eyebrow { color: var(--t2); }
+.social-opener p { margin-top: 6px; font: 500 16px/1.45 var(--d); }
+.social-received { color: var(--pink); font: 600 13px/1.4 var(--d); }
+.social-person .btn { font-size: 15px; }
+.social-form { gap: 15px; }
+.social-form .body { font-size: 14px; line-height: 1.6; }
+.social-form .btn { height: auto; min-height: 50px; padding: 13px 16px; font: 600 15px/1.4 var(--d); }
+.social-form .field label { font-size: 10px; line-height: 1.5; }
+.social-form .field input, .social-form select { width: 100%; min-width: 0; font: 400 16px/1.4 var(--d); }
+.social-form .field input[readonly] { color: var(--t2); }
+.social-form select { padding: 12px; border: 1px solid var(--line-2); border-radius: 14px; background: var(--surface-2); color: var(--t1); }
+.social-code { padding: 26px 0; text-align: center; letter-spacing: .1em; font: 600 clamp(20px, 6vw, 27px)/1.3 var(--m); color: var(--pink); }
+.social-messages { max-height: 220px; min-height: 70px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 4px; }
+.social-message { max-width: 90%; padding: 11px 13px; border-radius: 14px; background: var(--surface-2); align-self: flex-start; font: 400 14px/1.5 var(--d); }
+.social-message.mine { background: var(--pink-dim); align-self: flex-end; }
+.social-message time { display: block; color: var(--t2); font: 400 10px/1.5 var(--m); margin-top: 4px; }
+.social-admin-row { display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.social-admin-row .chip { align-self: flex-start; min-height: 40px; }
+.social-page button:focus-visible, .social-form button:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
+.social-page button:disabled, .social-form button:disabled { opacity: .55; cursor: wait; }
+@media(max-width:350px) {
+  .social-invite { padding: 18px; }
+  .social-profile, .social-match { flex-wrap: wrap; }
+  .social-profile > div, .social-match > div { min-width: 130px; }
+  .social-profile .chip, .social-match .chip { margin-left: 52px; }
+}
