@@ -203,7 +203,7 @@ function stopScan(){
 /* wywoływane po każdym przerysowaniu ekranu */
 function adminAfterRender(){
   if(S.screen==='scan') startScan(); else stopScan();
-  viewAsBar(); workBar();
+  viewAsBar(); workBar(); previewBar();
 }
 
 /* akcje z data-act obsługiwane w tym module; zwraca true, jeśli rozpoznano */
@@ -237,6 +237,9 @@ function adminAct(cmd, p1, p2, a){
     case 'delGuest': apiCall('/api/org/guests','DELETE',{code:p1}).then(()=>{ toast('Usunięto'); ORG.at=0; guestsSheet(a.slice(10+p1.length)); }).catch(e=>toast(esc(e.message),true)); return true;
     case 'viewAs': setViewAs(p1||null); return true;
     case 'browse': setBrowse(p1==='1'); return true;
+    case 'previewSheet': previewSheet(); return true;
+    case 'previewAs': previewAs(p1); return true;
+    case 'previewEnd': previewEnd(); return true;
     case 'adm': S.adminTab=p1; S.dir=null; S.screen==='admin' ? render() : go('admin'); return true;
     case 'orgReload': ORG.at=0; ORG.data=null; render(); return true;
     case 'ticketQR': ticketSheet(a.slice(9)); return true;
@@ -524,6 +527,85 @@ const dashHead = (eyebrow, title, sub, actions='') => `<div class="dhead"><div c
   <span class="eyebrow pink">${eyebrow}</span><h1>${title}</h1>${sub?`<span class="mono">${sub}</span>`:''}</div><div class="dhead-act">${actions}</div></div>`;
 const todayLong = () => { const d = new Date().toLocaleDateString('pl-PL',{weekday:'long', day:'numeric', month:'long'}); return d[0].toUpperCase()+d.slice(1); };
 const firstName = () => esc((ACC.user?.name||'').split(' ')[0] || '');
+
+/* ---- PODGLĄD JAKO (faza rozwoju): każda rola bez logowania, na przykładowych danych ----
+   Nic nie trafia do serwera: apiCall zwraca dane podglądu, zmiany są zablokowane. Wydarzenia są prawdziwe (publiczne),
+   osoby i liczby są przykładowe i tak opisane. Koniec podglądu = przeładowanie strony. */
+const PREVIEW_ROLES = [['user','Użytkownik','Przeglądanie, zapisane, bilety'],['staff','Obsługa biletów','Skaner biletów przy wejściu'],
+  ['organizer','Organizator','Pulpit, wydarzenia, goście, skaner'],['admin','Administrator','Pełny panel: pulpit, użytkownicy, organizatorzy']];
+const PREVIEW = { role:null, realApi:null };
+const inPreview = () => !!PREVIEW.role;
+function previewSheet(){
+  sheet(`<div class="col" style="gap:10px"><span class="h3">Podgląd jako</span>
+    <span class="body" style="font-size:13px">Zobacz +1 oczami wybranej roli, bez logowania. Dane osób i liczby są przykładowe; zmiany nie są zapisywane.</span>
+    ${PREVIEW_ROLES.map(([k,l,d])=>`<button class="perm ${PREVIEW.role===k?'on':''}" data-act="previewAs:${k}">
+      <span class="perm-box" style="border-radius:50%">${PREVIEW.role===k?ic('check',14,2.4):''}</span>
+      <span class="col" style="flex:1;text-align:left"><span class="h4">${l}</span><span class="mono" style="margin-top:3px">${d}</span></span></button>`).join('')}
+    ${PREVIEW.role?`<button class="btn g" data-act="previewEnd" style="height:48px;font:600 14px/1 var(--d)">Zakończ podgląd</button>`:''}</div>`);
+}
+function previewSeries(scale){ return Array.from({length:30},(_,i)=>Math.max(0,Math.round(scale*(0.35+0.65*i/29)*(0.6+0.8*Math.abs(Math.sin(i*1.7)))))); }
+function previewData(){
+  const ev = EVENTS.filter(e=>e.real && e.day>=localDay());
+  const top = ev.filter(e=>e.big).concat(ev).slice(0,10);
+  const byVenue = {}; ev.forEach(e=>{ if(e.city===S.city) (byVenue[e.venue]=byVenue[e.venue]||[]).push(e); });
+  const venue = Object.keys(byVenue).sort((a,b)=>byVenue[b].length-byVenue[a].length)[0] || (ev[0]&&ev[0].venue) || 'Klub';
+  const now = Date.now(), from = new Date(new Date().setHours(0,0,0,0)).getTime()-29*864e5;
+  const people = [['Anna K.','anna@przyklad.pl','Warszawa'],['Michał W.','michal@przyklad.pl','Kraków'],['Ola P.','ola@przyklad.pl','Warszawa'],
+    ['Kuba S.','kuba@przyklad.pl','Gdańsk'],['Zosia M.','zosia@przyklad.pl','Wrocław'],['Bartek N.','bartek@przyklad.pl','Warszawa']];
+  const users = people.map(([name,email,city],i)=>({id:900+i, name, email, city, role:'user', owner:0, perm_curate:0, perm_scan:i===3?1:0, perm_org:i===1?1:0,
+    venues: i===1?JSON.stringify([venue]):'[]', must_change:0, preview_access:1, created_at:now-(i*3+1)*864e5, last_seen:now-i*3600e3, saves:12-i}));
+  const orgEvents = (byVenue[venue]||ev.slice(0,8)).slice(0,10).map((e,i)=>({id:e.id, title:e.name, start:e.start, venue:e.venue, city:e.city, hot:e.hot||0, image:e.image, priceFrom:e.from,
+    going:Math.max(0,24-i*3), saves:Math.max(0,18-i*2), followers:Math.max(0,9-i), tickets:Math.max(0,20-i*3), used:i===0?6:0, guests:i<3?8-i*2:0, guestsUsed:i===0?2:0}));
+  const stats = {users:1284, admins:1, active7:412, new7:96, saves:3870, hidden:3, featured:5, going:2215, activeToday:138, staff:4, organizers:7, tickets:1640, scanned:930, guests:210, pushSubs:540,
+    topSaved: top.slice(0,8).map((e,i)=>({event_id:e.id, n:180-i*17, going:110-i*12})), recent: users.map(u=>({id:u.id,name:u.name,email:u.email,city:u.city,created_at:u.created_at})),
+    cities:[{city:'Warszawa',n:612},{city:'Kraków',n:241},{city:'Wrocław',n:148},{city:'Gdańsk',n:119},{city:'Poznań',n:87}],
+    series:{signups:previewSeries(6), saves:previewSeries(90), going:previewSeries(70), scans:previewSeries(35)}, seriesFrom:from};
+  return {
+    stats, users, invites:[{id:1,email:'nowy.organizator@przyklad.pl',scan:2,created_at:now-864e5,expires_at:now+6*864e5,used_at:null,by_email:'podglad@plusoneapp.pl'}],
+    orgs:[{id:901,name:'Michał W.',email:'michal@przyklad.pl',venues:[venue],upcoming:orgEvents.length,going:orgEvents.reduce((s,e)=>s+e.going,0)}],
+    org:{organizer:{id:901,name:'Michał W. (podgląd)',email:'michal@przyklad.pl'}, venues:[venue], events:orgEvents,
+      series:{saves:previewSeries(12), going:previewSeries(10), scans:previewSeries(4)}, seriesFrom:from}
+  };
+}
+function previewAs(role){
+  if(!PREVIEW_ROLES.some(r=>r[0]===role)) return;
+  if(!PREVIEW.realApi) PREVIEW.realApi = apiCall;
+  const D = previewData();
+  PREVIEW.role = role; closeSheet();
+  apiCall = async (path, method='GET') => {
+    const p = path.split('?')[0];
+    if(p==='/api/auth/logout'){ previewEnd(); return {}; }
+    if(method==='GET'){
+      if(p==='/api/me') return {user:ACC.user, saved:[], going:[]};
+      if(p==='/api/admin/stats') return D.stats;
+      if(p==='/api/admin/users') return {users:D.users};
+      if(p==='/api/state') return {hidden:[], featured:[]};
+      if(p==='/api/admin/invites') return {invites:D.invites, mailer:false};
+      if(p==='/api/admin/mail') return {};
+      if(p==='/api/admin/organizers') return {organizers:D.orgs};
+      if(p==='/api/org/me') return D.org;
+      if(p==='/api/org/guests') return {guests:[{code:'P1-PODGLAD1',name:'Gość z listy',email:'gosc@przyklad.pl',created_at:Date.now(),used_at:null}]};
+      if(p==='/api/tickets') return {tickets:[]};
+      if(p==='/api/preview-access') return {allowed:true};
+    }
+    throw new Error('To tylko podgląd — zmiany nie są zapisywane.');
+  };
+  ACC.user = {id:0, name:'Podgląd', email:'podglad@plusoneapp.pl', role:role==='admin'?'admin':'user', owner:role==='admin', city:S.city,
+    curate:role==='admin', scan:role!=='user', org:role==='admin'||role==='organizer', level:role, interests:[], newsletter:false, previewRole:role};
+  ACC.admin = null; ORG.data = null; ORG.user = null; ORG.at = 0; SCAN.history = []; SCAN.count = 0;
+  try{ sessionStorage.removeItem('browse'); sessionStorage.removeItem('viewAs'); }catch(e){}
+  toast('Podgląd: '+roleName(role), true, 1800);
+  S.dir=null; S.prev='home'; S.screen = role==='staff' ? 'scan' : 'home'; render();
+}
+function previewEnd(){ PREVIEW.role = null; location.reload(); }
+/* pasek podglądu na górze ekranu */
+function previewBar(){
+  let bar = document.getElementById('previewbar');
+  if(!inPreview()){ bar && bar.remove(); return; }
+  if(!bar){ bar = document.createElement('div'); bar.id='previewbar'; document.body.appendChild(bar); }
+  bar.innerHTML = `<span>Podgląd: <b>${esc(roleName(PREVIEW.role))}</b><span class="pv-note"> · przykładowe dane</span></span>
+    <button onclick="previewSheet()">Zmień</button><button onclick="previewEnd()">Zakończ</button>`;
+}
 
 /* ---- PULPIT ADMINISTRATORA ---- */
 const scDash = () => {

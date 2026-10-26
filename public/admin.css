@@ -137,3 +137,11 @@
 }
 @container (min-width: 1100px) { .dgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 761px) { #workbar { bottom: 28px; } }
+
+/* pasek „Podgląd jako” (faza rozwoju) */
+#previewbar { position: fixed; z-index: 450; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px 7px 14px; border-radius: 100px; background: #FFC53D; color: #000; font: 500 12px/1 var(--d); box-shadow: 0 8px 24px rgba(0,0,0,.3); white-space: nowrap; max-width: calc(100vw - 20px); }
+#previewbar button { flex: none; padding: 6px 10px; border-radius: 100px; background: rgba(0,0,0,.12); color: #000; font: 600 12px/1 var(--d); border: 0; cursor: pointer; }
+#previewbar > span { overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 520px) { #previewbar .pv-note { display: none; } }
+#nav:not(.hide) ~ #previewbar, body:has(#nav:not(.hide)) #previewbar { bottom: calc(100px + env(safe-area-inset-bottom)); }

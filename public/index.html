@@ -964,6 +964,7 @@ const scStart = () => `
     <button class="btn g" data-act="authgo:register">Załóż konto</button>
     <button class="btn p" data-act="guest">Przeglądaj bez konta</button>
     <button class="mono" data-act="authgo:org" style="text-align:center;padding:8px;color:var(--t2);letter-spacing:.06em">WEJŚCIE DLA ORGANIZATORA</button>
+    <button class="mono" data-act="previewSheet" style="text-align:center;padding:4px;color:var(--pink);letter-spacing:.06em">PODGLĄD JAKO… (BEZ LOGOWANIA)</button>
   </div>
 </div>`;
 
@@ -993,6 +994,7 @@ const scAuth = () => {
       ${org?`<button class="chip" style="display:inline-flex;align-items:center;gap:6px" data-act="authmode:login">Zwykłe logowanie</button>`:`<button class="chip" style="display:inline-flex;align-items:center;gap:6px" data-act="authmode:org">${ic('star',14)} Wejście dla organizatora</button>`}
       ${adm?'':`<button class="chip" style="display:inline-flex;align-items:center;gap:6px" data-act="authmode:admin">${ic('shield',14)} Administrator</button>`}
     </div>
+    <button class="btn g" data-act="previewSheet" style="height:48px;font:600 14px/1 var(--d)">Podgląd jako… bez logowania</button>
     <button class="mono" data-act="guest" style="text-align:center;color:var(--t2)">Przeglądaj bez konta</button>
   </div>
 </div>`;
@@ -1847,6 +1849,7 @@ function renderWebChrome(){
     <button data-act="go:profile">Konto i ustawienia ${ic('chevR',12)}</button>
     <button data-act="go:downloads">Aplikacja na telefon</button>
     <button data-act="${ACC.user&&isOrgNow()?'orgMine':'authgo:org'}">Dla organizatorów ${ic('chevR',12)}</button>
+    <button data-act="previewSheet">Podgląd jako ${ic('chevR',12)}</button>
   </div>`;
 }
 
@@ -2605,6 +2608,7 @@ matchMedia('(min-width:761px)').addEventListener('change', e=>{
   if(e.matches && !DEMO && S.screen==='start') go('home');
 });
 /* ?register — link „Zarejestruj się” z aplikacji otwiera od razu zakładanie konta */
+if(/[?&]podglad\b/.test(location.search)) setTimeout(()=>previewSheet(), 600);
 if(/[?&]register\b/.test(location.search)){ ACC.authMode='register'; S.prev='home'; S.screen='auth'; }
 render();
 loadLive();
