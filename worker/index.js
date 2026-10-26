@@ -240,20 +240,56 @@ async function publicState(env) {
 }
 
 /* ---------------- admin ---------------- */
+/* północ w Warszawie `daysAgo` dni temu (ms) — początek dziennych serii na pulpitach */
+function warsawMidnight(daysAgo = 0) {
+  const now = new Date(), at = tz => new Date(now.toLocaleString('en-US', { timeZone: tz }));
+  const off = at('Europe/Warsaw') - at('UTC'), t = new Date(now.getTime() + off);
+  t.setUTCHours(0, 0, 0, 0);
+  return t.getTime() - off - daysAgo * DAY;
+}
+/* dzienna seria z 30 dni: kolumna z czasem w ms -> tablica 30 liczb (najstarszy dzień pierwszy) */
+async function daily(env, table, col, where = '', ...args) {
+  const from = warsawMidnight(29), out = Array(30).fill(0);
+  const { results } = await env.DB.prepare(`SELECT CAST((${col} - ?) / ${DAY} AS INTEGER) AS d, COUNT(*) AS n FROM ${table}
+    WHERE ${col} >= ?${where ? ' AND ' + where : ''} GROUP BY d`).bind(from, from, ...args).all();
+  for (const r of results) if (r.d >= 0 && r.d < 30) out[r.d] = r.n;
+  return out;
+}
+
 async function adminStats(req, env) {
-  const now = Date.now();
+  const now = Date.now(), midnight = warsawMidnight(0);
   const q = (sql, ...a) => env.DB.prepare(sql).bind(...a).first('n');
-  const [users, admins, active7, new7, saves, hidden, featured] = await Promise.all([
+  const [users, admins, active7, new7, saves, hidden, featured, going, activeToday, staff, organizers, tickets, scanned, guests, guestsIn, pushSubs] = await Promise.all([
     q('SELECT COUNT(*) AS n FROM users'),
     q("SELECT COUNT(*) AS n FROM users WHERE role = 'admin' OR owner = 1"),
     q('SELECT COUNT(*) AS n FROM users WHERE last_seen > ?', now - 7 * DAY),
     q('SELECT COUNT(*) AS n FROM users WHERE created_at > ?', now - 7 * DAY),
-    q('SELECT COUNT(*) AS n FROM saved'),
+    q("SELECT COUNT(*) AS n FROM saved WHERE kind = 'saved'"),
     q("SELECT COUNT(*) AS n FROM curation WHERE action = 'hide'"),
-    q("SELECT COUNT(*) AS n FROM curation WHERE action = 'feature'")
+    q("SELECT COUNT(*) AS n FROM curation WHERE action = 'feature'"),
+    q("SELECT COUNT(*) AS n FROM saved WHERE kind = 'going'"),
+    q('SELECT COUNT(*) AS n FROM users WHERE last_seen > ?', midnight),
+    q('SELECT COUNT(*) AS n FROM users WHERE perm_scan = 1'),
+    q('SELECT COUNT(*) AS n FROM users WHERE perm_org = 1'),
+    q('SELECT COUNT(*) AS n FROM tickets'),
+    q('SELECT COUNT(*) AS n FROM tickets WHERE used_at IS NOT NULL'),
+    q('SELECT COUNT(*) AS n FROM guests'),
+    q('SELECT COUNT(*) AS n FROM guests WHERE used_at IS NOT NULL'),
+    q('SELECT COUNT(*) AS n FROM push_subs').catch(() => 0)
   ]);
-  const top = await env.DB.prepare('SELECT event_id, COUNT(*) AS n FROM saved GROUP BY event_id ORDER BY n DESC LIMIT 10').all();
-  return json({ users, admins, active7, new7, saves, hidden, featured, topSaved: top.results });
+  const [top, recent, signups, savesDaily, goingDaily, scansDaily, guestScans, cities] = await Promise.all([
+    env.DB.prepare("SELECT event_id, COUNT(*) AS n, SUM(kind = 'going') AS going FROM saved GROUP BY event_id ORDER BY n DESC LIMIT 10").all(),
+    env.DB.prepare('SELECT id, name, email, city, created_at FROM users ORDER BY created_at DESC LIMIT 6').all(),
+    daily(env, 'users', 'created_at'),
+    daily(env, 'saved', 'created_at', "kind = 'saved'"),
+    daily(env, 'saved', 'created_at', "kind = 'going'"),
+    daily(env, 'tickets', 'used_at'),
+    daily(env, 'guests', 'used_at'),
+    env.DB.prepare("SELECT city, COUNT(*) AS n FROM users WHERE city IS NOT NULL AND city <> '' GROUP BY city ORDER BY n DESC LIMIT 6").all()
+  ]);
+  return json({ users, admins, active7, new7, saves, hidden, featured, going, activeToday, staff, organizers, tickets, scanned: scanned + guestsIn, guests, pushSubs,
+    topSaved: top.results, recent: recent.results, cities: cities.results,
+    series: { signups, saves: savesDaily, going: goingDaily, scans: scansDaily.map((n, i) => n + guestScans[i]) }, seriesFrom: warsawMidnight(29) });
 }
 
 async function adminUsers(req, env) {
@@ -678,7 +714,7 @@ async function api(req, env) {
 
 /* wspólne narzędzia dla worker/premium.js */
 initPremium({ json, fail, body, sha256, randomToken, hashPassword, startSession, cleanText, cleanEmail, EMAIL_RE, DAY, siteUrl,
-  sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode });
+  sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight });
 
 export default {
   scheduled(event, env, ctx) { ctx.waitUntil(scheduled(event, env)); },

@@ -4,10 +4,10 @@
    Dane wydarzeń bierzemy z public/data/events.json (env.ASSETS). Schemat: migrations/0007_premium.sql. */
 /* narzędzia z worker/index.js (przekazane przez initPremium — główny moduł Workera może eksportować tylko obsługę żądań) */
 let json, fail, body, sha256, randomToken, hashPassword, startSession, cleanText, cleanEmail, EMAIL_RE, DAY, siteUrl,
-  sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode;
+  sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight;
 export function initPremium(h) {
   ({ json, fail, body, sha256, randomToken, hashPassword, startSession, cleanText, cleanEmail, EMAIL_RE, DAY, siteUrl,
-    sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode } = h);
+    sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight } = h);
 }
 
 import { vapidKeys, pushUser } from './push.js';
@@ -149,6 +149,16 @@ async function orgEvents(env, venues) {
   const ev = await loadEvents(env), keys = venues.map(fold).filter(k => k.length > 2), from = new Date(Date.now() - 30 * DAY).toISOString().slice(0, 10);
   return ev.list.filter(e => (e.end || e.start).slice(0, 10) >= from && keys.some(k => fold(e.venue).includes(k) || fold(e.title).includes(k)));
 }
+/* jak countBy, ale zwraca wiersze (np. dzienne kubełki) z dwoma parametrami czasu przed listą wydarzeń */
+async function countRows(env, sql, ids, from) {
+  const out = [];
+  for (let i = 0; i < ids.length; i += 90) {
+    const part = ids.slice(i, i + 90);
+    const { results } = await env.DB.prepare(sql.replace('(?)', '(' + part.map(() => '?').join(',') + ')')).bind(from, from, ...part).all();
+    out.push(...results);
+  }
+  return out;
+}
 async function countBy(env, sql, ids) {
   const out = {};
   for (let i = 0; i < ids.length; i += 90) {
@@ -176,10 +186,19 @@ async function orgDashboard(req, env, user) {
     countBy(env, 'SELECT event_id, COUNT(*) AS guests, SUM(used_at IS NOT NULL) AS guests_used FROM guests WHERE event_id IN (?) GROUP BY event_id', ids),
     countBy(env, "SELECT value AS event_id, COUNT(*) AS followers FROM follows WHERE kind = 'event' AND value IN (?) GROUP BY value", ids)
   ]);
-  const rows = events.map(e => ({ id: e.id, title: e.title, start: e.start, venue: e.venue, city: e.city, hot: e.hot || 0,
+  // dzienne zainteresowanie wydarzeniami organizatora z 30 dni: zapisy, „Mam bilet”, wejścia
+  const from = warsawMidnight(29), series = { saves: Array(30).fill(0), going: Array(30).fill(0), scans: Array(30).fill(0) };
+  const bucket = (sql, fn) => countRows(env, sql, ids, from).then(rs => rs.forEach(r => { if (r.d >= 0 && r.d < 30) fn(r); }));
+  await Promise.all([
+    bucket(`SELECT CAST((created_at - ?) / ${DAY} AS INTEGER) AS d, SUM(kind = 'saved') AS s, SUM(kind = 'going') AS g FROM saved WHERE created_at >= ? AND event_id IN (?) GROUP BY d`,
+      r => { series.saves[r.d] += +r.s || 0; series.going[r.d] += +r.g || 0; }),
+    bucket(`SELECT CAST((used_at - ?) / ${DAY} AS INTEGER) AS d, COUNT(*) AS n FROM tickets WHERE used_at >= ? AND event_id IN (?) GROUP BY d`, r => { series.scans[r.d] += r.n; }),
+    bucket(`SELECT CAST((used_at - ?) / ${DAY} AS INTEGER) AS d, COUNT(*) AS n FROM guests WHERE used_at >= ? AND event_id IN (?) GROUP BY d`, r => { series.scans[r.d] += r.n; })
+  ]);
+  const rows = events.map(e => ({ id: e.id, title: e.title, start: e.start, venue: e.venue, city: e.city, hot: e.hot || 0, image: e.image || null, priceFrom: e.priceFrom ?? null,
     going: +(saved[e.id]?.going || 0), saves: +(saved[e.id]?.saves || 0), followers: +(fol[e.id]?.followers || 0),
     tickets: +(tickets[e.id]?.tickets || 0), used: +(tickets[e.id]?.used || 0), guests: +(guests[e.id]?.guests || 0), guestsUsed: +(guests[e.id]?.guests_used || 0) }));
-  return json({ organizer: t, venues, events: rows });
+  return json({ organizer: t, venues, events: rows, series, seriesFrom: from });
 }
 async function canTouchEvent(env, user, eventId) {
   if (isAdmin(user)) return true;

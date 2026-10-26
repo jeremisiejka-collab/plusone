@@ -580,7 +580,8 @@ function morph(update, el){
   t.finished.catch(()=>{}).finally(()=>$$('.vt-hero').forEach(x=>x.classList.remove('vt-hero')));
 }
 function go(s, anim=true){
-  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan','org'].includes(s)) return;
+  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan','org','dash','orgEvents'].includes(s)) return;
+  s = workScreen(s) || s;
   if(s===S.screen) return;
   SCROLL[S.screen] = scrollY_();
   S.dir = !anim ? null : ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
@@ -1020,6 +1021,7 @@ const scProfile = () => {
     ${ACC.preview?`<a class="listbtn" href="/app" style="color:inherit;text-decoration:none">${ic('shield',18)} Aplikacja na telefon</a>`:''}
     ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">${isOwner()?'GŁÓWNY ADMIN':'ADMIN'}</span>`):''}
     ${isOrgNow()?row('star','Panel organizatora','orgMine',`<span class="mono" style="color:${PINK}">ORGANIZATOR</span>`):''}
+    ${['admin','organizer'].includes(effectiveRole())?(browsing()?row('bolt','Wróć do pulpitu','browse:0',''):row('search','Przeglądaj wydarzenia jak użytkownik','browse:1','')):''}
     ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
     ${realOwner()?row('users','Zobacz jako…','viewAsSheet',`<span class="mono">${viewAs()?esc(roleName(viewAs())):'Ty'}</span>`):''}
 
@@ -1741,7 +1743,7 @@ const scWalletSoon = () => `
 const SCREENS = {
   home:scHome, list:scList, map:scMap, event:()=>scLive(ev()),
   tickets:scMyTickets, wallet:scWalletSoon,
-  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan(), org:()=>scOrg()
+  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents()
 };
 
 /* =========================================================
@@ -1807,18 +1809,26 @@ function scDownloads(){
   <p class="body" style="color:var(--t3)">Chcesz dołączyć do testów? Załóż konto i napisz do nas — dostęp nadaje administrator.</p>
 </div></div>`; }
 
+/* nagłówek strony dla administratora i organizatora: zakładki panelu zamiast odkrywania */
+function workNavHtml(){
+  const cur = S.screen==='admin' ? 'admin:'+(S.adminTab||'stats') : S.screen;
+  const items = workMode()==='admin'
+    ? [['go:dash','Pulpit',['dash']],['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
+    : [['go:org','Pulpit',['org']],['go:orgEvents','Wydarzenia',['orgEvents']],['go:scan','Skaner',['scan']]];
+  return items.map(([a,l,on])=>`<button data-act="${a}" ${on.includes(cur)?'aria-current="page"':''}>${l}</button>`).join('');
+}
 function renderWebChrome(){
   $('#web-header').innerHTML = `<div class="web-header-inner">
     <button class="web-brand" data-act="fabHome" aria-label="+1 — strona główna">${LOGO(48,12)}<span>WHERE ARE<br>WE GOING?</span></button>
-    <nav class="web-nav" aria-label="Nawigacja główna">
+    <nav class="web-nav" aria-label="Nawigacja główna">${workMode() ? workNavHtml() : `
       <button data-act="go:home" ${S.screen==='home'?'aria-current="page"':''}>Odkrywaj</button>
       <button data-act="go:list" ${S.screen==='list'?'aria-current="page"':''}>Wydarzenia</button>
       <button data-act="go:map" ${S.screen==='map'?'aria-current="page"':''}>Mapa</button>
       <button data-act="go:tickets" ${S.screen==='tickets'||S.screen==='ticket'?'aria-current="page"':''}>Bilety</button>
-      <button data-act="go:wallet" ${WALLET_SOON.includes(S.screen)?'aria-current="page"':''}>Portfel${DEMO?'':' <span style="font:700 8px/1 var(--m);letter-spacing:.08em;padding:3px 5px;border-radius:5px;background:var(--pink-dim);color:var(--pink);vertical-align:2px">WKRÓTCE</span>'}</button>
+      <button data-act="go:wallet" ${WALLET_SOON.includes(S.screen)?'aria-current="page"':''}>Portfel${DEMO?'':' <span style="font:700 8px/1 var(--m);letter-spacing:.08em;padding:3px 5px;border-radius:5px;background:var(--pink-dim);color:var(--pink);vertical-align:2px">WKRÓTCE</span>'}</button>`}
     </nav>
     <div class="web-actions">
-      <button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>
+      ${workMode()?'':`<button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>`}
       <button class="web-theme" data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
       <button class="web-account" data-act="${ACC.user?'go:profile':'authgo:login'}" aria-label="${ACC.user?'Moje konto':'Zaloguj się'}">${ic('user',16)}<span>${ACC.user?'Moje konto':'Zaloguj się'}</span></button>
       <button class="web-app" data-act="go:downloads" ${S.screen==='downloads'?'aria-current="page"':''}>Aplikacja</button>
@@ -1832,6 +1842,7 @@ function renderWebChrome(){
 }
 
 function render(){
+  S.screen = workScreen(S.screen) || S.screen;
   if(S.screen!=='scanpay') stopCam();
   $('#shell').classList.toggle('ds', DARK_SCREENS.includes(S.screen) && !walletSoon());
   const fn = walletSoon() ? scWalletSoon : (!DEMO && S.screen==='tickets') ? scMyTickets : (SCREENS[S.screen] || scHome);

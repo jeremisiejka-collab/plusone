@@ -296,6 +296,10 @@ html.standalone #view [style*="top:52px"]{top:12px !important}
 #sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);color:var(--t1);border-radius:26px 26px 0 0;
   border-top:1px solid var(--line-2);padding:10px 20px 30px;max-height:82%;overflow-y:auto;
   transition:transform .28s cubic-bezier(.2,.8,.3,1)}
+.sheet-x{position:absolute;top:12px;right:14px;z-index:2;width:30px;height:30px;border-radius:50%;
+  border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:19px;line-height:1;
+  display:grid;place-items:center;cursor:pointer;padding:0}
+.sheet-x:hover{color:var(--t1)}
 .grab{width:38px;height:4px;border-radius:3px;background:rgba(var(--fg),.2);margin:0 auto 16px}
 
 /* offline banner */
@@ -629,7 +633,8 @@ const STAFF_SCREENS = ['staff','staffStats','staffActivity','scan','profile'];
 function appScreen(s){
   if(!ACC.loaded) return 'loading';
   if(appStaffMode()) return STAFF_SCREENS.includes(s) ? s : 'staff';
-  if(['staff','staffStats','staffActivity'].includes(s)) return 'home';
+  const work = workScreen(s); if(work) return work;
+  if(['staff','staffStats','staffActivity','dash','orgEvents'].includes(s)) return s==='orgEvents' && isOrgNow() ? s : s==='dash' && isAdmin() ? s : 'home';
   if(s==='map' || s==='cities') return 'list';
   if(s==='scanner') return canScanNow() ? 'scan' : 'home';
   if(s==='invite' || s==='login') return 'home';
@@ -693,7 +698,7 @@ function confetti(n=90){
 
 /* ---------------- sheet ---------------- */
 function sheet(html){
-  $('#sheet').innerHTML = '<div class="grab"></div><button class="web-only web-sheet-close" data-act="closeSheet" aria-label="Zamknij okno">×</button>'+html;
+  $('#sheet').innerHTML = '<div class="grab"></div><button class="sheet-x" data-act="closeSheet" aria-label="Zamknij okno">×</button>'+html;
   $('#sheetwrap').classList.add('on');
   $('#sheet').style.transform='translateY(100%)';
   requestAnimationFrame(()=>{ $('#sheet').style.transform='translateY(0)'; });
@@ -1093,6 +1098,7 @@ const scProfile = () => {
   <div class="pad">
     ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">${isOwner()?'GŁÓWNY ADMIN':'ADMIN'}</span>`):''}
     ${isOrgNow()?row('star','Panel organizatora','orgMine',`<span class="mono" style="color:${PINK}">ORGANIZATOR</span>`):''}
+    ${['admin','organizer'].includes(effectiveRole())?(browsing()?row('bolt','Wróć do pulpitu','browse:0',''):row('search','Przeglądaj wydarzenia jak użytkownik','browse:1','')):''}
     ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
     ${canScanNow()?row('shield','Potwierdź profil +1','socialVerify',''):''}
     ${isAdmin()?row('users','Spotkania Plus Jeden','socialManage',''):''}
@@ -2776,7 +2782,7 @@ const SCREENS = {
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
   start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), scan:()=>scScan(), mytickets:()=>scMyTickets(),
-  staff:()=>scStaff(), org:()=>scOrg(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(), meet:()=>scEncounter(),
+  staff:()=>scStaff(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(), meet:()=>scEncounter(),
   loading:()=>'<div class="pg pad" style="padding-top:120px"><p class="body">Otwieram Twoje +1…</p></div>'
 };
 
@@ -2791,7 +2797,11 @@ const NAV = [
   {k:'wallet', ic:'wallet', l:'PORTFEL'}
 ];
 /* środkowe +1 prowadzi rundę poznawania; obsługa zachowuje osobny skaner */
-const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped',...STAFF_SCREENS];
+const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped','dash','admin','orgEvents',...STAFF_SCREENS];
+/* administrator i organizator: własny pasek z pulpitem; środkowy przycisk uruchamia skaner */
+const ADMIN_NAV = [{k:'dash',ic:'bolt',l:'PULPIT'},{act:'adm:users',on:['admin:users','admin:invites'],ic:'users',l:'LUDZIE'},{fab:true},
+  {act:'adm:orgs',on:['admin:orgs','org','orgEvents'],ic:'star',l:'ORGANIZATORZY'},{act:'adm:curation',on:['admin:curation','admin:stats','admin:mail','admin:data'],ic:'shield',l:'PANEL'}];
+const ORG_NAV = [{k:'org',ic:'bolt',l:'PULPIT'},{fab:true},{k:'orgEvents',ic:'list',l:'WYDARZENIA'}];
 const STAFF_NAV = [{k:'staffStats',ic:'bolt',l:'STATYSTYKI'},{fab:true},{k:'staffActivity',ic:'clock',l:'HISTORIA'}];
 const FAB_SVG = `<svg width="38" height="38" viewBox="0 0 100 100" aria-hidden="true">${GLYPH('#000')}</svg>`;
 
@@ -2829,7 +2839,7 @@ function renderAppChrome(){
   $('#shell').classList.toggle('has-app-topbar',show);
   header.innerHTML=show ? `<div class="app-context">
     ${LOGO(32,9)}
-    ${appStaffMode()?'<span class="eyebrow">Obsługa biletów</span>': ['home','list'].includes(S.screen)
+    ${appStaffMode()?'<span class="eyebrow">Obsługa biletów</span>': workMode() ? `<span class="eyebrow">${workMode()==='admin'?'Panel administratora':'Panel organizatora'}</span>` : ['home','list'].includes(S.screen)
       ? `<button data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${esc(S.city)} ▾</button>` : '<span class="eyebrow">Twoje +1</span>'}
     </div><div class="app-top-actions">
       <button data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
@@ -2860,8 +2870,13 @@ function render(){
   if(NAV_ON.includes(S.screen)){
     nav.classList.remove('hide');
     const active = S.screen==='ticket' ? 'tickets' : (S.screen==='bar' ? 'wallet' : S.screen);
-    nav.setAttribute('aria-label',appStaffMode()?'Nawigacja obsługi biletów':'Nawigacja aplikacji');
-    nav.innerHTML = (appStaffMode()?STAFF_NAV:NAV).map(n => n.fab
+    const wm = workMode(), cur = S.screen==='admin' ? 'admin:'+(S.adminTab||'stats') : S.screen;
+    nav.setAttribute('aria-label',appStaffMode()?'Nawigacja obsługi biletów':wm?'Nawigacja panelu':'Nawigacja aplikacji');
+    if(wm) nav.innerHTML = (wm==='admin'?ADMIN_NAV:ORG_NAV).map(n => n.fab
+      ? `<div class="fabslot"><button class="fab" data-act="go:scan" aria-label="Skanuj bilety +1">${FAB_SVG}</button></div>`
+      : `<button data-act="${n.act||'go:'+n.k}" class="${(n.on||[n.k]).includes(cur)?'on':''}" ${(n.on||[n.k]).includes(cur)?'aria-current="page"':''}>
+          ${ic(n.ic,21)}<span>${n.l}</span></button>`).join('');
+    else nav.innerHTML = (appStaffMode()?STAFF_NAV:NAV).map(n => n.fab
       ? (appStaffMode()
         ? `<div class="fabslot"><button class="fab" data-act="go:scan" aria-label="Skanuj bilety +1">${FAB_SVG}</button></div>`
         : encounterFab())

@@ -18,7 +18,7 @@ async function premiumAfterLogin(){
   if(q.get('join')) joinSheet(q.get('join'));
   else if(q.get('ev')){ history.replaceState(null,'','/app'); const id=q.get('ev'); setTimeout(()=>openEvent(id), 300); }
   else if(q.has('notif')){ history.replaceState(null,'','/app'); setTimeout(premiumNotif, 300); }
-  else if(!ACC.user.interests?.length && !localStorage.getItem('intAsked')){ localStorage.setItem('intAsked','1'); setTimeout(()=>interestsSheet(true), 900); }
+  else if(!ACC.user.interests?.length && !workMode() && !localStorage.getItem('intAsked')){ localStorage.setItem('intAsked','1'); setTimeout(()=>interestsSheet(true), 900); }
   else setTimeout(pushPrompt, 1500);
 }
 

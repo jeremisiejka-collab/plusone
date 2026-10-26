@@ -203,7 +203,7 @@ function stopScan(){
 /* wywoływane po każdym przerysowaniu ekranu */
 function adminAfterRender(){
   if(S.screen==='scan') startScan(); else stopScan();
-  viewAsBar();
+  viewAsBar(); workBar();
 }
 
 /* akcje z data-act obsługiwane w tym module; zwraca true, jeśli rozpoznano */
@@ -236,6 +236,9 @@ function adminAct(cmd, p1, p2, a){
     case 'addGuest': addGuest(a.slice(9)); return true;
     case 'delGuest': apiCall('/api/org/guests','DELETE',{code:p1}).then(()=>{ toast('Usunięto'); ORG.at=0; guestsSheet(a.slice(10+p1.length)); }).catch(e=>toast(esc(e.message),true)); return true;
     case 'viewAs': setViewAs(p1||null); return true;
+    case 'browse': setBrowse(p1==='1'); return true;
+    case 'adm': S.adminTab=p1; S.dir=null; S.screen==='admin' ? render() : go('admin'); return true;
+    case 'orgReload': ORG.at=0; ORG.data=null; render(); return true;
     case 'ticketQR': ticketSheet(a.slice(9)); return true;
     case 'scanManual': { const v = ($('#scancode')?.value||'').trim(); if(v) scanCheck(v); return true; }
     case 'scanUndo': scanCheck(a.slice(9), true); return true;
@@ -443,39 +446,6 @@ async function orgLoad(){
   try{ ORG.data = await apiCall('/api/org/me'+(ORG.user?'?user='+ORG.user:'')); }catch(e){ ORG.data = {error:e.message}; }
   ORG.at = Date.now(); S.dir=null; render();
 }
-const scOrg = () => {
-  if(!isOrgNow()) return `<div class="pg pad col" style="padding-top:120px;gap:14px"><span class="h3">Panel organizatora</span>
-    <span class="body">To miejsce dla organizatorów wydarzeń. Napisz do nas, żeby dostać dostęp.</span><button class="btn g" data-act="back" style="height:48px">Wróć</button></div>`;
-  const D = ORG.data;
-  if(!D || Date.now()-ORG.at>60e3) setTimeout(orgLoad,0);
-  const sort = S.orgEvSort || 'date', t = localDay();
-  const evs = (D?.events||[]).slice().sort((a,b)=> sort==='going' ? b.going-a.going : sort==='hot' ? b.hot-a.hot : a.start.localeCompare(b.start));
-  const up = evs.filter(e=>e.start.slice(0,10)>=t), sum = k => up.reduce((s,e)=>s+(e[k]||0),0);
-  return `
-<div class="pg" style="padding:64px 0 112px">
-  <div class="pad row" style="gap:12px;padding-bottom:14px">
-    <button class="back" data-act="back" aria-label="Wróć">${ic('chevL',18)}</button>
-    <div class="col" style="gap:3px;flex:1;min-width:0"><div class="h2" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(D?.organizer?.name||D?.organizer?.email||'Panel organizatora')}</div>
-      <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc((D?.venues||[]).join(', ')||'')}</span></div>
-  </div>
-  <div class="pad">
-  ${D?.error ? `<div class="err">${esc(D.error)}</div>` : !D ? loadingBox() : !D.venues.length ? `<div class="card" style="padding:16px"><span class="h4">Brak przypisanych miejsc</span>
-    <p class="body" style="margin-top:6px">Administrator przypisuje organizatorowi miejsca i nazwy wydarzeń (Panel admina → Użytkownicy → Rola → Organizator).</p></div>` : `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      ${[['Nadchodzące wydarzenia',up.length],['Idą („Mam bilet”)',sum('going')],['Zapisali',sum('saves')],['Obserwują',sum('followers')],['Goście na liście',sum('guests')],['Wpuszczeni',sum('used')+sum('guestsUsed')]]
-        .map(([l,v])=>`<div class="statc"><span class="mono">${l}</span><b>${pl(v)}</b></div>`).join('')}
-    </div>
-    <div class="row" style="gap:8px;flex-wrap:wrap;padding:18px 0 6px">${[['date','Najbliższe'],['going','Najwięcej chętnych'],['hot','Na topie']].map(([k,l])=>`<button class="chip ${sort===k?'on':''}" data-act="orgEvSort:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}
-      <button class="chip" data-act="go:scan" style="padding:7px 12px;font-size:12px">${'Skaner'}</button></div>
-    ${evs.map(e=>`<div class="row" style="gap:12px;padding:14px 0;border-bottom:1px solid var(--line);${e.start.slice(0,10)<t?'opacity:.55':''}">
-      <div class="col" style="flex:1;min-width:0;cursor:pointer" data-act="ev:${esc(e.id)}"><span class="h4 clamp2">${esc(e.title)}</span>
-        <span class="mono" style="margin-top:4px">${esc(e.start.slice(8,10)+'.'+e.start.slice(5,7)+' '+e.start.slice(11,16)+' · '+e.venue)}</span>
-        <span class="row" style="gap:5px;margin-top:6px;flex-wrap:wrap">${[[e.going,'idzie'],[e.saves,'zapisało'],[e.followers,'obserwuje'],[e.guests,'gości'],[e.used+e.guestsUsed,'wpuszczonych']]
-          .filter(x=>x[0]).map(([n,l])=>`<span class="badge">${pl(n)} ${l}</span>`).join('') || '<span class="mono">jeszcze bez zapisów</span>'}</span></div>
-      <button class="chip" data-act="guests:${esc(e.id)}" style="padding:7px 12px;font-size:12px;flex:none">Goście</button></div>`).join('') || '<span class="mono">Brak wydarzeń pasujących do miejsc organizatora.</span>'}`}
-  </div>
-</div>`;
-};
 async function guestsSheet(id){
   const e = EVENTS.find(x=>x.id===id);
   let list = [];
@@ -496,6 +466,209 @@ async function addGuest(id){
     toast(r.emailed ? 'Dodano — bilet poszedł mailem' : 'Dodano — link do biletu: /t/'+esc(r.code), true, 3200); sfxOk(); ORG.at=0; guestsSheet(id); }
   catch(e){ toast(esc(e.message),true); }
 }
+
+/* ---- PULPITY: administrator i organizator dostają własny ekran startowy zamiast odkrywania wydarzeń ----
+   workMode() = 'admin' | 'organizer' | null. „Przeglądaj wydarzenia” (sessionStorage browse) wraca do zwykłej aplikacji. */
+function browsing(){ try{ return sessionStorage.getItem('browse')==='1'; }catch(e){ return false; } }
+function workMode(){
+  if(!ACC.user || browsing()) return null;
+  const r = effectiveRole();
+  return r==='admin' || r==='organizer' ? r : null;
+}
+const workHome = () => workMode()==='admin' ? 'dash' : 'org';
+const WORK_SCREENS = { admin:['dash','admin','org','orgEvents','scan','profile','event','auth'], organizer:['org','orgEvents','scan','profile','event','auth'] };
+/* ekran, na który trafia rola z pulpitem; null = bez zmian */
+function workScreen(s){
+  const m = workMode(); if(!m) return null;
+  return WORK_SCREENS[m].includes(s) ? s : workHome();
+}
+function setBrowse(on){
+  try{ on ? sessionStorage.setItem('browse','1') : sessionStorage.removeItem('browse'); }catch(e){}
+  S.dir=null; S.prev = on ? 'home' : workHome(); S.screen = on ? 'home' : workHome(); render();
+  toast(on ? 'Przeglądasz wydarzenia jak użytkownik' : 'Wróciłeś do pulpitu', true, 1800);
+}
+/* pigułka „Wróć do pulpitu”, gdy administrator/organizator przegląda wydarzenia */
+function workBar(){
+  let bar = document.getElementById('workbar');
+  const r = ACC.user && browsing() && ['admin','organizer'].includes(effectiveRole());
+  if(!r){ bar && bar.remove(); return; }
+  if(!bar){ bar = document.createElement('button'); bar.id='workbar'; bar.onclick = ()=>setBrowse(false); document.body.appendChild(bar); }
+  bar.innerHTML = `${ic('chevL',14,2)} Wróć do pulpitu`;
+}
+
+const DASH_MON = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+const dashDate = ms => { const d = new Date(ms); return d.getDate()+' '+DASH_MON[d.getMonth()]; };
+const sum = a => (a||[]).reduce((s,n)=>s+(+n||0),0);
+function ago(ms){
+  const m = Math.round((Date.now()-ms)/60e3);
+  if(m < 1) return 'przed chwilą'; if(m < 60) return m+' min temu';
+  const h = Math.round(m/60); if(h < 24) return h+' godz. temu';
+  const d = Math.round(h/24); return d===1 ? 'wczoraj' : d+' dni temu';
+}
+/* słupki z 30 dni; series = jedna seria albo kilka (słupki skumulowane), kolory w tej samej kolejności */
+function barChart(series, from, colors=['var(--pink)']){
+  const S2 = Array.isArray(series[0]) ? series : [series];
+  const tot = S2[0].map((_,i)=>S2.reduce((s,a)=>s+(+a[i]||0),0)), max = Math.max(1, ...tot), W = 300, H = 96, bw = W/30;
+  const bars = tot.map((_,i)=>{ let y = H; return S2.map((a,k)=>{ const h = (+a[i]||0)/max*(H-4); y -= h;
+    return h ? `<rect x="${(i*bw+1).toFixed(1)}" y="${y.toFixed(1)}" width="${(bw-2).toFixed(1)}" height="${Math.max(h,1.5).toFixed(1)}" rx="1.5" fill="${colors[k]||colors[0]}"/>` : ''; }).join('')
+    + `<rect x="${(i*bw).toFixed(1)}" y="0" width="${bw.toFixed(1)}" height="${H}" fill="transparent"><title>${dashDate(from+i*864e5)}: ${tot[i]}</title></rect>`; }).join('');
+  return `<div class="dchart"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Wykres z 30 dni">
+      <line x1="0" y1="${H-.5}" x2="${W}" y2="${H-.5}" stroke="var(--line-2)"/>${bars}</svg>
+    <div class="dchart-axis mono"><span>${dashDate(from)}</span><span>${dashDate(from+15*864e5)}</span><span>dziś</span></div></div>`;
+}
+const kpi = (label, value, sub='', icon='') => `<div class="dkpi">
+  <span class="dkpi-l">${icon?ic(icon,16):''}${esc(label)}</span><b>${typeof value==='number'?pl(value):esc(value)}</b>${sub?`<span class="dkpi-s">${sub}</span>`:''}</div>`;
+const dcard = (title, body, extra='', cls='') => `<section class="dcard ${cls}"><header><h2>${title}</h2>${extra}</header>${body}</section>`;
+const legend = items => `<div class="dlegend">${items.map(([c,l,n])=>`<span><i style="background:${c}"></i>${esc(l)} <b>${pl(n)}</b></span>`).join('')}</div>`;
+const meter = (n, max) => `<span class="dmeter"><i style="width:${max?Math.max(3,Math.round(n/max*100)):0}%"></i></span>`;
+const dashHead = (eyebrow, title, sub, actions='') => `<div class="dhead"><div class="col" style="gap:8px;min-width:0">
+  <span class="eyebrow pink">${eyebrow}</span><h1>${title}</h1>${sub?`<span class="mono">${sub}</span>`:''}</div><div class="dhead-act">${actions}</div></div>`;
+const todayLong = () => { const d = new Date().toLocaleDateString('pl-PL',{weekday:'long', day:'numeric', month:'long'}); return d[0].toUpperCase()+d.slice(1); };
+const firstName = () => esc((ACC.user?.name||'').split(' ')[0] || '');
+
+/* ---- PULPIT ADMINISTRATORA ---- */
+const scDash = () => {
+  if(!isAdmin()) return scAdmin();
+  const A = ACC.admin;
+  if(!A || Date.now()-A.at>60e3) setTimeout(adminLoad,0);
+  const head = dashHead('Panel administratora', `Dzień dobry${firstName()?', '+firstName():''}`, todayLong()+' · ostatnie 30 dni',
+    `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button><button class="chip on" data-act="adm:invites">${ic('plus',14)} Zaproś</button>`);
+  if(A?.error) return `<div class="pg dash">${head}<div class="err">${esc(A.error)}</div></div>`;
+  if(!A || !A.stats?.series) return `<div class="pg dash">${head}${loadingBox()}</div>`;
+  const T = A.stats, ser = T.series, from = T.seriesFrom, src = LIVE.sources||{};
+  const top = (T.topSaved||[]).map(r=>({...r, e:EVENTS.find(e=>e.id===r.event_id)})).filter(r=>r.e).slice(0,6), topMax = Math.max(1,...top.map(r=>r.n));
+  const pend = (A.invites||[]).filter(i=>!i.used_at&&i.expires_at>Date.now()).length;
+  const okSrc = Object.values(src).filter(v=>v.ok).length, allSrc = Object.keys(src).length;
+  const cities = T.cities||[], cMax = Math.max(1,...cities.map(c=>c.n));
+  return `<div class="pg dash">${head}
+  <div class="dkpis">
+    ${kpi('Użytkownicy', T.users, `<em>+${pl(T.new7)}</em> w 7 dni`, 'users')}
+    ${kpi('Aktywni dziś', T.activeToday||0, `${pl(T.active7)} w tym tygodniu`, 'bolt')}
+    ${kpi('Mam bilet', T.going||0, `${pl(T.saves)} zapisanych wydarzeń`, 'ticket')}
+    ${kpi('Wejścia (skaner)', T.scanned||0, `${pl((T.tickets||0)+(T.guests||0))} wydanych biletów QR`, 'scan')}
+  </div>
+  <div class="dgrid">
+    ${dcard('Nowe konta', barChart(ser.signups, from) + legend([['var(--pink)','Rejestracje w 30 dni', sum(ser.signups)]]))}
+    ${dcard('Zainteresowanie wydarzeniami', barChart([ser.going, ser.saves], from, ['var(--pink)','var(--t3)']) + legend([['var(--pink)','Mam bilet',sum(ser.going)],['var(--t3)','Zapisane',sum(ser.saves)]]))}
+    ${dcard('Wejścia na wydarzenia', barChart(ser.scans, from, ['var(--ok)']) + legend([['var(--ok)','Zeskanowane bilety w 30 dni', sum(ser.scans)]]),
+      `<button class="dlink" data-act="go:scan">Skaner ${ic('chevR',12)}</button>`)}
+    ${dcard('Najpopularniejsze wydarzenia', top.length ? `<ol class="drank">${top.map((r,i)=>`<li data-act="ev:${esc(r.event_id)}">
+        <span class="drank-n">${i+1}</span><div class="col" style="flex:1;min-width:0;gap:5px"><span class="h4 clamp1">${esc(r.e.name)}</span>
+        <span class="mono clamp1">${esc(r.e.when+' · '+r.e.city)}</span>${meter(r.n, topMax)}</div>
+        <div class="col drank-v"><b>${pl(r.n)}</b><span class="mono">${pl(+r.going||0)} z biletem</span></div></li>`).join('')}</ol>`
+      : '<p class="dempty">Gdy użytkownicy zaczną zapisywać wydarzenia, ranking pojawi się tutaj.</p>', '', 'span2')}
+    ${dcard('Ostatnio dołączyli', (T.recent||[]).length ? `<ul class="dlist">${T.recent.map(u=>`<li><span class="dav">${esc((u.name||u.email)[0].toUpperCase())}</span>
+        <div class="col" style="flex:1;min-width:0;gap:3px"><span class="h4 clamp1">${esc(u.name||u.email.split('@')[0])}</span><span class="mono clamp1">${esc(u.email)}${u.city?' · '+esc(u.city):''}</span></div>
+        <span class="mono" style="flex:none">${ago(u.created_at)}</span></li>`).join('')}</ul>` : '<p class="dempty">Nikt jeszcze nie dołączył.</p>',
+      `<button class="dlink" data-act="adm:users">Wszyscy ${ic('chevR',12)}</button>`)}
+    ${dcard('Zespół i moderacja', `<div class="dstats">
+        <button data-act="adm:users"><b>${pl(T.admins)}</b><span>administratorzy</span></button>
+        <button data-act="adm:users"><b>${pl(T.staff||0)}</b><span>obsługa biletów</span></button>
+        <button data-act="adm:orgs"><b>${pl(T.organizers||0)}</b><span>organizatorzy</span></button>
+        <button data-act="adm:invites"><b>${pl(pend)}</b><span>zaproszenia czekają</span></button>
+        <button data-act="adm:curation"><b>${pl(T.featured||0)}</b><span>polecane wydarzenia</span></button>
+        <button data-act="adm:curation"><b>${pl(T.hidden||0)}</b><span>ukryte wydarzenia</span></button></div>`,
+      `<button class="dlink" data-act="adm:invites">Zaproś ${ic('chevR',12)}</button>`)}
+    ${dcard('Dane o wydarzeniach', `<div class="dhealth ${okSrc===allSrc?'ok':'warn'}"><span class="ddot"></span>
+        <div class="col" style="gap:3px"><b>${okSrc===allSrc?'Wszystkie źródła działają':`Działa ${okSrc} z ${allSrc} źródeł`}</b>
+        <span class="mono">Aktualizacja ${LIVE.updatedAt?ago(Date.parse(LIVE.updatedAt)):'—'} · ${pl(LIVE.count||EVENTS.filter(e=>e.real).length)} wydarzeń</span></div></div>
+      <ul class="dsrc">${Object.entries(src).map(([k,v])=>`<li><span>${esc(SRC_PL[k]||k)}</span><span class="mono" style="color:${v.ok?'var(--t2)':'var(--pink)'}">${v.ok?pl(v.count):'błąd'}</span></li>`).join('')}</ul>`,
+      `<button class="dlink" data-act="adm:data">Szczegóły ${ic('chevR',12)}</button>`)}
+    ${dcard('Miasta użytkowników', cities.length ? `<ul class="dbars">${cities.map(c=>`<li><span class="clamp1">${esc(c.city)}</span>${meter(c.n,cMax)}<b>${pl(c.n)}</b></li>`).join('')}</ul>`
+      : '<p class="dempty">Użytkownicy nie wybrali jeszcze miast.</p>')}
+  </div>
+  <div class="dfoot"><button class="chip" data-act="browse:1">${ic('search',14)} Przeglądaj wydarzenia jak użytkownik</button>${realOwner()?`<button class="chip" data-act="viewAsSheet">${ic('user',14)} Zobacz jako…</button>`:''}</div>
+</div>`;
+};
+
+/* ---- PULPIT ORGANIZATORA ---- */
+function orgEventRow(e, t){
+  return `<div class="orow ${e.start.slice(0,10)<t?'past':''}">
+    <div class="col" style="flex:1;min-width:0;gap:4px;cursor:pointer" data-act="ev:${esc(e.id)}"><span class="h4 clamp2">${esc(e.title)}</span>
+      <span class="mono clamp1">${esc(e.start.slice(8,10)+'.'+e.start.slice(5,7)+' '+e.start.slice(11,16)+' · '+(e.venue||''))}</span></div>
+    <div class="ocells">${[[e.going,'bilet'],[e.saves,'zapisy'],[e.guests,'goście'],[e.used+e.guestsUsed,'wejścia']].map(([n,l])=>`<span><b>${pl(n||0)}</b>${l}</span>`).join('')}</div>
+    <button class="chip" data-act="guests:${esc(e.id)}" style="padding:7px 12px;font-size:12px;flex:none">Goście</button></div>`;
+}
+function orgGate(){
+  if(isOrgNow()) return '';
+  return `<div class="pg pad col" style="padding-top:120px;gap:14px"><span class="h3">Panel organizatora</span>
+    <span class="body">To miejsce dla organizatorów wydarzeń. Napisz do nas, żeby dostać dostęp.</span><button class="btn g" data-act="back" style="height:48px">Wróć</button></div>`;
+}
+function orgHead(D){
+  const other = ORG.user && isAdmin();
+  return dashHead(other ? `<button class="dback" data-act="adm:orgs">${ic('chevL',12,2)} Organizatorzy</button>` : 'Panel organizatora',
+    esc(D?.organizer?.name||D?.organizer?.email||'Twoje wydarzenia'), esc((D?.venues||[]).join(' · ')),
+    `<button class="chip" data-act="orgReload">${ic('undo',14)} Odśwież</button><button class="chip on" data-act="go:scan">${ic('scan',14)} Skaner</button>`);
+}
+const scOrg = () => {
+  const gate = orgGate(); if(gate) return gate;
+  const D = ORG.data;
+  if(!D || Date.now()-ORG.at>60e3) setTimeout(orgLoad,0);
+  const head = orgHead(D);
+  if(D?.error) return `<div class="pg dash">${head}<div class="err">${esc(D.error)}</div></div>`;
+  if(!D) return `<div class="pg dash">${head}${loadingBox()}</div>`;
+  if(!D.venues.length) return `<div class="pg dash">${head}${dcard('Brak przypisanych miejsc', `<p class="dnote">Administrator przypisuje organizatorowi miejsca i nazwy wydarzeń (Panel admina → Użytkownicy → Rola → Organizator). Wtedy zobaczysz tu statystyki.</p>`)}</div>`;
+  const t = localDay(), evs = D.events.slice().sort((a,b)=>a.start.localeCompare(b.start));
+  const up = evs.filter(e=>(e.start||'').slice(0,10)>=t), tot = k => up.reduce((s,e)=>s+(e[k]||0),0);
+  const next = up[0], ne = next && EVENTS.find(x=>x.id===next.id);
+  const going = tot('going'), saves = tot('saves'), conv = going+saves ? Math.round(going/(going+saves)*100) : 0;
+  const ser = D.series || {saves:[],going:[],scans:[]}, from = D.seriesFrom || Date.now()-29*864e5;
+  const rank = up.map(e=>({e, n:e.going+e.saves})).filter(r=>r.n).sort((a,b)=>b.n-a.n).slice(0,5), rMax = Math.max(1,...rank.map(r=>r.n));
+  let spot = '';
+  if(next){
+    const days = Math.round((new Date(next.start.slice(0,10)+'T12:00') - new Date(t+'T12:00'))/864e5);
+    const expected = next.going + next.guests, inside = next.used + next.guestsUsed;
+    const img = next.image || ne?.image;
+    spot = `<section class="dspot">
+      ${img?`<div class="dspot-img"><img src="${esc(img)}" alt="" loading="lazy" onerror="this.parentNode.remove()"></div>`:''}
+      <div class="col" style="gap:10px;flex:1;min-width:0">
+        <span class="eyebrow pink">${days<=0?'Dziś':days===1?'Jutro':'Za '+days+' dni'} · najbliższe wydarzenie</span>
+        <h2 class="clamp2">${esc(next.title)}</h2>
+        <span class="mono">${esc(next.start.slice(8,10)+'.'+next.start.slice(5,7)+' · '+next.start.slice(11,16)+' · '+(next.venue||''))}</span>
+        <div class="dspot-nums">${[['Mam bilet',next.going],['Zapisali',next.saves],['Goście',next.guests],['Obserwują',next.followers]].map(([l,n])=>`<span><b>${pl(n||0)}</b>${l}</span>`).join('')}</div>
+        <div class="col" style="gap:6px"><span class="mono">Wejścia: ${pl(inside)} z ${pl(expected)} oczekiwanych</span>${meter(inside, Math.max(expected,inside,1))}</div>
+        <div class="row" style="gap:8px;flex-wrap:wrap"><button class="chip on" data-act="guests:${esc(next.id)}">Lista gości</button>
+          <button class="chip" data-act="go:scan">Skanuj wejścia</button><button class="chip" data-act="ev:${esc(next.id)}">Strona wydarzenia</button></div>
+      </div></section>`;
+  }
+  return `<div class="pg dash">${head}
+  ${spot}
+  <div class="dkpis">
+    ${kpi('Nadchodzące wydarzenia', up.length, `${pl(evs.length-up.length)} minionych w 30 dni`, 'clock')}
+    ${kpi('Mam bilet', going, `${pl(saves)} zapisało`, 'ticket')}
+    ${kpi('Z zapisu do biletu', conv+'%', 'osób z biletem wśród zainteresowanych', 'bolt')}
+    ${kpi('Wpuszczeni', tot('used')+tot('guestsUsed'), `${pl(tot('guests'))} gości na listach`, 'scan')}
+  </div>
+  <div class="dgrid">
+    ${dcard('Zainteresowanie w 30 dni', barChart([ser.going, ser.saves], from, ['var(--pink)','var(--t3)']) + legend([['var(--pink)','Mam bilet',sum(ser.going)],['var(--t3)','Zapisane',sum(ser.saves)]]))}
+    ${dcard('Wejścia w 30 dni', barChart(ser.scans, from, ['var(--ok)']) + legend([['var(--ok)','Zeskanowane bilety i goście',sum(ser.scans)]]))}
+    ${dcard('Najpopularniejsze', rank.length ? `<ol class="drank">${rank.map((r,i)=>`<li data-act="ev:${esc(r.e.id)}">
+        <span class="drank-n">${i+1}</span><div class="col" style="flex:1;min-width:0;gap:5px"><span class="h4 clamp1">${esc(r.e.title)}</span>${meter(r.n,rMax)}</div>
+        <div class="col drank-v"><b>${pl(r.n)}</b><span class="mono">${pl(r.e.going)} z biletem</span></div></li>`).join('')}</ol>`
+      : '<p class="dempty">Gdy ktoś zapisze Twoje wydarzenie albo kliknie „Mam bilet”, zobaczysz to tutaj.</p>')}
+    ${dcard('Publiczność', `<div class="dstats">
+        <div><b>${pl(tot('followers'))}</b><span>obserwuje wydarzenia</span></div>
+        <div><b>${pl(tot('tickets'))}</b><span>biletów QR w +1</span></div>
+        <div><b>${pl(tot('guests'))}</b><span>gości na listach</span></div>
+        <div><b>${up.length?pl(Math.round((going+saves)/up.length)):0}</b><span>zainteresowanych na wydarzenie</span></div></div>`)}
+    ${dcard('Nadchodzące wydarzenia', up.slice(0,6).map(e=>orgEventRow(e,t)).join('') || '<p class="dempty">Brak nadchodzących wydarzeń w Twoich miejscach.</p>',
+      `<button class="dlink" data-act="go:orgEvents">Wszystkie (${evs.length}) ${ic('chevR',12)}</button>`, 'span2')}
+  </div>
+  ${workMode()==='organizer'?`<div class="dfoot"><button class="chip" data-act="browse:1">${ic('search',14)} Przeglądaj wydarzenia jak użytkownik</button></div>`:''}
+</div>`;
+};
+const scOrgEvents = () => {
+  const gate = orgGate(); if(gate) return gate;
+  const D = ORG.data;
+  if(!D || Date.now()-ORG.at>60e3) setTimeout(orgLoad,0);
+  const sort = S.orgEvSort || 'date', t = localDay();
+  const evs = (D?.events||[]).slice().sort((a,b)=> sort==='going' ? b.going-a.going : sort==='hot' ? b.hot-a.hot : a.start.localeCompare(b.start));
+  return `<div class="pg dash">${dashHead('Panel organizatora','Wydarzenia', D?`${pl(evs.length)} wydarzeń z ostatnich 30 dni i nadchodzących`:'')}
+    ${D?.error ? `<div class="err">${esc(D.error)}</div>` : !D ? loadingBox() : `
+    <div class="row" style="gap:8px;flex-wrap:wrap;padding-bottom:12px">${[['date','Najbliższe'],['going','Najwięcej chętnych'],['hot','Na topie']].map(([k,l])=>`<button class="chip ${sort===k?'on':''}" data-act="orgEvSort:${k}" style="padding:7px 12px;font-size:12px">${l}</button>`).join('')}</div>
+    <section class="dcard">${evs.map(e=>orgEventRow(e,t)).join('') || '<p class="dempty">Brak wydarzeń pasujących do Twoich miejsc.</p>'}</section>`}
+  </div>`;
+};
 
 /* ---- PANEL ADMINA: zaproszenia ---- */
 const adminInvitesTab = A => {
@@ -539,16 +712,27 @@ const scAdmin = () => {
       <div class="col" style="flex:1;min-width:0"><span class="h4 clamp2">${esc(e?e.name:id)}</span>
         <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
       <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
-  const src = LIVE.sources||{};
-  return `
+  const src = LIVE.sources||{}, wm = workMode()==='admin', inApp = typeof renderAppChrome==='function';
+  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
+  const chips = `<div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:${wm?'0 0 18px':'16px 20px'}">
+    ${TABS.map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}</div>`;
+  // w trybie pulpitu: nagłówek jak na pulpicie; na stronie zakładki są już w górnym menu
+  if(wm && tab==='stats') S.adminTab = 'users';
+  return wm ? `
+<div class="pg dash">
+  ${dashHead('Panel administratora', esc((TABS.find(t=>t[0]===(S.adminTab||'users'))||TABS[0])[1]), '', `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button>`)}
+  ${inApp?chips:''}
+  <div>${adminTabBody(A, S.adminTab||'users', curList, src)}</div>
+</div>` : `
 <div class="pg" style="padding:0 0 60px">
   <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4" style="flex:1">Panel admina</span>
     <button class="mono" data-act="adminReload" style="color:${PINK}">ODŚWIEŻ</button></div>
-  <div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:16px 20px">
-    ${[['stats','Statystyki'],['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']].map(([k,l])=>
-      `<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}
-  </div>
-  <div class="pad">
+  ${chips}
+  <div class="pad">${adminTabBody(A, tab, curList, src)}</div>
+</div>`;
+};
+function adminTabBody(A, tab, curList, src){
+  return `
   ${A?.error ? `<div class="err">${esc(A.error)}</div>` : !A ? loadingBox() : tab==='stats' ? `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       ${[['Użytkownicy',A.stats.users],['Nowi (7 dni)',A.stats.new7],['Aktywni (7 dni)',A.stats.active7],['Admini',A.stats.admins],['Obsługa biletów',A.users.filter(u=>u.perm_scan).length],
@@ -576,8 +760,6 @@ const scAdmin = () => {
       <a class="btn g" href="https://github.com/jeremisiejka-collab/plusone/actions/workflows/events.yml" target="_blank" rel="noopener"
         style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;text-decoration:none">Uruchom aktualizację (GitHub)</a>
       <span class="mono" style="line-height:1.6">Automatyczna aktualizacja: 2× dziennie (ok. 6:00 i 16:00).</span>
-    </div>`}
-  </div>
-</div>`;
-};
+    </div>`}`;
+}
 
