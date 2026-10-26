@@ -1041,7 +1041,7 @@ const scStart = () => `
     <button class="btn w" data-act="authgo:login">Zaloguj się</button>
     <button class="btn g" data-act="authgo:register">Załóż konto</button>
     <button class="btn p" data-act="guest">Przeglądaj bez konta</button>
-    <button class="mono" data-act="authgo:admin" style="text-align:center;padding:8px;color:var(--t2);letter-spacing:.06em">WEJŚCIE DLA ADMINA</button>
+    <button class="mono" data-act="previewSheet" style="text-align:center;padding:8px;color:var(--pink);letter-spacing:.06em">PODGLĄD JAKO… (ORGANIZATOR, ADMIN, OBSŁUGA)</button>
   </div>
 </div>`;
 
@@ -1108,6 +1108,7 @@ const scProfile = () => {
     ${u?row('lock','Zmień hasło','passwordSheet'):''}
 
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
+    ${!u?row('users','Podgląd jako… (bez logowania)','previewSheet'):''}
     ${!appStaffMode()?row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`):''}
     ${!appStaffMode()?row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`):''}
     ${!appStaffMode()?row('pin','Miasto','sheetCity',`<span class="mono">${esc(S.city)}</span>`):''}

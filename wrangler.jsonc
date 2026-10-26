@@ -25,7 +25,9 @@
   // D1-END
   "vars": {
     // sha256 adresów e-mail, które dostają rolę admina (po przecinku)
-    "ADMIN_EMAIL_SHA256": "f5b0a493b81b1b8b4876cf0a4e60842484aef9dc06f0e7e07886843c6760e28d"
+    "ADMIN_EMAIL_SHA256": "f5b0a493b81b1b8b4876cf0a4e60842484aef9dc06f0e7e07886843c6760e28d",
+    // faza rozwoju: aplikacja /app otwarta bez logowania i dla każdego konta; "0" przywraca dostęp tylko z zaproszeniem
+    "APP_OPEN": "1"
   },
   "observability": { "enabled": true },
   // alerty co 6 h (worker/premium.js → runAlerts) i newsletter w czwartek ok. 10:00 (NEWSLETTER_CRON)

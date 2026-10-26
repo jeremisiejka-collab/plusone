@@ -416,9 +416,11 @@ async function preview(req, env) {
   }
   const user = await currentUser(req, env);
   const note = token ? 'Zaproszenie wygasło albo zostało już użyte. Zaloguj się.' : url.searchParams.has('join') ? 'Zaloguj się, żeby dołączyć do znajomego.' : '';
-  if (!user) return new Response(gatePage({ mode: 'login', note }), { status: 401, headers });
-  if (user.must_change) return new Response(gatePage({ mode: 'change', user }), { status: 403, headers });
-  if (!await canPreview(env, user)) return new Response(gatePage({ mode: 'denied', user }), { status: 403, headers });
+  // faza rozwoju (APP_OPEN=1): aplikacja otwarta dla wszystkich, także bez logowania; logowanie i „Podgląd jako” są w środku
+  const open = env.APP_OPEN === '1';
+  if (!user && !(open && !note)) return new Response(gatePage({ mode: 'login', note }), { status: 401, headers });
+  if (user?.must_change) return new Response(gatePage({ mode: 'change', user }), { status: 403, headers });
+  if (user && !open && !await canPreview(env, user)) return new Response(gatePage({ mode: 'denied', user }), { status: 403, headers });
   return new Response(previewHtml, { headers });
 }
 
@@ -671,7 +673,7 @@ async function api(req, env) {
   if (path === '/api/crew/join' && m === 'GET') return crewInfo(req, env);
 
   const user = await currentUser(req, env);
-  if (path === '/api/preview-access' && m === 'GET') return json({ allowed: await canPreview(env, user) });
+  if (path === '/api/preview-access' && m === 'GET') return json({ allowed: env.APP_OPEN === '1' || await canPreview(env, user) });
   if (path === '/api/me' && m === 'GET') return me(req, env, user);
   if (!user) return fail(401, 'Zaloguj się.');
 

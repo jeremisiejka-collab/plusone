@@ -621,6 +621,13 @@ function previewAs(role){
       if(p==='/api/tickets') return {tickets: role==='user' && D.org.events[0] ? [{code:'P1-PODGLAD', eventId:D.org.events[0].id, usedAt:Date.now()-40*60e3}] : []};
       if(p==='/api/guide') return previewGuide(path, role);
       if(p==='/api/preview-access') return {allowed:true};
+      // funkcje aplikacji (premium) w podglądzie: puste, ale bez błędów
+      if(p==='/api/notifications') return {notifications:[], unread:0};
+      if(p==='/api/follows') return {follows:[]};
+      if(p==='/api/friends') return {friends:[]};
+      if(p==='/api/wrapped') return {events:[], used:0, friends:0};
+      if(p==='/api/push/key') return {publicKey:''};
+      if(p==='/api/state') return {hidden:[], featured:[]};
     }
     throw new Error('To tylko podgląd — zmiany nie są zapisywane.');
   };
