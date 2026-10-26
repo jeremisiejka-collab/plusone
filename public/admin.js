@@ -243,6 +243,10 @@ function adminAct(cmd, p1, p2, a){
     case 'viewAs': setViewAs(p1||null); return true;
     case 'browse': setBrowse(p1==='1'); return true;
     case 'previewSheet': previewSheet(); return true;
+    case 'sendCode': sendCode(p1==='again'); return true;
+    case 'verifyCode': verifyCode(); return true;
+    case 'codeBack': CODE.to=''; ACC.authErr=''; S.dir=null; render(); return true;
+    case 'pwMode': ACC.pwMode = !ACC.pwMode; ACC.authErr=''; S.dir=null; render(); return true;
     case 'expoLogin': EXPO.state=null; S.adminTab='expo'; S.afterAuth='admin';
       if(inPreview()){ try{ sessionStorage.setItem('expoLogin','1'); }catch(e){} previewEnd(); return true; }
       ACC.authMode='admin'; ACC.authErr=''; go('auth'); return true;
@@ -1062,6 +1066,47 @@ function seatFind(){
     return rr===r && n.toUpperCase()===seat && (tag ? x.dataset.label.startsWith(tag) : !x.dataset.label.includes('Loża')); });
   if(!g){ toast('Nie ma takiego miejsca w tym rzędzie', true); return; }
   VEN.sel = g.dataset.seat; VEN.zoom = true; S.dir=null; render();
+}
+
+/* ---- LOGOWANIE KODEM Z MAILA (strona i aplikacja; po sukcesie authDone(res, mode) z danego pliku) ---- */
+const CODE = { to:'', busy:false, sentAt:0 };
+function codeLoginHtml(){
+  const reg = ACC.authMode==='register';
+  if(!CODE.to) return `
+    ${reg?`<div class="field"><label>IMIĘ (OPCJONALNIE)</label><input id="au-name" autocomplete="given-name" maxlength="60"></div>`:''}
+    <div class="field"><label>E-MAIL</label><input id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="ty@przyklad.pl" data-enter="sendCode"></div>
+    <button class="btn p" data-act="sendCode" ${CODE.busy?'disabled style="opacity:.6"':''}>${CODE.busy?'Wysyłam…':'Wyślij kod na maila'}</button>
+    <span class="mono" style="text-align:center;line-height:1.6">Bez hasła: przyślemy 6-cyfrowy kod na Twój e-mail.${reg?'':' Nie masz konta? Założymy je przy pierwszym logowaniu.'}</span>`;
+  return `
+    <div class="card" style="padding:14px 16px;display:flex;gap:12px;align-items:center"><span style="color:var(--pink);display:flex">${ic('check',18,2.2)}</span>
+      <span class="col" style="flex:1;min-width:0;gap:3px"><span class="h4">Kod wysłany</span><span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(CODE.to)}</span></span>
+      <button class="mono" data-act="codeBack" style="color:var(--pink)">ZMIEŃ</button></div>
+    <div class="field"><label>KOD Z MAILA</label><input id="au-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" data-enter="verifyCode" style="font:600 24px/1 var(--m);letter-spacing:.3em;text-align:center"></div>
+    <button class="btn p" data-act="verifyCode" ${CODE.busy?'disabled style="opacity:.6"':''}>${CODE.busy?'Sprawdzam…':ACC.authMode==='admin'||ACC.authMode==='org'?'Wejdź do panelu':'Zaloguj się'}</button>
+    <button class="mono" data-act="sendCode:again" style="text-align:center;color:var(--t2)" ${Date.now()-CODE.sentAt<45e3?'disabled':''}>WYŚLIJ KOD PONOWNIE</button>`;
+}
+async function sendCode(again){
+  if(CODE.busy) return;
+  const email = again ? CODE.to : ($('#au-email')?.value||'').trim(), name = $('#au-name')?.value.trim();
+  if(!email){ toast('Wpisz adres e-mail', true); return; }
+  if(typeof readInterests==='function' && document.querySelector('[data-int]')) S.regInterests = readInterests(); if($('#au-news')) S.regNews = $('#au-news').checked;
+  CODE.name = name ?? CODE.name; CODE.busy = true; ACC.authErr=''; S.dir=null; render();
+  try{ await apiCall('/api/auth/code','POST',{email}); CODE.to = email; CODE.sentAt = Date.now(); toast('Kod wysłany — sprawdź maila', true); }
+  catch(e){ ACC.authErr = e.message; if(/hasłem/.test(e.message)) ACC.pwMode = true; }
+  CODE.busy = false; S.dir=null; render();
+  setTimeout(()=>{ const f = $('#au-code'); if(f) f.focus(); else { const m = $('#au-email'); if(m) m.value = email; } }, 50);
+}
+async function verifyCode(){
+  if(CODE.busy) return;
+  const code = ($('#au-code')?.value||'').replace(/\D/g,'');
+  if(code.length!==6){ toast('Wpisz 6 cyfr z maila', true); return; }
+  CODE.busy = true; ACC.authErr=''; S.dir=null; render();
+  try{
+    const res = await apiCall('/api/auth/verify','POST',{email:CODE.to, code, name:CODE.name||'', city:S.city,
+      interests: typeof readInterests==='function' ? (S.regInterests||[]) : [], newsletter: S.regNews!==false && ACC.authMode==='register'});
+    CODE.busy = false; CODE.to = ''; CODE.name = '';
+    await authDone(res, ACC.authMode, res.created);
+  }catch(e){ CODE.busy = false; ACC.authErr = e.message; S.dir=null; render(); }
 }
 
 /* ---- PULPIT ADMINISTRATORA ---- */

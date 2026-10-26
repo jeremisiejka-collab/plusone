@@ -132,6 +132,88 @@ async function register(req, env) {
   return json({ user: publicUser({ id, email, name, role, owner, city, created_at: now, interests, newsletter }), saved: [], going: [] }, 201, { 'Set-Cookie': set });
 }
 
+/* ---------------- logowanie kodem z maila ----------------
+   POST /api/auth/code { email } — wysyła 6-cyfrowy kod (10 min). Odpowiedź zawsze ta sama, nie zdradza, czy konto istnieje.
+   POST /api/auth/verify { email, code, name? } — loguje; gdy konta nie ma, zakłada je (rejestracja tym samym kodem). */
+const CODE_TTL = 10 * 60e3;
+async function sendLoginCode(req, env) {
+  const b = await body(req), email = cleanEmail(b.email);
+  if (!EMAIL_RE.test(email) || email.length > 200) return fail(400, 'Podaj poprawny adres e-mail.');
+  if (!(await hasMailer(env))) return fail(503, 'Wysyłka kodów jest chwilowo niedostępna. Zaloguj się hasłem.');
+  const now = Date.now();
+  const last = await env.DB.prepare('SELECT created_at FROM login_codes WHERE email = ? ORDER BY created_at DESC LIMIT 1').bind(email).first();
+  if (last && now - last.created_at < 45e3) return fail(429, 'Kod został już wysłany. Poczekaj chwilę przed kolejną prośbą.');
+  const hour = await env.DB.prepare('SELECT COUNT(*) AS n FROM login_codes WHERE email = ? AND created_at > ?').bind(email, now - 3600e3).first('n');
+  if (hour >= 6) return fail(429, 'Za dużo prób. Spróbuj za godzinę.');
+  const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1e6).padStart(6, '0');
+  await env.DB.batch([
+    env.DB.prepare('UPDATE login_codes SET used_at = ? WHERE email = ? AND used_at IS NULL').bind(now, email),
+    env.DB.prepare('INSERT INTO login_codes (email, code_hash, created_at, expires_at) VALUES (?, ?, ?, ?)').bind(email, await sha256(email + ':' + code), now, now + CODE_TTL),
+    env.DB.prepare('DELETE FROM login_codes WHERE created_at < ?').bind(now - 2 * DAY)
+  ]);
+  const ok = await sendMail(env, email, `${code} — Twój kod do +1`,
+    `Twój kod logowania do +1: ${code}\n\nKod jest ważny 10 minut. Jeśli to nie Ty, zignoruj tę wiadomość.\n\n+1 · plusoneapp.pl`,
+    `<div style="font:16px/1.6 -apple-system,Segoe UI,sans-serif;max-width:480px;margin:auto;padding:24px;color:#111">
+<div style="width:56px;height:56px;border-radius:14px;background:#000;color:#FF0059;font:700 28px/56px sans-serif;text-align:center">+1</div>
+<h1 style="font-size:22px;margin:20px 0 8px">Twój kod logowania</h1>
+<p style="font:700 38px/1.2 monospace;letter-spacing:.18em;margin:10px 0 14px">${code}</p>
+<p style="color:#666;font-size:14px">Wpisz go w +1. Kod jest ważny 10 minut. Jeśli to nie Ty, zignoruj tę wiadomość.</p></div>`);
+  if (!ok) return fail(502, 'Nie udało się wysłać maila. Spróbuj ponownie albo zaloguj się hasłem.');
+  return json({ ok: true, ttl: CODE_TTL });
+}
+async function verifyLoginCode(req, env) {
+  const b = await body(req), email = cleanEmail(b.email), code = String(b.code || '').replace(/\D/g, '');
+  if (!EMAIL_RE.test(email) || code.length !== 6) return fail(400, 'Wpisz 6-cyfrowy kod z maila.');
+  const now = Date.now();
+  const row = await env.DB.prepare('SELECT rowid AS id, code_hash, attempts FROM login_codes WHERE email = ? AND used_at IS NULL AND expires_at > ? ORDER BY created_at DESC LIMIT 1').bind(email, now).first();
+  if (!row) return fail(410, 'Kod wygasł albo został już użyty. Wyślij nowy.');
+  if (row.attempts >= 5) return fail(429, 'Za dużo błędnych prób. Wyślij nowy kod.');
+  if (row.code_hash !== await sha256(email + ':' + code)) {
+    await env.DB.prepare('UPDATE login_codes SET attempts = attempts + 1 WHERE rowid = ?').bind(row.id).run();
+    return fail(401, 'Zły kod. Sprawdź maila i spróbuj jeszcze raz.');
+  }
+  await env.DB.prepare('UPDATE login_codes SET used_at = ? WHERE rowid = ?').bind(now, row.id).run();
+  let u = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email).first(), created = false;
+  if (!u) {
+    // nowe konto: hasło losowe (logowanie i tak odbywa się kodem)
+    const owner = await isAdminEmail(env, email) ? 1 : 0;
+    const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, owner, city, interests, newsletter, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(email, cleanText(b.name, 60), await hashPassword(randomToken()), owner ? 'admin' : 'user', owner, cleanText(b.city, 60) || null,
+        JSON.stringify(cleanInterests(b.interests)), b.newsletter ? 1 : 0, now, now).run();
+    u = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(res.meta.last_row_id).first(); created = true;
+  }
+  await syncAdmin(env, u);
+  await env.DB.batch([
+    env.DB.prepare('UPDATE users SET last_seen = ?, must_change = 0 WHERE id = ?').bind(now, u.id),
+    env.DB.prepare('DELETE FROM sessions WHERE user_id = ? AND expires_at < ?').bind(u.id, now)
+  ]);
+  u.must_change = 0;
+  return json({ user: publicUser(u), created, ...(await savedIds(env, u.id)) }, created ? 201 : 200, { 'Set-Cookie': await startSession(env, u.id) });
+}
+
+/* jednorazowa wysyłka zaproszeń do administratorów: klucz operacyjny (w konfiguracji tylko jego skrót), tylko adresy z listy adminów */
+async function welcomeAdmins(req, env) {
+  const b = await body(req), key = String(b.key || '');
+  if (!env.OPS_KEY_SHA256 || !key || await sha256(key) !== env.OPS_KEY_SHA256) return fail(403, 'Brak dostępu.');
+  const out = [];
+  for (const raw of (Array.isArray(b.emails) ? b.emails : []).slice(0, 10)) {
+    const email = cleanEmail(raw);
+    if (!(await isAdminEmail(env, email))) { out.push({ email, sent: false, why: 'nie jest na liście administratorów' }); continue; }
+    const link = siteUrl(req, '/admin');
+    const sent = await sendMail(env, email, 'Twój panel administratora +1 jest gotowy',
+      `Cześć!\n\nMasz konto administratora w +1. Panel: ${link}\n\nLogowanie bez hasła: wpisz swój e-mail (${email}), a my wyślemy Ci kod na maila.\n\nW panelu: pulpit ze statystykami, użytkownicy i organizatorzy, zaproszenia, moderacja, Mapa targów 3D.\n\n+1 · plusoneapp.pl`,
+      `<div style="font:16px/1.6 -apple-system,Segoe UI,sans-serif;max-width:520px;margin:auto;padding:24px;color:#111">
+<div style="width:56px;height:56px;border-radius:14px;background:#000;color:#FF0059;font:700 28px/56px sans-serif;text-align:center">+1</div>
+<h1 style="font-size:24px;margin:20px 0 8px">Twój panel administratora jest gotowy</h1>
+<p>Masz konto administratora w +1 — pełny dostęp do panelu: pulpit ze statystykami, użytkownicy i organizatorzy, zaproszenia, moderacja i Mapa targów 3D.</p>
+<p><b>Logowanie bez hasła:</b> wpisz swój e-mail (${escHtml(email)}), a kod przyjdzie na tę skrzynkę.</p>
+<p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#FF0059;color:#000;padding:14px 22px;border-radius:12px;font-weight:700;text-decoration:none">Otwórz panel</a></p>
+<p style="color:#888;font-size:13px">plusoneapp.pl</p></div>`);
+    out.push({ email, sent });
+  }
+  return json({ results: out, mailer: await hasMailer(env) });
+}
+
 async function login(req, env) {
   const b = await body(req);
   const email = cleanEmail(b.email), password = String(b.password || '');
@@ -660,12 +742,15 @@ async function api(req, env) {
     if (!(req.headers.get('Content-Type') || '').includes('application/json')) return fail(415, 'Wymagany JSON.');
   }
 
-  if (path === '/api/health') return json({ ok: true, db: !!env.DB });
+  if (path === '/api/health') return json({ ok: true, db: !!env.DB, mail: env.DB ? await hasMailer(env) : false });
   if (!env.DB) return fail(503, 'Baza danych nie jest jeszcze podłączona.');
 
   if (path === '/api/state' && m === 'GET') return publicState(env);
   if (path === '/api/auth/register' && m === 'POST') return register(req, env);
   if (path === '/api/auth/login' && m === 'POST') return login(req, env);
+  if (path === '/api/auth/code' && m === 'POST') return sendLoginCode(req, env);
+  if (path === '/api/auth/verify' && m === 'POST') return verifyLoginCode(req, env);
+  if (path === '/api/ops/welcome-admins' && m === 'POST') return welcomeAdmins(req, env);
   if (path === '/api/auth/logout' && m === 'POST') return logout(req, env);
   if (path === '/api/invite/accept' && m === 'POST') return acceptInvite(req, env);
   if (path === '/api/auth/forgot' && m === 'POST') return forgotPassword(req, env);

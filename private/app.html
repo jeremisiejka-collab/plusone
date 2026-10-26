@@ -979,6 +979,20 @@ async function loadAccount(){
   try{ if(sessionStorage.getItem('expoLogin')){ sessionStorage.removeItem('expoLogin'); S.adminTab='expo'; ACC.authMode='admin'; ACC.authErr=''; go(isAdmin()?'admin':'auth'); } }catch(e){}
 }
 
+/* wspólne zakończenie logowania: hasłem (submitAuth) i kodem z maila (verifyCode w public/admin.js) */
+async function authDone(res, mode, created){
+  if(mode==='admin' && !res.user.owner){
+    await apiCall('/api/auth/logout','POST',{}).catch(()=>{});
+    throw new Error('To konto nie ma uprawnień administratora.');
+  }
+  try{ sessionStorage.removeItem('browse'); }catch(e){}
+  ACC.user = res.user; await mergeMine(res); ACC.busy=false; ACC.pwMode=false; markEntered(); sfxOk(); haptic(16);
+  if(res.user.city && LIVE.cities[res.user.city]) S.city = res.user.city;
+  toast(created ? 'Konto założone. Witaj w +1!' : 'Zalogowano'+(res.user.name?' · '+esc(res.user.name):''));
+  const next = mode==='admin' ? 'admin' : (S.afterAuth || 'home'); S.afterAuth=null;
+  S.prev='home'; go(next);
+  if(typeof premiumAfterLogin==='function') premiumAfterLogin();
+}
 async function submitAuth(){
   if(ACC.busy) return;
   const email=$('#au-email')?.value.trim(), password=$('#au-pass')?.value||'', name=$('#au-name')?.value.trim();
@@ -988,15 +1002,7 @@ async function submitAuth(){
     const res = mode==='register'
       ? await apiCall('/api/auth/register','POST',{email,password,name,city:S.city})
       : await apiCall('/api/auth/login','POST',{email,password});
-    if(mode==='admin' && res.user.role!=='admin'){
-      await apiCall('/api/auth/logout','POST',{}).catch(()=>{});
-      throw new Error('To konto nie ma uprawnień admina.');
-    }
-    ACC.user = res.user; await mergeMine(res); ACC.busy=false; markEntered(); sfxOk(); haptic(16);
-    if(res.user.city && LIVE.cities[res.user.city]) S.city = res.user.city;
-    toast(mode==='register' ? 'Konto założone. Witaj w +1!' : 'Zalogowano'+(res.user.name?' · '+esc(res.user.name):''));
-    const next = mode==='admin' ? 'admin' : (S.afterAuth || 'home'); S.afterAuth=null;
-    S.prev='home'; go(next);
+    await authDone(res, mode, mode==='register');
   }catch(e){
     ACC.busy=false; ACC.authErr=e.message; sfxErr(); S.dir=null; render();
     const f=$('#au-email'); if(f){ f.value=email||''; if($('#au-name')) $('#au-name').value=name||''; }
@@ -1056,14 +1062,15 @@ const scAuth = () => {
     ${adm?'':`<div class="seg"><button class="${!reg?'on':''}" data-act="authmode:login">Logowanie</button><button class="${reg?'on':''}" data-act="authmode:register">Nowe konto</button></div>`}
     <div class="col" style="gap:6px">
       <span style="font:600 24px/1.1 var(--d);letter-spacing:-.02em">${adm?'Logowanie admina':reg?'Dołącz do +1':'Witaj z powrotem'}</span>
-      <span class="body">${adm?'Zaloguj się kontem z uprawnieniami admina.':reg?'Konto jest za darmo. Bez spamu.':'Zaloguj się e-mailem i hasłem.'}</span>
+      <span class="body">${adm?'Zaloguj się kontem administratora — kod przyjdzie na maila.':reg?'Konto jest za darmo. Bez spamu.':'Zaloguj się e-mailem — przyślemy kod.'}</span>
     </div>
     ${!ACC.api?`<div class="err">Logowanie jest chwilowo niedostępne. Spróbuj za moment.</div>`:''}
     ${ACC.authErr?`<div class="err" role="alert">${esc(ACC.authErr)}</div>`:''}
-    ${reg?`<div class="field"><label>IMIĘ (OPCJONALNIE)</label><input id="au-name" autocomplete="given-name" maxlength="60"></div>`:''}
+    ${ACC.pwMode?`${reg?`<div class="field"><label>IMIĘ (OPCJONALNIE)</label><input id="au-name" autocomplete="given-name" maxlength="60"></div>`:''}
     <div class="field"><label>E-MAIL</label><input id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="ty@przyklad.pl"></div>
     <div class="field"><label>HASŁO${reg?' (MIN. 8 ZNAKÓW)':''}</label><input id="au-pass" type="password" autocomplete="${reg?'new-password':'current-password'}" data-enter="submitAuth"></div>
-    <button class="btn p" data-act="submitAuth" ${ACC.busy?'disabled style="opacity:.6"':''}>${ACC.busy?'Chwilka…':adm?'Wejdź do panelu':reg?'Załóż konto':'Zaloguj się'}</button>
+    <button class="btn p" data-act="submitAuth" ${ACC.busy?'disabled style="opacity:.6"':''}>${ACC.busy?'Chwilka…':adm?'Wejdź do panelu':reg?'Załóż konto':'Zaloguj się'}</button>`:codeLoginHtml()}
+    <button class="mono" data-act="pwMode" style="text-align:center;color:var(--t3)">${ACC.pwMode?'ZALOGUJ SIĘ KODEM Z MAILA':'ZALOGUJ SIĘ HASŁEM'}</button>
     ${reg?`<span class="mono" style="text-align:center;line-height:1.6">Przechowujemy tylko Twój e-mail i imię. Konto usuniesz w każdej chwili w Profilu.</span>`:''}
     <button class="mono" data-act="guest" style="text-align:center;color:var(--t2)">Przeglądaj bez konta</button>
   </div>

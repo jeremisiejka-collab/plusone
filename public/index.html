@@ -896,6 +896,21 @@ async function loadAccount(){
   if(ACC.user?.mustChange) passwordSheet(true);
 }
 
+/* wspólne zakończenie logowania: hasłem (submitAuth) i kodem z maila (verifyCode w public/admin.js) */
+async function authDone(res, mode, created){
+  if((mode==='admin' && !res.user.owner) || (mode==='org' && !res.user.org)){
+    await apiCall('/api/auth/logout','POST',{}).catch(()=>{});
+    throw new Error(mode==='admin' ? 'To konto nie jest kontem administratora.' : 'To konto nie ma dostępu do panelu organizatora. Napisz do nas, a nadamy go.');
+  }
+  // po zalogowaniu administrator i organizator trafiają na swój pulpit
+  try{ sessionStorage.removeItem('browse'); }catch(e){}
+  ACC.user = res.user; await mergeMine(res); ACC.preview=(await apiCall('/api/preview-access')).allowed; ACC.busy=false; ACC.pwMode=false; markEntered(); sfxOk(); haptic(16);
+  if(res.user.city && LIVE.cities[res.user.city]) S.city = res.user.city;
+  toast(created ? 'Konto założone. Witaj w +1!' : 'Zalogowano'+(res.user.name?' · '+esc(res.user.name):''));
+  const next = mode==='admin' && S.afterAuth==='admin' ? 'admin' : mode==='admin' || mode==='org' ? 'home' : (S.afterAuth || 'home'); S.afterAuth=null;
+  S.prev='home'; go(next);
+  if(res.user.mustChange) passwordSheet(true);
+}
 async function submitAuth(){
   if(ACC.busy) return;
   const email=$('#au-email')?.value.trim(), password=$('#au-pass')?.value||'', name=$('#au-name')?.value.trim();
@@ -906,18 +921,7 @@ async function submitAuth(){
     const res = mode==='register'
       ? await apiCall('/api/auth/register','POST',{email,password,name,city:S.city,interests:readInterests(),newsletter:!!$('#au-news')?.checked})
       : await apiCall('/api/auth/login','POST',{email,password});
-    if((mode==='admin' && !res.user.owner) || (mode==='org' && !res.user.org)){
-      await apiCall('/api/auth/logout','POST',{}).catch(()=>{});
-      throw new Error(mode==='admin' ? 'To konto nie jest kontem administratora.' : 'To konto nie ma dostępu do panelu organizatora. Napisz do nas, a nadamy go.');
-    }
-    // po zalogowaniu administrator i organizator trafiają na swój pulpit
-    try{ sessionStorage.removeItem('browse'); }catch(e){}
-    ACC.user = res.user; await mergeMine(res); ACC.preview=(await apiCall('/api/preview-access')).allowed; ACC.busy=false; markEntered(); sfxOk(); haptic(16);
-    if(res.user.city && LIVE.cities[res.user.city]) S.city = res.user.city;
-    toast(mode==='register' ? 'Konto założone. Witaj w +1!' : 'Zalogowano'+(res.user.name?' · '+esc(res.user.name):''));
-    const next = mode==='admin' && S.afterAuth==='admin' ? 'admin' : mode==='admin' || mode==='org' ? 'home' : (S.afterAuth || 'home'); S.afterAuth=null;
-    S.prev='home'; go(next);
-    if(res.user.mustChange) passwordSheet(true);
+    await authDone(res, mode, mode==='register');
   }catch(e){
     ACC.busy=false; ACC.authErr=e.message; sfxErr(); S.dir=null; render();
     const f=$('#au-email'); if(f){ f.value=email||''; if($('#au-name')) $('#au-name').value=name||''; }
@@ -978,16 +982,17 @@ const scAuth = () => {
     ${panel?'':`<div class="seg"><button class="${!reg?'on':''}" data-act="authmode:login">Logowanie</button><button class="${reg?'on':''}" data-act="authmode:register">Nowe konto</button></div>`}
     <div class="col" style="gap:6px">
       <span style="font:600 24px/1.1 var(--d);letter-spacing:-.02em">${adm?'Logowanie administratora':org?'Dla organizatorów':reg?'Dołącz do +1':'Witaj z powrotem'}</span>
-      <span class="body">${adm?'Zaloguj się kontem administratora.':org?'Zaloguj się kontem organizatora: pulpit ze statystykami, Twoje wydarzenia, lista gości i skaner biletów.':reg?'Konto jest za darmo. Bez spamu.':'Zaloguj się e-mailem i hasłem.'}</span>
+      <span class="body">${adm?'Zaloguj się kontem administratora — kod przyjdzie na maila.':org?'Zaloguj się kontem organizatora: pulpit ze statystykami, Twoje wydarzenia, lista gości i skaner biletów.':reg?'Konto jest za darmo. Bez spamu.':'Zaloguj się e-mailem — przyślemy kod.'}</span>
     </div>
     ${!ACC.api?`<div class="err">Logowanie jest chwilowo niedostępne. Spróbuj za moment.</div>`:''}
     ${ACC.authErr?`<div class="err" role="alert">${esc(ACC.authErr)}</div>`:''}
     ${reg?`<div class="field"><label>IMIĘ (OPCJONALNIE)</label><input id="au-name" autocomplete="given-name" maxlength="60"></div>`:''}
     ${reg?`<div class="field"><label>CO LUBISZ? (DOSTANIESZ ALERTY TYLKO Z TYCH TEMATÓW)</label>${interestChips(S.regInterests||[])}</div>
       <label class="row" style="gap:10px;font:400 14px/1.4 var(--d);color:var(--t2);cursor:pointer"><input id="au-news" type="checkbox" ${S.regNews===false?'':'checked'} style="width:20px;height:20px;accent-color:var(--pink)"> Co czwartek „Na topie w Twoim mieście” na maila</label>`:''}
-    <div class="field"><label>E-MAIL</label><input id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="ty@przyklad.pl"></div>
+    ${ACC.pwMode?`<div class="field"><label>E-MAIL</label><input id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="ty@przyklad.pl"></div>
     <div class="field"><label>HASŁO${reg?' (MIN. 8 ZNAKÓW)':''}</label><input id="au-pass" type="password" autocomplete="${reg?'new-password':'current-password'}" data-enter="submitAuth"></div>
-    <button class="btn p" data-act="submitAuth" ${ACC.busy?'disabled style="opacity:.6"':''}>${ACC.busy?'Chwilka…':panel?'Wejdź do panelu':reg?'Załóż konto':'Zaloguj się'}</button>
+    <button class="btn p" data-act="submitAuth" ${ACC.busy?'disabled style="opacity:.6"':''}>${ACC.busy?'Chwilka…':panel?'Wejdź do panelu':reg?'Załóż konto':'Zaloguj się'}</button>`:codeLoginHtml()}
+    <button class="mono" data-act="pwMode" style="text-align:center;color:var(--t3)">${ACC.pwMode?'ZALOGUJ SIĘ KODEM Z MAILA':'ZALOGUJ SIĘ HASŁEM'}</button>
     ${reg?`<span class="mono" style="text-align:center;line-height:1.6">Przechowujemy tylko Twój e-mail i imię. Konto usuniesz w każdej chwili w Profilu.</span>`:''}
     ${org?`<span class="mono" style="text-align:center;line-height:1.6">Nie masz jeszcze dostępu? Napisz do nas — administrator nada Twojemu kontu rolę organizatora.</span>`:''}
     <div class="row" style="gap:8px;justify-content:center;flex-wrap:wrap">
@@ -2616,6 +2621,8 @@ matchMedia('(min-width:761px)').addEventListener('change', e=>{
 if(/[?&]podglad\b/.test(location.search)) setTimeout(()=>previewSheet(), 600);
 /* po zakończeniu „Widoku demo” z zakładki Mapa targów 3D: od razu logowanie administratora */
 try{ if(sessionStorage.getItem('expoLogin')){ sessionStorage.removeItem('expoLogin'); setTimeout(()=>{ S.adminTab='expo'; S.afterAuth='admin'; ACC.authMode='admin'; ACC.authErr=''; go(isAdmin()?'admin':'auth'); }, 900); } }catch(e){}
+/* /admin — panel administratora (logowanie kodem, gdy nie zalogowano) */
+if(location.pathname.replace(/\/+$/,'')==='/admin'){ history.replaceState(null,'','/'); setTimeout(()=>{ if(isAdmin()) go('home'); else { ACC.authMode='admin'; ACC.authErr=''; go('auth'); } }, 1200); }
 /* /admin/mapa-targow — zakładka Mapa targów 3D w panelu administratora */
 if(location.pathname.replace(/\/+$/,'')==='/admin/mapa-targow'){ history.replaceState(null,'','/'); S.adminTab='expo'; setTimeout(()=>{ if(isAdmin()) go('admin'); else { ACC.authMode='admin'; go('auth'); } }, 1200); }
 /* link z maila do uczestników: /?guide=<id> — przewodnik po zalogowaniu, inaczej strona wydarzenia */

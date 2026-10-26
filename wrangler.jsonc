@@ -25,7 +25,9 @@
   // D1-END
   "vars": {
     // sha256 adresów e-mail, które dostają rolę admina (po przecinku)
-    "ADMIN_EMAIL_SHA256": "f5b0a493b81b1b8b4876cf0a4e60842484aef9dc06f0e7e07886843c6760e28d",
+    "ADMIN_EMAIL_SHA256": "f5b0a493b81b1b8b4876cf0a4e60842484aef9dc06f0e7e07886843c6760e28d,07c652787b6e5fb29fc4d30c5616622a37fb1330864125e323666f8df98667d5,98d88fad716ac648fe26d3d26a86e62dfd7c45ec0d1178ab53ef387fb9c7180f,4e6e0d5f00f86abbca24ca6ef4efb1d9099502fdf1d9457457e4d04154110509",
+    // skrót klucza do jednorazowych operacji (np. zaproszenia administratorów); sam klucz nie trafia do repozytorium
+    "OPS_KEY_SHA256": "fae9da9f529852a48f5b3e9aab60aaacc10917fc6716290fdedacafeb8973c79",
     // faza rozwoju: aplikacja /app otwarta bez logowania i dla każdego konta; "0" przywraca dostęp tylko z zaproszeniem
     "APP_OPEN": "1"
   },
