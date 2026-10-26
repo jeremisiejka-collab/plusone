@@ -906,14 +906,16 @@ async function submitAuth(){
     const res = mode==='register'
       ? await apiCall('/api/auth/register','POST',{email,password,name,city:S.city,interests:readInterests(),newsletter:!!$('#au-news')?.checked})
       : await apiCall('/api/auth/login','POST',{email,password});
-    if(mode==='admin' && res.user.role!=='admin'){
+    if((mode==='admin' && !res.user.owner) || (mode==='org' && !res.user.org)){
       await apiCall('/api/auth/logout','POST',{}).catch(()=>{});
-      throw new Error('To konto nie ma uprawnień admina.');
+      throw new Error(mode==='admin' ? 'To konto nie jest kontem administratora.' : 'To konto nie ma dostępu do panelu organizatora. Napisz do nas, a nadamy go.');
     }
+    // po zalogowaniu administrator i organizator trafiają na swój pulpit
+    try{ sessionStorage.removeItem('browse'); }catch(e){}
     ACC.user = res.user; await mergeMine(res); ACC.preview=(await apiCall('/api/preview-access')).allowed; ACC.busy=false; markEntered(); sfxOk(); haptic(16);
     if(res.user.city && LIVE.cities[res.user.city]) S.city = res.user.city;
     toast(mode==='register' ? 'Konto założone. Witaj w +1!' : 'Zalogowano'+(res.user.name?' · '+esc(res.user.name):''));
-    const next = mode==='admin' ? 'admin' : (S.afterAuth || 'home'); S.afterAuth=null;
+    const next = mode==='admin' || mode==='org' ? 'home' : (S.afterAuth || 'home'); S.afterAuth=null;
     S.prev='home'; go(next);
     if(res.user.mustChange) passwordSheet(true);
   }catch(e){
@@ -961,21 +963,21 @@ const scStart = () => `
     <button class="btn w" data-act="authgo:login">Zaloguj się</button>
     <button class="btn g" data-act="authgo:register">Załóż konto</button>
     <button class="btn p" data-act="guest">Przeglądaj bez konta</button>
-    <button class="mono" data-act="authgo:admin" style="text-align:center;padding:8px;color:var(--t2);letter-spacing:.06em">WEJŚCIE DLA ADMINA</button>
+    <button class="mono" data-act="authgo:org" style="text-align:center;padding:8px;color:var(--t2);letter-spacing:.06em">WEJŚCIE DLA ORGANIZATORA</button>
   </div>
 </div>`;
 
 /* ---- LOGOWANIE / REJESTRACJA / ADMIN ---- */
 const scAuth = () => {
-  const m = ACC.authMode, reg = m==='register', adm = m==='admin';
+  const m = ACC.authMode, reg = m==='register', adm = m==='admin', org = m==='org', panel = adm || org;
   return `
 <div class="pg" style="padding:0 0 40px">
-  <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4">${adm?'Panel admina':reg?'Załóż konto':'Zaloguj się'}</span></div>
+  <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4">${adm?'Panel administratora':org?'Panel organizatora':reg?'Załóż konto':'Zaloguj się'}</span></div>
   <div class="pad col" style="gap:18px;padding-top:22px">
-    ${adm?'':`<div class="seg"><button class="${!reg?'on':''}" data-act="authmode:login">Logowanie</button><button class="${reg?'on':''}" data-act="authmode:register">Nowe konto</button></div>`}
+    ${panel?'':`<div class="seg"><button class="${!reg?'on':''}" data-act="authmode:login">Logowanie</button><button class="${reg?'on':''}" data-act="authmode:register">Nowe konto</button></div>`}
     <div class="col" style="gap:6px">
-      <span style="font:600 24px/1.1 var(--d);letter-spacing:-.02em">${adm?'Logowanie admina':reg?'Dołącz do +1':'Witaj z powrotem'}</span>
-      <span class="body">${adm?'Zaloguj się kontem z uprawnieniami admina.':reg?'Konto jest za darmo. Bez spamu.':'Zaloguj się e-mailem i hasłem.'}</span>
+      <span style="font:600 24px/1.1 var(--d);letter-spacing:-.02em">${adm?'Logowanie administratora':org?'Dla organizatorów':reg?'Dołącz do +1':'Witaj z powrotem'}</span>
+      <span class="body">${adm?'Zaloguj się kontem administratora.':org?'Zaloguj się kontem organizatora: pulpit ze statystykami, Twoje wydarzenia, lista gości i skaner biletów.':reg?'Konto jest za darmo. Bez spamu.':'Zaloguj się e-mailem i hasłem.'}</span>
     </div>
     ${!ACC.api?`<div class="err">Logowanie jest chwilowo niedostępne. Spróbuj za moment.</div>`:''}
     ${ACC.authErr?`<div class="err" role="alert">${esc(ACC.authErr)}</div>`:''}
@@ -984,8 +986,13 @@ const scAuth = () => {
       <label class="row" style="gap:10px;font:400 14px/1.4 var(--d);color:var(--t2);cursor:pointer"><input id="au-news" type="checkbox" ${S.regNews===false?'':'checked'} style="width:20px;height:20px;accent-color:var(--pink)"> Co czwartek „Na topie w Twoim mieście” na maila</label>`:''}
     <div class="field"><label>E-MAIL</label><input id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="ty@przyklad.pl"></div>
     <div class="field"><label>HASŁO${reg?' (MIN. 8 ZNAKÓW)':''}</label><input id="au-pass" type="password" autocomplete="${reg?'new-password':'current-password'}" data-enter="submitAuth"></div>
-    <button class="btn p" data-act="submitAuth" ${ACC.busy?'disabled style="opacity:.6"':''}>${ACC.busy?'Chwilka…':adm?'Wejdź do panelu':reg?'Załóż konto':'Zaloguj się'}</button>
+    <button class="btn p" data-act="submitAuth" ${ACC.busy?'disabled style="opacity:.6"':''}>${ACC.busy?'Chwilka…':panel?'Wejdź do panelu':reg?'Załóż konto':'Zaloguj się'}</button>
     ${reg?`<span class="mono" style="text-align:center;line-height:1.6">Przechowujemy tylko Twój e-mail i imię. Konto usuniesz w każdej chwili w Profilu.</span>`:''}
+    ${org?`<span class="mono" style="text-align:center;line-height:1.6">Nie masz jeszcze dostępu? Napisz do nas — administrator nada Twojemu kontu rolę organizatora.</span>`:''}
+    <div class="row" style="gap:8px;justify-content:center;flex-wrap:wrap">
+      ${org?`<button class="chip" style="display:inline-flex;align-items:center;gap:6px" data-act="authmode:login">Zwykłe logowanie</button>`:`<button class="chip" style="display:inline-flex;align-items:center;gap:6px" data-act="authmode:org">${ic('star',14)} Wejście dla organizatora</button>`}
+      ${adm?'':`<button class="chip" style="display:inline-flex;align-items:center;gap:6px" data-act="authmode:admin">${ic('shield',14)} Administrator</button>`}
+    </div>
     <button class="mono" data-act="guest" style="text-align:center;color:var(--t2)">Przeglądaj bez konta</button>
   </div>
 </div>`;
@@ -1025,6 +1032,7 @@ const scProfile = () => {
     ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
     ${realOwner()?row('users','Zobacz jako…','viewAsSheet',`<span class="mono">${viewAs()?esc(roleName(viewAs())):'Ty'}</span>`):''}
 
+    ${!u?row('star','Wejście dla organizatora','authgo:org'):''}
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
     ${row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`)}
     ${row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`)}
@@ -1838,6 +1846,7 @@ function renderWebChrome(){
     <span>+1 &nbsp; WHERE ARE WE GOING?<br>Wydarzenia w Twoim mieście, w jednym miejscu.</span>
     <button data-act="go:profile">Konto i ustawienia ${ic('chevR',12)}</button>
     <button data-act="go:downloads">Aplikacja na telefon</button>
+    <button data-act="${ACC.user&&isOrgNow()?'orgMine':'authgo:org'}">Dla organizatorów ${ic('chevR',12)}</button>
   </div>`;
 }
 
