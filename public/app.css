@@ -78,7 +78,7 @@
   body:not(.demo) #sheetwrap { position: fixed; }
   body:not(.demo) #sheet { width: min(520px, calc(100vw - 48px)); left: 0; right: 0; margin: auto; top: 14vh; bottom: auto; max-height: 72dvh; border: 1px solid var(--line-2); border-radius: 24px; padding: 28px; box-shadow: 0 24px 100px rgba(0,0,0,.4); color: var(--t1); }
   body:not(.demo) .grab { display: none; }
-  .web-sheet-close { margin: 0 0 16px auto; width: 32px; height: 32px; border: 1px solid var(--line-2); border-radius: 50%; }
+  body:not(.demo) .sheet-x { top: 18px; right: 18px; width: 32px; height: 32px; }
   body:not(.demo) #toast { position: fixed; left: auto; right: 32px; bottom: 32px; max-width: 420px; }
   body:not(.demo) #offline { position: fixed; top: 88px; }
   #web-footer { max-width: 1200px; margin: 0 auto; padding: 28px 0 36px; border-top: 1px solid var(--line); }
