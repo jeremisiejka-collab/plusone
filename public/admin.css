@@ -285,5 +285,5 @@
 .sticket-stamp { top: 10px; left: 10px; right: auto; }
 
 /* Mapa targów 3D (moduł w iframe) */
-.expo-wrap { width: 100%; height: min(78vh, 820px); border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: #0b0b0e; }
+.expo-wrap { width: 100%; height: min(82vh, 900px); min-height: 560px; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: #0b0b0e; }
 .expo-frame { width: 100%; height: 100%; border: 0; display: block; }

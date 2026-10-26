@@ -318,3 +318,6 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
 
 /* pulpity admina i organizatora na stronie: odstępy jak reszta stron (siatka w public/admin.css) */
 @media (min-width: 761px) { body:not(.demo) .dash { padding: 40px 0 80px; } }
+
+/* Mapa targów 3D w panelu administratora: cała szerokość strony (moduł ma własny układ z listą i panelem stoiska) */
+@media (min-width: 761px) { body:not(.demo) .pg.dash-wide[data-screen="admin"] { max-width: 1480px; } }

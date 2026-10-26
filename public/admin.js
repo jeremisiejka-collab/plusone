@@ -1255,7 +1255,7 @@ const scAdmin = () => {
   // w trybie pulpitu: nagłówek jak na pulpicie; na stronie zakładki są już w górnym menu
   if(wm && tab==='stats') S.adminTab = 'users';
   return wm ? `
-<div class="pg dash">
+<div class="pg dash ${(S.adminTab||'users')==='expo'?'dash-wide':''}">
   ${dashHead('Panel administratora', esc((TABS.find(t=>t[0]===(S.adminTab||'users'))||TABS[0])[1]), '', `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button>`)}
   ${inApp?chips:''}
   <div>${adminTabBody(A, S.adminTab||'users', curList, src)}</div>
@@ -1272,8 +1272,8 @@ const EXPO = { state:null };
 const EXPO_SRC = '/admin/moduly/expo-map/';
 function expoCheck(){
   if(EXPO.state) return; EXPO.state = 'checking';
-  fetch(EXPO_SRC+'manifest.json', {cache:'no-store', credentials:'same-origin'})
-    .then(r=>{ EXPO.state = r.ok && (r.headers.get('Content-Type')||'').includes('json') ? 'ready' : 'missing'; })
+  fetch(EXPO_SRC+'data.js', {cache:'no-store', credentials:'same-origin'})
+    .then(r=>{ EXPO.state = r.ok && (r.headers.get('Content-Type')||'').includes('javascript') ? 'ready' : 'missing'; })
     .catch(()=>{ EXPO.state = 'missing'; }).finally(()=>{ S.dir=null; render(); });
 }
 function adminExpoTab(){
