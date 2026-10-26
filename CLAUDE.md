@@ -11,7 +11,7 @@
 - Pobieraj grafiki w możliwie oryginalnych proporcjach (Going: `c_limit` zamiast `c_fill`, eBilet: plakat pionowy przed banerem).
 
 ## Aplikacja
-- Zachętę do instalacji odkładamy do publikacji w App Store. Na stronie zostaje zwykły przycisk „Aplikacja” po prawej stronie nagłówka; bez wyskakującego komunikatu instalacyjnego.
+- Zachętę do instalacji odkładamy do publikacji w App Store. **W nagłówku strony nie ma przycisku „Aplikacja”** (link do aplikacji zostaje tylko w stopce); bez wyskakującego komunikatu instalacyjnego.
 - Aplikacja na telefon to `/app` (`private/app.html`, wygląd i funkcje inne niż strona). **Wygląd aplikacji = oryginał sprzed rozdzielenia (commit `a9a30d5`)** — nie przenoś do niej zmian wyglądu strony. Aplikacja ma własny, zamrożony arkusz `public/app.css` (strona używa `public/desktop.css`).
 - W aplikacji Portfel to „Już wkrótce”, bez przykładowego salda i płatności. Bilety i Wrapped korzystają wyłącznie z danych konta; nowe konto ma puste widoki. Nie pokazuj fikcyjnych zaproszeń od Kai ani biletów z makiety, także administratorom.
 - **Faza rozwoju: `/app` otwarta bez logowania** (`APP_OPEN="1"` w `wrangler.jsonc`) — dla gości i każdego konta, z „Podgląd jako” w środku. Zmiana na `"0"` przywraca dostęp tylko z zaproszeniem (`preview_access`).

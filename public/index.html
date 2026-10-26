@@ -1854,7 +1854,6 @@ function renderWebChrome(){
       ${workMode()?'':`<button class="web-city" data-act="sheetCity" aria-label="Zmień miasto: ${esc(S.city)}">${ic('pin',16)}${esc(S.city)} ▾</button>`}
       <button class="web-theme" data-act="theme" aria-label="Zmień motyw">${ic(document.documentElement.dataset.theme==='light'?'moon':'sun',18)}</button>
       <button class="web-account" data-act="${ACC.user?'go:profile':'authgo:login'}" aria-label="${ACC.user?'Moje konto':'Zaloguj się'}">${ic('user',16)}<span>${ACC.user?'Moje konto':'Zaloguj się'}</span></button>
-      <button class="web-app" data-act="go:downloads" ${S.screen==='downloads'?'aria-current="page"':''}>Aplikacja</button>
     </div>
   </div>`;
   $('#web-footer').innerHTML = `<div class="web-footer-inner">
