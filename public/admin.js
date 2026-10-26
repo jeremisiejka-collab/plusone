@@ -247,6 +247,8 @@ function adminAct(cmd, p1, p2, a){
     case 'seatHall': VEN.hall = p1; VEN.sel = null; VEN.row=''; VEN.seat=''; VEN.zoom = false; S.dir=null; render(); return true;
     case 'seatZoom': VEN.zoom = !VEN.zoom; S.dir=null; render(); return true;
     case 'seatFind': seatFind(); return true;
+    case 'stLevel': VEN.level = p1; VEN.sel = null; S.dir=null; render(); return true;
+    case 'stFind': stFind(); return true;
     case 'sampleZone': S.sampleZone = p1||''; S.dir=null; render(); return true;
     case 'guide': openGuide(a.slice(6)); return true;
     case 'guideEdit': openGuide(a.slice(10), true); return true;
@@ -700,7 +702,7 @@ const scGuide = () => {
     ${g.hasMap?dcard('Mapa wydarzenia', guideMapHtml(D) + (g.points.length?`<ul class="glegend">${g.points.map((p,i)=>`<li class="${GUIDE.pin===i?'on':''}" data-act="gpin:${i}"><span>${ic(kindOf(p.kind)[2],15)}</span>${esc(p.label)}<em>${kindOf(p.kind)[1]}</em></li>`).join('')}</ul>`:''), '', 'span2'):''}
     ${g.schedule.length?dcard('Harmonogram', `<ol class="gsched">${g.schedule.map(x=>`<li><time>${esc(x.time)}</time><span>${esc(x.title)}</span></li>`).join('')}</ol>`):''}
     ${g.info?dcard('Informacje', `<div class="ginfo">${esc(g.info).replace(/\n/g,'<br>')}</div>`):''}
-    ${(()=>{ const ev = EVENTS.find(x=>x.id===GUIDE.id), V = venueFor(ev); return V ? dcard('Plan widowni', `<p class="dnote" style="margin:0">Układ sali i numery miejsc: ${esc(V.halls.map(x=>x.name).join(', '))}.</p>
+    ${(()=>{ const ev = EVENTS.find(x=>x.id===GUIDE.id), V = venueFor(ev); return V ? dcard('Plan widowni', `<p class="dnote" style="margin:0">${V.halls[0].type==='stadium'?'Sektory, poziomy, loże i bramy wejściowe.':'Układ sali i numery miejsc: '+esc(V.halls.map(x=>x.name).join(', '))+'.'}</p>
       <button class="btn g" data-act="seatPlan:${esc(GUIDE.id)}" style="height:46px;margin-top:12px;font:600 14px/1 var(--d)">Zobacz plan sali</button>`) : ''; })()}
     ${dcard('Dojazd i miejsce', `<p class="dnote" style="margin:0"><b style="color:var(--t1)">${esc(E.venue)}</b><br>${esc([E.address, E.city].filter(Boolean).join(', '))}</p>
       <a class="btn g" href="${maps}" target="_blank" rel="noopener" style="height:46px;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font:600 14px/1 var(--d)">${ic('pin',16)} Otwórz w mapach</a>`)}
@@ -929,10 +931,28 @@ function hallFor(V, e){
 }
 function openSeatPlan(eventId){
   const e = EVENTS.find(x=>x.id===eventId), V = venueFor(e); if(!V) return;
-  VEN.id = V.id; VEN.eventId = eventId; VEN.hall = hallFor(V, e).id; VEN.sel = null; VEN.row=''; VEN.seat=''; go('seatplan');
+  VEN.id = V.id; VEN.eventId = eventId; VEN.hall = hallFor(V, e).id; VEN.sel = null; VEN.row=''; VEN.seat=''; VEN.level='all'; VEN.zoom=false; go('seatplan');
 }
 const hallSeats = h => h.type==='tables' ? h.tables.reduce((s,t)=>s+t.seats,0) : h.sections.reduce((s,x)=>s+x.rows.reduce((a,r)=>a+r.s.length,0),0);
+/* stadion: sektory jako wielokąty, poziomy (płyta / trybuny / loże +1 i +2), bramy */
+const LEVEL_COL = {floor:'#22C55E', lower:'var(--pink)', vip1:'#F5B73B', vip2:'#8B5CF6', upper:'#3B82F6'};
+const polyC = p => { let x=0,y=0,n=p.length/2; for(let i=0;i<p.length;i+=2){ x+=p[i]; y+=p[i+1]; } return [x/n, y/n]; };
+function nearestGate(h, sec){ const [x,y] = polyC(sec.p); return h.gates.slice().sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0]; }
+function stadiumSvg(h){
+  const lv = VEN.level||'all', sel = VEN.sel, dim = id => lv!=='all' && lv!==id;
+  const [px1,py1,px2,py2] = h.pitch;
+  const secs = h.sectors.map(x=>{ const c = polyC(x.p), small = x.level==='vip1'||x.level==='vip2', on = sel===x.id;
+    return `<g class="sec ${on?'on':''} ${dim(x.level)?'dim':''}" data-seat="${esc(x.id)}" data-label="${esc(x.name)}">
+      <polygon points="${x.p.join(',')}" style="fill:${LEVEL_COL[x.level]}"/>${small?'':`<text x="${c[0].toFixed(1)}" y="${(c[1]+3).toFixed(1)}">${esc(x.id)}</text>`}</g>`; }).join('');
+  const gates = h.gates.map(g=>`<g class="gate"><circle cx="${g.x}" cy="${g.y}" r="11"/><text x="${g.x}" y="${g.y+4}">${g.n}</text></g>`).join('');
+  return `<svg class="seatmap stadium" viewBox="0 0 ${h.w} ${h.h}" role="img" aria-label="Plan stadionu ${esc(h.name)}">
+    <ellipse class="bowl" cx="331" cy="281" rx="300" ry="262"/>
+    <g class="sec pitch ${dim('floor')?'dim':''} ${sel==='plyta'?'on':''}" data-seat="plyta" data-label="Płyta"><rect x="${px1}" y="${py1}" width="${px2-px1}" height="${py2-py1}" rx="34" style="fill:${LEVEL_COL.floor}"/>
+      <text x="${(px1+px2)/2}" y="${(py1+py2)/2+5}" class="pitch-t">PŁYTA</text></g>
+    ${secs}${gates}${(h.sides||[]).map(x=>`<text class="side-t" x="${x.x}" y="${x.y}">${esc(x.t)}</text>`).join('')}</svg>`;
+}
 function seatSvg(h){
+  if(h.type==='stadium') return stadiumSvg(h);
   const U = 10, top = 3.2, sel = VEN.sel;
   if(h.type==='tables'){
     const W = 100, H = 100/h.ratio, k = H/100;
@@ -959,6 +979,7 @@ const scSeatPlan = () => {
   const V = (VEN.list||[]).find(x=>x.id===VEN.id);
   if(!V){ loadVenues(); return `<div class="pg dash">${loadingBox()}</div>`; }
   const h = V.halls.find(x=>x.id===VEN.hall) || V.halls[0], e = EVENTS.find(x=>x.id===VEN.eventId);
+  if(h.type==='stadium') return scStadium(V, h, e);
   const rowsOf = h.type==='tables' ? [] : [...new Set(h.sections.flatMap(s=>s.rows.map(r=>(s.tag?s.tag+' · ':'')+r.r)))];
   const mainRows = h.type==='tables' ? 0 : new Set(h.sections.filter(s=>!s.tag).flatMap(s=>s.rows.map(r=>r.r))).size, tagged = h.type==='tables' ? [] : h.sections.filter(s=>s.tag).map(s=>s.tag.toLowerCase());
   const info = VEN.sel ? (document.querySelector(`[data-seat="${CSS.escape(VEN.sel)}"]`)?.dataset.label || '') : '';
@@ -978,14 +999,54 @@ const scSeatPlan = () => {
     <div class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
       <div class="field" style="flex:1;min-width:120px"><label>RZĄD</label><select id="sp-row" class="sel">${rowsOf.map(r=>`<option ${VEN.row===r?'selected':''}>${esc(r)}</option>`).join('')}</select></div>
       <div class="field" style="flex:1;min-width:100px"><label>MIEJSCE</label><input id="sp-seat" value="${esc(VEN.seat)}" placeholder="np. 12 albo 5C" autocapitalize="characters" data-enter="seatFind"></div>
-      <button class="btn p" data-act="seatFind" style="height:50px;flex:none;padding:0 20px">Pokaż</button></div></section>`:''}
+      <button class="btn p" data-act="seatFind" style="height:50px;flex:none;width:auto;padding:0 20px">Pokaż</button></div></section>`:''}
   ${h.note?`<p class="dnote">${esc(h.note)}</p>`:''}
   <p class="mono" style="line-height:1.6;margin-top:12px">Numeracja i układ na podstawie <a href="${esc(V.source)}" target="_blank" rel="noopener" style="color:var(--pink)">planu widowni ${esc(V.name)}</a>. Przed zakupem sprawdź układ u sprzedawcy — na niektórych wydarzeniach może się różnić.</p>
 </div>`;
 };
+function scStadium(V, h, e){
+  const lv = VEN.level||'all', L = h.levels.find(x=>x.id===lv), sec = VEN.sel && h.sectors.find(x=>x.id===VEN.sel);
+  const gate = sec && nearestGate(h, sec), lvOf = id => h.levels.find(x=>x.id===id);
+  const count = id => h.sectors.filter(x=>x.level===id).length;
+  return `<div class="pg dash seatplan">
+  <button class="dback" data-act="back" style="margin-bottom:14px">${ic('chevL',12,2)} Wróć</button>
+  <div class="col" style="gap:6px"><span class="eyebrow pink">Plan stadionu</span><h1 class="sp-h">${esc(V.name)}</h1>
+    <span class="mono">${esc([V.address, V.city].filter(Boolean).join(', '))}${e?' · '+esc(e.name):''}</span></div>
+  <div class="row" style="gap:6px;flex-wrap:wrap;margin:16px 0 12px">
+    <button class="chip ${lv==='all'?'on':''}" data-act="stLevel:all">Całość</button>
+    ${h.levels.map(x=>`<button class="chip lvchip ${lv===x.id?'on':''}" data-act="stLevel:${x.id}" style="--lc:${LEVEL_COL[x.id]}"><i></i>${esc(x.name)}</button>`).join('')}</div>
+  <div class="dgrid">
+    <section class="dcard span2" style="padding:14px">
+      <div class="seatwrap ${VEN.zoom?'zoom':''}" id="seatwrap">${stadiumSvg(h)}</div>
+      <div class="seatinfo" id="seatinfo">${sec?`${ic('pin',14)} ${esc(sec.name)} · ${esc(lvOf(sec.level).name)} (${esc(lvOf(sec.level).floor)}) · najbliżej brama ${gate.n}`:VEN.sel==='plyta'?`${ic('pin',14)} Płyta · poziom 0`:'Stuknij sektor albo lożę. Kółka z numerami to bramy wejściowe.'}</div>
+      <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="chip" data-act="seatZoom" style="display:inline-flex;align-items:center;gap:6px">${ic(VEN.zoom?'cross':'search',14)} ${VEN.zoom?'Dopasuj':'Powiększ'}</button></div>
+    </section>
+    ${dcard(L?esc(L.name)+' · '+esc(L.floor):'Poziomy stadionu', L ? `<div class="col" style="gap:10px">
+        <div><span class="mono">TU MASZ</span><ul class="lvlist yes">${L.has.map(x=>`<li>${ic('check',13,2.4)}${esc(x)}</li>`).join('')}</ul></div>
+        <div><span class="mono">TU NIE MA</span><ul class="lvlist no">${L.no.map(x=>`<li>${ic('cross',13,2.4)}${esc(x)}</li>`).join('')}</ul></div></div>`
+      : `<ul class="lvrows">${h.levels.map(x=>`<li data-act="stLevel:${x.id}"><i style="background:${LEVEL_COL[x.id]}"></i><div class="col" style="gap:3px;min-width:0"><b>${esc(x.name)}</b><span class="mono">${esc(x.floor)}${count(x.id)?' · '+count(x.id)+(x.id.startsWith('vip')?' lóż':' sektorów'):''}</span></div>${ic('chevR',14)}</li>`).join('')}</ul>`)}
+    ${dcard('Znajdź swój sektor', `<div class="row" style="gap:8px;align-items:flex-end">
+      <div class="field" style="flex:1"><label>SEKTOR LUB LOŻA</label><input id="st-q" placeholder="np. D12, G30, 205" autocapitalize="characters" data-enter="stFind"></div>
+      <button class="btn p" data-act="stFind" style="height:50px;flex:none;width:auto;padding:0 20px">Pokaż</button></div>
+      ${sec?`<p class="dnote">Najbliższa brama: <b style="color:var(--t1)">${gate.n}</b> (orientacyjnie — numer bramy wejścia masz na bilecie).</p>`:''}`)}
+    ${dcard('Bramy wejściowe', `<div class="gates">${h.gates.map(g=>`<span><b>${g.n}</b></span>`).join('')}</div>
+      <p class="dnote">Bramy ${h.gates.map(g=>g.n).join(', ')} rozmieszczone są dookoła stadionu. Na koncertach część bram prowadzi tylko na płytę — sprawdź bilet.</p>`)}
+  </div>
+  <p class="dnote">${esc(h.note||'')}</p>
+  <p class="mono" style="line-height:1.6;margin-top:8px">Sektory, loże i bramy na podstawie <a href="${esc(V.source)}" target="_blank" rel="noopener" style="color:var(--pink)">oficjalnej mapy ${esc(V.name)}</a>.</p>
+</div>`;
+}
+function stFind(){
+  const q = ($('#st-q')?.value||'').trim().toUpperCase().replace(/^SEKTOR\s*|^LOŻA\s*/,'').replace(/\s+/g,'');
+  const h = (VEN.list||[]).find(x=>x.id===VEN.id)?.halls.find(x=>x.type==='stadium'); if(!h) return;
+  const x = h.sectors.find(s=>s.id.toUpperCase()===q || s.name.toUpperCase().replace(/\s+/g,'')===q || s.name.toUpperCase().replace(/^LOŻA\s*/,'')===q);
+  if(!x){ toast('Nie ma takiego sektora ani loży', true); return; }
+  VEN.sel = x.id; VEN.level = 'all'; S.dir=null; render();
+}
 function seatAfterRender(){
   const w = document.getElementById('seatwrap'); if(!w) return;
-  w.onclick = ev => { const g = ev.target.closest('.seat'); if(!g) return;
+  w.onclick = ev => { const g = ev.target.closest('.seat, .sec'); if(!g) return;
+    if(g.classList.contains('sec')){ VEN.sel = g.dataset.seat; haptic(6); S.dir=null; render(); return; }
     w.querySelectorAll('.seat.on').forEach(x=>x.classList.remove('on')); g.classList.add('on'); VEN.sel = g.dataset.seat; haptic(6);
     const i = document.getElementById('seatinfo'); if(i) i.innerHTML = `${ic('pin',14)} ${esc(g.dataset.label)}`; };
   const on = w.querySelector('.seat.on'); if(on && VEN.zoom) on.scrollIntoView({block:'center', inline:'center'});
