@@ -30,7 +30,7 @@ function fixture(t, { encountersLive = true } = {}) {
       catch (e) { db.exec('ROLLBACK'); throw e; }
     }
   };
-  const users = [1, 2, 3, 4, 5].map(id => ({ id, role: id === 4 ? 'admin' : 'user', perm_scan: id === 5 ? 1 : 0 }));
+  const users = [1, 2, 3, 4, 5].map(id => ({ id, role: id === 4 ? 'admin' : 'user', owner: id === 4 ? 1 : 0, perm_scan: id === 5 ? 1 : 0 }));
   for (const u of users) db.prepare('INSERT INTO users (id, email, name, pass, role, perm_scan, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)')
     .run(u.id, 'test-' + u.id + '@example.invalid', 'Osoba ' + u.id, 'unused', u.role, u.perm_scan, Date.now());
   const call = async (suffix, user = users[0], data, method = data === undefined ? 'GET' : 'POST') => {
