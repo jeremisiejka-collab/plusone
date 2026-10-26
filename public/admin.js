@@ -208,7 +208,7 @@ function stopScan(){
 /* wywoływane po każdym przerysowaniu ekranu */
 function adminAfterRender(){
   if(S.screen==='scan') startScan(); else stopScan();
-  viewAsBar(); workBar(); previewBar(); guideAfterRender(); sampleTicketAfterRender();
+  viewAsBar(); workBar(); previewBar(); guideAfterRender(); sampleTicketAfterRender(); seatAfterRender();
 }
 
 /* akcje z data-act obsługiwane w tym module; zwraca true, jeśli rozpoznano */
@@ -243,6 +243,10 @@ function adminAct(cmd, p1, p2, a){
     case 'viewAs': setViewAs(p1||null); return true;
     case 'browse': setBrowse(p1==='1'); return true;
     case 'previewSheet': previewSheet(); return true;
+    case 'seatPlan': openSeatPlan(a.slice(9)); return true;
+    case 'seatHall': VEN.hall = p1; VEN.sel = null; VEN.row=''; VEN.seat=''; VEN.zoom = false; S.dir=null; render(); return true;
+    case 'seatZoom': VEN.zoom = !VEN.zoom; S.dir=null; render(); return true;
+    case 'seatFind': seatFind(); return true;
     case 'sampleZone': S.sampleZone = p1||''; S.dir=null; render(); return true;
     case 'guide': openGuide(a.slice(6)); return true;
     case 'guideEdit': openGuide(a.slice(10), true); return true;
@@ -502,7 +506,7 @@ function workMode(){
   return r==='admin' || r==='organizer' ? r : null;
 }
 const workHome = () => workMode()==='admin' ? 'dash' : 'org';
-const WORK_SCREENS = { admin:['dash','admin','org','orgEvents','scan','profile','event','auth','guide','guideEdit'], organizer:['org','orgEvents','scan','profile','event','auth','guide','guideEdit'] };
+const WORK_SCREENS = { admin:['dash','admin','org','orgEvents','scan','profile','event','auth','guide','guideEdit','seatplan'], organizer:['org','orgEvents','scan','profile','event','auth','guide','guideEdit','seatplan'] };
 /* ekran, na który trafia rola z pulpitem; null = bez zmian */
 function workScreen(s){
   const m = workMode(); if(!m) return null;
@@ -696,6 +700,8 @@ const scGuide = () => {
     ${g.hasMap?dcard('Mapa wydarzenia', guideMapHtml(D) + (g.points.length?`<ul class="glegend">${g.points.map((p,i)=>`<li class="${GUIDE.pin===i?'on':''}" data-act="gpin:${i}"><span>${ic(kindOf(p.kind)[2],15)}</span>${esc(p.label)}<em>${kindOf(p.kind)[1]}</em></li>`).join('')}</ul>`:''), '', 'span2'):''}
     ${g.schedule.length?dcard('Harmonogram', `<ol class="gsched">${g.schedule.map(x=>`<li><time>${esc(x.time)}</time><span>${esc(x.title)}</span></li>`).join('')}</ol>`):''}
     ${g.info?dcard('Informacje', `<div class="ginfo">${esc(g.info).replace(/\n/g,'<br>')}</div>`):''}
+    ${(()=>{ const ev = EVENTS.find(x=>x.id===GUIDE.id), V = venueFor(ev); return V ? dcard('Plan widowni', `<p class="dnote" style="margin:0">Układ sali i numery miejsc: ${esc(V.halls.map(x=>x.name).join(', '))}.</p>
+      <button class="btn g" data-act="seatPlan:${esc(GUIDE.id)}" style="height:46px;margin-top:12px;font:600 14px/1 var(--d)">Zobacz plan sali</button>`) : ''; })()}
     ${dcard('Dojazd i miejsce', `<p class="dnote" style="margin:0"><b style="color:var(--t1)">${esc(E.venue)}</b><br>${esc([E.address, E.city].filter(Boolean).join(', '))}</p>
       <a class="btn g" href="${maps}" target="_blank" rel="noopener" style="height:46px;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font:600 14px/1 var(--d)">${ic('pin',16)} Otwórz w mapach</a>`)}
     ${empty?dcard('Wkrótce więcej', `<p class="dnote" style="margin:0">Organizator nie dodał jeszcze planu ani harmonogramu. Gdy coś się pojawi albo przyjdzie komunikat, zobaczysz to tutaj i dostaniesz powiadomienie.</p>`):''}
@@ -903,6 +909,95 @@ function sampleTicketAfterRender(){
   const box = document.getElementById('sampleqr'); if(!box || box.dataset.done) return;
   loadLib('/vendor/qr/qrcode.js').then(()=>{ const q = qrcode(0,'M'); q.addData('P1-PRZYKLAD-'+(S.sampleZone==='vip'?'VIP':'0042')); q.make();
     box.innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); box.dataset.done = '1'; }).catch(()=>{});
+}
+
+/* ---- PLAN SALI: układ miejsc w wybranych venue (public/data/venues.json, przepisane z oficjalnych planów) ---- */
+const VEN = { list:null, loading:false, id:null, hall:null, sel:null, zoom:false, row:'', seat:'' };
+function loadVenues(){
+  if(VEN.list || VEN.loading) return; VEN.loading = true;
+  fetch('/data/venues.json', {cache:'no-cache'}).then(r=>r.json()).then(d=>{ VEN.list = d.venues||[]; VEN.loading=false; S.dir=null; render(); }).catch(()=>{ VEN.loading=false; VEN.list=[]; });
+}
+function venueFor(e){
+  if(!e || !VEN.list){ loadVenues(); return null; }
+  const v = fold(e.venue||'');
+  return VEN.list.find(x=>(!x.city || x.city===e.city) && x.match.some(m=>v.includes(m)) && !(x.exclude||[]).some(m=>v.includes(m))) || null;
+}
+/* sala z opisu wydarzenia („Scena Mniejsza”, „Amfiteatr”), inaczej pierwsza */
+function hallFor(V, e){
+  const t = fold((e?.name||'')+' '+(e?.desc||'')+' '+(e?.venue||''));
+  return V.halls.find(h=>t.includes(fold(h.name))) || V.halls[0];
+}
+function openSeatPlan(eventId){
+  const e = EVENTS.find(x=>x.id===eventId), V = venueFor(e); if(!V) return;
+  VEN.id = V.id; VEN.eventId = eventId; VEN.hall = hallFor(V, e).id; VEN.sel = null; VEN.row=''; VEN.seat=''; go('seatplan');
+}
+const hallSeats = h => h.type==='tables' ? h.tables.reduce((s,t)=>s+t.seats,0) : h.sections.reduce((s,x)=>s+x.rows.reduce((a,r)=>a+r.s.length,0),0);
+function seatSvg(h){
+  const U = 10, top = 3.2, sel = VEN.sel;
+  if(h.type==='tables'){
+    const W = 100, H = 100/h.ratio, k = H/100;
+    const tb = h.tables.map(t=>{ const y = 2 + t.y*k*1.05;
+      const chairs = Array.from({length:t.seats},(_,i)=>{ const a = Math.PI/2 + (i - (t.seats-1)/2) * (t.seats>2 ? 1.2 : 1.5), r = 3.4;
+        const x2 = t.x - Math.cos(a)*r*(t.seats>2?1:1.1) * (i < t.seats/2 ? 1 : 1), y2 = y + Math.sin(a)*r, on = sel===`${t.n}-${i+1}`;
+        return `<g class="seat ${on?'on':''}" data-seat="${t.n}-${i+1}" data-label="Stolik ${t.n} · miejsce ${i+1}"><rect x="${(x2-.95).toFixed(2)}" y="${(y2-.8).toFixed(2)}" width="1.9" height="1.6" rx=".4"/><text x="${x2.toFixed(2)}" y="${(y2+.42).toFixed(2)}">${i+1}</text></g>`; }).join('');
+      return `<g><circle class="tbl" cx="${t.x}" cy="${y}" r="2"/><text class="tbl-n" x="${t.x}" y="${(y+.7).toFixed(2)}">${t.n}</text>${chairs}</g>`; }).join('');
+    return `<svg class="seatmap tables" viewBox="0 -1 ${W} ${H+8}" role="img" aria-label="Plan sali ${esc(h.name)}">
+      <rect class="stage" x="25" y="0" width="50" height="4.5" rx="1"/><text class="stage-t" x="50" y="3.1">SCENA</text>${tb}</svg>`;
+  }
+  const maxY = Math.max(...h.sections.flatMap(x=>x.rows.map(r=>r.y)));
+  const W = h.w*U, H = (maxY*1.12+top+1.4)*U;
+  const rows = h.sections.map(sec=>sec.rows.map(r=>{ const y = (r.y*1.12+top)*U;
+    const labels = (sec.labels||[]).map(lx=>lx==null?'':`<text class="rowl" x="${(lx+.4)*U}" y="${y+6.2}">${r.r}</text>`).join('');
+    return labels + r.s.map(([x,n])=>{ const id = `${sec.name}|${r.r}|${n}`, on = sel===id;
+      return `<g class="seat ${on?'on':''}" data-seat="${esc(id)}" data-label="${esc((sec.tag?sec.tag+' · ':'')+'Rząd '+r.r+' · miejsce '+n)}"><rect x="${x*U+.6}" y="${y}" width="${U-1.2}" height="${U*.86}" rx="2"/><text x="${x*U+U/2}" y="${y+6}">${n}</text></g>`; }).join(''); }).join('')).join('');
+  const tags = h.sections.filter(x=>x.tag).map(x=>{ const r0 = x.rows[0]; return `<text class="sect-t" x="${(r0.s[0][0]-.6)*U}" y="${(r0.y*1.12+top+1.4)*U}" text-anchor="end">${esc(x.tag)}</text>`; }).join('');
+  return `<svg class="seatmap" viewBox="-6 0 ${W+12} ${H+6}" role="img" aria-label="Plan sali ${esc(h.name)}">
+    <rect class="stage" x="${h.stage[0]*U}" y="2" width="${(h.stage[1]-h.stage[0]+1)*U}" height="${U*1.6}" rx="3"/><text class="stage-t" x="${(h.stage[0]+h.stage[1]+1)/2*U}" y="${2+U*1.05}">SCENA</text>
+    ${rows}${tags}</svg>`;
+}
+const scSeatPlan = () => {
+  const V = (VEN.list||[]).find(x=>x.id===VEN.id);
+  if(!V){ loadVenues(); return `<div class="pg dash">${loadingBox()}</div>`; }
+  const h = V.halls.find(x=>x.id===VEN.hall) || V.halls[0], e = EVENTS.find(x=>x.id===VEN.eventId);
+  const rowsOf = h.type==='tables' ? [] : [...new Set(h.sections.flatMap(s=>s.rows.map(r=>(s.tag?s.tag+' · ':'')+r.r)))];
+  const mainRows = h.type==='tables' ? 0 : new Set(h.sections.filter(s=>!s.tag).flatMap(s=>s.rows.map(r=>r.r))).size, tagged = h.type==='tables' ? [] : h.sections.filter(s=>s.tag).map(s=>s.tag.toLowerCase());
+  const info = VEN.sel ? (document.querySelector(`[data-seat="${CSS.escape(VEN.sel)}"]`)?.dataset.label || '') : '';
+  return `<div class="pg dash seatplan">
+  <button class="dback" data-act="back" style="margin-bottom:14px">${ic('chevL',12,2)} Wróć</button>
+  <div class="col" style="gap:6px"><span class="eyebrow pink">Plan sali</span><h1 class="sp-h">${esc(V.name)}</h1>
+    <span class="mono">${esc([V.address, V.city].filter(Boolean).join(', '))}${e?' · '+esc(e.name):''}</span></div>
+  <div class="row" style="gap:8px;flex-wrap:wrap;margin:16px 0 12px">${V.halls.map(x=>`<button class="chip ${x.id===h.id?'on':''}" data-act="seatHall:${x.id}">${esc(x.name)}</button>`).join('')}</div>
+  <section class="dcard" style="padding:14px">
+    <div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <span class="mono">${pl(hallSeats(h))} miejsc${h.type==='tables'?' · '+h.tables.length+' stolików':' · '+mainRows+' rzędów'+(tagged.length?' + '+tagged.join(', '):'')}</span>
+      <button class="chip" data-act="seatZoom" style="display:inline-flex;align-items:center;gap:6px">${ic(VEN.zoom?'cross':'search',14)} ${VEN.zoom?'Dopasuj':'Powiększ'}</button></div>
+    <div class="seatwrap ${VEN.zoom?'zoom':''}" id="seatwrap">${seatSvg(h)}</div>
+    <div class="seatinfo" id="seatinfo">${info?`${ic('pin',14)} ${esc(info)}`:'Stuknij w miejsce, żeby zobaczyć rząd i numer.'}</div>
+  </section>
+  ${h.type!=='tables'?`<section class="dcard" style="margin-top:10px"><header><h2>Znajdź swoje miejsce</h2></header>
+    <div class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
+      <div class="field" style="flex:1;min-width:120px"><label>RZĄD</label><select id="sp-row" class="sel">${rowsOf.map(r=>`<option ${VEN.row===r?'selected':''}>${esc(r)}</option>`).join('')}</select></div>
+      <div class="field" style="flex:1;min-width:100px"><label>MIEJSCE</label><input id="sp-seat" value="${esc(VEN.seat)}" placeholder="np. 12 albo 5C" autocapitalize="characters" data-enter="seatFind"></div>
+      <button class="btn p" data-act="seatFind" style="height:50px;flex:none;padding:0 20px">Pokaż</button></div></section>`:''}
+  ${h.note?`<p class="dnote">${esc(h.note)}</p>`:''}
+  <p class="mono" style="line-height:1.6;margin-top:12px">Numeracja i układ na podstawie <a href="${esc(V.source)}" target="_blank" rel="noopener" style="color:var(--pink)">planu widowni ${esc(V.name)}</a>. Przed zakupem sprawdź układ u sprzedawcy — na niektórych wydarzeniach może się różnić.</p>
+</div>`;
+};
+function seatAfterRender(){
+  const w = document.getElementById('seatwrap'); if(!w) return;
+  w.onclick = ev => { const g = ev.target.closest('.seat'); if(!g) return;
+    w.querySelectorAll('.seat.on').forEach(x=>x.classList.remove('on')); g.classList.add('on'); VEN.sel = g.dataset.seat; haptic(6);
+    const i = document.getElementById('seatinfo'); if(i) i.innerHTML = `${ic('pin',14)} ${esc(g.dataset.label)}`; };
+  const on = w.querySelector('.seat.on'); if(on && VEN.zoom) on.scrollIntoView({block:'center', inline:'center'});
+}
+function seatFind(){
+  const row = $('#sp-row')?.value||'', seat = ($('#sp-seat')?.value||'').trim().toUpperCase();
+  VEN.row = row; VEN.seat = seat;
+  const tag = row.includes(' · ') ? row.split(' · ')[0] : null, r = row.split(' · ').pop();
+  const g = [...document.querySelectorAll('#seatwrap .seat')].find(x=>{ const [sec, rr, n] = x.dataset.seat.split('|');
+    return rr===r && n.toUpperCase()===seat && (tag ? x.dataset.label.startsWith(tag) : !x.dataset.label.includes('Loża')); });
+  if(!g){ toast('Nie ma takiego miejsca w tym rzędzie', true); return; }
+  VEN.sel = g.dataset.seat; VEN.zoom = true; S.dir=null; render();
 }
 
 /* ---- PULPIT ADMINISTRATORA ---- */

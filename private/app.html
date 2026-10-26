@@ -1709,6 +1709,7 @@ const scLive = e => `
     </div>
     ${MINE.going.has(e.id)?`<button class="btn w" data-act="${ACC.user?'ticketQR:'+e.id:'authFrom:event'}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} ${ACC.user?'Pokaż bilet z kodem QR':'Zaloguj się, żeby mieć bilet z kodem QR'}</button>`:''}
     ${ACC.user&&MINE.going.has(e.id)?`<button class="btn g" data-act="guide:${e.id}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('map',18)} Przewodnik: plan, harmonogram, komunikaty</button>`:''}
+    ${venueFor(e)?`<button class="btn g" data-act="seatPlan:${e.id}" style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('seat',18)} Plan sali i numery miejsc</button>`:''}
     ${ACC.user&&(isAdmin()||isOrgNow())?`<button class="btn g" data-act="guideEdit:${e.id}" style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px;border-style:dashed">${ic('bell',16)} Komunikat do uczestników i przewodnik</button>`:''}
     ${premiumEvent(e)}
     ${isAdmin()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
@@ -2780,7 +2781,7 @@ const SCREENS = {
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
   start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), scan:()=>scScan(), mytickets:()=>scMyTickets(),
-  staff:()=>scStaff(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents(), guide:()=>scGuide(), guideEdit:()=>scGuideEdit(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(), meet:()=>scEncounter(),
+  staff:()=>scStaff(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents(), guide:()=>scGuide(), guideEdit:()=>scGuideEdit(), seatplan:()=>scSeatPlan(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(), meet:()=>scEncounter(),
   loading:()=>'<div class="pg pad" style="padding-top:120px"><p class="body">Otwieram Twoje +1…</p></div>'
 };
 
@@ -2795,7 +2796,7 @@ const NAV = [
   {k:'wallet', ic:'wallet', l:'PORTFEL'}
 ];
 /* środkowe +1 prowadzi rundę poznawania; obsługa zachowuje osobny skaner */
-const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped','dash','admin','orgEvents','guide','guideEdit',...STAFF_SCREENS];
+const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped','dash','admin','orgEvents','guide','guideEdit','seatplan',...STAFF_SCREENS];
 /* administrator i organizator: własny pasek z pulpitem; środkowy przycisk uruchamia skaner */
 const ADMIN_NAV = [{k:'dash',ic:'bolt',l:'PULPIT'},{act:'adm:users',on:['admin:users','admin:invites'],ic:'users',l:'LUDZIE'},{fab:true},
   {act:'adm:orgs',on:['admin:orgs','org','orgEvents'],ic:'star',l:'ORGANIZATORZY'},{act:'adm:curation',on:['admin:curation','admin:stats','admin:mail','admin:data'],ic:'shield',l:'PANEL'}];

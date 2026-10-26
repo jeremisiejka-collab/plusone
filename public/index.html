@@ -580,7 +580,7 @@ function morph(update, el){
   t.finished.catch(()=>{}).finally(()=>$$('.vt-hero').forEach(x=>x.classList.remove('vt-hero')));
 }
 function go(s, anim=true){
-  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan','org','dash','orgEvents','guide','guideEdit'].includes(s)) return;
+  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan','org','dash','orgEvents','guide','guideEdit','seatplan'].includes(s)) return;
   s = workScreen(s) || s;
   if(s===S.screen) return;
   SCROLL[S.screen] = scrollY_();
@@ -1604,6 +1604,7 @@ const scLive = e => `
     </div>
     ${MINE.going.has(e.id)?`<button class="btn w" data-act="${ACC.user?'ticketQR:'+e.id:'authFrom:event'}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} ${ACC.user?'Pokaż bilet z kodem QR':'Zaloguj się, żeby mieć bilet z kodem QR'}</button>`:''}
     ${ACC.user&&MINE.going.has(e.id)?`<button class="btn g" data-act="guide:${e.id}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('map',18)} Przewodnik: plan, harmonogram, komunikaty</button>`:''}
+    ${venueFor(e)?`<button class="btn g" data-act="seatPlan:${e.id}" style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('seat',18)} Plan sali i numery miejsc</button>`:''}
     ${ACC.user&&(isAdmin()||isOrgNow())?`<button class="btn g" data-act="guideEdit:${e.id}" style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px;border-style:dashed">${ic('bell',16)} Komunikat do uczestników i przewodnik</button>`:''}
     <button class="card" data-act="go:downloads" style="padding:14px 16px;display:flex;gap:14px;align-items:center;text-align:left;width:100%;color:inherit">
       <span style="width:40px;height:40px;border-radius:12px;background:var(--pink-dim);display:grid;place-items:center;color:var(--pink);flex:none">${ic('star',18)}</span>
@@ -1757,7 +1758,7 @@ const scWalletSoon = () => `
 const SCREENS = {
   home:scHome, list:scList, map:scMap, event:()=>scLive(ev()),
   tickets:scMyTickets, wallet:scWalletSoon,
-  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents(), guide:()=>scGuide(), guideEdit:()=>scGuideEdit()
+  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents(), guide:()=>scGuide(), guideEdit:()=>scGuideEdit(), seatplan:()=>scSeatPlan()
 };
 
 /* =========================================================

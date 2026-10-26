@@ -224,3 +224,28 @@
 .sticket-cut::before { left: -10px; } .sticket-cut::after { right: -10px; }
 .sticket-qr { width: 112px; height: 112px; flex: none; padding: 8px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 3px var(--z); }
 .sticket-qr svg { width: 100%; height: 100%; display: block; }
+
+/* plan sali (scSeatPlan) */
+.sp-h { font: 600 30px/1.05 var(--d); letter-spacing: -.03em; color: var(--t1); }
+.seatwrap { width: 100%; overflow: auto; border-radius: 14px; background: var(--surface-2); -webkit-overflow-scrolling: touch; }
+.seatwrap .seatmap { display: block; width: 100%; height: auto; }
+.seatwrap.zoom .seatmap { width: 260%; max-width: none; }
+.seatmap .stage { fill: none; stroke: var(--t3); stroke-width: .8; }
+.seatmap .stage-t { fill: var(--t3); font: 600 5px var(--d); text-anchor: middle; letter-spacing: .1em; }
+.seatmap .seat { cursor: pointer; }
+.seatmap .seat rect { fill: var(--pink); opacity: .82; transition: opacity .15s; }
+.seatmap .seat text { fill: #000; font: 600 3.6px var(--m); text-anchor: middle; pointer-events: none; }
+.seatmap .seat:hover rect { opacity: 1; }
+.seatmap .seat.on rect { fill: var(--t1); opacity: 1; stroke: var(--pink); stroke-width: 1.2; }
+.seatmap .seat.on text { fill: var(--bg); }
+.seatmap .rowl { fill: var(--t3); font: 600 3.8px var(--m); text-anchor: middle; }
+.seatmap .sect-t { fill: var(--t2); font: 600 4.4px var(--d); }
+.seatmap .tbl { fill: var(--surface-3); stroke: var(--t3); stroke-width: .3; }
+.seatmap .tbl-n { fill: var(--t1); font: 700 2.6px var(--d); text-anchor: middle; }
+.seatinfo { display: flex; align-items: center; gap: 6px; margin-top: 10px; font: 500 14px/1.3 var(--d); color: var(--t1); min-height: 20px; }
+.seatinfo svg { color: var(--pink); }
+.seatmap.tables .seat text { font-size: 1.15px; }
+.seatmap.tables .tbl-n { font-size: 2px; }
+.seatmap.tables .stage-t { font-size: 2.4px; }
+.seatmap.tables .stage { stroke-width: .35; }
+.seatmap.tables .seat.on rect { stroke-width: .5; }
