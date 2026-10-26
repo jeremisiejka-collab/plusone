@@ -2809,7 +2809,7 @@ const NAV = [
   {k:'tickets',ic:'ticket', l:'BILETY'},
   {k:'wallet', ic:'wallet', l:'PORTFEL'}
 ];
-/* środkowe +1 prowadzi rundę poznawania; obsługa zachowuje osobny skaner */
+/* środkowe +1 wraca do Odkrywaj; obsługa i panele mają w tym miejscu skaner */
 const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped','dash','admin','orgEvents','guide','guideEdit','seatplan',...STAFF_SCREENS];
 /* administrator i organizator: własny pasek z pulpitem; środkowy przycisk uruchamia skaner */
 const ADMIN_NAV = [{k:'dash',ic:'bolt',l:'PULPIT'},{act:'adm:users',on:['admin:users','admin:invites'],ic:'users',l:'LUDZIE'},{fab:true},
@@ -2892,7 +2892,7 @@ function render(){
     else nav.innerHTML = (appStaffMode()?STAFF_NAV:NAV).map(n => n.fab
       ? (appStaffMode()
         ? `<div class="fabslot"><button class="fab" data-act="go:scan" aria-label="Skanuj bilety +1">${FAB_SVG}</button></div>`
-        : encounterFab())
+        : `<div class="fabslot"><button class="fab" data-act="fabHome" aria-label="Odkrywaj — strona główna +1" ${S.screen==='home'?'aria-current="page"':''}>${FAB_SVG}</button></div>`)
       : `<button data-act="go:${n.k}" class="${active===n.k?'on':''}" ${active===n.k?'aria-current="page"':''}>
           ${ic(n.ic,21)}<span>${n.l}</span></button>`).join('');
   } else nav.classList.add('hide');

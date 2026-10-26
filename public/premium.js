@@ -666,7 +666,8 @@ function encounterFab(){
   return `<div class="fabslot"><button class="fab enc-fab enc-${st}" data-act="encounterMain" aria-label="${label}" ${S.screen==='meet'?'aria-current="page"':''} ${signal?`style="--signal:${ENCOUNTER_COLORS[signal.shape]};background:var(--signal)"`:''}>${signal?encounterSignal(signal,true):FAB_SVG}${st==='proposed'?'<span class="enc-fab-dot"></span>':''}</button></div>`;
 }
 function encounterUpdateFab(){
-  if(appStaffMode())return;
+  // środkowe +1 to powrót do Odkrywaj (private/app.html) — poznawanie nie podmienia już tego przycisku
+  return;
   const slot=$('#nav .fabslot');if(slot){slot.outerHTML=encounterFab();bind($('#nav'));}
 }
 function encounterRender(resetScroll=false){
