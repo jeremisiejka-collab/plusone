@@ -1010,6 +1010,7 @@ const scProfile = () => {
 <div class="pg" style="padding:0 0 60px">
   <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4">Konto</span></div>
   <div class="pad col" style="gap:14px;padding-top:22px;padding-bottom:20px">
+    ${roleCards()}
     <div class="row" style="gap:14px">
       <span style="width:58px;height:58px;border-radius:20px;display:grid;place-items:center;flex:none;
         ${u?`background:${PINK};color:#000;font:700 24px/1 var(--d)`:'background:var(--surface-2);color:var(--t2)'}">${u?esc((u.name||u.email)[0].toUpperCase()):ic('user',24)}</span>
@@ -1387,7 +1388,6 @@ const scHome = () => {
 <div class="pg" style="padding:64px 0 112px">
   ${ACC.user?`<div class="pad">${liveBanner()}</div>`:''}
   ${webHero()}
-  <div class="pad">${roleCards()}</div>
   <div id="ptr" style="height:0;overflow:hidden;transition:height .2s">
     <div style="padding:10px 20px;display:flex;gap:12px">
       <div class="sk" style="width:66px;height:66px;border-radius:14px"></div>

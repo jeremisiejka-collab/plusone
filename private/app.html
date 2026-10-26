@@ -1079,6 +1079,7 @@ const scProfile = () => {
 <div class="pg" style="padding:0 0 60px">
   <div class="hdr"><button class="back" data-act="back">${ic('chevL',18)}</button><span class="h4">Konto</span></div>
   <div class="pad col" style="gap:14px;padding-top:22px;padding-bottom:20px">
+    ${roleCards()}
     <div class="row" style="gap:14px">
       <span style="width:58px;height:58px;border-radius:20px;display:grid;place-items:center;flex:none;
         ${u?`background:${PINK};color:#000;font:700 24px/1 var(--d)`:'background:var(--surface-2);color:var(--t2)'}">${u?esc((u.name||u.email)[0].toUpperCase()):ic('user',24)}</span>
@@ -1108,7 +1109,6 @@ const scProfile = () => {
     ${u?row('lock','Zmień hasło','passwordSheet'):''}
 
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
-    ${!u?row('users','Podgląd jako… (bez logowania)','previewSheet'):''}
     ${!u||inPreview()?row('star','Twoje wyjścia · przykład','go:mywrapped',''):''}
     ${!appStaffMode()?row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`):''}
     ${!appStaffMode()?row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`):''}
@@ -1419,7 +1419,6 @@ const scHome = () => {
     <h1 class="h1">Where are<br>we going?</h1>
     <button class="btn g" data-act="upcomingList">Odkryj wydarzenia ${ic('chevR',18)}</button>
   </div>
-  <div class="pad">${roleCards()}</div>
   ${socialHome()}
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">

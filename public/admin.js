@@ -636,17 +636,14 @@ function previewAs(role){
     curate:role==='admin', scan:role!=='user', org:role==='admin'||role==='organizer', level:role, interests:[], newsletter:false, previewRole:role};
   ACC.admin = null; ORG.data = null; ORG.user = null; ORG.at = 0; SCAN.history = []; SCAN.count = 0;
   try{ sessionStorage.removeItem('browse'); sessionStorage.removeItem('viewAs'); }catch(e){}
-  toast('Podgląd: '+roleName(role), true, 1800);
+  toast('Widok demo: '+roleName(role)+' · zmienisz go w Koncie', true, 2200);
   S.dir=null; S.prev='home'; S.screen = role==='staff' ? 'scan' : 'home'; render();
 }
 function previewEnd(){ PREVIEW.role = null; location.reload(); }
 /* pasek podglądu na górze ekranu */
 function previewBar(){
-  let bar = document.getElementById('previewbar');
-  if(!inPreview()){ bar && bar.remove(); return; }
-  if(!bar){ bar = document.createElement('div'); bar.id='previewbar'; document.body.appendChild(bar); }
-  bar.innerHTML = `<span>Podgląd: <b>${esc(roleName(PREVIEW.role))}</b><span class="pv-note"> · przykładowe dane</span></span>
-    <button onclick="previewSheet()">Zmień</button><button onclick="previewEnd()">Zakończ</button>`;
+  // pełne demo bez dodatkowego paska; zmiana widoku i koniec demo są w Koncie (roleCards)
+  const bar = document.getElementById('previewbar'); if(bar) bar.remove();
 }
 
 /* ---- PRZEWODNIK PO WYDARZENIU (uczestnik z biletem) i edytor z komunikatami (administrator / organizator) ---- */
@@ -875,9 +872,11 @@ function liveBanner(){
 function roleCards(){
   if(ACC.user && !inPreview()) return '';
   const icons = {user:'user', staff:'scan', organizer:'star', admin:'shield'};
-  return `<section class="rolecards"><div class="col" style="gap:4px"><span class="eyebrow pink">Podgląd bez logowania</span>
-    <b>Zobacz +1 oczami każdej osoby</b></div>
-    <div class="rolegrid">${PREVIEW_ROLES.map(([k,l,d])=>`<button class="${PREVIEW.role===k?'on':''}" data-act="previewAs:${k}"><span>${ic(icons[k],18)}</span><b>${l}</b><em>${d}</em></button>`).join('')}</div></section>`;
+  return `<section class="rolecards"><div class="col" style="gap:4px"><span class="eyebrow pink">Widok demo</span>
+    <b>${inPreview()?'Oglądasz jako: '+esc(roleName(PREVIEW.role)):'Zobacz +1 oczami każdej osoby'}</b>
+    <span class="mono" style="line-height:1.5">Pełne demo bez logowania. Osoby i liczby są przykładowe, nic się nie zapisuje.</span></div>
+    <div class="rolegrid">${PREVIEW_ROLES.map(([k,l,d])=>`<button class="${PREVIEW.role===k?'on':''}" data-act="previewAs:${k}"><span>${ic(icons[k],18)}</span><b>${l}</b><em>${d}</em></button>`).join('')}</div>
+    ${inPreview()?`<button class="btn g" data-act="previewEnd" style="height:46px;font:600 14px/1 var(--d)">Zakończ demo</button>`:''}</section>`;
 }
 const sampleEvent = () => { const ev = EVENTS.filter(e=>e.real && e.day>=localDay() && e.image);
   return ev.find(e=>e.big && e.city===S.city) || ev.find(e=>e.city===S.city) || ev[0] || EVENTS[0]; };
