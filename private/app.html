@@ -640,7 +640,7 @@ function appScreen(s){
   if(s==='invite' || s==='login') return 'home';
   if(['select','checkout'].includes(s) || (s==='event' && !ev().real)) return 'list';
   if(['ticket','release','transfer','transferDone','success'].includes(s)) return 'tickets';
-  if(s==='wrapped') return 'mywrapped';
+  if(s==='mywrapped' && (!ACC.user || inPreview())) return 'wrapped';
   if(WALLET_SOON.includes(s)) return 'wallet';
   return s;
 }
@@ -1109,7 +1109,7 @@ const scProfile = () => {
     ${u?row('lock','Zmień hasło','passwordSheet'):''}
 
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
-    ${!u||inPreview()?row('star','Twoje wyjścia · przykład','go:mywrapped',''):''}
+    ${!u||inPreview()?row('star','Wrapped · przykładowy miesiąc','go:wrapped',''):''}
     ${!appStaffMode()?row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`):''}
     ${!appStaffMode()?row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`):''}
     ${!appStaffMode()?row('pin','Miasto','sheetCity',`<span class="mono">${esc(S.city)}</span>`):''}
@@ -2485,24 +2485,36 @@ const scScanner = () => `
 /* =========================================================
    +1 WRAPPED — recap roku w formie story
    ========================================================= */
-const WRAPPED = [
-  {t:'intro',  hue:322},
-  {t:'big',    hue:330, eyebrow:'Byłeś tam', n:17, unit:'', l:'eventów w tym roku',
-   s:'Więcej niż 94% osób w Warszawie. Pierwszy: 12 stycznia, Smolna. Ostatni: jeszcze się nie wydarzył.'},
-  {t:'big',    hue:296, eyebrow:'Czas w ruchu', n:41, unit:'h', l:'na parkiecie',
-   s:'Prawie dwie doby non stop. Bez siadania, bez szatni, bez litości dla nóg.'},
-  {t:'steps',  hue:268},
-  {t:'night',  hue:248},
-  {t:'bar',    hue:14},
-  {t:'list',   hue:196, eyebrow:'Twoje miejsca', title:'SMOLNA', sub:'6 nocy · rozpoznają Cię w szatni',
-   items:[['Smolna',6],['Jasna 1',4],['Hydrozagadka',3],['Progresja',2],['Chmury',2]]},
-  {t:'list',   hue:146, eyebrow:'Twoje sety', title:'VTSS', sub:'4 sety · za każdym razem do końca',
-   items:[['VTSS',4],['taaki',3],['Iglooghost',2],['Nazar',2],['Olivia',1]]},
-  {t:'people', hue:338},
-  {t:'money',  hue:44},
-  {t:'persona',hue:288},
-  {t:'final',  hue:322}
-];
+/* Wrapped: przykładowy miesiąc w formie story. Miejsca i artyści są prawdziwi (z bazy wydarzeń w Twoim mieście),
+   liczby są przykładowe i tak oznaczone. Bez płatności i bez wymyślonych osób. */
+const MIES_W = ['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
+const MIES_WD = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+let WRAPPED = [], WR = {};
+function buildWrapped(){
+  const now = new Date(), lm = new Date(now.getFullYear(), now.getMonth()-1, 1);
+  const ev = EVENTS.filter(e=>e.real && e.city===S.city);
+  const top = arr => { const n={}; arr.filter(Boolean).forEach(x=>n[x]=(n[x]||0)+1); return Object.entries(n).sort((a,b)=>b[1]-a[1]).map(x=>x[0]); };
+  const clubs = [...new Set([...top(ev.filter(e=>e.cat==='Clubs').map(e=>e.venue)), ...top(ev.filter(e=>e.cat==='Concerts').map(e=>e.venue))])].filter(v=>v.length<26 && !/filharmon|teatr|muzeum|opera|kości|centrum kultury/i.test(v));
+  const artists = top(ev.filter(e=>['Clubs','Concerts'].includes(e.cat)).flatMap(e=>e.lineup||[])).filter(a=>a.length<22 && !/support|dj set/i.test(a));
+  const v = (k, d) => clubs[k] || d, ar = (k, d) => artists[k] || d;
+  WR = { m: MIES_W[lm.getMonth()], md: MIES_WD[lm.getMonth()], club: v(0,'Smolna'), artist: ar(0,'VTSS') };
+  return [
+    {t:'intro',  hue:322},
+    {t:'big',    hue:330, eyebrow:'Byłeś tam', n:6, unit:'', l:`wyjść w ${WR.m==='luty'?'lutym':'tym miesiącu'}`,
+     s:`Więcej niż 82% osób w mieście ${esc(S.city)}. Pierwsze: 5 ${WR.md}, ${esc(v(1,WR.club))}. Ostatnie: w sobotę o 4:15.`},
+    {t:'big',    hue:296, eyebrow:'Czas w ruchu', n:23, unit:'h', l:'na wydarzeniach',
+     s:'Prawie doba muzyki, śmiechu i stania w kolejce do szatni. Nogi pamiętają.'},
+    {t:'steps',  hue:268},
+    {t:'night',  hue:248},
+    {t:'list',   hue:196, eyebrow:'Twoje miejsca', title:esc(WR.club).toUpperCase(), sub:'3 noce · rozpoznają Cię w szatni',
+     items:[[v(0,'Smolna'),3],[v(1,'Jasna 1'),2],[v(2,'Progresja'),2],[v(3,'Hydrozagadka'),1],[v(4,'Proxima'),1]].map(([n,c])=>[esc(n),c])},
+    {t:'list',   hue:146, eyebrow:'Twoi artyści', title:esc(WR.artist).toUpperCase(), sub:'2 razy na żywo · za każdym razem pod sceną',
+     items:[[ar(0,'VTSS'),2],[ar(1,'taaki'),1],[ar(2,'Nazar'),1],[ar(3,'Olivia'),1],[ar(4,'Iglooghost'),1]].map(([n,c])=>[esc(n),c])},
+    {t:'people', hue:338},
+    {t:'persona',hue:288},
+    {t:'final',  hue:322}
+  ];
+}
 
 const wBg = h => `linear-gradient(165deg,hsl(${h} 70% 14%) 0%,hsl(${h} 60% 7%) 45%,#000 100%)`;
 
@@ -2522,7 +2534,7 @@ function wShell(inner, hue){
 
   <div class="row" style="position:absolute;top:78px;left:20px;right:20px;z-index:8;justify-content:space-between;align-items:center">
     <span class="row" style="gap:8px;align-items:center">
-      ${LOGO(20,5)}<span class="mono" style="letter-spacing:.2em;color:rgba(var(--fg),.75)">WRAPPED '26</span>
+      ${LOGO(20,5)}<span class="mono" style="letter-spacing:.2em;color:rgba(var(--fg),.75)">WRAPPED · ${(WR.m||'').toUpperCase()}</span>
     </span>
     <button data-act="wrapEnd" style="color:rgba(var(--fg),.55);display:flex">${ic('cross',18)}</button>
   </div>
@@ -2540,16 +2552,18 @@ const wNum = (to,unit='',size=88) =>
      <span class="wnum" data-to="${to}">0</span><span style="font-size:${Math.round(size*.42)}px">${unit}</span></div>`;
 
 const scWrapped = () => {
-  const w = WRAPPED[S.wrappedStep], H = w.hue;
+  if(!WRAPPED.length) WRAPPED = buildWrapped();
+  const w = WRAPPED[S.wrappedStep] || WRAPPED[0], H = w.hue;
   let inner = '';
 
   if(w.t==='intro'){
     inner = `
       <div style="align-self:flex-start">${LOGO(76,18)}</div>
-      <div class="h1" style="font-size:46px">Twój rok<br>w +1.</div>
-      <div class="body" style="font-size:15px">Dwanaście slajdów o tym, gdzie byłeś, ile przeszedłeś i co wypiłeś. Nie musisz się tym chwalić. Ale będziesz.</div>
+      <span class="chip" style="align-self:flex-start;border-color:rgba(var(--fg),.35);font:700 10px/1 var(--m);letter-spacing:.14em">PRZYKŁAD</span>
+      <div class="h1" style="font-size:46px">Twój ${WR.m}<br>w +1.</div>
+      <div class="body" style="font-size:15px">Dziesięć slajdów o tym, gdzie byłeś, ile przetańczyłeś i kto grał Ci najczęściej. Nie musisz się tym chwalić. Ale będziesz.</div>
       <div class="row" style="gap:7px;flex-wrap:wrap;margin-top:6px">
-        ${['17 eventów','41 godzin','128 400 kroków','34 piwa'].map(x=>
+        ${['6 wyjść','23 godziny','41 200 kroków','3 nowe miejsca'].map(x=>
           `<span class="chip" style="border-color:rgba(var(--fg),.3);font-size:12px">${x}</span>`).join('')}
       </div>
       <button class="btn w" data-act="wrapNext" style="margin-top:14px">Zaczynamy</button>`;
@@ -2566,17 +2580,17 @@ const scWrapped = () => {
   else if(w.t==='steps'){
     inner = `
       <span class="eyebrow" style="color:hsl(${H} 90% 72%)">Przetańczone</span>
-      ${wNum(128400,'',66)}
-      <div class="h2">kroków na eventach</div>
-      <div class="body" style="font-size:15px">To 91 kilometrów. Tyle, co z Placu Zbawiciela do Łodzi — tyle że w bok, w kółko i przy 128 BPM.</div>
+      ${wNum(41200,'',66)}
+      <div class="h2">kroków na wydarzeniach</div>
+      <div class="body" style="font-size:15px">To 29 kilometrów. Tyle, co z centrum do Otwocka — tyle że w bok, w kółko i przy 128 BPM.</div>
       <svg viewBox="0 0 320 60" style="width:100%;height:60px;margin-top:6px">
         <path d="M4 44 H316" stroke="rgba(255,255,255,.18)" stroke-width="2" stroke-dasharray="3 5"/>
         <circle cx="4" cy="44" r="5" fill="#fff"/><circle cx="316" cy="44" r="5" fill="${PINK_HEX}"/>
         <text x="0" y="28" fill="rgba(255,255,255,.6)" font-family="JetBrains Mono" font-size="9">WARSZAWA</text>
-        <text x="255" y="28" fill="${PINK_HEX}" font-family="JetBrains Mono" font-size="9">ŁÓDŹ · 91 KM</text>
+        <text x="238" y="28" fill="${PINK_HEX}" font-family="JetBrains Mono" font-size="9">OTWOCK · 29 KM</text>
       </svg>
       <div class="row" style="gap:10px;margin-top:4px">
-        ${[['21 400','rekord jednej nocy'],['7 540','średnio na event'],['3','pary butów']].map(([k,l])=>`
+        ${[['11 900','rekord jednej nocy'],['6 860','średnio na wyjście'],['1','para butów do wymiany']].map(([k,l])=>`
           <div style="flex:1;padding:13px;border-radius:15px;background:rgba(var(--fg),.06);border:1px solid rgba(var(--fg),.12)">
             <div style="font:700 19px/1 var(--d)">${k}</div>
             <div class="mono" style="margin-top:6px;line-height:1.4">${l}</div></div>`).join('')}
@@ -2584,11 +2598,11 @@ const scWrapped = () => {
   }
 
   else if(w.t==='night'){
-    const marks=[['22:41','wejście'],['00:20','pierwszy shot'],['02:05','peak'],['04:30','drugi oddech'],['06:12','wyjście']];
+    const marks=[['23:10','wejście'],['00:40','pierwszy set'],['02:15','peak'],['04:30','drugi oddech'],['06:15','wyjście']];
     inner = `
       <span class="eyebrow" style="color:hsl(${H} 90% 74%)">Najdłuższa noc</span>
-      <div style="font:700 60px/.92 var(--d);letter-spacing:-.04em">9h 31m</div>
-      <div class="h3" style="color:rgba(var(--fg),.9)">15 marca · Smolna</div>
+      <div style="font:700 60px/.92 var(--d);letter-spacing:-.04em">7h 05m</div>
+      <div class="h3" style="color:rgba(var(--fg),.9)">27 ${WR.md} · ${esc(WR.club)}</div>
       <div class="col" style="gap:0;margin-top:10px">
         ${marks.map(([t,l],k)=>`
           <div class="row" style="gap:14px;align-items:flex-start">
@@ -2600,7 +2614,7 @@ const scWrapped = () => {
             <span style="font:500 14px/1.3 var(--d);color:${k===2?PINK:'rgba(var(--fg),.8)'};padding-bottom:14px">${l}</span>
           </div>`).join('')}
       </div>
-      <div class="mono" style="line-height:1.6">Wyszedłeś, kiedy tramwaje już jeździły. Statystycznie: 4 razy w tym roku.</div>`;
+      <div class="mono" style="line-height:1.6">Wyszedłeś, kiedy tramwaje już jeździły. W tym miesiącu: 2 razy.</div>`;
   }
 
   else if(w.t==='bar'){
@@ -2645,16 +2659,16 @@ const scWrapped = () => {
 
   else if(w.t==='people'){
     inner = `
-      <span class="eyebrow pink">Twój +1 roku</span>
-      <div class="row" style="gap:-12px;margin:4px 0">
-        ${['K','B','O','T','M'].map((l,i)=>`<span style="width:52px;height:52px;border-radius:50%;
-          background:hsl(${i*46+300} 60% 45%);border:3px solid #0b0009;display:grid;place-items:center;
-          font:600 18px/1 var(--d);margin-left:${i?-16:0}px">${l}</span>`).join('')}
+      <span class="eyebrow pink">Twoja ekipa</span>
+      <div class="row" style="margin:4px 0">
+        ${[0,1,2].map(i=>`<span style="width:56px;height:56px;border-radius:50%;background:hsl(${i*46+300} 60% 45%);border:3px solid #0b0009;
+          display:grid;place-items:center;margin-left:${i?-16:0}px">${ic('user',22)}</span>`).join('')}
+        <span style="width:56px;height:56px;border-radius:50%;background:${PINK};border:3px solid #0b0009;display:grid;place-items:center;margin-left:-16px;color:#000;font:700 18px/1 var(--d)">+1</span>
       </div>
-      <div class="h1" style="font-size:42px">Kaja Wrona</div>
-      <div class="body" style="font-size:15px">9 wspólnych nocy. Za każdym razem to Ty kupowałeś bilety, a ona pierwsza wchodziła na parkiet.</div>
+      <div class="h1" style="font-size:42px">Zawsze<br>we trzech.</div>
+      <div class="body" style="font-size:15px">4 z 6 wyjść ze znajomymi. Raz poszedłeś sam — i wróciłeś z nowym numerem w telefonie.</div>
       <div class="col" style="gap:9px;margin-top:6px">
-        ${[['przekazane bilety','4'],['odebrane od znajomych','3'],['oddane do puli','2'],['zaproszenia na tajne eventy','1']].map(([l,v])=>`
+        ${[['wspólne wyjścia','4'],['zaproszeni do +1','2'],['„idziesz z nami?”','5'],['nowe znajomości','1']].map(([l,v])=>`
           <div class="row" style="justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(var(--fg),.12)">
             <span class="mono" style="color:rgba(var(--fg),.7)">${l}</span>
             <span style="font:700 15px/1 var(--m)">${v}</span></div>`).join('')}
@@ -2688,7 +2702,7 @@ const scWrapped = () => {
     inner = `
       <span class="eyebrow" style="color:hsl(${H} 90% 72%)">Twój typ</span>
       <div class="h1" style="font-size:44px">NOCNY<br>MARATOŃCZYK</div>
-      <div class="body" style="font-size:15px">Przychodzisz późno, wychodzisz najpóźniej. Nie zostawiasz kolegów w szatni, nie robisz relacji i pijesz wodę między setami. Rzadki gatunek — 6% użytkowników +1.</div>
+      <div class="body" style="font-size:15px">Przychodzisz późno, wychodzisz najpóźniej. Nie zostawiasz ekipy w szatni, nie nagrywasz całego koncertu i pijesz wodę między setami. Rzadki gatunek — 6% użytkowników +1.</div>
       <div class="row" style="gap:7px;flex-wrap:wrap;margin-top:6px">
         ${['do końca setu','woda w rotacji','zawsze +1','zero relacji','wchodzi po 23:00'].map(x=>
           `<span class="chip" style="border-color:${PINK};color:var(--t1);font-size:12px">${x}</span>`).join('')}
@@ -2698,22 +2712,22 @@ const scWrapped = () => {
 
   else {  /* final — karta do udostępnienia */
     inner = `
-      <span class="eyebrow pink">Karta roku</span>
+      <span class="eyebrow pink">Karta miesiąca</span>
       <div id="wcard" style="border-radius:22px;overflow:hidden;border:1px solid var(--pink-line);
         background:linear-gradient(150deg,var(--promo1),var(--promo2) 65%,var(--promo2));padding:20px;position:relative">
         <div class="pgrid" style="opacity:.5"></div>
         <div class="row" style="justify-content:space-between;align-items:center;position:relative">
           ${LOGO(30,7)}
-          <span class="mono" style="letter-spacing:.2em">WRAPPED '26</span>
+          <span class="mono" style="letter-spacing:.2em">WRAPPED · ${(WR.m||'').toUpperCase()}</span>
         </div>
         <div style="font:700 30px/1 var(--d);letter-spacing:-.03em;margin-top:16px;position:relative">NOCNY<br>MARATOŃCZYK</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;position:relative">
-          ${[['17','eventów'],['41h','na parkiecie'],['91 km','przetańczone'],['34','piwa'],
-             ['Smolna','klub roku'],['VTSS','artysta roku']].map(([k,l])=>`
+          ${[['6','wyjść'],['23 h','na wydarzeniach'],['29 km','przetańczone'],['3','nowe miejsca'],
+             [esc(WR.club),'miejsce miesiąca'],[esc(WR.artist),'artysta miesiąca']].map(([k,l])=>`
             <div><div style="font:700 21px/1 var(--d);letter-spacing:-.02em">${k}</div>
               <div class="mono" style="margin-top:5px">${l}</div></div>`).join('')}
         </div>
-        <div class="mono" style="margin-top:18px;position:relative;color:rgba(var(--fg),.45)">plus1.pl/wrapped</div>
+        <div class="mono" style="margin-top:18px;position:relative;color:rgba(var(--fg),.45)">plusoneapp.pl · przykład</div>
       </div>
       <div class="col" style="gap:9px;margin-top:6px">
         <button class="btn p" data-act="wrapShare">Udostępnij na Instagram Stories</button>
@@ -2990,7 +3004,7 @@ function act(a){
       render(); break;
     case 'wrapNext': wrapGo(1); break;
     case 'wrapPrev': wrapGo(-1); break;
-    case 'wrapEnd': clearTimeout(S._wt); S.wrappedStep=0; go('home'); break;
+    case 'wrapEnd': clearTimeout(S._wt); S.wrappedStep=0; WRAPPED = []; go('home'); break;
     case 'wrapShare':
       sfxOk(); haptic(24); confetti(50);
       toast('Karta zapisana · gotowa do wrzucenia na Stories');
@@ -3064,7 +3078,7 @@ function wrapGo(d){
   clearTimeout(S._wt);
   const n = S.wrappedStep + d;
   if(n < 0) return;
-  if(n >= WRAPPED.length){ S.wrappedStep=0; go('home'); return; }
+  if(n >= WRAPPED.length){ S.wrappedStep=0; WRAPPED = []; go('home'); return; }
   S.wrappedStep = n; haptic(5); sfxTap();
   if(WRAPPED[n].t==='final') sfxCoin();
   render();
