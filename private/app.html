@@ -1413,27 +1413,20 @@ const scHome = () => {
       </div>
     </div>
   </div>
-  <div class="pad col app-welcome">
-    ${liveBanner()}
-    <span class="eyebrow pink">Twój następny dobry wieczór</span>
-    <h1 class="h1">Where are<br>we going?</h1>
-    <button class="btn g" data-act="upcomingList">Odkryj wydarzenia ${ic('chevR',18)}</button>
-  </div>
-  ${socialHome()}
+  ${liveBanner()?`<div class="pad">${liveBanner()}</div>`:''}
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
       <span class="h3">Nic nie pasuje</span>
       <span class="body">Nie ma jeszcze nadchodzących wydarzeń w mieście ${esc(S.city)}. Sprawdź inne miasto.</span>
       <button class="chip on" data-act="sheetCity" style="margin-top:6px">Zmień miasto</button>
     </div>` : `
-  ${eventTicker(f)}
   ${(()=>{ const fe = ACC.featured.map(id=>f.find(e=>e.id===id)).filter(Boolean); return fe.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px"><span class="h3">Polecane</span></div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">${fe.slice(0,6).map(bigCard).join('')}</div>` : ''; })()}
   ${(()=>{ const tp = topPicks(); return tp.length ? `
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:4px">
     <span class="h3">Na topie</span>
-    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="surprise">ZASKOCZ MNIE →</span>
+    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="upcomingList">WSZYSTKIE →</span>
   </div>
   <div class="pad mono" style="padding-bottom:12px">Najfajniejsze najbliższe wydarzenia</div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
@@ -1441,7 +1434,7 @@ const scHome = () => {
   </div>` : ''; })()}
   <div class="row pad" style="align-items:baseline;justify-content:space-between;padding-bottom:12px">
     <span class="h3">Już niedługo</span>
-    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="upcomingList">CAŁA LISTA →</span>
+    <span class="mono" style="color:${PINK};letter-spacing:.06em" data-act="upcomingList">WSZYSTKIE →</span>
   </div>
   <div class="sc event-grid" style="display:flex;gap:12px;overflow-x:auto;padding:0 20px 28px;scroll-snap-type:x mandatory">
     ${[...f.filter(e=>!e.multi&&e.image), ...f.filter(e=>e.multi||!e.image)].slice(0,6).map(bigCard).join('')}
