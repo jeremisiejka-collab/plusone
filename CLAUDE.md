@@ -17,7 +17,7 @@
 - Aplikacja nie może się powiększać na iPhonie: pola formularzy min. 16 px, `maximum-scale=1`, blokada gestu szczypania. Strona uruchomiona z ikony na ekranie telefonu przekierowuje na `/app`. `/preview` to stary adres (301 → `/app`).
 
 ## Konta i panel admina
-- Role: **Użytkownik**, **Obsługa biletów** (`perm_scan`, skaner biletów), **Administrator** (`role='admin'`); główni administratorzy (`owner`) nadają admina i mają „Zobacz jako”.
+- Role: **Użytkownik**, **Obsługa biletów** (`perm_scan`, skaner biletów), **Organizator** (`perm_org`), **Administrator**. Administrator jest **jeden — właściciel** (konto z `ADMIN_EMAIL_SHA256`, `owner=1`): pełna kontrola, „Zobacz jako”. Tej roli nie da się nadać ani zaprosić; worker (`syncAdmin`) sam zamienia każde inne konto admina w organizatora.
 - Panel admina, zaproszenia, poczta, skaner biletów i bilet z QR są w jednym pliku `public/admin.js` (+ `public/admin.css`), ładowanym przez stronę i aplikację — zmieniaj je tylko tam.
 - **Pulpity zamiast odkrywania:** Administrator i Organizator po zalogowaniu trafiają na własny pulpit (`dash` / `org` w `public/admin.js`: statystyki, wykresy z 30 dni, rankingi), z własnym menu na stronie i paskiem w aplikacji (środkowy przycisk = skaner). Odkrywanie wydarzeń tylko przez „Przeglądaj wydarzenia jak użytkownik” (`browse`). Dane: `/api/admin/stats` i `/api/org/me` (pola `series`).
 - Role także **Organizator** (`perm_org` + miejsca w `org_venues`): panel organizatora ze statystykami i listą gości; admin widzi listę organizatorów i wchodzi w każdego.

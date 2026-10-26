@@ -8,7 +8,7 @@ function viewAs(){
   if(!ACC.user?.owner) return null;
   try{ const role = sessionStorage.getItem('viewAs'); return ['user','staff','organizer','admin'].includes(role) ? role : null; }catch(e){ return null; }
 }
-function effectiveRole(){ return viewAs() || (ACC.user?.owner || ACC.user?.role==='admin' ? 'admin' : ACC.user?.org ? 'organizer' : ACC.user?.scan ? 'staff' : 'user'); }
+function effectiveRole(){ return viewAs() || (ACC.user?.owner ? 'admin' : ACC.user?.org ? 'organizer' : ACC.user?.scan ? 'staff' : 'user'); }
 function setViewAs(v){
   if(!realOwner() || (v && !['user','staff','organizer','admin'].includes(v))) return;
   try{ v ? sessionStorage.setItem('viewAs', v) : sessionStorage.removeItem('viewAs'); }catch(e){}
@@ -263,13 +263,14 @@ async function savePassword(){
 }
 
 /* ---- role ----
-   Rola: Użytkownik / Obsługa biletów (skanuje bilety) / Administrator. Dodatkowo: dostęp do aplikacji /app
-   i — tylko dla głównych administratorów — rola głównego administratora. */
+   Użytkownik / Obsługa biletów (skaner) / Organizator (pulpit, goście, skaner). Administrator jest jeden:
+   właściciel +1 (konto z ADMIN_EMAIL_SHA256 w workerze) — tej roli nie da się nadać. Dodatkowo: dostęp do aplikacji /app. */
 const ROLES = [['user','Użytkownik','Przegląda wydarzenia, zapisuje, ma bilety'],
   ['staff','Obsługa biletów','Skanuje bilety aparatem przy wejściu'],
-  ['organizer','Organizator','Swoje wydarzenia, statystyki, lista gości, skaner'],
-  ['admin','Administrator','Panel admina, użytkownicy, organizatorzy, zaproszenia']];
-const userPerms = x => ({preview:!!x.preview_access, curate:!!x.perm_curate, admin:x.role==='admin'||!!x.owner, owner:!!x.owner, scan:!!x.perm_scan, org:!!x.perm_org,
+  ['organizer','Organizator','Pulpit ze statystykami, swoje wydarzenia, lista gości, skaner'],
+  ['admin','Administrator','Właściciel +1 — pełna kontrola nad wszystkim']];
+const GRANTABLE = ROLES.filter(r=>r[0]!=='admin');
+const userPerms = x => ({preview:!!x.preview_access, curate:!!x.perm_curate, admin:!!x.owner, owner:!!x.owner, scan:!!x.perm_scan, org:!!x.perm_org,
   venues: (()=>{ try{ return JSON.parse(x.venues||'[]').filter(Boolean); }catch(e){ return []; } })()});
 const levelOf = p => p.admin ? 'admin' : p.org ? 'organizer' : p.scan ? 'staff' : 'user';
 /* miejsca z wydarzeń (podpowiedzi przy przypisywaniu organizatora) */
@@ -290,17 +291,17 @@ const readRole = root => ($$('[data-role].on', root)[0]||{}).dataset?.role || 'u
 const readPerm = (root, k) => !!$(`[data-perm="${k}"]`, root)?.classList.contains('on');
 function permsSheet(id){
   const x = ACC.admin?.users?.find(u=>u.id===+id); if(!x) return;
-  const p = userPerms(x), lvl = levelOf(p), self = x.id===ACC.user.id, lockOwner = x.owner && !isOwner();
+  const p = userPerms(x), lvl = levelOf(p);
+  if(p.owner){ toast('To konto administratora — ma pełną kontrolę i nie zmienia roli', true); return; }
   sheet(`<div class="col" style="gap:10px"><span class="h3">Rola</span>
     <span class="mono" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.email)}</span>
-    <div class="col" style="gap:8px">${ROLES.map(([k])=>roleBtn(k, lvl===k, lockOwner || self || ((k==='admin'||lvl==='admin') && !isOwner()))).join('')}</div>
+    <div class="col" style="gap:8px">${GRANTABLE.map(([k])=>roleBtn(k, lvl===k, false)).join('')}</div>
     <div id="org-venues" class="field" style="${lvl==='organizer'?'':'display:none'}"><label>MIEJSCA I NAZWY WYDARZEŃ ORGANIZATORA (PO PRZECINKU)</label>
       <input id="pv-venues" list="venue-list" value="${esc(p.venues.join(', '))}" placeholder="np. Progresja, Klub Stodoła, Hype Festival" autocapitalize="off">
       <datalist id="venue-list">${venueOptions().map(v=>`<option value="${esc(v)}">`).join('')}</datalist>
       <span class="mono" style="line-height:1.5">Organizator widzi wydarzenia, których miejsce albo nazwa zawiera któreś z tych słów.</span></div>
     <div class="col" style="gap:8px;margin-top:6px">
-      ${checkBtn('preview','Dostęp do aplikacji','Logowanie w aplikacji na telefon (/app)', p.preview || p.admin || p.scan, lockOwner)}
-      ${isOwner()?checkBtn('owner','Główny administrator','Nadaje i odbiera administratora', p.owner, self):''}
+      ${checkBtn('preview','Dostęp do aplikacji','Logowanie w aplikacji na telefon (/app)', p.preview || p.scan || p.org, false)}
     </div>
     <button class="btn p" data-act="savePerms:${x.id}">Zapisz</button></div>`);
   wirePerms($('#sheet'));
@@ -310,7 +311,6 @@ async function savePerms(id){
   const x = ACC.admin?.users?.find(u=>u.id===+id), p = userPerms(x), root = $('#sheet');
   const lvl = readRole(root), diff = {};
   if(lvl !== levelOf(p)){
-    if((lvl==='admin') !== p.admin) diff.admin = lvl==='admin';
     if((lvl==='staff') !== p.scan) diff.scan = lvl==='staff';
     if((lvl==='organizer') !== p.org) diff.org = lvl==='organizer';
   }
@@ -319,7 +319,6 @@ async function savePerms(id){
     if(v.join('|') !== p.venues.join('|')) diff.venues = v;
   }
   const prev = readPerm(root,'preview'); if(prev !== p.preview) diff.preview = prev;
-  if($('[data-perm="owner"]', root) && !$('[data-perm="owner"]', root).disabled){ const o = readPerm(root,'owner'); if(o !== p.owner) diff.owner = o; }
   if(!Object.keys(diff).length){ closeSheet(); return; }
   try{ await apiCall(`/api/admin/users/${id}/perms`,'POST',diff); }catch(e){ toast(esc(e.message),true); return; }
   closeSheet(); sfxOk(); toast('Zapisano: '+roleName(lvl)); adminLoad();
@@ -330,7 +329,7 @@ async function sendInvite(){
   const root = $('#inv-form'), email = $('#inv-email')?.value.trim(), lvl = readRole(root);
   if(!email){ toast('Wpisz adres e-mail',true); return; }
   try{
-    const r = await apiCall('/api/admin/invites','POST',{email, preview:true, admin:lvl==='admin', scan:lvl==='staff', org:lvl==='organizer'});
+    const r = await apiCall('/api/admin/invites','POST',{email, preview:true, scan:lvl==='staff', org:lvl==='organizer'});
     S.lastInvite = {...r, email}; sfxOk();
     toast(r.emailed ? 'Zaproszenie wysłane na '+esc(email) : r.existing ? 'Uprawnienia nadane' : 'Zaproszenie gotowe — wyślij link', !r.emailed);
     adminLoad();
@@ -562,9 +561,9 @@ const scDash = () => {
         <span class="mono" style="flex:none">${ago(u.created_at)}</span></li>`).join('')}</ul>` : '<p class="dempty">Nikt jeszcze nie dołączył.</p>',
       `<button class="dlink" data-act="adm:users">Wszyscy ${ic('chevR',12)}</button>`)}
     ${dcard('Zespół i moderacja', `<div class="dstats">
-        <button data-act="adm:users"><b>${pl(T.admins)}</b><span>administratorzy</span></button>
-        <button data-act="adm:users"><b>${pl(T.staff||0)}</b><span>obsługa biletów</span></button>
+        <button data-act="adm:users"><b>${pl(T.users||0)}</b><span>wszystkie konta</span></button>
         <button data-act="adm:orgs"><b>${pl(T.organizers||0)}</b><span>organizatorzy</span></button>
+        <button data-act="adm:users"><b>${pl(T.staff||0)}</b><span>obsługa biletów</span></button>
         <button data-act="adm:invites"><b>${pl(pend)}</b><span>zaproszenia czekają</span></button>
         <button data-act="adm:curation"><b>${pl(T.featured||0)}</b><span>polecane wydarzenia</span></button>
         <button data-act="adm:curation"><b>${pl(T.hidden||0)}</b><span>ukryte wydarzenia</span></button></div>`,
@@ -678,7 +677,7 @@ const adminInvitesTab = A => {
     <span class="h3">Zaproś do +1</span>
     <span class="body" style="font-size:13px">${A.mailer?'Zaproszenie przyjdzie mailem z linkiem. Osoba ustawia hasło i od razu ma wybrane uprawnienia.':'Wysyłka maili nie jest jeszcze podłączona'+(isOwner()?' (zakładka Poczta)':'')+' — po utworzeniu zaproszenia skopiuj link albo wyślij go ze swojej poczty.'}</span>
     <div class="field"><label>E-MAIL</label><input id="inv-email" type="email" inputmode="email" autocapitalize="off" placeholder="ktos@przyklad.pl" data-enter="sendInvite"></div>
-    <div class="col" style="gap:8px">${ROLES.map(([k])=>roleBtn(k, k==='user', k==='admin' && !isOwner())).join('')}</div>
+    <div class="col" style="gap:8px">${GRANTABLE.map(([k])=>roleBtn(k, k==='user', false)).join('')}</div>
     <button class="btn p" data-act="sendInvite">${A.mailer?'Wyślij zaproszenie':'Utwórz zaproszenie'}</button>
   </div>
   ${L ? `<div class="card" style="margin-top:12px;padding:16px;display:flex;flex-direction:column;gap:10px;border-color:var(--pink-line)">
@@ -694,7 +693,7 @@ const adminInvitesTab = A => {
   ${(A.invites||[]).map(i=>{ const st = i.used_at ? 'przyjęte' : i.expires_at<now ? 'wygasło' : 'czeka';
     return `<div class="row" style="gap:12px;padding:12px 0;border-bottom:1px solid var(--line)">
       <div class="col" style="flex:1;min-width:0"><span class="h4" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(i.email)}</span>
-        <span class="mono" style="margin-top:4px">${i.admin?'administrator':i.scan?'obsługa biletów':'użytkownik'} · ${new Date(i.created_at).toLocaleDateString('pl-PL')}${i.by_email?' · od '+esc(i.by_email):''}</span></div>
+        <span class="mono" style="margin-top:4px">${i.admin||i.scan===2?'organizator':i.scan?'obsługa biletów':'użytkownik'} · ${new Date(i.created_at).toLocaleDateString('pl-PL')}${i.by_email?' · od '+esc(i.by_email):''}</span></div>
       <span class="badge ${st==='czeka'?'':'off'}">${st}</span>
       ${st==='czeka'?`<button class="chip" data-act="revokeInvite:${i.id}" style="padding:7px 12px;font-size:12px">Cofnij</button>`:''}</div>`; }).join('') || '<span class="mono" style="display:block;padding:12px 0">Jeszcze nikogo nie zaproszono.</span>'}`;
 };
@@ -745,10 +744,10 @@ function adminTabBody(A, tab, curList, src){
       <div class="col" style="flex:1;min-width:0">
         <span class="h4" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.name||'—')}</span>
         <span class="mono" style="margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.email)}</span>
-        <span class="row" style="gap:5px;margin-top:6px;flex-wrap:wrap">${[p.owner?'Główny admin':roleName(levelOf(p)), (p.preview||p.admin||p.scan)&&'aplikacja', x.must_change&&'hasło startowe']
+        <span class="row" style="gap:5px;margin-top:6px;flex-wrap:wrap">${[roleName(levelOf(p)), (p.preview||p.admin||p.scan||p.org)&&'aplikacja', x.must_change&&'hasło startowe']
           .filter(Boolean).map((t,i)=>`<span class="badge ${i?'off':''}">${t}</span>`).join('')}<span class="mono">· od ${new Date(x.created_at).toLocaleDateString('pl-PL')}</span></span>
       </div>
-      <button class="chip" data-act="perms:${x.id}" style="padding:7px 12px;font-size:12px">Rola</button>
+      ${p.owner?'':`<button class="chip" data-act="perms:${x.id}" style="padding:7px 12px;font-size:12px">Rola</button>`}
     </div>`; }).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='invites' ? adminInvitesTab(A) : tab==='orgs' ? adminOrgsTab(A) : tab==='mail' ? adminMailTab(A) : tab==='curation' ? `
     <span class="body" style="display:block;padding-bottom:10px">Polecaj albo ukrywaj wydarzenia przyciskami na ekranie wydarzenia. Tu możesz to cofnąć.</span>
     <div class="h4" style="padding:10px 0 4px">Polecane</div>${curList(ACC.featured,'Usuń z polecanych')}

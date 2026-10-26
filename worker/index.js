@@ -60,17 +60,32 @@ async function currentUser(req, env) {
   const row = await env.DB.prepare(
     `SELECT u.id, u.email, u.name, u.role, u.city, u.created_at, u.owner, u.perm_curate, u.perm_scan, u.perm_org, u.must_change, u.interests, u.notify_email, u.newsletter FROM sessions s JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = ? AND s.expires_at > ?`).bind(await sha256(token), Date.now()).first();
+  if (row) await syncAdmin(env, row);
   return row || null;
 }
 
-/* uprawnienia: owner = główny administrator, admin, moderator (perm_curate), tester (preview_access) */
+/* Administrator jest jeden: konto z ADMIN_EMAIL_SHA256 (właściciel +1). Dawni administratorzy zostają organizatorami.
+   Wywoływane przy każdym zalogowanym żądaniu i dla wszystkich kont w panelu admina — baza sama dochodzi do tego stanu. */
+async function syncAdmin(env, u) {
+  const want = await isAdminEmail(env, u.email);
+  if (want ? (u.owner && u.role === 'admin') : (!u.owner && u.role !== 'admin')) return;
+  if (want) { u.owner = 1; u.role = 'admin'; }
+  else { if (u.owner || u.role === 'admin') u.perm_org = 1; u.owner = 0; u.role = 'user'; }
+  await env.DB.prepare('UPDATE users SET owner = ?, role = ?, perm_org = ? WHERE id = ?').bind(u.owner, u.role, u.perm_org ? 1 : 0, u.id).run();
+}
+async function syncAdmins(env) {
+  const { results } = await env.DB.prepare("SELECT id, email, role, owner, perm_org FROM users WHERE role = 'admin' OR owner = 1").all();
+  for (const u of results) await syncAdmin(env, u);
+}
+
+/* uprawnienia: administrator = właściciel (owner, tylko konto z ADMIN_EMAIL_SHA256), organizator, obsługa biletów, użytkownik */
 const isOwner = u => !!u && !!u.owner;
-const isAdmin = u => !!u && (u.role === 'admin' || !!u.owner);
+const isAdmin = isOwner;
 const canCurate = u => isAdmin(u) || (!!u && !!u.perm_curate);
 const canScan = u => isAdmin(u) || (!!u && (!!u.perm_scan || !!u.perm_org));
 const isOrg = u => isAdmin(u) || (!!u && !!u.perm_org);
 const parseList = s => { try { const a = JSON.parse(s || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
-/* rola do wyświetlenia: admin > obsługa biletów > użytkownik */
+/* rola do wyświetlenia: administrator > organizator > obsługa biletów > użytkownik */
 const roleOf = u => isAdmin(u) ? 'admin' : u.perm_org ? 'organizer' : u.perm_scan ? 'staff' : 'user';
 const publicUser = u => ({ id: u.id, email: u.email, name: u.name, role: u.role, city: u.city, createdAt: u.created_at,
   owner: !!u.owner, curate: canCurate(u), scan: canScan(u), org: isOrg(u), level: roleOf(u), mustChange: !!u.must_change,
@@ -106,15 +121,15 @@ async function register(req, env) {
   if (await env.DB.prepare('SELECT 1 FROM users WHERE email = ?').bind(email).first())
     return fail(409, 'To konto już istnieje — zaloguj się.');
 
-  const role = (await isAdminEmail(env, email)) ? 'admin' : 'user';
+  const owner = await isAdminEmail(env, email) ? 1 : 0, role = owner ? 'admin' : 'user';
   const city = cleanText(b.city, 60) || null;
   const now = Date.now();
   const interests = JSON.stringify(cleanInterests(b.interests)), newsletter = b.newsletter ? 1 : 0;
-  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, city, interests, newsletter, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(email, name, await hashPassword(password), role, city, interests, newsletter, now, now).run();
+  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, owner, city, interests, newsletter, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(email, name, await hashPassword(password), role, owner, city, interests, newsletter, now, now).run();
   const id = res.meta.last_row_id;
   const set = await startSession(env, id);
-  return json({ user: publicUser({ id, email, name, role, city, created_at: now, interests, newsletter }), saved: [], going: [] }, 201, { 'Set-Cookie': set });
+  return json({ user: publicUser({ id, email, name, role, owner, city, created_at: now, interests, newsletter }), saved: [], going: [] }, 201, { 'Set-Cookie': set });
 }
 
 async function login(req, env) {
@@ -129,11 +144,8 @@ async function login(req, env) {
     await env.DB.prepare('INSERT INTO login_fail (email, at) VALUES (?, ?)').bind(email, Date.now()).run();
     return fail(401, 'Zły e-mail albo hasło.');
   }
-  // admin z konfiguracji dostaje rolę także przy logowaniu (np. gdy konto powstało wcześniej)
-  if (u.role !== 'admin' && (await isAdminEmail(env, email))) {
-    await env.DB.prepare("UPDATE users SET role = 'admin' WHERE id = ?").bind(u.id).run();
-    u.role = 'admin';
-  }
+  // administrator z konfiguracji (i odebranie roli wszystkim innym) także przy logowaniu
+  await syncAdmin(env, u);
   await env.DB.batch([
     env.DB.prepare('DELETE FROM login_fail WHERE email = ?').bind(email),
     env.DB.prepare('UPDATE users SET last_seen = ? WHERE id = ?').bind(Date.now(), u.id),
@@ -257,11 +269,12 @@ async function daily(env, table, col, where = '', ...args) {
 }
 
 async function adminStats(req, env) {
+  await syncAdmins(env);
   const now = Date.now(), midnight = warsawMidnight(0);
   const q = (sql, ...a) => env.DB.prepare(sql).bind(...a).first('n');
   const [users, admins, active7, new7, saves, hidden, featured, going, activeToday, staff, organizers, tickets, scanned, guests, guestsIn, pushSubs] = await Promise.all([
     q('SELECT COUNT(*) AS n FROM users'),
-    q("SELECT COUNT(*) AS n FROM users WHERE role = 'admin' OR owner = 1"),
+    q('SELECT COUNT(*) AS n FROM users WHERE owner = 1'),
     q('SELECT COUNT(*) AS n FROM users WHERE last_seen > ?', now - 7 * DAY),
     q('SELECT COUNT(*) AS n FROM users WHERE created_at > ?', now - 7 * DAY),
     q("SELECT COUNT(*) AS n FROM saved WHERE kind = 'saved'"),
@@ -293,6 +306,7 @@ async function adminStats(req, env) {
 }
 
 async function adminUsers(req, env) {
+  await syncAdmins(env);
   const url = new URL(req.url);
   const q = '%' + cleanText(url.searchParams.get('q'), 100).toLowerCase() + '%';
   const { results } = await env.DB.prepare(
@@ -408,17 +422,13 @@ async function preview(req, env) {
   return new Response(previewHtml, { headers });
 }
 
-/* POST /api/admin/users/:id/perms { preview?, curate?, admin?, owner? } — admin nadaje tester/moderator,
-   tylko główny administrator nadaje i odbiera admina oraz rolę głównego administratora */
+/* POST /api/admin/users/:id/perms { preview?, curate?, scan?, org?, venues? } — rolę administratora ma tylko właściciel (ADMIN_EMAIL_SHA256) */
 async function adminSetPerms(req, env, user, id) {
   const b = await body(req);
   const t = await env.DB.prepare('SELECT id, role, owner FROM users WHERE id = ?').bind(+id).first();
   if (!t) return fail(404, 'Nie ma takiego użytkownika.');
-  if (t.owner && !isOwner(user)) return fail(403, 'Uprawnienia głównego administratora zmienia tylko inny główny administrator.');
-  if ((b.admin !== undefined || b.owner !== undefined) && !isOwner(user)) return fail(403, 'Admina nadaje i odbiera tylko główny administrator.');
-  if (t.id === user.id && (b.admin === false || b.owner === false)) return fail(400, 'Nie możesz odebrać uprawnień sam sobie.');
-  if (b.owner === false && t.owner && (await env.DB.prepare('SELECT COUNT(*) AS n FROM users WHERE owner = 1').first('n')) <= 1)
-    return fail(400, 'Musi zostać co najmniej jeden główny administrator.');
+  if (b.admin !== undefined || b.owner !== undefined) return fail(400, 'Administrator jest tylko jeden — tej roli nie można nadać.');
+  if (t.owner) return fail(403, 'Konta administratora nie można zmieniać.');
   const ops = [];
   if (typeof b.preview === 'boolean') ops.push(b.preview
     ? env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(t.id, Date.now())
@@ -431,8 +441,6 @@ async function adminSetPerms(req, env, user, id) {
     for (const v of [...new Set(b.venues.map(x => cleanText(x, 120)).filter(Boolean))].slice(0, 30))
       ops.push(env.DB.prepare('INSERT OR IGNORE INTO org_venues (user_id, venue) VALUES (?, ?)').bind(t.id, v));
   }
-  if (typeof b.admin === 'boolean') ops.push(env.DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(b.admin ? 'admin' : 'user', t.id));
-  if (typeof b.owner === 'boolean') ops.push(env.DB.prepare('UPDATE users SET owner = ?' + (b.owner ? ", role = 'admin'" : '') + ' WHERE id = ?').bind(b.owner ? 1 : 0, t.id));
   if (!ops.length) return fail(400, 'Brak zmian.');
   await env.DB.batch(ops);
   return json({ ok: true });
@@ -554,8 +562,8 @@ async function adminInvite(req, env, user) {
   const b = await body(req);
   const email = cleanEmail(b.email);
   if (!EMAIL_RE.test(email) || email.length > 200) return fail(400, 'Podaj poprawny adres e-mail.');
-  const perms = { preview: b.preview !== false, curate: !!b.curate, admin: !!b.admin, scan: !!b.scan || !!b.org, org: !!b.org };
-  if (perms.admin && !isOwner(user)) return fail(403, 'Admina może zaprosić tylko główny administrator.');
+  if (b.admin) return fail(400, 'Administrator jest tylko jeden — zaproś jako organizatora.');
+  const perms = { preview: b.preview !== false, curate: !!b.curate, admin: false, scan: !!b.scan || !!b.org, org: !!b.org };
   const by = user.name || user.email;
 
   // konto już istnieje: od razu nadajemy uprawnienia i wysyłamy powiadomienie z linkiem do aplikacji
@@ -564,7 +572,6 @@ async function adminInvite(req, env, user) {
     const ops = [];
     if (perms.preview) ops.push(env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(ex.id, Date.now()));
     if (perms.curate) ops.push(env.DB.prepare('UPDATE users SET perm_curate = 1 WHERE id = ?').bind(ex.id));
-    if (perms.admin) ops.push(env.DB.prepare("UPDATE users SET role = 'admin' WHERE id = ?").bind(ex.id));
     if (perms.scan && !perms.org) ops.push(env.DB.prepare('UPDATE users SET perm_scan = 1 WHERE id = ?').bind(ex.id));
     if (perms.org) ops.push(env.DB.prepare('UPDATE users SET perm_org = 1 WHERE id = ?').bind(ex.id));
     if (ops.length) await env.DB.batch(ops);
@@ -611,7 +618,8 @@ async function acceptInvite(req, env) {
     return fail(409, 'To konto już istnieje — zaloguj się.');
   const now = Date.now();
   const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, perm_curate, perm_scan, perm_org, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(inv.email, name, await hashPassword(password), inv.admin ? 'admin' : 'user', inv.curate, inv.scan === 1 ? 1 : 0, inv.scan === 2 ? 1 : 0, now, now).run();
+    // dawne zaproszenia „administrator” dają dziś rolę organizatora
+    .bind(inv.email, name, await hashPassword(password), 'user', inv.curate, inv.scan === 1 && !inv.admin ? 1 : 0, inv.scan === 2 || inv.admin ? 1 : 0, now, now).run();
   const id = res.meta.last_row_id;
   await env.DB.batch([
     env.DB.prepare('UPDATE invites SET used_at = ? WHERE rowid = ?').bind(now, inv.id),

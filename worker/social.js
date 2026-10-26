@@ -8,7 +8,7 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
 });
 const fail = (status, error) => json({ error }, status);
 const clean = (s, n) => stripEmoji(String(s || '').replace(/[\u0000-\u001f]/g, ' ')).trim().slice(0, n);
-const admin = u => !!u && (!!u.owner || u.role === 'admin');
+const admin = u => !!u && !!u.owner;
 const staff = u => admin(u) || !!u?.perm_scan || !!u?.perm_org;
 const dayPL = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Warsaw' }).format(new Date());
 export function socialAge(birth, day = dayPL()) {

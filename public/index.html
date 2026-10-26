@@ -871,7 +871,7 @@ function addToCalendar(e){
   toast('Plik kalendarza pobrany — otwórz go, żeby dodać wydarzenie', true);
 }
 /* uprawnienia; „Zobacz jako” (admin.js) pozwala głównemu administratorowi obejrzeć widok innej roli */
-const isAdmin = () => { const v = ACC.user?.owner && viewAs(); return v ? v==='admin' : (ACC.user?.role==='admin' || !!ACC.user?.owner); };
+const isAdmin = () => { const v = ACC.user?.owner && viewAs(); return v ? v==='admin' : !!ACC.user?.owner; };
 const isOwner = () => !!ACC.user?.owner && !viewAs();
 const canCurate = () => isAdmin() || (!viewAs() && !!ACC.user?.curate);
 const entered = () => { try{ return !!localStorage.getItem('entered') }catch(e){ return false } };
@@ -1019,7 +1019,7 @@ const scProfile = () => {
     <button class="btn g" data-act="saveProfile" style="height:44px;font:600 13px/1 var(--d)">Zapisz</button></div>`:''}
   <div class="pad">
     ${ACC.preview?`<a class="listbtn" href="/app" style="color:inherit;text-decoration:none">${ic('shield',18)} Aplikacja na telefon</a>`:''}
-    ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">${isOwner()?'GŁÓWNY ADMIN':'ADMIN'}</span>`):''}
+    ${isAdmin()?row('shield','Panel admina','go:admin',`<span class="mono" style="color:${PINK}">ADMIN</span>`):''}
     ${isOrgNow()?row('star','Panel organizatora','orgMine',`<span class="mono" style="color:${PINK}">ORGANIZATOR</span>`):''}
     ${['admin','organizer'].includes(effectiveRole())?(browsing()?row('bolt','Wróć do pulpitu','browse:0',''):row('search','Przeglądaj wydarzenia jak użytkownik','browse:1','')):''}
     ${canScanNow()?row('scan','Skaner biletów','go:scan',`<span class="mono" style="color:${PINK}">OBSŁUGA</span>`):''}
