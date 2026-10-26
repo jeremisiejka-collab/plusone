@@ -118,7 +118,7 @@
   .web-print-solid, .web-print-outline { animation: none; }
 }
 /* Nawigacja aplikacji: konto u góry, cztery zakładki wokół +1. */
-#app-topbar { position: absolute; top: 56px; left: 20px; right: 20px; height: 44px; z-index: 45; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--t1); background: var(--bg); }
+#app-topbar { position: absolute; top: 0; left: 0; right: 0; height: 44px; box-sizing: content-box; padding: 56px 20px 8px; z-index: 45; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--t1); background: var(--bg); }
 #app-topbar[hidden] { display: none; }
 .app-context, .app-top-actions { display: flex; align-items: center; gap: 10px; }
 .app-context > button { font-size: 14px; font-weight: 500; }
