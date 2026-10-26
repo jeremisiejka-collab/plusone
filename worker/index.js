@@ -4,7 +4,7 @@
 
 import previewHtml from '../private/app.html';
 import { smtpSend } from './smtp.js';
-import { premiumApi, scanGuest, crewInfo, forgotPassword, resetPassword, findReset, adminOrganizers, adminNewsletter, mailDetect, scheduled, guestTicketPage, initPremium } from './premium.js';
+import { premiumApi, welcomeInside, zoneInfo, scanGuest, crewInfo, forgotPassword, resetPassword, findReset, adminOrganizers, adminNewsletter, mailDetect, scheduled, guestTicketPage, initPremium } from './premium.js';
 
 const DAY = 864e5;
 const SESSION_DAYS = 60;
@@ -452,12 +452,14 @@ async function adminSetPerms(req, env, user, id) {
 const ticketCode = () => 'P1-' + randomToken().slice(0, 20);
 async function myTickets(env, user) {
   const going = (await savedIds(env, user.id)).going;
-  const { results } = await env.DB.prepare('SELECT code, event_id, used_at FROM tickets WHERE user_id = ?').bind(user.id).all();
+  const { results } = await env.DB.prepare(`SELECT t.code, t.event_id, t.used_at, t.zone, g.zones FROM tickets t
+    LEFT JOIN event_guides g ON g.event_id = t.event_id WHERE t.user_id = ?`).bind(user.id).all();
   const have = new Map(results.map(r => [r.event_id, r]));
   const add = going.filter(id => !have.has(id)).slice(0, 200).map(id => ({ code: ticketCode(), event_id: id, used_at: null }));
   if (add.length) await env.DB.batch(add.map(t => env.DB.prepare('INSERT OR IGNORE INTO tickets (code, user_id, event_id, created_at) VALUES (?, ?, ?, ?)').bind(t.code, user.id, t.event_id, Date.now())));
   const all = [...results, ...add].filter(t => going.includes(t.event_id));
-  return json({ tickets: all.map(t => ({ code: t.code, eventId: t.event_id, usedAt: t.used_at })) });
+  return json({ tickets: all.map(t => ({ code: t.code, eventId: t.event_id, usedAt: t.used_at,
+    zone: t.zone ? parseList(t.zones).find(z => z.key === t.zone) || null : null })) });
 }
 /* POST /api/scan { code, undo? } — dla obsługi biletów i adminów */
 async function scanTicket(req, env, user) {
@@ -466,13 +468,15 @@ async function scanTicket(req, env, user) {
   const t = await env.DB.prepare(`SELECT t.*, u.email, u.name, s.email AS by_email FROM tickets t JOIN users u ON u.id = t.user_id
     LEFT JOIN users s ON s.id = t.used_by WHERE t.code = ?`).bind(code).first();
   if (!t) return scanGuest(env, user, code, b.undo);
-  const who = { name: t.name, email: t.email, eventId: t.event_id };
+  const who = { name: t.name, email: t.email, eventId: t.event_id, zone: await zoneInfo(env, t.event_id, t.zone) };
   if (b.undo) {
     await env.DB.prepare('UPDATE tickets SET used_at = NULL, used_by = NULL WHERE code = ?').bind(code).run();
     return json({ status: 'undone', ...who });
   }
   if (t.used_at) return json({ status: 'used', usedAt: t.used_at, usedBy: t.by_email, ...who });
   await env.DB.prepare('UPDATE tickets SET used_at = ?, used_by = ? WHERE code = ? AND used_at IS NULL').bind(Date.now(), user.id, code).run();
+  // powitanie z przewodnikiem nie może zatrzymać wejścia
+  try { await welcomeInside(env, t.user_id, t.event_id); } catch (e) { console.error('welcome', e); }
   return json({ status: 'ok', ...who });
 }
 async function scanStats(env, user) {

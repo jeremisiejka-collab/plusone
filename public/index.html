@@ -378,7 +378,7 @@ const EVENTS = [
    desc:'Cotygodniowy set na dolnym parkiecie. Wejście do 00:30 taniej.', poolEnds: 1*3600+8*60},
   {id:'nocny', name:'NOCNY KOCHANEK', badge:'LAST TICKETS', when:'pt 28 sie · 20:00', date:'28 sierpnia', time:'20:00',
    venue:'Hydrozagadka', city:'Warszawa', from:89, cat:'Concerts', hue:8, sold:0.94,
-   lineup:['Nocny Kochanek','support: Ruby'], organizer:'Going Live',
+   lineup:['Nocny Kochanek','support: Ruby'], organizer:'Live Warszawa',
    desc:'Klasyk polskiej scenki metalowej z przymrużeniem oka. Ostatnie bilety w puli Regular.', poolEnds: 26*60},
   {id:'kwiat', name:'KWIAT JABŁONI', badge:'NEW ON +1', when:'sob 12 wrz · 19:00', date:'12 września', time:'19:00',
    venue:'Progresja', city:'Warszawa', from:139, cat:'Concerts', hue:150, sold:0.31,
@@ -405,7 +405,7 @@ const EVENTS = [
    Mocki powyżej zostają dla demo biletów, portfela i zaproszeń. */
 const CAT_PL = {Clubs:'Kluby', Concerts:'Koncerty', Festivals:'Festiwale', Theatre:'Teatr', Comedy:'Stand-up',
   Culture:'Kultura', Sport:'Sport', Family:'Dzieci', Other:'Inne'};
-const SRC_PL = {going:'Going.', ebilet:'eBilet', ra:'Resident Advisor', go2warsaw:'go2warsaw.pl'};
+const SRC_PL = {going:'Bilety online', ebilet:'eBilet', ra:'Resident Advisor', go2warsaw:'go2warsaw.pl'};
 const LIVE = {state:'loading', updatedAt:null, cities:{}};
 const DNI = ['nd','pon','wt','śr','czw','pt','sob'];
 const MIES = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
@@ -580,7 +580,7 @@ function morph(update, el){
   t.finished.catch(()=>{}).finally(()=>$$('.vt-hero').forEach(x=>x.classList.remove('vt-hero')));
 }
 function go(s, anim=true){
-  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan','org','dash','orgEvents'].includes(s)) return;
+  if(!['home','list','map','tickets','wallet','auth','profile','admin','event','downloads','scan','org','dash','orgEvents','guide','guideEdit'].includes(s)) return;
   s = workScreen(s) || s;
   if(s===S.screen) return;
   SCROLL[S.screen] = scrollY_();
@@ -1385,6 +1385,7 @@ const scHome = () => {
   const later = f.filter(e=>!soonIds.has(e.id));
   return `
 <div class="pg" style="padding:64px 0 112px">
+  ${ACC.user?`<div class="pad">${liveBanner()}</div>`:''}
   ${webHero()}
   <div id="ptr" style="height:0;overflow:hidden;transition:height .2s">
     <div style="padding:10px 20px;display:flex;gap:12px">
@@ -1560,7 +1561,7 @@ const scList = () => {
   <div class="pad" style="padding-top:20px">
     <div class="card" style="padding:16px;display:flex;gap:12px;align-items:center">
       <span style="color:${PINK};display:flex">${ic('bell',19)}</span>
-      <span class="mono" style="flex:1;line-height:1.5">Dane z Going., eBilet, Resident Advisor i go2warsaw.pl · aktualizacja ${LIVE.updatedAt?new Date(LIVE.updatedAt).toLocaleString('pl-PL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</span>
+      <span class="mono" style="flex:1;line-height:1.5">Dane z serwisów biletowych i przewodników po mieście · aktualizacja ${LIVE.updatedAt?new Date(LIVE.updatedAt).toLocaleString('pl-PL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</span>
     </div>
   </div>`}
 </div>`;
@@ -1601,6 +1602,8 @@ const scLive = e => `
         .map(([l,i,a,on,k])=>`<button class="mine-act ${on?'on':''} ${on&&S.popId===e.id+k?'pop':''}" data-act="${a}">${ic(i,18)}<span>${l}</span></button>`).join('')}
     </div>
     ${MINE.going.has(e.id)?`<button class="btn w" data-act="${ACC.user?'ticketQR:'+e.id:'authFrom:event'}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} ${ACC.user?'Pokaż bilet z kodem QR':'Zaloguj się, żeby mieć bilet z kodem QR'}</button>`:''}
+    ${ACC.user&&MINE.going.has(e.id)?`<button class="btn g" data-act="guide:${e.id}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('map',18)} Przewodnik: plan, harmonogram, komunikaty</button>`:''}
+    ${ACC.user&&(isAdmin()||isOrgNow())?`<button class="btn g" data-act="guideEdit:${e.id}" style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px;border-style:dashed">${ic('bell',16)} Komunikat do uczestników i przewodnik</button>`:''}
     <button class="card" data-act="go:downloads" style="padding:14px 16px;display:flex;gap:14px;align-items:center;text-align:left;width:100%;color:inherit">
       <span style="width:40px;height:40px;border-radius:12px;background:var(--pink-dim);display:grid;place-items:center;color:var(--pink);flex:none">${ic('star',18)}</span>
       <span class="col" style="flex:1;min-width:0"><span class="h4">Więcej w aplikacji +1</span>
@@ -1753,7 +1756,7 @@ const scWalletSoon = () => `
 const SCREENS = {
   home:scHome, list:scList, map:scMap, event:()=>scLive(ev()),
   tickets:scMyTickets, wallet:scWalletSoon,
-  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents()
+  auth:scAuth, profile:scProfile, admin:()=>scAdmin(), downloads:scDownloads, scan:()=>scScan(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents(), guide:()=>scGuide(), guideEdit:()=>scGuideEdit()
 };
 
 /* =========================================================
@@ -2609,6 +2612,10 @@ matchMedia('(min-width:761px)').addEventListener('change', e=>{
 });
 /* ?register — link „Zarejestruj się” z aplikacji otwiera od razu zakładanie konta */
 if(/[?&]podglad\b/.test(location.search)) setTimeout(()=>previewSheet(), 600);
+/* link z maila do uczestników: /?guide=<id> — przewodnik po zalogowaniu, inaczej strona wydarzenia */
+{ const gid = new URLSearchParams(location.search).get('guide');
+  if(gid){ history.replaceState(null,'','/'); const t0 = Date.now(), wait = () => { if(!ACC.user && Date.now()-t0 < 4000) return setTimeout(wait, 250);
+    if(ACC.user) openGuide(gid); else if(EVENTS.some(e=>e.id===gid)) openEvent(gid); else setTimeout(()=>{ if(EVENTS.some(e=>e.id===gid)) openEvent(gid); }, 1500); }; setTimeout(wait, 400); } }
 if(/[?&]register\b/.test(location.search)){ ACC.authMode='register'; S.prev='home'; S.screen='auth'; }
 render();
 loadLive();

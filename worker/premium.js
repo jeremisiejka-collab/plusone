@@ -219,7 +219,8 @@ async function addGuest(req, env, user) {
   if (email && !EMAIL_RE.test(email)) return fail(400, 'Zły adres e-mail.');
   if (!await canTouchEvent(env, user, id)) return fail(403, 'To nie Twoje wydarzenie.');
   const code = ticketCode(), e = (await loadEvents(env)).byId.get(id);
-  await env.DB.prepare('INSERT INTO guests (code, event_id, org_user, name, email, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(code, id, user.id, name, email || null, Date.now()).run();
+  const zone = b.zone && (await zonesOf(env, id)).some(z => z.key === b.zone) ? b.zone : null;
+  await env.DB.prepare('INSERT INTO guests (code, event_id, org_user, name, email, zone, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(code, id, user.id, name, email || null, zone, Date.now()).run();
   let emailed = false;
   if (email) {
     const link = siteUrl(req, '/t/' + code);
@@ -242,7 +243,7 @@ async function removeGuest(req, env, user) {
 export async function scanGuest(env, user, code, undo) {
   const g = await env.DB.prepare('SELECT g.*, s.email AS by_email FROM guests g LEFT JOIN users s ON s.id = g.used_by WHERE g.code = ?').bind(code).first();
   if (!g) return json({ status: 'invalid', message: 'Nie ma takiego biletu.' });
-  const who = { name: g.name + ' · lista gości', email: g.email, eventId: g.event_id };
+  const who = { name: g.name + ' · lista gości', email: g.email, eventId: g.event_id, zone: await zoneInfo(env, g.event_id, g.zone) };
   if (undo) { await env.DB.prepare('UPDATE guests SET used_at = NULL, used_by = NULL WHERE code = ?').bind(code).run(); return json({ status: 'undone', ...who }); }
   if (g.used_at) return json({ status: 'used', usedAt: g.used_at, usedBy: g.by_email, ...who });
   await env.DB.prepare('UPDATE guests SET used_at = ?, used_by = ? WHERE code = ? AND used_at IS NULL').bind(Date.now(), user.id, code).run();
@@ -251,14 +252,14 @@ export async function scanGuest(env, user, code, undo) {
 /* strona biletu gościa: /t/<kod> (bez logowania; kod jest długi i losowy) */
 export async function guestTicketPage(env, code) {
   const g = /^P1-[\w-]{8,40}$/.test(code) ? await env.DB.prepare('SELECT * FROM guests WHERE code = ?').bind(code).first() : null;
-  const e = g && (await loadEvents(env)).byId.get(g.event_id);
+  const e = g && (await loadEvents(env)).byId.get(g.event_id), z = g && await zoneInfo(env, g.event_id, g.zone);
   const html = `<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><link rel="stylesheet" href="/vendor/fonts/fonts.css"><title>Bilet +1</title><style>body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#000;color:#fff;
 font:16px/1.5 'Space Grotesk',system-ui,-apple-system,sans-serif;padding:24px;text-align:center}main{max-width:360px;display:flex;flex-direction:column;gap:12px;align-items:center}
 #q{width:260px;height:260px;background:#fff;border-radius:22px;padding:16px;box-sizing:border-box}#q svg{width:100%;height:100%}
 small{color:#FF0059;letter-spacing:.14em;font-weight:700}p{color:rgba(255,255,255,.7);margin:0}</style></head><body><main>
-${g ? `<small>BILET +1 · LISTA GOŚCI</small><h2 style="margin:0">${escHtml(e ? e.title : 'Wydarzenie')}</h2><p>${escHtml(e ? e.venue + ' · ' + e.start.replace('T', ' ') : '')}</p>
-<div id="q"></div><b>${escHtml(g.name)}</b><p style="font-family:'JetBrains Mono',monospace">${escHtml(code)}</p><p>${g.used_at ? 'Bilet został już użyty.' : 'Pokaż kod przy wejściu.'}</p>
+${g ? `<small style="${z ? 'color:' + z.color : ''}">BILET +1 · ${z ? 'STREFA ' + escHtml(z.name.toUpperCase()) : 'LISTA GOŚCI'}</small><h2 style="margin:0">${escHtml(e ? e.title : 'Wydarzenie')}</h2><p>${escHtml(e ? e.venue + ' · ' + e.start.replace('T', ' ') : '')}</p>
+<div id="q" style="${z ? 'box-shadow:0 0 0 6px ' + z.color : ''}"></div><b>${escHtml(g.name)}</b><p style="font-family:'JetBrains Mono',monospace">${escHtml(code)}</p><p>${g.used_at ? 'Bilet został już użyty.' : 'Pokaż kod przy wejściu.'}</p>
 <script src="/vendor/qr/qrcode.js"></script><script>var q=qrcode(0,'M');q.addData(${JSON.stringify(code)});q.make();document.getElementById('q').innerHTML=q.createSvgTag({cellSize:6,margin:0,scalable:true});</script>`
   : '<h2>Nie ma takiego biletu</h2><p>Sprawdź link od organizatora.</p>'}
 <a href="/" style="color:rgba(255,255,255,.5)">plusoneapp.pl</a></main></body></html>`;
@@ -432,12 +433,208 @@ export async function scheduled(event, env) {
 }
 export { runAlerts };
 
+/* ---------------- przewodnik po wydarzeniu i komunikaty do uczestników ----------------
+   Uczestnik = ma bilet +1 albo „Mam bilet” na to wydarzenie. Edytuje i wysyła administrator albo organizator tego wydarzenia. */
+const GUIDE_KINDS = ['stage', 'bar', 'wc', 'coat', 'exit', 'info', 'food', 'medic'];
+const ZONE_COLORS = ['#F5B73B', '#B8BCC6', '#8B5CF6', '#14B8A6', '#3B82F6', '#EF4444', '#22C55E', '#EC4899'];
+/* strefy wydarzenia: [{key, name, color}] */
+async function zonesOf(env, eventId) {
+  return parseList((await env.DB.prepare('SELECT zones FROM event_guides WHERE event_id = ?').bind(eventId).first())?.zones);
+}
+export async function zoneInfo(env, eventId, key) {
+  if (!key) return null;
+  const z = (await zonesOf(env, eventId)).find(x => x.key === key);
+  return z ? { key: z.key, name: z.name, color: z.color } : null;
+}
+const MAP_MAX = 900 * 1024;
+async function participantIds(env, eventId, audience) {
+  const sql = audience === 'inside'
+    ? 'SELECT user_id AS id FROM tickets WHERE event_id = ? AND used_at IS NOT NULL'
+    : "SELECT user_id AS id FROM tickets WHERE event_id = ?1 UNION SELECT user_id AS id FROM saved WHERE event_id = ?1 AND kind = 'going'";
+  return (await env.DB.prepare(sql).bind(eventId).all()).results.map(r => r.id);
+}
+async function guideAccess(env, user, eventId) {
+  const edit = await canTouchEvent(env, user, eventId) && (isAdmin(user) || !!user.perm_org);
+  if (edit || user.perm_scan) return { edit, ticket: null };
+  const ticket = await env.DB.prepare('SELECT code, used_at, zone FROM tickets WHERE user_id = ? AND event_id = ?').bind(user.id, eventId).first();
+  const going = ticket || await env.DB.prepare("SELECT 1 FROM saved WHERE user_id = ? AND event_id = ? AND kind = 'going'").bind(user.id, eventId).first();
+  return going ? { edit: false, ticket } : null;
+}
+async function guideGet(req, env, user) {
+  const id = new URL(req.url).searchParams.get('event') || '';
+  const acc = await guideAccess(env, user, id);
+  if (!acc) return fail(403, 'Przewodnik po wydarzeniu jest dla osób z biletem. Kliknij „Mam bilet”.');
+  const [g, posts, e] = await Promise.all([
+    env.DB.prepare('SELECT info, schedule, points, zones, map_ratio, map_image IS NOT NULL AS has_map, updated_at FROM event_guides WHERE event_id = ?').bind(id).first(),
+    env.DB.prepare(`SELECT p.id, p.title, p.body, p.audience, p.channel, p.recipients, p.created_at,
+      (SELECT COUNT(*) FROM event_mail_queue q WHERE q.post_id = p.id AND q.sent_at IS NOT NULL) AS mailed
+      FROM event_posts p WHERE p.event_id = ? ORDER BY p.created_at DESC LIMIT 50`).bind(id).all(),
+    loadEvents(env).then(ev => ev.byId.get(id))
+  ]);
+  const inside = !!acc.ticket?.used_at;
+  const out = { event: e ? { id: e.id, title: e.title, start: e.start, end: e.end, venue: e.venue, address: e.address, city: e.city, image: e.image } : { id },
+    guide: { info: g?.info || '', schedule: parseList(g?.schedule), points: parseList(g?.points), zones: parseList(g?.zones), hasMap: !!g?.has_map, mapRatio: g?.map_ratio || null, updatedAt: g?.updated_at || null },
+    posts: posts.results.filter(p => p.audience === 'all' || inside || acc.edit),
+    mailer: acc.edit ? !!(await env.DB.prepare("SELECT 1 FROM settings WHERE key = 'smtp'").first() || (env.RESEND_API_KEY && env.MAIL_FROM)) : undefined,
+    ticket: acc.ticket ? { code: acc.ticket.code, usedAt: acc.ticket.used_at, zone: parseList(g?.zones).find(z => z.key === acc.ticket.zone) || null } : null, canEdit: acc.edit };
+  if (acc.edit) {
+    const t = (await env.DB.prepare('SELECT zone, COUNT(*) AS n FROM tickets WHERE event_id = ? AND zone IS NOT NULL GROUP BY zone').bind(id).all()).results;
+    const gz = (await env.DB.prepare('SELECT zone, COUNT(*) AS n FROM guests WHERE event_id = ? AND zone IS NOT NULL GROUP BY zone').bind(id).all()).results;
+    out.zoneCounts = {}; for (const r of [...t, ...gz]) out.zoneCounts[r.zone] = (out.zoneCounts[r.zone] || 0) + r.n;
+  }
+  if (acc.edit) out.audience = { all: (await participantIds(env, id, 'all')).length, inside: (await participantIds(env, id, 'inside')).length };
+  return json(out);
+}
+async function guideMap(req, env, user) {
+  const id = new URL(req.url).searchParams.get('event') || '';
+  if (!await guideAccess(env, user, id)) return fail(403, 'Brak dostępu.');
+  const g = await env.DB.prepare('SELECT map_image FROM event_guides WHERE event_id = ?').bind(id).first();
+  const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(g?.map_image || '');
+  if (!m) return fail(404, 'Brak planu.');
+  const bin = Uint8Array.from(atob(m[2]), c => c.charCodeAt(0));
+  return new Response(bin, { headers: { 'Content-Type': m[1], 'Cache-Control': 'private, max-age=300' } });
+}
+async function guideSave(req, env, user) {
+  const b = await body(req), id = String(b.eventId || '');
+  if (!(await guideAccess(env, user, id))?.edit) return fail(403, 'Przewodnik edytuje administrator albo organizator tego wydarzenia.');
+  const schedule = (Array.isArray(b.schedule) ? b.schedule : []).slice(0, 40)
+    .map(x => ({ time: cleanText(x.time, 20), title: cleanText(x.title, 120) })).filter(x => x.title);
+  const num = v => Math.min(100, Math.max(0, Math.round((+v || 0) * 10) / 10));
+  const points = (Array.isArray(b.points) ? b.points : []).slice(0, 40)
+    .map(x => ({ x: num(x.x), y: num(x.y), label: cleanText(x.label, 60), kind: GUIDE_KINDS.includes(x.kind) ? x.kind : 'info' })).filter(x => x.label);
+  // akapity zostają: czyścimy każdą linię osobno
+  const info = String(b.info || '').replace(/\r/g, '').split('\n').map(l => cleanText(l, 400)).join('\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, 4000);
+  let map = undefined;
+  if (b.map === null) map = null;
+  else if (typeof b.map === 'string') {
+    if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(b.map)) return fail(400, 'Plan musi być obrazkiem JPG, PNG albo WebP.');
+    if (b.map.length > MAP_MAX * 1.37) return fail(400, 'Plan jest za duży. Wybierz mniejszy obrazek.');
+    map = b.map;
+  }
+  const ratio = +b.mapRatio > 0 && +b.mapRatio < 10 ? +b.mapRatio : null;
+  const zones = (Array.isArray(b.zones) ? b.zones : []).slice(0, 8).map(z => ({ key: String(z.key || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 24),
+    name: cleanText(z.name, 30), color: ZONE_COLORS.includes(z.color) ? z.color : ZONE_COLORS[0] })).filter(z => z.key && z.name);
+  await env.DB.prepare(`INSERT INTO event_guides (event_id, info, schedule, points, zones, map_image, map_ratio, updated_at, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(event_id) DO UPDATE SET info = excluded.info, schedule = excluded.schedule, points = excluded.points, zones = excluded.zones,
+      ${map === undefined ? '' : 'map_image = excluded.map_image, map_ratio = excluded.map_ratio,'} updated_at = excluded.updated_at, updated_by = excluded.updated_by`)
+    .bind(id, info, JSON.stringify(schedule), JSON.stringify(points), JSON.stringify(zones), map ?? null, map ? ratio : null, Date.now(), user.id).run();
+  // usunięta strefa: jej bilety wracają do wejścia ogólnego
+  const keys = zones.map(z => z.key);
+  for (const tb of ['tickets', 'guests'])
+    await env.DB.prepare(`UPDATE ${tb} SET zone = NULL WHERE event_id = ? AND zone IS NOT NULL${keys.length ? ` AND zone NOT IN (${keys.map(() => '?').join(',')})` : ''}`).bind(id, ...keys).run();
+  return json({ ok: true });
+}
+/* POST /api/guide/zone { eventId, zone ('' = wejście ogólne), emails[] } — przypisuje strefę biletom kont i gościom z listy */
+async function guideZone(req, env, user) {
+  const b = await body(req), id = String(b.eventId || ''), zone = String(b.zone || '');
+  if (!(await guideAccess(env, user, id))?.edit) return fail(403, 'Strefy przypisuje administrator albo organizator tego wydarzenia.');
+  if (zone && !(await zonesOf(env, id)).some(z => z.key === zone)) return fail(400, 'Najpierw zapisz strefę w przewodniku.');
+  const emails = [...new Set((Array.isArray(b.emails) ? b.emails : []).map(cleanEmail).filter(e => EMAIL_RE.test(e)))].slice(0, 500);
+  if (!emails.length) return fail(400, 'Wpisz adresy e-mail (po przecinku albo w osobnych liniach).');
+  let updated = 0; const found = new Set();
+  for (const email of emails) {
+    const u = await env.DB.prepare("SELECT u.id FROM users u WHERE u.email = ? AND (EXISTS(SELECT 1 FROM tickets t WHERE t.user_id = u.id AND t.event_id = ?) OR EXISTS(SELECT 1 FROM saved s WHERE s.user_id = u.id AND s.event_id = ? AND s.kind = 'going'))")
+      .bind(email, id, id).first();
+    if (u) {
+      // bilet tworzymy od razu, gdy ktoś ma „Mam bilet”, ale nie otworzył jeszcze kodu QR
+      await env.DB.prepare('INSERT OR IGNORE INTO tickets (code, user_id, event_id, created_at) VALUES (?, ?, ?, ?)').bind(ticketCode(), u.id, id, Date.now()).run();
+      updated += (await env.DB.prepare('UPDATE tickets SET zone = ? WHERE user_id = ? AND event_id = ?').bind(zone || null, u.id, id).run()).meta.changes; found.add(email);
+    }
+    const g = (await env.DB.prepare('UPDATE guests SET zone = ? WHERE event_id = ? AND email = ?').bind(zone || null, id, email).run()).meta.changes;
+    if (g) { updated += g; found.add(email); }
+  }
+  return json({ ok: true, updated, notFound: emails.filter(e => !found.has(e)) });
+}
+async function guideNotify(req, env, user) {
+  const b = await body(req), id = String(b.eventId || ''), audience = b.audience === 'inside' ? 'inside' : 'all';
+  const channel = ['push', 'mail', 'both'].includes(b.channel) ? b.channel : 'push';
+  if (!(await guideAccess(env, user, id))?.edit) return fail(403, 'Komunikaty wysyła administrator albo organizator tego wydarzenia.');
+  const title = cleanText(b.title, 120);
+  const text = String(b.body || '').replace(/\r/g, '').split('\n').map(l => cleanText(l, 600)).join('\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, channel === 'push' ? 400 : 3000);
+  if (!title) return fail(400, 'Wpisz tytuł komunikatu.');
+  if (channel !== 'push' && !(await env.DB.prepare("SELECT 1 FROM settings WHERE key = 'smtp'").first() || (env.RESEND_API_KEY && env.MAIL_FROM)))
+    return fail(400, 'Poczta nie jest jeszcze podłączona. Administrator ustawia ją w Panel admina → Główny e-mail.');
+  const recent = await env.DB.prepare('SELECT COUNT(*) AS n FROM event_posts WHERE event_id = ? AND created_at > ?').bind(id, Date.now() - 3600e3).first('n');
+  if (recent >= 10) return fail(429, 'Wysłano już 10 komunikatów w tej godzinie. Spróbuj później.');
+  const ids = await participantIds(env, id, audience);
+  // maile: konta z biletem + goście z listy organizatora (z adresem)
+  let mails = [];
+  if (channel !== 'push') {
+    const users = [];
+    for (let i = 0; i < ids.length; i += 90) {
+      const part = ids.slice(i, i + 90);
+      users.push(...(await env.DB.prepare(`SELECT email, name FROM users WHERE id IN (${part.map(() => '?').join(',')})`).bind(...part).all()).results);
+    }
+    const guests = (await env.DB.prepare(`SELECT email, name FROM guests WHERE event_id = ? AND email IS NOT NULL AND email <> ''${audience === 'inside' ? ' AND used_at IS NOT NULL' : ''}`).bind(id).all()).results;
+    const seen = new Set();
+    mails = [...users, ...guests].filter(r => r.email && !seen.has(r.email.toLowerCase()) && seen.add(r.email.toLowerCase()));
+  }
+  const total = channel === 'mail' ? mails.length : Math.max(ids.length, mails.length);
+  const res = await env.DB.prepare('INSERT INTO event_posts (event_id, title, body, audience, channel, recipients, by_user, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, title, text, audience, channel, total, user.id, Date.now()).run();
+  const post = res.meta.last_row_id;
+  let pushed = 0;
+  if (channel !== 'mail') {
+    const short = text.length > 400 ? text.slice(0, 397) + '…' : text;
+    for (let i = 0; i < ids.length; i += 50) await env.DB.batch(ids.slice(i, i + 50).map(u => notify(env, u, 'event', title, short, id, 'post:' + post)));
+    for (const u of ids.slice(0, 300)) pushed += await pushUser(env, u, { urgency: 'high' });
+  }
+  for (let i = 0; i < mails.length; i += 50)
+    await env.DB.batch(mails.slice(i, i + 50).map(r => env.DB.prepare('INSERT OR IGNORE INTO event_mail_queue (post_id, email, name) VALUES (?, ?, ?)').bind(post, r.email, r.name || '')));
+  const m = mails.length ? await mailBatch(req, env, post) : { sent: 0, failed: 0, remaining: 0 };
+  return json({ ok: true, post, recipients: ids.length, pushed, mails: mails.length, ...m });
+}
+/* wysyła kolejną partię maili komunikatu (limit połączeń na jedno żądanie Workera) */
+async function mailBatch(req, env, post) {
+  const p = await env.DB.prepare('SELECT * FROM event_posts WHERE id = ?').bind(post).first();
+  const e = p && (await loadEvents(env)).byId.get(p.event_id);
+  const { results } = await env.DB.prepare('SELECT email, name FROM event_mail_queue WHERE post_id = ? AND sent_at IS NULL AND failed < 2 LIMIT 20').bind(post).all();
+  const link = siteUrl(req, '/?guide=' + encodeURIComponent(p.event_id));
+  const when = e ? new Date(e.start + ':00').toLocaleString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) : '';
+  const paras = p.body ? p.body.split(/\n{2,}/).map(x => `<p style="margin:0 0 14px">${escHtml(x).replace(/\n/g, '<br>')}</p>`).join('') : '';
+  let sent = 0, failed = 0;
+  for (const r of results) {
+    const hi = r.name ? `Cześć ${r.name.split(' ')[0]}!` : 'Cześć!';
+    const text = `${hi}\n\n${p.title}\n\n${p.body ? p.body + '\n\n' : ''}${e ? e.title + '\n' + when + ' · ' + e.venue + '\n\n' : ''}Przewodnik po wydarzeniu: ${link}\n\n+1 · plusoneapp.pl`;
+    const html = `<div style="font:16px/1.6 -apple-system,Segoe UI,sans-serif;max-width:520px;margin:auto;padding:24px;color:#111">
+<div style="width:56px;height:56px;border-radius:14px;background:#000;color:#FF0059;font:700 28px/56px sans-serif;text-align:center">+1</div>
+${e ? `<p style="margin:22px 0 0;color:#FF0059;font:700 12px/1.4 monospace;letter-spacing:.12em;text-transform:uppercase">${escHtml(e.title)}</p><p style="margin:4px 0 0;color:#666;font-size:14px">${escHtml(when)} · ${escHtml(e.venue)}</p>` : ''}
+<h1 style="font-size:24px;line-height:1.2;margin:18px 0 12px">${escHtml(p.title)}</h1><p style="margin:0 0 14px">${escHtml(hi)}</p>${paras}
+<p style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#FF0059;color:#000;padding:14px 22px;border-radius:12px;font-weight:700;text-decoration:none">Plan, harmonogram i komunikaty</a></p>
+<p style="color:#888;font-size:13px">Dostajesz tę wiadomość, bo masz bilet na to wydarzenie w +1.</p></div>`;
+    const ok = await sendMail(env, r.email, p.title, text, html);
+    await env.DB.prepare(ok ? 'UPDATE event_mail_queue SET sent_at = ? WHERE post_id = ? AND email = ?' : 'UPDATE event_mail_queue SET failed = failed + 1 WHERE post_id = ? AND email = ? AND ? > 0')
+      .bind(...(ok ? [Date.now(), post, r.email] : [post, r.email, 1])).run();
+    ok ? sent++ : failed++;
+  }
+  const remaining = await env.DB.prepare('SELECT COUNT(*) AS n FROM event_mail_queue WHERE post_id = ? AND sent_at IS NULL AND failed < 2').bind(post).first('n');
+  const done = await env.DB.prepare('SELECT COUNT(*) AS n FROM event_mail_queue WHERE post_id = ? AND sent_at IS NOT NULL').bind(post).first('n');
+  return { sent, failed, remaining, mailed: done };
+}
+async function guideMailContinue(req, env, user) {
+  const b = await body(req), p = await env.DB.prepare('SELECT event_id FROM event_posts WHERE id = ?').bind(+b.post || 0).first();
+  if (!p || !(await guideAccess(env, user, p.event_id))?.edit) return fail(403, 'Brak dostępu.');
+  return json(await mailBatch(req, env, +b.post));
+}
+/* po wpuszczeniu: powitanie z linkiem do przewodnika (worker/index.js → scanTicket) */
+export async function welcomeInside(env, userId, eventId) {
+  const e = (await loadEvents(env)).byId.get(eventId);
+  await notify(env, userId, 'checkin', 'Jesteś w środku' + (e ? ': ' + e.title : ''), 'Otwórz przewodnik: plan miejsca, harmonogram i komunikaty.', eventId, 'in:' + eventId).run();
+  await pushUser(env, userId, { urgency: 'high' });
+}
+
 /* ---------------- router ---------------- */
 export async function premiumApi(path, m, req, env, user) {
   if (path.startsWith('/api/social/')) return socialApi(path, m, req, env, user);
   if (path === '/api/follows' && m === 'GET') return follows(env, user);
   if (path === '/api/follows' && m === 'POST') return setFollow(req, env, user);
   if (path === '/api/notifications' && m === 'GET') return notifications(env, user);
+  if (path === '/api/guide' && m === 'GET') return guideGet(req, env, user);
+  if (path === '/api/guide' && m === 'POST') return guideSave(req, env, user);
+  if (path === '/api/guide/map' && m === 'GET') return guideMap(req, env, user);
+  if (path === '/api/guide/notify' && m === 'POST') return guideNotify(req, env, user);
+  if (path === '/api/guide/mail' && m === 'POST') return guideMailContinue(req, env, user);
+  if (path === '/api/guide/zone' && m === 'POST') return guideZone(req, env, user);
   if (path === '/api/push/key' && m === 'GET') return json({ publicKey: (await vapidKeys(env)).publicKey });
   if (path === '/api/push/subscribe' && m === 'POST') {
     const b = await body(req), ep = String(b.endpoint || '');

@@ -441,7 +441,7 @@ const EVENTS = [
    desc:'Cotygodniowy set na dolnym parkiecie. Wejście do 00:30 taniej.', poolEnds: 1*3600+8*60},
   {id:'nocny', name:'NOCNY KOCHANEK', badge:'LAST TICKETS', when:'pt 28 sie · 20:00', date:'28 sierpnia', time:'20:00',
    venue:'Hydrozagadka', city:'Warszawa', from:89, cat:'Concerts', hue:8, sold:0.94,
-   lineup:['Nocny Kochanek','support: Ruby'], organizer:'Going Live',
+   lineup:['Nocny Kochanek','support: Ruby'], organizer:'Live Warszawa',
    desc:'Klasyk polskiej scenki metalowej z przymrużeniem oka. Ostatnie bilety w puli Regular.', poolEnds: 26*60},
   {id:'kwiat', name:'KWIAT JABŁONI', badge:'NEW ON +1', when:'sob 12 wrz · 19:00', date:'12 września', time:'19:00',
    venue:'Progresja', city:'Warszawa', from:139, cat:'Concerts', hue:150, sold:0.31,
@@ -468,7 +468,7 @@ const EVENTS = [
    Mocki powyżej zostają dla demo biletów, portfela i zaproszeń. */
 const CAT_PL = {Clubs:'Kluby', Concerts:'Koncerty', Festivals:'Festiwale', Theatre:'Teatr', Comedy:'Stand-up',
   Culture:'Kultura', Sport:'Sport', Family:'Dzieci', Other:'Inne'};
-const SRC_PL = {going:'Going.', ebilet:'eBilet', ra:'Resident Advisor', go2warsaw:'go2warsaw.pl'};
+const SRC_PL = {going:'Bilety online', ebilet:'eBilet', ra:'Resident Advisor', go2warsaw:'go2warsaw.pl'};
 const LIVE = {state:'loading', updatedAt:null, cities:{}};
 const DNI = ['nd','pon','wt','śr','czw','pt','sob'];
 const MIES = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
@@ -1412,6 +1412,7 @@ const scHome = () => {
     </div>
   </div>
   <div class="pad col app-welcome">
+    ${liveBanner()}
     <span class="eyebrow pink">Twój następny dobry wieczór</span>
     <h1 class="h1">Where are<br>we going?</h1>
     <button class="btn g" data-act="upcomingList">Odkryj wydarzenia ${ic('chevR',18)}</button>
@@ -1541,7 +1542,7 @@ const scList = () => {
   <div class="pad" style="padding-top:20px">
     <div class="card" style="padding:16px;display:flex;gap:12px;align-items:center">
       <span style="color:${PINK};display:flex">${ic('bell',19)}</span>
-      <span class="mono" style="flex:1;line-height:1.5">Dane z Going., eBilet, Resident Advisor i go2warsaw.pl · aktualizacja ${LIVE.updatedAt?new Date(LIVE.updatedAt).toLocaleString('pl-PL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</span>
+      <span class="mono" style="flex:1;line-height:1.5">Dane z serwisów biletowych i przewodników po mieście · aktualizacja ${LIVE.updatedAt?new Date(LIVE.updatedAt).toLocaleString('pl-PL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</span>
     </div>
   </div>`}
 </div>`;
@@ -1712,6 +1713,8 @@ const scLive = e => `
         .map(([l,i,a,on,k])=>`<button class="mine-act ${on?'on':''} ${on&&S.popId===e.id+k?'pop':''}" data-act="${a}">${ic(i,18)}<span>${l}</span></button>`).join('')}
     </div>
     ${MINE.going.has(e.id)?`<button class="btn w" data-act="${ACC.user?'ticketQR:'+e.id:'authFrom:event'}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('qr',18)} ${ACC.user?'Pokaż bilet z kodem QR':'Zaloguj się, żeby mieć bilet z kodem QR'}</button>`:''}
+    ${ACC.user&&MINE.going.has(e.id)?`<button class="btn g" data-act="guide:${e.id}" style="height:52px;font:600 15px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px">${ic('map',18)} Przewodnik: plan, harmonogram, komunikaty</button>`:''}
+    ${ACC.user&&(isAdmin()||isOrgNow())?`<button class="btn g" data-act="guideEdit:${e.id}" style="height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:10px;border-style:dashed">${ic('bell',16)} Komunikat do uczestników i przewodnik</button>`:''}
     ${premiumEvent(e)}
     ${isAdmin()?`<div class="row" style="gap:8px;padding:12px;border-radius:16px;border:1px dashed var(--pink-line)">
       <span class="mono" style="flex:1;color:${PINK}">ADMIN</span>
@@ -2782,7 +2785,7 @@ const SCREENS = {
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
   start:scStart, auth:scAuth, profile:scProfile, admin:()=>scAdmin(), scan:()=>scScan(), mytickets:()=>scMyTickets(),
-  staff:()=>scStaff(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(), meet:()=>scEncounter(),
+  staff:()=>scStaff(), org:()=>scOrg(), dash:()=>scDash(), orgEvents:()=>scOrgEvents(), guide:()=>scGuide(), guideEdit:()=>scGuideEdit(), plan:()=>scPlan(), mywrapped:()=>scMyWrapped(), staffStats:()=>scStaffStats(), staffActivity:()=>scStaffActivity(), people:()=>scSocial(), meet:()=>scEncounter(),
   loading:()=>'<div class="pg pad" style="padding-top:120px"><p class="body">Otwieram Twoje +1…</p></div>'
 };
 
@@ -2797,7 +2800,7 @@ const NAV = [
   {k:'wallet', ic:'wallet', l:'PORTFEL'}
 ];
 /* środkowe +1 prowadzi rundę poznawania; obsługa zachowuje osobny skaner */
-const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped','dash','admin','orgEvents',...STAFF_SCREENS];
+const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped','dash','admin','orgEvents','guide','guideEdit',...STAFF_SCREENS];
 /* administrator i organizator: własny pasek z pulpitem; środkowy przycisk uruchamia skaner */
 const ADMIN_NAV = [{k:'dash',ic:'bolt',l:'PULPIT'},{act:'adm:users',on:['admin:users','admin:invites'],ic:'users',l:'LUDZIE'},{fab:true},
   {act:'adm:orgs',on:['admin:orgs','org','orgEvents'],ic:'star',l:'ORGANIZATORZY'},{act:'adm:curation',on:['admin:curation','admin:stats','admin:mail','admin:data'],ic:'shield',l:'PANEL'}];

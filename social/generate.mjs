@@ -17,7 +17,7 @@ const MIES = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lip
 const DNI = ['niedziela', 'poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota'];
 const DNI_SKR = ['ND', 'PN', 'WT', 'ŚR', 'CZ', 'PT', 'SB'];
 const CAT_PL = { Clubs: 'Klub', Concerts: 'Koncert', Festivals: 'Festiwal', Theatre: 'Teatr', Comedy: 'Stand-up', Culture: 'Kultura', Sport: 'Sport', Family: 'Dzieci', Other: 'Wydarzenie' };
-const SRC_PL = { going: 'Going.', ebilet: 'eBilet', ra: 'Resident Advisor', go2warsaw: 'go2warsaw.pl' };
+const SRC_PL = { going: 'bilety online', ebilet: 'eBilet', ra: 'Resident Advisor', go2warsaw: 'go2warsaw.pl' };
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fold = s => String(s).toLowerCase().replace(/ł/g, 'l').normalize('NFD').replace(/[̀-ͯ]/g, '');
 

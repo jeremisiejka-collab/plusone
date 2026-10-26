@@ -64,6 +64,11 @@ async function ticketSheet(eventId){
   const [list] = await Promise.all([loadTickets(true), loadLib('/vendor/qr/qrcode.js')]);
   const t = list.find(x=>x.eventId===eventId), box = $('#qrbox');
   if(!box) return;
+  if(t?.zone){ // bilet w strefie: własny kolor i nazwa strefy
+    box.style.boxShadow = `0 0 0 6px ${t.zone.color}`;
+    const lbl = $('#sheet .mono'); if(lbl){ lbl.textContent = 'BILET +1 · STREFA '+t.zone.name.toUpperCase(); lbl.style.color = t.zone.color; }
+    $('#sheet').style.background = `linear-gradient(180deg, color-mix(in srgb, ${t.zone.color} 22%, var(--surface)), var(--surface) 55%)`;
+  }
   if(!t){ box.innerHTML = '<span class="mono" style="color:#000;padding:10px">Najpierw stuknij „Mam bilet”.</span>'; return; }
   const q = qrcode(0, 'M'); q.addData(t.code); q.make();
   box.innerHTML = q.createSvgTag({cellSize:6, margin:0, scalable:true});
@@ -101,7 +106,7 @@ const scStaffActivity = () => `<div class="pg staff-page" style="padding:64px 0 
     ${SCAN.history.length ? [...SCAN.history].reverse().map(r=>`<div class="staff-entry card">
       <span class="staff-entry-icon ${r.status==='ok'?'ok':''}">${ic(r.status==='ok'?'check':r.status==='undone'?'undo':'cross',20)}</span>
       <div class="col" style="gap:5px;flex:1"><strong>${esc({ok:'Wpuszczono',used:'Bilet już użyty',invalid:'Nieważny bilet',undone:'Cofnięto wejście',error:'Nie udało się sprawdzić'}[r.status]||'Sprawdzenie biletu')}</strong>
-        <span class="mono">${esc(r.name||r.email||'Kod biletu')}</span></div>
+        <span class="mono">${esc(r.name||r.email||'Kod biletu')}${r.zone?' · strefa '+esc(r.zone.name):''}</span></div>
       <time class="mono">${new Date(r.at).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})}</time>
     </div>`).join('') : `<div class="card staff-empty">${ic('clock',32)}<h2 class="h3">Pierwszy skan przed Tobą</h2><p class="body">Tutaj pojawią się wyniki sprawdzeń z bieżącej sesji.</p></div>`}
   </div>
@@ -134,7 +139,7 @@ function scanResultHtml(r){
   const big = {ok:'WPUŚĆ', used:'JUŻ UŻYTY', invalid:'NIEWAŻNY', undone:'COFNIĘTO', error:'BŁĄD'}[r.status] || '';
   const sub = r.status==='used' ? `${new Date(r.usedAt).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})}${r.usedBy?' · '+esc(r.usedBy):''}` : r.message ? esc(r.message) : '';
   return `<span class="scanicon">${ic(r.status==='ok'||r.status==='undone'?'check':'cross',46,2.6)}</span>
-    <b>${big}</b>${r.name||r.email?`<span>${esc(r.name||r.email)}</span>`:''}${e?`<span class="mono">${esc(e.name)}</span>`:''}${sub?`<span class="mono">${sub}</span>`:''}
+    <b>${big}</b>${r.zone?`<span class="zone-pill" style="--z:${esc(r.zone.color)};font-size:15px">Strefa ${esc(r.zone.name)}</span>`:''}${r.name||r.email?`<span>${esc(r.name||r.email)}</span>`:''}${e?`<span class="mono">${esc(e.name)}</span>`:''}${sub?`<span class="mono">${sub}</span>`:''}
     ${r.status==='ok'?`<button class="chip" data-act="scanUndo:${esc(r.code)}" style="margin-top:6px;background:rgba(0,0,0,.25);color:#fff;border-color:rgba(255,255,255,.4)">Cofnij</button>`:''}`;
 }
 async function scanCheck(code, undo=false){
@@ -142,7 +147,7 @@ async function scanCheck(code, undo=false){
   let r;
   try{ r = await apiCall('/api/scan','POST',{code, undo}); }catch(e){ r = {status:'error', message:e.message}; }
   r.code = code; SCAN.result = r; SCAN.busy = false;
-  SCAN.history.push({status:r.status, name:r.name, email:r.email, at:Date.now()});
+  SCAN.history.push({status:r.status, name:r.name, email:r.email, zone:r.zone, at:Date.now()});
   if(r.status==='ok'){ SCAN.count++; sfxOk(); haptic(30); } else if(r.status==='undone'){ SCAN.count=Math.max(0,SCAN.count-1); sfxTap(); } else { sfxErr(); haptic([60,60,60]); }
   const box = $('#scanres'); if(box){ box.className = 'scanres on '+r.status; box.innerHTML = scanResultHtml(r); bind(box); }
   const c = $('#scancount'); if(c) c.textContent = SCAN.count+' wpuszczonych w tej sesji';
@@ -203,7 +208,7 @@ function stopScan(){
 /* wywoływane po każdym przerysowaniu ekranu */
 function adminAfterRender(){
   if(S.screen==='scan') startScan(); else stopScan();
-  viewAsBar(); workBar(); previewBar();
+  viewAsBar(); workBar(); previewBar(); guideAfterRender();
 }
 
 /* akcje z data-act obsługiwane w tym module; zwraca true, jeśli rozpoznano */
@@ -238,6 +243,21 @@ function adminAct(cmd, p1, p2, a){
     case 'viewAs': setViewAs(p1||null); return true;
     case 'browse': setBrowse(p1==='1'); return true;
     case 'previewSheet': previewSheet(); return true;
+    case 'guide': openGuide(a.slice(6)); return true;
+    case 'guideEdit': openGuide(a.slice(10), true); return true;
+    case 'gpin': GUIDE.pin = GUIDE.pin===+p1 ? null : +p1; S.dir=null; render(); return true;
+    case 'gAud': GUIDE.edit.audience = p1; S.dir=null; render(); return true;
+    case 'gChan': GUIDE.edit.channel = p1; S.dir=null; render(); return true;
+    case 'gTpl': { const t = guideTemplates(guideEv(GUIDE.data)).find(x=>x[0]===p1); if(t){ GUIDE.edit.title = t[2]; GUIDE.edit.body = t[3]; if(GUIDE.edit.channel==='push' && t[3].length>400) GUIDE.edit.body = t[3].slice(0,397)+'…'; S.dir=null; render(); } return true; }
+    case 'gZoneAdd': GUIDE.edit.zones.push({key:'', name:'', color:ZONE_COLORS[GUIDE.edit.zones.length % ZONE_COLORS.length][0]}); S.dir=null; render(); return true;
+    case 'gZoneDel': GUIDE.edit.zones.splice(+p1,1); S.dir=null; render(); return true;
+    case 'gZoneAssign': guideZoneAssign(); return true;
+    case 'gSend': guideSend(); return true;
+    case 'gSave': guideSave(); return true;
+    case 'gMapDel': GUIDE.edit.map = null; GUIDE.edit.hasMap = false; GUIDE.edit.points = []; S.dir=null; render(); return true;
+    case 'gPtDel': GUIDE.edit.points.splice(+p1,1); S.dir=null; render(); return true;
+    case 'gSchAdd': GUIDE.edit.schedule.push({time:'',title:''}); S.dir=null; render(); return true;
+    case 'gSchDel': GUIDE.edit.schedule.splice(+p1,1); S.dir=null; render(); return true;
     case 'previewAs': previewAs(p1); return true;
     case 'previewEnd': previewEnd(); return true;
     case 'adm': S.adminTab=p1; S.dir=null; S.screen==='admin' ? render() : go('admin'); return true;
@@ -451,20 +471,23 @@ async function orgLoad(){
 async function guestsSheet(id){
   const e = EVENTS.find(x=>x.id===id);
   let list = [];
+  let zones = [];
   try{ list = (await apiCall('/api/org/guests?event='+encodeURIComponent(id))).guests; }catch(err){ toast(esc(err.message),true); return; }
+  try{ zones = (await apiCall('/api/guide?event='+encodeURIComponent(id))).guide.zones||[]; }catch(err){}
   sheet(`<div class="col" style="gap:12px"><span class="h3">Lista gości</span><span class="mono">${esc(e?e.name:id)}</span>
     <div class="field"><label>IMIĘ I NAZWISKO</label><input id="gs-name" autocomplete="off"></div>
     <div class="field"><label>E-MAIL (BILET Z QR PRZYJDZIE MAILEM)</label><input id="gs-email" type="email" autocapitalize="off" data-enter="addGuest:${esc(id)}"></div>
+    ${zones.length?`<div class="field"><label>STREFA</label><select id="gs-zone" class="sel"><option value="">Wejście ogólne</option>${zones.map(z=>`<option value="${esc(z.key)}">${esc(z.name)}</option>`).join('')}</select></div>`:''}
     <button class="btn p" data-act="addGuest:${esc(id)}" style="height:50px">Dodaj gościa</button>
     <div>${list.map(g=>`<div class="row" style="gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
-      <div class="col" style="flex:1;min-width:0"><span class="h4">${esc(g.name)}</span><span class="mono" style="margin-top:3px">${esc(g.email||'bez maila')} · ${g.used_at?'wpuszczony':'czeka'}</span></div>
+      <div class="col" style="flex:1;min-width:0"><span class="h4">${esc(g.name)} ${zoneTag(zones.find(z=>z.key===g.zone))}</span><span class="mono" style="margin-top:3px">${esc(g.email||'bez maila')} · ${g.used_at?'wpuszczony':'czeka'}</span></div>
       <a class="chip" href="/t/${esc(g.code)}" target="_blank" rel="noopener" style="padding:6px 10px;font-size:12px">QR</a>
       <button class="chip" data-act="delGuest:${esc(g.code)}:${esc(id)}" style="padding:6px 10px;font-size:12px">Usuń</button></div>`).join('') || '<span class="mono">Na liście nikogo jeszcze nie ma.</span>'}</div></div>`);
   $$('[data-enter]',$('#sheet')).forEach(i=>{ i.onkeydown = ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); act(i.dataset.enter); } }; });
 }
 async function addGuest(id){
-  const name = $('#gs-name')?.value.trim(), email = $('#gs-email')?.value.trim();
-  try{ const r = await apiCall('/api/org/guests','POST',{eventId:id, name, email});
+  const name = $('#gs-name')?.value.trim(), email = $('#gs-email')?.value.trim(), zone = $('#gs-zone')?.value||'';
+  try{ const r = await apiCall('/api/org/guests','POST',{eventId:id, name, email, zone});
     toast(r.emailed ? 'Dodano — bilet poszedł mailem' : 'Dodano — link do biletu: /t/'+esc(r.code), true, 3200); sfxOk(); ORG.at=0; guestsSheet(id); }
   catch(e){ toast(esc(e.message),true); }
 }
@@ -478,7 +501,7 @@ function workMode(){
   return r==='admin' || r==='organizer' ? r : null;
 }
 const workHome = () => workMode()==='admin' ? 'dash' : 'org';
-const WORK_SCREENS = { admin:['dash','admin','org','orgEvents','scan','profile','event','auth'], organizer:['org','orgEvents','scan','profile','event','auth'] };
+const WORK_SCREENS = { admin:['dash','admin','org','orgEvents','scan','profile','event','auth','guide','guideEdit'], organizer:['org','orgEvents','scan','profile','event','auth','guide','guideEdit'] };
 /* ekran, na który trafia rola z pulpitem; null = bez zmian */
 function workScreen(s){
   const m = workMode(); if(!m) return null;
@@ -567,6 +590,16 @@ function previewData(){
       series:{saves:previewSeries(12), going:previewSeries(10), scans:previewSeries(4)}, seriesFrom:from}
   };
 }
+function previewGuide(path, role){
+  const id = new URLSearchParams(path.split('?')[1]).get('event'), e = EVENTS.find(x=>x.id===id);
+  const t = Date.now();
+  return { event:{id, title:e?.name, venue:e?.venue, city:e?.city, address:e?.address, image:e?.image}, canEdit: role==='admin'||role==='organizer',
+    ticket: role==='user' ? {code:'P1-PODGLAD', usedAt:t-40*60e3, zone:{key:'vip',name:'VIP',color:'#F5B73B'}} : null, audience:{all:214, inside:96},
+    mailer:true, zoneCounts:{vip:24}, guide:{ zones:[{key:'vip',name:'VIP',color:'#F5B73B'}], info:'Szatnia przy wejściu, 5 zł. Bar przyjmuje karty.\nWyjście ewakuacyjne po obu stronach sceny.\nW razie problemów: obsługa w żółtych kamizelkach.', mapRatio:null, hasMap:false, updatedAt:t,
+      schedule:[{time:'19:00',title:'Otwarcie drzwi'},{time:'20:00',title:'Support'},{time:'21:15',title:'Główny koncert'},{time:'23:30',title:'Afterparty'}], points:[] },
+    posts:[{id:2,title:'Główny koncert startuje o 21:15',body:'Support gra do 20:45. Bar na piętrze jest już otwarty.',audience:'all',created_at:t-20*60e3},
+      {id:1,title:'Drzwi otwarte',body:'Zapraszamy, kolejka przy wejściu B jest krótsza.',audience:'all',created_at:t-95*60e3}] };
+}
 function previewAs(role){
   if(!PREVIEW_ROLES.some(r=>r[0]===role)) return;
   if(!PREVIEW.realApi) PREVIEW.realApi = apiCall;
@@ -585,7 +618,8 @@ function previewAs(role){
       if(p==='/api/admin/organizers') return {organizers:D.orgs};
       if(p==='/api/org/me') return D.org;
       if(p==='/api/org/guests') return {guests:[{code:'P1-PODGLAD1',name:'Gość z listy',email:'gosc@przyklad.pl',created_at:Date.now(),used_at:null}]};
-      if(p==='/api/tickets') return {tickets:[]};
+      if(p==='/api/tickets') return {tickets: role==='user' && D.org.events[0] ? [{code:'P1-PODGLAD', eventId:D.org.events[0].id, usedAt:Date.now()-40*60e3}] : []};
+      if(p==='/api/guide') return previewGuide(path, role);
       if(p==='/api/preview-access') return {allowed:true};
     }
     throw new Error('To tylko podgląd — zmiany nie są zapisywane.');
@@ -605,6 +639,227 @@ function previewBar(){
   if(!bar){ bar = document.createElement('div'); bar.id='previewbar'; document.body.appendChild(bar); }
   bar.innerHTML = `<span>Podgląd: <b>${esc(roleName(PREVIEW.role))}</b><span class="pv-note"> · przykładowe dane</span></span>
     <button onclick="previewSheet()">Zmień</button><button onclick="previewEnd()">Zakończ</button>`;
+}
+
+/* ---- PRZEWODNIK PO WYDARZENIU (uczestnik z biletem) i edytor z komunikatami (administrator / organizator) ---- */
+const GUIDE = { id:null, data:null, at:0, edit:null, busy:false, pin:null };
+const GUIDE_KINDS = [['stage','Scena','music'],['bar','Bar','beer'],['food','Jedzenie','hotdog'],['wc','Toalety','water'],['coat','Szatnia','coat'],
+  ['exit','Wyjście','gate'],['medic','Pomoc medyczna','plus'],['info','Informacja','bell']];
+const kindOf = k => GUIDE_KINDS.find(x=>x[0]===k) || GUIDE_KINDS[7];
+function openGuide(id, edit=false){ GUIDE.id = id; GUIDE.data = null; GUIDE.edit = null; GUIDE.pin = null; go(edit ? 'guideEdit' : 'guide'); }
+async function guideLoad(){
+  const id = GUIDE.id;
+  try{ GUIDE.data = await apiCall('/api/guide?event='+encodeURIComponent(id)); }catch(e){ GUIDE.data = {error:e.message}; }
+  if(id!==GUIDE.id) return;
+  GUIDE.at = Date.now(); S.dir=null; render();
+}
+const guideEv = D => { const e = EVENTS.find(x=>x.id===GUIDE.id); return { name: e?.name || D?.event?.title || 'Wydarzenie', when: e?.when || (D?.event?.start||'').replace('T',' · '),
+  venue: e?.venue || D?.event?.venue || '', address: e?.address || D?.event?.address || '', city: e?.city || D?.event?.city || '', image: e?.image || D?.event?.image }; };
+const guideMapUrl = D => '/api/guide/map?event='+encodeURIComponent(GUIDE.id)+'&v='+(D.guide.updatedAt||0);
+function guideMapHtml(D, editing=false){
+  const g = editing ? GUIDE.edit : D.guide, src = editing ? (GUIDE.edit.map || (GUIDE.edit.hasMap ? guideMapUrl(D) : null)) : (g.hasMap ? guideMapUrl(D) : null);
+  if(!src) return '';
+  return `<div class="gmap ${editing?'edit':''}" id="gmap" style="aspect-ratio:${g.mapRatio||1.4}">
+    <img src="${esc(src)}" alt="Plan wydarzenia" draggable="false">
+    ${(g.points||[]).map((p,i)=>`<button class="gpin ${GUIDE.pin===i?'on':''}" style="left:${p.x}%;top:${p.y}%" ${editing?'':`data-act="gpin:${i}"`} aria-label="${esc(p.label)}">
+      ${ic(kindOf(p.kind)[2],14)}<span>${editing?i+1:esc(p.label)}</span></button>`).join('')}</div>`;
+}
+const scGuide = () => {
+  if(!GUIDE.id) return scHome();
+  const D = GUIDE.data;
+  if(!D || Date.now()-GUIDE.at>60e3) setTimeout(guideLoad,0);
+  const E = guideEv(D), inside = !!D?.ticket?.usedAt;
+  const head = `<div class="ghead">${E.image?`<img src="${esc(E.image)}" alt="" onerror="this.remove()">`:''}
+    <div class="col" style="gap:8px;min-width:0"><span class="eyebrow pink">${inside?'Jesteś w środku':'Przewodnik po wydarzeniu'}</span>
+      <h1>${esc(E.name)}</h1><span class="mono">${esc([E.when, E.venue].filter(Boolean).join(' · '))}</span>
+      ${D?.ticket?.zone?`<span class="zone-pill" style="--z:${esc(D.ticket.zone.color)}">Strefa ${esc(D.ticket.zone.name)}</span>`:''}
+      ${inside?`<span class="gin">${ic('check',14,2.4)} Wpuszczony o ${new Date(D.ticket.usedAt).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})}</span>`:''}</div></div>`;
+  const back = `<button class="dback" data-act="back" style="margin-bottom:14px">${ic('chevL',12,2)} Wróć</button>`;
+  if(D?.error) return `<div class="pg dash guide">${back}${head}<div class="dcard"><p class="dnote" style="margin:0">${esc(D.error)}</p>
+    <button class="btn p" data-act="ev:${esc(GUIDE.id)}" style="height:48px;margin-top:14px">Zobacz wydarzenie</button></div></div>`;
+  if(!D) return `<div class="pg dash guide">${back}${head}${loadingBox()}</div>`;
+  const g = D.guide, posts = D.posts||[], maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([E.venue, E.address, E.city].filter(Boolean).join(', '))}`;
+  const empty = !g.hasMap && !g.schedule.length && !g.info && !posts.length;
+  return `<div class="pg dash guide">${back}${head}
+  <div class="row" style="gap:8px;flex-wrap:wrap;margin:16px 0 4px">
+    ${D.ticket?`<button class="chip on" data-act="ticketQR:${esc(GUIDE.id)}" style="display:inline-flex;align-items:center;gap:6px">${ic('qr',14)} Mój bilet</button>`:''}
+    <a class="chip" href="${maps}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px">${ic('pin',14)} Dojazd</a>
+    ${D.canEdit?`<button class="chip" data-act="guideEdit:${esc(GUIDE.id)}" style="display:inline-flex;align-items:center;gap:6px">${ic('bolt',14)} Edytuj i wyślij komunikat</button>`:''}
+  </div>
+  <div class="dgrid" style="margin-top:12px">
+    ${posts.length?dcard('Komunikaty', `<ul class="gposts">${posts.map((p,i)=>`<li class="${i===0&&Date.now()-p.created_at<3*3600e3?'new':''}"><b>${esc(p.title)}</b>${p.body?`<p>${esc(p.body)}</p>`:''}<span class="mono">${ago(p.created_at)}</span></li>`).join('')}</ul>`, '', 'span2'):''}
+    ${g.hasMap?dcard('Mapa wydarzenia', guideMapHtml(D) + (g.points.length?`<ul class="glegend">${g.points.map((p,i)=>`<li class="${GUIDE.pin===i?'on':''}" data-act="gpin:${i}"><span>${ic(kindOf(p.kind)[2],15)}</span>${esc(p.label)}<em>${kindOf(p.kind)[1]}</em></li>`).join('')}</ul>`:''), '', 'span2'):''}
+    ${g.schedule.length?dcard('Harmonogram', `<ol class="gsched">${g.schedule.map(x=>`<li><time>${esc(x.time)}</time><span>${esc(x.title)}</span></li>`).join('')}</ol>`):''}
+    ${g.info?dcard('Informacje', `<div class="ginfo">${esc(g.info).replace(/\n/g,'<br>')}</div>`):''}
+    ${dcard('Dojazd i miejsce', `<p class="dnote" style="margin:0"><b style="color:var(--t1)">${esc(E.venue)}</b><br>${esc([E.address, E.city].filter(Boolean).join(', '))}</p>
+      <a class="btn g" href="${maps}" target="_blank" rel="noopener" style="height:46px;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font:600 14px/1 var(--d)">${ic('pin',16)} Otwórz w mapach</a>`)}
+    ${empty?dcard('Wkrótce więcej', `<p class="dnote" style="margin:0">Organizator nie dodał jeszcze planu ani harmonogramu. Gdy coś się pojawi albo przyjdzie komunikat, zobaczysz to tutaj i dostaniesz powiadomienie.</p>`):''}
+  </div></div>`;
+};
+
+const ZONE_COLORS = [['#F5B73B','Złoty'],['#B8BCC6','Srebrny'],['#8B5CF6','Fioletowy'],['#14B8A6','Turkusowy'],['#3B82F6','Niebieski'],['#EF4444','Czerwony'],['#22C55E','Zielony'],['#EC4899','Różowy']];
+const zoneTag = z => z ? `<span class="zone-tag" style="--z:${esc(z.color)}">${esc(z.name)}</span>` : '';
+/* gotowe wiadomości do uczestników: tytuł i treść uzupełniane danymi wydarzenia, do poprawienia przed wysyłką */
+function guideTemplates(E){
+  const e = EVENTS.find(x=>x.id===GUIDE.id), d = e ? new Date(e.start) : null;
+  const day = d ? d.toLocaleDateString('pl-PL',{weekday:'long', day:'numeric', month:'long'}) : 'w dniu wydarzenia';
+  const hour = e?.time || (d ? d.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'}) : '');
+  return [
+    ['invite','Zaproszenie', `Widzimy się ${day}!`, `Drzwi otwieramy o ${hour||'…'}. Zapraszamy wszystkich wcześniej, żeby uniknąć kolejki.\n\nBilet z kodem QR masz w aplikacji +1 (Konto → Moje bilety). Do zobaczenia w ${E.venue||'klubie'}!`],
+    ['week','Za 7 dni', `${E.name}: już za tydzień`, `Zostało 7 dni do ${E.name}. Sprawdź w przewodniku plan miejsca i harmonogram, a bilet z kodem QR trzymaj pod ręką w aplikacji +1.`],
+    ['tomorrow','Jutro', `Już jutro: ${E.name}`, `Startujemy jutro o ${hour||'…'}. Szatnia i bar działają od otwarcia drzwi. Pamiętaj o dokumencie ze zdjęciem.`],
+    ['transport','Dojazd', 'Jak dojechać', `${E.venue||'Miejsce wydarzenia'}${E.address?', '+E.address:''}.\n\nNajwygodniej komunikacją miejską. Parking w okolicy jest ograniczony. Po wydarzeniu kursują autobusy nocne.`],
+    ['change','Zmiana', 'Ważna zmiana', `Zmiana w programie: …`],
+    ['thanks','Po wydarzeniu', 'Dziękujemy, że byliście!', `Dzięki za wspólny wieczór. Zdjęcia i kolejne wydarzenia znajdziesz w aplikacji +1.`]
+  ];
+}
+/* edytor: plan z punktami, harmonogram, informacje, komunikat do uczestników */
+function guideEditState(D){
+  const g = D.guide;
+  GUIDE.edit = { info:g.info, schedule:g.schedule.map(x=>({...x})), points:g.points.map(x=>({...x})), zones:(g.zones||[]).map(x=>({...x})), hasMap:g.hasMap, mapRatio:g.mapRatio, map:undefined,
+    title:'', body:'', audience:'all', channel:'push', zoneSel:'', zoneEmails:'' };
+}
+const scGuideEdit = () => {
+  if(!GUIDE.id) return scHome();
+  const D = GUIDE.data;
+  if(!D) setTimeout(guideLoad,0);
+  const E = guideEv(D);
+  const head = dashHead(`<button class="dback" data-act="back">${ic('chevL',12,2)} Wróć</button>`, 'Przewodnik i komunikaty', esc([E.name, E.when, E.venue].filter(Boolean).join(' · ')),
+    `<button class="chip" data-act="guide:${esc(GUIDE.id)}">${ic('search',14)} Zobacz jak uczestnik</button>`);
+  if(D?.error) return `<div class="pg dash">${head}<div class="err">${esc(D.error)}</div></div>`;
+  if(!D) return `<div class="pg dash">${head}${loadingBox()}</div>`;
+  if(!D.canEdit) return `<div class="pg dash">${head}<div class="err">Ten przewodnik edytuje administrator albo organizator wydarzenia.</div></div>`;
+  if(!GUIDE.edit) guideEditState(D);
+  const G = GUIDE.edit, A = D.audience||{all:0,inside:0};
+  const set = (k) => `oninput="GUIDE.edit${k}=this.value"`;
+  return `<div class="pg dash">${head}
+  <div class="dgrid">
+    ${dcard('Wiadomość do uczestników', `<div class="col" style="gap:12px">
+      <div class="seg">${[['push','Na telefon'],['mail','E-mail'],['both','Telefon i e-mail']].map(([k,l])=>`<button class="${G.channel===k?'on':''}" data-act="gChan:${k}">${l}</button>`).join('')}</div>
+      ${G.channel!=='push'&&D.mailer===false?`<div class="err">Poczta nie jest jeszcze podłączona. Administrator ustawia ją w Panel admina → Główny e-mail.</div>`:''}
+      <div class="seg">${[['all','Wszyscy z biletem',A.all],['inside','Tylko w środku',A.inside]].map(([k,l,n])=>`<button class="${G.audience===k?'on':''}" data-act="gAud:${k}">${l} · ${pl(n)}</button>`).join('')}</div>
+      <div class="col" style="gap:6px"><span class="mono">GOTOWE WIADOMOŚCI</span><div class="row" style="gap:6px;flex-wrap:wrap">${guideTemplates(E).map(([k,l])=>`<button class="chip" data-act="gTpl:${k}" style="padding:6px 11px;font-size:12px">${l}</button>`).join('')}</div></div>
+      <div class="field"><label>${G.channel==='push'?'TYTUŁ':'TEMAT / TYTUŁ'}</label><input id="gn-title" maxlength="120" value="${esc(G.title)}" ${set('.title')} placeholder="np. Drzwi otwieramy o 19:00"></div>
+      <div class="field"><label>TREŚĆ${G.channel==='push'?' (OPCJONALNIE)':''}</label><textarea id="gn-body" maxlength="${G.channel==='push'?400:3000}" rows="${G.channel==='push'?3:7}" ${set('.body')} placeholder="${G.channel==='push'?'Krótko, konkretnie. Dojdzie jako powiadomienie na telefon.':'Wszystko, co warto wiedzieć przed wydarzeniem: godziny, dojazd, zasady wejścia.'}">${esc(G.body)}</textarea></div>
+      <button class="btn p" data-act="gSend" ${GUIDE.busy?'disabled style="opacity:.6"':''}>${GUIDE.progress||`Wyślij ${G.channel==='push'?'powiadomienie':G.channel==='mail'?'e-mail':'powiadomienie i e-mail'} · ${pl(G.audience==='inside'?A.inside:A.all)} ${G.audience==='inside'?'osób w środku':'uczestników'}`}</button>
+      ${(D.posts||[]).length?`<ul class="gposts small">${D.posts.slice(0,6).map(p=>`<li><b>${esc(p.title)}</b><span class="mono">${{push:'telefon',mail:'e-mail',both:'telefon + e-mail'}[p.channel||'push']} · ${p.audience==='inside'?'w środku':'wszyscy'}${p.channel&&p.channel!=='push'?' · '+pl(p.mailed||0)+' maili':''} · ${ago(p.created_at)}</span></li>`).join('')}</ul>`:''}</div>`, '', 'span2')}
+    ${dcard('Strefy i bilety', `<div class="col" style="gap:12px">
+      <p class="dnote" style="margin:0">Np. VIP albo Golden. Osoba w strefie ma bilet z kodem QR w kolorze strefy, a skaner przy wejściu pokazuje strefę.</p>
+      ${G.zones.map((z,i)=>`<div class="gsrow"><span class="zone-dot" style="background:${esc(z.color)}"></span>
+        <input value="${esc(z.name)}" maxlength="30" placeholder="Nazwa strefy, np. VIP" oninput="GUIDE.edit.zones[${i}].name=this.value">
+        <select class="sel" style="width:120px;height:42px;font-size:14px;flex:none" onchange="GUIDE.edit.zones[${i}].color=this.value;this.parentNode.firstElementChild.style.background=this.value">${ZONE_COLORS.map(([c,l])=>`<option value="${c}" ${z.color===c?'selected':''}>${l}</option>`).join('')}</select>
+        <span class="mono" style="flex:none;width:34px;text-align:right">${pl((D.zoneCounts||{})[z.key]||0)}</span>
+        <button class="chip" data-act="gZoneDel:${i}" aria-label="Usuń strefę">${ic('cross',12)}</button></div>`).join('')}
+      <button class="chip" data-act="gZoneAdd" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px">${ic('plus',14)} Dodaj strefę</button>
+      ${(D.guide.zones||[]).length?`<div class="col" style="gap:8px;padding-top:6px;border-top:1px solid var(--line)"><span class="mono">PRZYPISZ OSOBY DO STREFY</span>
+        <select class="sel" onchange="GUIDE.edit.zoneSel=this.value"><option value="">Wejście ogólne (bez strefy)</option>${D.guide.zones.map(z=>`<option value="${esc(z.key)}" ${G.zoneSel===z.key?'selected':''}>${esc(z.name)}</option>`).join('')}</select>
+        <textarea rows="3" placeholder="E-maile osób z biletem albo gości z listy, po przecinku lub w osobnych liniach" oninput="GUIDE.edit.zoneEmails=this.value">${esc(G.zoneEmails)}</textarea>
+        <button class="btn g" data-act="gZoneAssign" style="height:46px;font:600 14px/1 var(--d)">Przypisz</button></div>`:`<span class="mono">Zapisz przewodnik, żeby przypisywać osoby do stref.</span>`}</div>`)}
+    ${dcard('Plan miejsca', `<div class="col" style="gap:12px">
+      <p class="dnote" style="margin:0">Wgraj plan (zdjęcie albo grafikę), potem stuknij w plan, żeby dodać punkt: scenę, bar, toalety, szatnię, wyjście.</p>
+      ${guideMapHtml(D, true)}
+      <div class="row" style="gap:8px;flex-wrap:wrap"><label class="chip on" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px">${ic('plus',14)} ${G.map||G.hasMap?'Zmień plan':'Wgraj plan'}
+        <input type="file" accept="image/*" onchange="guidePickMap(this)" style="display:none"></label>
+        ${G.map||G.hasMap?`<button class="chip" data-act="gMapDel">Usuń plan</button>`:''}</div>
+      ${G.points.length?`<ol class="gpts">${G.points.map((p,i)=>`<li><span class="gpts-n">${i+1}</span>
+        <input value="${esc(p.label)}" maxlength="60" placeholder="Nazwa punktu" oninput="GUIDE.edit.points[${i}].label=this.value">
+        <select class="sel" onchange="GUIDE.edit.points[${i}].kind=this.value">${GUIDE_KINDS.map(([k,l])=>`<option value="${k}" ${p.kind===k?'selected':''}>${l}</option>`).join('')}</select>
+        <button class="chip" data-act="gPtDel:${i}" aria-label="Usuń punkt">${ic('cross',12)}</button></li>`).join('')}</ol>`:''}</div>`)}
+    ${dcard('Harmonogram', `<div class="col" style="gap:8px">
+      ${G.schedule.map((x,i)=>`<div class="gsrow"><input value="${esc(x.time)}" maxlength="20" placeholder="21:00" oninput="GUIDE.edit.schedule[${i}].time=this.value">
+        <input value="${esc(x.title)}" maxlength="120" placeholder="Co się dzieje" oninput="GUIDE.edit.schedule[${i}].title=this.value">
+        <button class="chip" data-act="gSchDel:${i}" aria-label="Usuń">${ic('cross',12)}</button></div>`).join('')}
+      <button class="chip" data-act="gSchAdd" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px">${ic('plus',14)} Dodaj punkt programu</button></div>`)}
+    ${dcard('Informacje dla uczestników', `<div class="field"><textarea rows="7" maxlength="4000" ${set('.info')} placeholder="Szatnia, zasady wejścia, bar, kontakt do obsługi, godzina zamknięcia…">${esc(G.info)}</textarea></div>`)}
+  </div>
+  <div class="dfoot"><button class="btn p" data-act="gSave" style="height:50px;padding:0 28px" ${GUIDE.busy?'disabled':''}>Zapisz przewodnik</button></div>
+</div>`;
+};
+function guidePickMap(input){
+  const f = input.files && input.files[0]; if(!f) return;
+  if(!/^image\//.test(f.type)){ toast('Wybierz obrazek', true); return; }
+  const img = new Image(), url = URL.createObjectURL(f);
+  img.onload = () => {
+    const k = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+    c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+    const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(img, 0, 0, c.width, c.height);
+    let q = .85, data = c.toDataURL('image/jpeg', q);
+    while(data.length > 1.1e6 && q > .4){ q -= .1; data = c.toDataURL('image/jpeg', q); }
+    URL.revokeObjectURL(url);
+    GUIDE.edit.map = data; GUIDE.edit.mapRatio = +(c.width/c.height).toFixed(3); S.dir=null; render();
+  };
+  img.onerror = () => toast('Nie udało się wczytać obrazka', true);
+  img.src = url;
+}
+/* stuknięcie w plan w edytorze dodaje punkt */
+function guideAfterRender(){
+  const m = document.getElementById('gmap');
+  if(m && m.classList.contains('edit')) m.onclick = e => {
+    if(e.target.closest('.gpin')) return;
+    const r = m.getBoundingClientRect();
+    GUIDE.edit.points.push({ x:+((e.clientX-r.left)/r.width*100).toFixed(1), y:+((e.clientY-r.top)/r.height*100).toFixed(1), label:'', kind:'info' });
+    S.dir=null; render();
+    const ins = $$('.gpts input'); if(ins.length) ins[ins.length-1].focus();
+  };
+}
+async function guideSave(){
+  const G = GUIDE.edit; if(!G || GUIDE.busy) return;
+  if(G.points.some(p=>!p.label.trim())){ toast('Nazwij wszystkie punkty na planie', true); return; }
+  const names = G.zones.map(z=>fold(z.name.trim())).filter(Boolean);
+  if(new Set(names).size !== names.length){ toast('Strefy muszą mieć różne nazwy', true); return; }
+  GUIDE.busy = true;
+  try{
+    await apiCall('/api/guide','POST',{eventId:GUIDE.id, info:G.info, schedule:G.schedule.filter(x=>x.title.trim()), points:G.points,
+      zones:G.zones.filter(z=>z.name.trim()).map(z=>({...z, key: z.key || fold(z.name).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,24) || 'strefa'})),
+      ...(G.map!==undefined?{map:G.map, mapRatio:G.mapRatio}:{})});
+    toast('Przewodnik zapisany'); sfxOk(); GUIDE.edit = null; GUIDE.data = null;
+  }catch(e){ toast(esc(e.message), true); }
+  GUIDE.busy = false; S.dir=null; render();
+}
+async function guideSend(){
+  const G = GUIDE.edit, A = GUIDE.data?.audience||{};
+  if(!G?.title.trim()){ toast('Wpisz tytuł wiadomości', true); return; }
+  if(G.channel!=='push' && !G.body.trim()){ toast('Wpisz treść maila', true); return; }
+  const n = G.audience==='inside' ? A.inside : A.all;
+  if(!n){ toast('Na razie nikt nie ma biletu na to wydarzenie', true); return; }
+  const how = {push:'powiadomienie', mail:'e-mail', both:'powiadomienie i e-mail'}[G.channel];
+  if(!confirm(`Wysłać ${how} „${G.title.trim()}” do ${n} ${G.audience==='inside'?'osób w środku':'uczestników'}?`)) return;
+  GUIDE.busy = true; S.dir=null; render();
+  try{
+    let r = await apiCall('/api/guide/notify','POST',{eventId:GUIDE.id, title:G.title, body:G.body, audience:G.audience, channel:G.channel});
+    let mailed = r.sent||0;
+    // maile idą partiami — dopytujemy o kolejne, aż kolejka się skończy
+    while(r.remaining > 0 && (r.sent || r.failed)){
+      GUIDE.progress = `Wysyłam e-maile… ${pl(mailed)} z ${pl(r.mails)}`; const b = $('[data-act="gSend"]'); if(b) b.textContent = GUIDE.progress;
+      const next = await apiCall('/api/guide/mail','POST',{post:r.post});
+      mailed += next.sent; r = {...r, ...next};
+    }
+    const parts = [];
+    if(G.channel!=='mail') parts.push(`${pl(r.recipients)} w aplikacji${r.pushed?' ('+pl(r.pushed)+' na telefon)':''}`);
+    if(G.channel!=='push') parts.push(`${pl(mailed)} e-maili${r.remaining?' · '+pl(r.remaining)+' nie doszło':''}`);
+    toast('Wysłano: '+parts.join(' · '), false, 4000); sfxOk();
+    G.title = ''; G.body = ''; GUIDE.data = null; GUIDE.at = 0;
+  }catch(e){ toast(esc(e.message), true, 5000); }
+  GUIDE.busy = false; GUIDE.progress = null; S.dir=null; render();
+}
+async function guideZoneAssign(){
+  const G = GUIDE.edit, emails = (G.zoneEmails||'').split(/[\s,;]+/).map(x=>x.trim()).filter(Boolean);
+  if(!emails.length){ toast('Wpisz adresy e-mail', true); return; }
+  try{
+    const r = await apiCall('/api/guide/zone','POST',{eventId:GUIDE.id, zone:G.zoneSel, emails});
+    toast(`Przypisano: ${pl(r.updated)}${r.notFound.length?` · bez biletu: ${r.notFound.slice(0,3).join(', ')}${r.notFound.length>3?'…':''}`:''}`, !!r.notFound.length, 5000);
+    G.zoneEmails = r.notFound.join('\n'); GUIDE.data = null; GUIDE.at = 0; S.dir=null; render();
+  }catch(e){ toast(esc(e.message), true); }
+}
+/* baner na stronie głównej: bilet zeskanowany w ciągu ostatnich 14 godzin → przewodnik */
+function liveBanner(){
+  const t = (TICKETS.list||[]).filter(x=>x.usedAt && Date.now()-x.usedAt < 14*3600e3).sort((a,b)=>b.usedAt-a.usedAt)[0];
+  if(ACC.user && (!TICKETS.at || Date.now()-TICKETS.at > 60e3) && !TICKETS.loading){ TICKETS.loading = true; loadTickets(true).then(()=>{ TICKETS.loading=false; if(['home','list'].includes(S.screen)){ S.dir=null; render(); } }); }
+  if(!t) return '';
+  const e = EVENTS.find(x=>x.id===t.eventId);
+  return `<button class="glive" data-act="guide:${esc(t.eventId)}"><span class="glive-dot"></span>
+    <span class="col" style="gap:4px;flex:1;min-width:0;text-align:left"><span class="eyebrow">Jesteś na wydarzeniu</span><b class="clamp1">${esc(e?e.name:'Twoje wydarzenie')}</b>
+    <span class="mono">Plan, harmonogram i komunikaty</span></span>${ic('chevR',18)}</button>`;
 }
 
 /* ---- PULPIT ADMINISTRATORA ---- */
@@ -668,6 +923,7 @@ function orgEventRow(e, t){
     <div class="col" style="flex:1;min-width:0;gap:4px;cursor:pointer" data-act="ev:${esc(e.id)}"><span class="h4 clamp2">${esc(e.title)}</span>
       <span class="mono clamp1">${esc(e.start.slice(8,10)+'.'+e.start.slice(5,7)+' '+e.start.slice(11,16)+' · '+(e.venue||''))}</span></div>
     <div class="ocells">${[[e.going,'bilet'],[e.saves,'zapisy'],[e.guests,'goście'],[e.used+e.guestsUsed,'wejścia']].map(([n,l])=>`<span><b>${pl(n||0)}</b>${l}</span>`).join('')}</div>
+    <button class="chip" data-act="guideEdit:${esc(e.id)}" style="padding:7px 12px;font-size:12px;flex:none">Przewodnik</button>
     <button class="chip" data-act="guests:${esc(e.id)}" style="padding:7px 12px;font-size:12px;flex:none">Goście</button></div>`;
 }
 function orgGate(){
@@ -708,7 +964,7 @@ const scOrg = () => {
         <span class="mono">${esc(next.start.slice(8,10)+'.'+next.start.slice(5,7)+' · '+next.start.slice(11,16)+' · '+(next.venue||''))}</span>
         <div class="dspot-nums">${[['Mam bilet',next.going],['Zapisali',next.saves],['Goście',next.guests],['Obserwują',next.followers]].map(([l,n])=>`<span><b>${pl(n||0)}</b>${l}</span>`).join('')}</div>
         <div class="col" style="gap:6px"><span class="mono">Wejścia: ${pl(inside)} z ${pl(expected)} oczekiwanych</span>${meter(inside, Math.max(expected,inside,1))}</div>
-        <div class="row" style="gap:8px;flex-wrap:wrap"><button class="chip on" data-act="guests:${esc(next.id)}">Lista gości</button>
+        <div class="row" style="gap:8px;flex-wrap:wrap"><button class="chip on" data-act="guideEdit:${esc(next.id)}">Komunikat i przewodnik</button><button class="chip" data-act="guests:${esc(next.id)}">Lista gości</button>
           <button class="chip" data-act="go:scan">Skanuj wejścia</button><button class="chip" data-act="ev:${esc(next.id)}">Strona wydarzenia</button></div>
       </div></section>`;
   }

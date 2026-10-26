@@ -1,7 +1,7 @@
 /* +1 — service worker aplikacji testowej (/app).
    Ekran aplikacji i wydarzenia: najpierw sieć, bez zasięgu ostatnia zapisana wersja.
    Zapisujemy tylko udane odpowiedzi — strona logowania (401/403) nigdy nie trafia do pamięci. */
-const CACHE = 'plusone-app-v6';
+const CACHE = 'plusone-app-v7';
 const SHELL = ['/app', '/data/events.json', '/icon-512.png', '/apple-touch-icon.png', '/favicon.svg', '/vendor/fonts/fonts.css'];
 
 self.addEventListener('install', e => {
@@ -52,7 +52,7 @@ self.addEventListener('push', e => {
     return self.registration.showNotification(title, {
       body: n ? n.body : 'Masz nowe powiadomienie w +1.',
       icon: '/icon-512.png', badge: '/favicon-32.png', tag: n ? 'plusone-' + n.id : 'plusone',
-      data: { url: n && n.event_id ? '/app?ev=' + encodeURIComponent(n.event_id) : '/app?notif' }
+      data: { url: n && n.event_id ? '/app?' + (['event', 'checkin'].includes(n.kind) ? 'guide=' : 'ev=') + encodeURIComponent(n.event_id) : '/app?notif' }
     });
   })());
 });

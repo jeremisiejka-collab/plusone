@@ -16,6 +16,7 @@ async function premiumAfterLogin(){
   const q = new URLSearchParams(location.search);
   pushState().then(st=>{ PREM.push = st; });
   if(q.get('join')) joinSheet(q.get('join'));
+  else if(q.get('guide')){ history.replaceState(null,'','/app'); const id=q.get('guide'); setTimeout(()=>{ closeSheet(); openGuide(id); }, 300); }
   else if(q.get('ev')){ history.replaceState(null,'','/app'); const id=q.get('ev'); setTimeout(()=>openEvent(id), 300); }
   else if(q.has('notif')){ history.replaceState(null,'','/app'); setTimeout(premiumNotif, 300); }
   else if(!ACC.user.interests?.length && !workMode() && !localStorage.getItem('intAsked')){ localStorage.setItem('intAsked','1'); setTimeout(()=>interestsSheet(true), 900); }
@@ -128,10 +129,10 @@ function followCitySheet(){
 /* ---------- powiadomienia ---------- */
 async function premiumNotif(){
   await loadNotif();
-  const n = PREM.notif||[], icon = {new:'star', price:'wallet', reminder:'clock', crew:'users', info:'bell'};
+  const n = PREM.notif||[], icon = {new:'star', price:'wallet', reminder:'clock', crew:'users', info:'bell', event:'bell', checkin:'check'};
   sheet(`<div class="col" style="gap:10px"><div class="row" style="justify-content:space-between"><span class="h3">Powiadomienia</span>
     <button class="mono" data-act="notifSettings" style="color:${PINK}">USTAWIENIA</button></div>
-    ${n.map(x=>`<div class="card" ${x.event_id?`data-act="ev:${esc(x.event_id)}"`:''} style="padding:13px 14px;display:flex;gap:12px;align-items:center;${x.read_at?'opacity:.7':'border-color:var(--pink-line)'}">
+    ${n.map(x=>`<div class="card" ${x.event_id?`data-act="${['event','checkin'].includes(x.kind)?'guide':'ev'}:${esc(x.event_id)}"`:''} style="padding:13px 14px;display:flex;gap:12px;align-items:center;${x.read_at?'opacity:.7':'border-color:var(--pink-line)'}">
       <span style="width:36px;height:36px;border-radius:11px;background:var(--surface-3);display:grid;place-items:center;color:${PINK};flex:none">${ic(icon[x.kind]||'bell',17)}</span>
       <div class="col" style="flex:1;min-width:0"><span style="font:600 14px/1.3 var(--d)">${esc(x.title)}</span>
         <span class="mono" style="margin-top:3px">${esc(x.body)}${x.body?' · ':''}${new Date(x.created_at).toLocaleDateString('pl-PL',{day:'numeric',month:'short'})}</span></div></div>`).join('')
@@ -359,8 +360,8 @@ function premiumAct(cmd, p1, p2, a){
 /* kliknięcie powiadomienia, gdy aplikacja jest już otwarta (public/app-sw.js → postMessage) */
 if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', e=>{
   if(e.data?.type!=='open') return;
-  const u = new URL(e.data.url, location.origin), ev = u.searchParams.get('ev');
-  if(ev) openEvent(ev); else premiumNotif();
+  const u = new URL(e.data.url, location.origin), ev = u.searchParams.get('ev'), gd = u.searchParams.get('guide');
+  if(gd) openGuide(gd); else if(ev) openEvent(ev); else premiumNotif();
 });
 
 /* ---------- Znajdź swoje +1 — autorskie spotkania, wzajemna zgoda ---------- */
