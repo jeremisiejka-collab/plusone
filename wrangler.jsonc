@@ -8,7 +8,7 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/app", "/app/*", "/preview", "/preview/*", "/t/*"],
+    "run_worker_first": ["/api/*", "/app", "/app/*", "/preview", "/preview/*", "/t/*", "/admin/*"],
     // nieznane adresy (np. stare linki) otwierają apkę zamiast pustej strony
     "not_found_handling": "single-page-application"
   },

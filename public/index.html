@@ -1828,7 +1828,7 @@ function scDownloads(){
 function workNavHtml(){
   const cur = S.screen==='admin' ? 'admin:'+(S.adminTab||'stats') : S.screen;
   const items = workMode()==='admin'
-    ? [['go:dash','Pulpit',['dash']],['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
+    ? [['go:dash','Pulpit',['dash']],['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:expo','Mapa targów 3D',['admin:expo']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
     : [['go:org','Pulpit',['org']],['go:orgEvents','Wydarzenia',['orgEvents']],['go:scan','Skaner',['scan']]];
   return items.map(([a,l,on])=>`<button data-act="${a}" ${on.includes(cur)?'aria-current="page"':''}>${l}</button>`).join('');
 }
@@ -2614,6 +2614,8 @@ matchMedia('(min-width:761px)').addEventListener('change', e=>{
 });
 /* ?register — link „Zarejestruj się” z aplikacji otwiera od razu zakładanie konta */
 if(/[?&]podglad\b/.test(location.search)) setTimeout(()=>previewSheet(), 600);
+/* /admin/mapa-targow — zakładka Mapa targów 3D w panelu administratora */
+if(location.pathname.replace(/\/+$/,'')==='/admin/mapa-targow'){ history.replaceState(null,'','/'); S.adminTab='expo'; setTimeout(()=>{ if(isAdmin()) go('admin'); else { ACC.authMode='admin'; go('auth'); } }, 1200); }
 /* link z maila do uczestników: /?guide=<id> — przewodnik po zalogowaniu, inaczej strona wydarzenia */
 { const gid = new URLSearchParams(location.search).get('guide');
   if(gid){ history.replaceState(null,'','/'); const t0 = Date.now(), wait = () => { if(!ACC.user && Date.now()-t0 < 4000) return setTimeout(wait, 250);

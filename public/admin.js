@@ -1249,7 +1249,7 @@ const scAdmin = () => {
         <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
       <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
   const src = LIVE.sources||{}, wm = workMode()==='admin', inApp = typeof renderAppChrome==='function';
-  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
+  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
   const chips = `<div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:${wm?'0 0 18px':'16px 20px'}">
     ${TABS.map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}</div>`;
   // w trybie pulpitu: nagłówek jak na pulpicie; na stronie zakładki są już w górnym menu
@@ -1267,7 +1267,27 @@ const scAdmin = () => {
   <div class="pad">${adminTabBody(A, tab, curList, src)}</div>
 </div>`;
 };
+/* ---- Mapa targów 3D: gotowy moduł (paczka PLUS ONE EXPO) w iframe pod chronioną ścieżką /admin/moduly/expo-map/ ---- */
+const EXPO = { state:null };
+const EXPO_SRC = '/admin/moduly/expo-map/';
+function expoCheck(){
+  if(EXPO.state) return; EXPO.state = 'checking';
+  fetch(EXPO_SRC+'manifest.json', {cache:'no-store', credentials:'same-origin'})
+    .then(r=>{ EXPO.state = r.ok && (r.headers.get('Content-Type')||'').includes('json') ? 'ready' : 'missing'; })
+    .catch(()=>{ EXPO.state = 'missing'; }).finally(()=>{ S.dir=null; render(); });
+}
+function adminExpoTab(){
+  expoCheck();
+  if(EXPO.state==='checking' || !EXPO.state) return loadingBox();
+  if(EXPO.state==='ready') return `<div class="expo-wrap"><iframe src="${EXPO_SRC}index.html" title="Mapa targów 3D" class="expo-frame" allow="fullscreen" loading="lazy"></iframe></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><a class="chip" href="${EXPO_SRC}index.html" target="_blank" rel="noopener">Otwórz na pełnym ekranie</a></div>
+    <p class="mono" style="line-height:1.6;margin-top:10px">Lewy przycisk: przesuwanie · prawy i strzałki: obrót · scroll, + i −: przybliżenie · Escape: odznaczenie. Statusy stoisk są demonstracyjne; lista i notatki zapisują się w tej przeglądarce.</p>`;
+  return `<section class="dcard" style="max-width:640px"><header><h2>Mapa targów 3D</h2></header>
+    <p class="dnote" style="margin:0">Miejsce w panelu jest gotowe: zakładka, adres <b style="color:var(--t1)">plusoneapp.pl/admin/mapa-targow</b> i chroniona ścieżka modułu dostępna tylko po zalogowaniu administratora.</p>
+    <p class="dnote">Brakuje samej paczki z modułem (folder <b style="color:var(--t1)">modul/</b>: HTML, JS, dane i grafiki). Gdy zostanie dodana do <span class="mono">public/admin/moduly/expo-map/</span>, mapa pojawi się tutaj automatycznie.</p></section>`;
+}
 function adminTabBody(A, tab, curList, src){
+  if(tab==='expo') return adminExpoTab();
   return `
   ${A?.error ? `<div class="err">${esc(A.error)}</div>` : !A ? loadingBox() : tab==='stats' ? `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
