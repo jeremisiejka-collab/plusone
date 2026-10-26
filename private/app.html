@@ -976,6 +976,7 @@ async function loadAccount(){
   if(S.screen==='loading') S.screen='home';
   S.dir=null; render();
   premiumAfterLogin();
+  try{ if(sessionStorage.getItem('expoLogin')){ sessionStorage.removeItem('expoLogin'); S.adminTab='expo'; ACC.authMode='admin'; ACC.authErr=''; go(isAdmin()?'admin':'auth'); } }catch(e){}
 }
 
 async function submitAuth(){

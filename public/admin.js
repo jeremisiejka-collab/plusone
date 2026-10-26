@@ -243,6 +243,9 @@ function adminAct(cmd, p1, p2, a){
     case 'viewAs': setViewAs(p1||null); return true;
     case 'browse': setBrowse(p1==='1'); return true;
     case 'previewSheet': previewSheet(); return true;
+    case 'expoLogin': EXPO.state=null; S.adminTab='expo'; S.afterAuth='admin';
+      if(inPreview()){ try{ sessionStorage.setItem('expoLogin','1'); }catch(e){} previewEnd(); return true; }
+      ACC.authMode='admin'; ACC.authErr=''; go('auth'); return true;
     case 'seatPlan': openSeatPlan(a.slice(9)); return true;
     case 'seatHall': VEN.hall = p1; VEN.sel = null; VEN.row=''; VEN.seat=''; VEN.zoom = false; S.dir=null; render(); return true;
     case 'seatZoom': VEN.zoom = !VEN.zoom; S.dir=null; render(); return true;
@@ -1273,7 +1276,7 @@ const EXPO_SRC = '/admin/moduly/expo-map/';
 function expoCheck(){
   if(EXPO.state) return; EXPO.state = 'checking';
   fetch(EXPO_SRC+'data.js', {cache:'no-store', credentials:'same-origin'})
-    .then(r=>{ EXPO.state = r.ok && (r.headers.get('Content-Type')||'').includes('javascript') ? 'ready' : 'missing'; })
+    .then(r=>{ EXPO.state = r.status===403 || r.status===401 ? 'denied' : r.ok && (r.headers.get('Content-Type')||'').includes('javascript') ? 'ready' : 'missing'; })
     .catch(()=>{ EXPO.state = 'missing'; }).finally(()=>{ S.dir=null; render(); });
 }
 function adminExpoTab(){
@@ -1282,6 +1285,10 @@ function adminExpoTab(){
   if(EXPO.state==='ready') return `<div class="expo-wrap"><iframe src="${EXPO_SRC}index.html" title="Mapa targów 3D" class="expo-frame" allow="fullscreen" loading="lazy"></iframe></div>
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><a class="chip" href="${EXPO_SRC}index.html" target="_blank" rel="noopener">Otwórz na pełnym ekranie</a></div>
     <p class="mono" style="line-height:1.6;margin-top:10px">Lewy przycisk: przesuwanie · prawy i strzałki: obrót · scroll, + i −: przybliżenie · Escape: odznaczenie. Statusy stoisk są demonstracyjne; lista i notatki zapisują się w tej przeglądarce.</p>`;
+  if(EXPO.state==='denied') return `<section class="dcard" style="max-width:640px"><header><h2>Mapa targów 3D</h2></header>
+    <p class="dnote" style="margin:0">Mapa otwiera się tylko na <b style="color:var(--t1)">zalogowanym koncie administratora</b>${inPreview()?' — „Widok demo” działa bez logowania, więc mapy w nim nie ma':''}.</p>
+    <p class="dnote">Zaloguj się adresem administratora i wróć do tej zakładki.</p>
+    <button class="btn p" data-act="expoLogin" style="height:50px;margin-top:6px">Zaloguj się jako administrator</button></section>`;
   return `<section class="dcard" style="max-width:640px"><header><h2>Mapa targów 3D</h2></header>
     <p class="dnote" style="margin:0">Miejsce w panelu jest gotowe: zakładka, adres <b style="color:var(--t1)">plusoneapp.pl/admin/mapa-targow</b> i chroniona ścieżka modułu dostępna tylko po zalogowaniu administratora.</p>
     <p class="dnote">Brakuje samej paczki z modułem (folder <b style="color:var(--t1)">modul/</b>: HTML, JS, dane i grafiki). Gdy zostanie dodana do <span class="mono">public/admin/moduly/expo-map/</span>, mapa pojawi się tutaj automatycznie.</p></section>`;

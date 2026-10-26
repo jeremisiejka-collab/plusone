@@ -915,7 +915,7 @@ async function submitAuth(){
     ACC.user = res.user; await mergeMine(res); ACC.preview=(await apiCall('/api/preview-access')).allowed; ACC.busy=false; markEntered(); sfxOk(); haptic(16);
     if(res.user.city && LIVE.cities[res.user.city]) S.city = res.user.city;
     toast(mode==='register' ? 'Konto założone. Witaj w +1!' : 'Zalogowano'+(res.user.name?' · '+esc(res.user.name):''));
-    const next = mode==='admin' || mode==='org' ? 'home' : (S.afterAuth || 'home'); S.afterAuth=null;
+    const next = mode==='admin' && S.afterAuth==='admin' ? 'admin' : mode==='admin' || mode==='org' ? 'home' : (S.afterAuth || 'home'); S.afterAuth=null;
     S.prev='home'; go(next);
     if(res.user.mustChange) passwordSheet(true);
   }catch(e){
@@ -2614,6 +2614,8 @@ matchMedia('(min-width:761px)').addEventListener('change', e=>{
 });
 /* ?register — link „Zarejestruj się” z aplikacji otwiera od razu zakładanie konta */
 if(/[?&]podglad\b/.test(location.search)) setTimeout(()=>previewSheet(), 600);
+/* po zakończeniu „Widoku demo” z zakładki Mapa targów 3D: od razu logowanie administratora */
+try{ if(sessionStorage.getItem('expoLogin')){ sessionStorage.removeItem('expoLogin'); setTimeout(()=>{ S.adminTab='expo'; S.afterAuth='admin'; ACC.authMode='admin'; ACC.authErr=''; go(isAdmin()?'admin':'auth'); }, 900); } }catch(e){}
 /* /admin/mapa-targow — zakładka Mapa targów 3D w panelu administratora */
 if(location.pathname.replace(/\/+$/,'')==='/admin/mapa-targow'){ history.replaceState(null,'','/'); S.adminTab='expo'; setTimeout(()=>{ if(isAdmin()) go('admin'); else { ACC.authMode='admin'; go('auth'); } }, 1200); }
 /* link z maila do uczestników: /?guide=<id> — przewodnik po zalogowaniu, inaczej strona wydarzenia */
