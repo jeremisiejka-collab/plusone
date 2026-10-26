@@ -518,7 +518,10 @@ const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
 const zl = n => Math.round(n).toLocaleString('pl-PL')+' zł';
 const pl = n => Math.round(n).toLocaleString('pl-PL');
 const ev = () => EVENTS.find(e=>e.id===S.eventId) || EVENTS[0];
-const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* bez emoji (także iPhonowych) w każdym wyświetlanym tekście: sekwencje emoji znikają, ©®™ i strzałki zostają jako zwykły tekst (U+FE0E) */
+const EMOJI_RE = /(?:\p{Regional_Indicator}{2}|[\p{Extended_Pictographic}\p{Emoji_Modifier}])[\uFE0E\uFE0F]?(?:\u200D[\p{Extended_Pictographic}\p{Emoji_Modifier}][\uFE0E\uFE0F]?)*|[\u{E0020}-\u{E007F}]|\u20E3/gu;
+const noEmoji = s => String(s).replace(EMOJI_RE, m => /^[©®™\u2190-\u21FF\u2B05-\u2B07]/.test(m) && m.length<=2 ? m[0]+'\uFE0E' : '').replace(/ {2,}/g,' ');
+const esc = s => noEmoji(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 const hms = s => {const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=Math.floor(s%60);
   return h?`${h}h ${String(m).padStart(2,'0')}m`:`${m}:${String(x).padStart(2,'0')}`;};
