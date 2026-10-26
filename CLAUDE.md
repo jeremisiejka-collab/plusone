@@ -15,6 +15,7 @@
 - Aplikacja na telefon to `/app` (`private/app.html`, wygląd i funkcje inne niż strona). **Wygląd aplikacji = oryginał sprzed rozdzielenia (commit `a9a30d5`)** — nie przenoś do niej zmian wyglądu strony. Aplikacja ma własny, zamrożony arkusz `public/app.css` (strona używa `public/desktop.css`).
 - W aplikacji Portfel to „Już wkrótce”, bez przykładowego salda i płatności. Bilety i Wrapped korzystają wyłącznie z danych konta; nowe konto ma puste widoki. Nie pokazuj fikcyjnych zaproszeń od Kai ani biletów z makiety, także administratorom.
 - **Faza rozwoju: `/app` otwarta bez logowania** (`APP_OPEN="1"` w `wrangler.jsonc`) — dla gości i każdego konta, z „Podgląd jako” w środku. Zmiana na `"0"` przywraca dostęp tylko z zaproszeniem (`preview_access`).
+- **Łatwy podgląd:** gość widzi kafelki „Zobacz +1 oczami każdej osoby” (`roleCards`), w pustych Biletach przykładowy bilet z QR (zwykły / VIP, `sampleTicket`), a w „Twoje wyjścia” przykładowe podsumowanie zeszłego miesiąca (`sampleWrapped`). Wszystko oznaczone „PRZYKŁAD”. **Bez konfetti** w Wrapped i przy dołączaniu.
 - Aplikacja nie może się powiększać na iPhonie: pola formularzy min. 16 px, `maximum-scale=1`, blokada gestu szczypania. Strona uruchomiona z ikony na ekranie telefonu przekierowuje na `/app`. `/preview` to stary adres (301 → `/app`).
 
 ## Konta i panel admina

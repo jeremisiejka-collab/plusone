@@ -192,7 +192,7 @@ async function crewJoin(token){
     MINE.going = new Set(r.going||[]); MINE.saved = new Set(r.saved||[]);
     closeSheet(); sfxOk(); haptic(30); history.replaceState(null,'','/app');
     toast('Idziecie razem! Bilet z kodem QR masz w wydarzeniu', true, 2600);
-    if(typeof confetti==='function') confetti(50);
+    /* bez konfetti */
     openEvent(r.eventId);
   }catch(e){ toast(esc(e.message),true); }
 }
@@ -282,7 +282,38 @@ const scPlan = () => {
 /* ---------- podsumowanie wyjść ---------- */
 async function wrappedLoad(){ try{ PREM.wrapped = await apiCall('/api/wrapped'); }catch(e){ PREM.wrapped = {error:e.message}; } if(S.screen==='mywrapped'){ S.dir=null; render(); } }
 const CAT_NAME = {Clubs:'Kluby', Concerts:'Koncerty', Festivals:'Festiwale', Theatre:'Teatr', Comedy:'Stand-up', Culture:'Kultura', Sport:'Sport', Family:'Dla dzieci'};
+/* przykładowe podsumowanie miesiąca (gość, podgląd albo konto bez historii) — prawdziwe miejsca z bazy, liczby przykładowe; bez konfetti */
+function sampleWrapped(){
+  const MIES = ['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
+  const now = new Date(), lm = new Date(now.getFullYear(), now.getMonth()-1, 1), mName = MIES[lm.getMonth()];
+  const ev = EVENTS.filter(e=>e.real && e.city===S.city);
+  const pick = cat => ev.find(e=>e.cat===cat && e.venue) || ev.find(e=>e.venue) || {venue:'Klub', cat};
+  const outs = [['Concerts',5,'21:40'],['Clubs',12,'03:40'],['Concerts',18,'23:10'],['Theatre',22,'21:55'],['Clubs',27,'04:15']]
+    .map(([c,d,t])=>({...pick(c), day:d, back:t, catName:CAT_NAME[c]||c}));
+  const venues = {}; outs.forEach(o=>venues[o.venue]=(venues[o.venue]||0)+1);
+  const fav = Object.entries(venues).sort((a,b)=>b[1]-a[1])[0];
+  const card = (k, big, sub, hue, i) => `<div class="wcard wreveal" style="--h:${hue};--i:${i}"><span class="mono">${k}</span><b>${big}</b>${sub?`<span>${sub}</span>`:''}</div>`;
+  return `<div class="wsample">
+    <div class="wreveal" style="--i:0"><span class="eyebrow pink">Przykład · ${mName} ${lm.getFullYear()}</span>
+      <div class="h1" style="font-size:40px;margin-top:8px">Twój ${mName}<br>w +1</div>
+      <p class="body" style="margin-top:8px">Tak będzie wyglądać Twoje podsumowanie miesiąca, gdy zaczniesz zaznaczać „Mam bilet”.</p></div>
+    <div class="wgrid" style="margin-top:16px">
+      ${card('Wyjścia', '5', '3 koncerty · 2 kluby', 330, 1)}
+      ${card('Ulubione miejsce', esc(fav[0]), fav[1]+'× w tym miesiącu', 280, 2)}
+      ${card('Najpóźniejszy powrót', '04:15', 'sobota, '+outs[4].day+' '+mName, 200, 3)}
+      ${card('Na wydarzeniach', '19 h', 'średnio 3 h 50 min', 150, 4)}
+      ${card('Ze znajomymi', '3', 'osoby z Twojej ekipy', 45, 5)}
+      ${card('Nowe miejsca', '2', 'pierwszy raz w tym miesiącu', 100, 6)}
+    </div>
+    <div class="wreveal" style="--i:7;margin-top:18px"><span class="eyebrow">Gdzie byłeś</span>
+      <ol class="wlist">${outs.map(o=>`<li><time>${o.day} ${mName.slice(0,3)}</time><div class="col" style="min-width:0;gap:3px"><b class="clamp1">${esc(o.venue)}</b><span class="mono">${esc(o.catName)} · powrót ${o.back}</span></div></li>`).join('')}</ol></div>
+    <button class="btn p wreveal" data-act="upcomingList" style="--i:8;height:52px;margin-top:18px">Znajdź coś na ten miesiąc</button>
+  </div>`;
+}
 const scMyWrapped = () => {
+  if(!ACC.user || inPreview()) return `<div class="pg" style="padding:64px 0 112px"><div class="pad row" style="gap:12px;padding-bottom:14px">
+    <button class="back" data-act="back" aria-label="Wróć">${ic('chevL',18)}</button><div class="col" style="gap:3px"><div class="h2">Twoje wyjścia</div><span class="mono">podsumowanie miesiąca</span></div></div>
+    <div class="pad">${sampleWrapped()}</div></div>`;
   const W = PREM.wrapped;
   if(!W) setTimeout(wrappedLoad, 0);
   const g = (W?.going||[]).filter(x=>x.t), top = (arr) => { const n={}; arr.filter(Boolean).forEach(x=>n[x]=(n[x]||0)+1); return Object.entries(n).sort((a,b)=>b[1]-a[1]); };
@@ -296,9 +327,7 @@ const scMyWrapped = () => {
     <div class="col" style="gap:3px"><div class="h2">Twoje wyjścia</div><span class="mono">${new Date().getFullYear()} w +1</span></div>
   </div>
   <div class="pad">
-  ${!W ? loadingBox() : W.error ? `<div class="err">${esc(W.error)}</div>` : !g.length ? `<div class="col mine-empty" style="align-items:center;text-align:center;gap:12px;padding:40px 10px">
-      <span style="width:72px;height:72px;border-radius:24px;background:var(--pink-dim);display:grid;place-items:center;color:${PINK}">${ic('star',30)}</span>
-      <span class="h3">Tu będzie Twoje podsumowanie</span><span class="body">Stukaj „Mam bilet” przy wydarzeniach — zbierzemy, gdzie byłeś, z kim i czego słuchasz.</span></div>` : `
+  ${!W ? loadingBox() : W.error ? `<div class="err">${esc(W.error)}</div>` : !g.length ? sampleWrapped() : `
     <div class="wgrid">
       ${card('Wydarzenia', pl(g.length), past?`${past} już za Tobą`:'', 330)}
       ${card('Najczęściej', esc(CAT_NAME[cats[0]?.[0]]||cats[0]?.[0]||'—'), cats.slice(1,3).map(c=>CAT_NAME[c[0]]||c[0]).join(' · '), 280)}

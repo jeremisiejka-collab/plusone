@@ -208,7 +208,7 @@ function stopScan(){
 /* wywoływane po każdym przerysowaniu ekranu */
 function adminAfterRender(){
   if(S.screen==='scan') startScan(); else stopScan();
-  viewAsBar(); workBar(); previewBar(); guideAfterRender();
+  viewAsBar(); workBar(); previewBar(); guideAfterRender(); sampleTicketAfterRender();
 }
 
 /* akcje z data-act obsługiwane w tym module; zwraca true, jeśli rozpoznano */
@@ -243,6 +243,7 @@ function adminAct(cmd, p1, p2, a){
     case 'viewAs': setViewAs(p1||null); return true;
     case 'browse': setBrowse(p1==='1'); return true;
     case 'previewSheet': previewSheet(); return true;
+    case 'sampleZone': S.sampleZone = p1||''; S.dir=null; render(); return true;
     case 'guide': openGuide(a.slice(6)); return true;
     case 'guideEdit': openGuide(a.slice(10), true); return true;
     case 'gpin': GUIDE.pin = GUIDE.pin===+p1 ? null : +p1; S.dir=null; render(); return true;
@@ -867,6 +868,42 @@ function liveBanner(){
   return `<button class="glive" data-act="guide:${esc(t.eventId)}"><span class="glive-dot"></span>
     <span class="col" style="gap:4px;flex:1;min-width:0;text-align:left"><span class="eyebrow">Jesteś na wydarzeniu</span><b class="clamp1">${esc(e?e.name:'Twoje wydarzenie')}</b>
     <span class="mono">Plan, harmonogram i komunikaty</span></span>${ic('chevR',18)}</button>`;
+}
+
+/* ---- ŁATWY PODGLĄD: kafelki ról, przykładowy bilet ---- */
+/* kafelki „Zobacz +1 oczami…” — dla gości i w trybie podglądu */
+function roleCards(){
+  if(ACC.user && !inPreview()) return '';
+  const icons = {user:'user', staff:'scan', organizer:'star', admin:'shield'};
+  return `<section class="rolecards"><div class="col" style="gap:4px"><span class="eyebrow pink">Podgląd bez logowania</span>
+    <b>Zobacz +1 oczami każdej osoby</b></div>
+    <div class="rolegrid">${PREVIEW_ROLES.map(([k,l,d])=>`<button class="${PREVIEW.role===k?'on':''}" data-act="previewAs:${k}"><span>${ic(icons[k],18)}</span><b>${l}</b><em>${d}</em></button>`).join('')}</div></section>`;
+}
+const sampleEvent = () => { const ev = EVENTS.filter(e=>e.real && e.day>=localDay() && e.image);
+  return ev.find(e=>e.big && e.city===S.city) || ev.find(e=>e.city===S.city) || ev[0] || EVENTS[0]; };
+/* przykładowy bilet w zakładce Bilety: tak wygląda bilet +1 z kodem QR (zwykły albo w strefie) */
+function sampleTicket(){
+  const e = sampleEvent(); if(!e) return '';
+  const vip = S.sampleZone==='vip', z = {name:'VIP', color:'#F5B73B'};
+  return `<section class="sticket-wrap"><div class="row" style="justify-content:space-between;gap:10px;align-items:center">
+      <span class="eyebrow pink">Tak wygląda bilet w +1</span>
+      <div class="seg" style="width:auto"><button class="${vip?'':'on'}" data-act="sampleZone:">Zwykły</button><button class="${vip?'on':''}" data-act="sampleZone:vip">VIP</button></div></div>
+    <div class="sticket ${vip?'vip':''}" style="--z:${vip?z.color:'var(--pink)'}">
+      <div class="sticket-top">${e.image?`<img src="${esc(e.image)}" alt="" onerror="this.remove()">`:''}<span class="sticket-stamp">PRZYKŁAD</span></div>
+      <div class="sticket-body">
+        <span class="mono" style="color:var(--z);letter-spacing:.12em">BILET +1${vip?' · STREFA VIP':''}</span>
+        <b class="clamp2">${esc(e.name)}</b><span class="mono">${esc(e.when)} · ${esc(e.venue)}</span>
+        <div class="sticket-cut"></div>
+        <div class="row" style="gap:14px;align-items:center"><div id="sampleqr" class="sticket-qr"></div>
+          <div class="col" style="gap:6px;min-width:0"><span class="mono">KOD</span><span style="font:600 13px/1.3 var(--m);color:var(--t1)">P1-PRZYKLAD-${vip?'VIP':'0042'}</span>
+          <span class="mono" style="line-height:1.4">Pokaż przy wejściu. Obsługa skanuje kod aparatem, działa raz.</span></div></div>
+      </div></div>
+    <span class="mono" style="line-height:1.5">Prawdziwy bilet pojawi się tutaj, gdy przy wydarzeniu stukniesz „Mam bilet”. Po wejściu otworzysz z niego przewodnik: plan, harmonogram i komunikaty.</span></section>`;
+}
+function sampleTicketAfterRender(){
+  const box = document.getElementById('sampleqr'); if(!box || box.dataset.done) return;
+  loadLib('/vendor/qr/qrcode.js').then(()=>{ const q = qrcode(0,'M'); q.addData('P1-PRZYKLAD-'+(S.sampleZone==='vip'?'VIP':'0042')); q.make();
+    box.innerHTML = q.createSvgTag({cellSize:4, margin:0, scalable:true}); box.dataset.done = '1'; }).catch(()=>{});
 }
 
 /* ---- PULPIT ADMINISTRATORA ---- */

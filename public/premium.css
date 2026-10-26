@@ -190,3 +190,13 @@
 @keyframes enc-orbit { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .enc-orbit, .enc-satellite, .enc-fab.enc-waiting::after { animation: none; } }
 @media(max-width:350px) { .enc-intents button, .enc-paces button { padding: 14px 10px; }.enc-intents strong, .enc-paces strong { font-size: 13px; }.enc-topline { gap: 6px; }.enc-topline button { font-size: 10px; } }
+
+/* przykładowe podsumowanie miesiąca: spokojne wejście kart jedna po drugiej, bez konfetti */
+.wreveal { opacity: 0; transform: translateY(12px); animation: wrise .55s cubic-bezier(.2,.8,.2,1) forwards; animation-delay: calc(var(--i, 0) * 90ms); }
+@keyframes wrise { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .wreveal { animation: none; opacity: 1; transform: none; } }
+.wlist { list-style: none; margin: 10px 0 0; padding: 0; }
+.wlist li { display: flex; gap: 14px; align-items: center; padding: 11px 0; border-top: 1px solid var(--line); }
+.wlist li:first-child { border-top: 0; }
+.wlist time { width: 54px; flex: none; font: 600 12px/1.2 var(--m); color: var(--pink); }
+.wlist b { font: 600 15px/1.2 var(--d); color: var(--t1); }

@@ -198,3 +198,29 @@
 .dcard .sel { width: 100%; }
 .dcard .gpts .sel, .dcard .gsrow .sel { width: 128px; flex: none; }
 .gpts input, .gsrow input { flex: 1 1 0; }
+
+/* kafelki ról (podgląd bez logowania) */
+.rolecards { display: flex; flex-direction: column; gap: 12px; padding: 16px; margin: 4px 0 18px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); }
+.rolecards > div b { font: 600 18px/1.2 var(--d); color: var(--t1); letter-spacing: -.01em; }
+.rolegrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rolegrid button { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); text-align: left; color: var(--t1); cursor: pointer; transition: border-color .2s, transform .15s; }
+.rolegrid button:active { transform: scale(.98); }
+.rolegrid button.on, .rolegrid button:hover { border-color: var(--pink-line); }
+.rolegrid button > span { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--pink-dim); color: var(--pink); }
+.rolegrid b { font: 600 14px/1.2 var(--d); }
+.rolegrid em { font: 400 11px/1.35 var(--m); font-style: normal; color: var(--t3); }
+@media (min-width: 761px) { body:not(.demo) .rolegrid { grid-template-columns: repeat(4, 1fr); } }
+/* przykładowy bilet */
+.sticket-wrap { display: flex; flex-direction: column; gap: 12px; margin: 6px 0 20px; }
+.sticket { position: relative; border-radius: 24px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 18px 50px rgba(0,0,0,.18); max-width: 420px; width: 100%; align-self: center; }
+.sticket.vip { border: 2px solid var(--z); background: linear-gradient(180deg, color-mix(in srgb, var(--z) 18%, var(--surface)), var(--surface) 60%); }
+.sticket-top { position: relative; height: 150px; background: var(--surface-3); }
+.sticket-top img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sticket-stamp { position: absolute; top: 12px; right: 12px; padding: 5px 9px; border-radius: 8px; background: rgba(0,0,0,.72); color: #fff; font: 700 10px/1 var(--m); letter-spacing: .14em; }
+.sticket-body { display: flex; flex-direction: column; gap: 8px; padding: 16px 18px 18px; }
+.sticket-body > b { font: 600 19px/1.2 var(--d); color: var(--t1); letter-spacing: -.01em; }
+.sticket-cut { height: 0; border-top: 2px dashed var(--line-2); margin: 8px -18px; position: relative; }
+.sticket-cut::before, .sticket-cut::after { content: ''; position: absolute; top: -11px; width: 20px; height: 20px; border-radius: 50%; background: var(--bg); }
+.sticket-cut::before { left: -10px; } .sticket-cut::after { right: -10px; }
+.sticket-qr { width: 112px; height: 112px; flex: none; padding: 8px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 3px var(--z); }
+.sticket-qr svg { width: 100%; height: 100%; display: block; }

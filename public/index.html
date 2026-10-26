@@ -1387,6 +1387,7 @@ const scHome = () => {
 <div class="pg" style="padding:64px 0 112px">
   ${ACC.user?`<div class="pad">${liveBanner()}</div>`:''}
   ${webHero()}
+  <div class="pad">${roleCards()}</div>
   <div id="ptr" style="height:0;overflow:hidden;transition:height .2s">
     <div style="padding:10px 20px;display:flex;gap:12px">
       <div class="sk" style="width:66px;height:66px;border-radius:14px"></div>
@@ -1685,7 +1686,7 @@ const scMyTickets = () => {
       <button class="${tab==='saved'?'on':''}" data-act="mineTab:saved">Zapisane${saved.length?' · '+saved.length:''}</button></div>
   </div>
   <div class="pad" style="max-width:900px;margin:0 auto">
-  ${LIVE.state!=='ok' ? loadingBox() : !up.length && !past.length ? `
+  ${LIVE.state!=='ok' ? loadingBox() : !up.length && !past.length ? `${tab==='going'?sampleTicket():''}
     <div class="col mine-empty" style="align-items:center;text-align:center;gap:12px;padding:42px 10px 10px">
       <span style="width:72px;height:72px;border-radius:24px;background:var(--pink-dim);border:1px solid var(--pink-line);display:grid;place-items:center;color:${PINK}">${ic(tab==='going'?'ticket':'heart',30,1.6)}</span>
       <span class="h3">${tab==='going'?'Tu będą Twoje bilety':'Nic jeszcze nie zapisałeś'}</span>

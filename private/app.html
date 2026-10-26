@@ -1109,6 +1109,7 @@ const scProfile = () => {
 
     ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
     ${!u?row('users','Podgląd jako… (bez logowania)','previewSheet'):''}
+    ${!u||inPreview()?row('star','Twoje wyjścia · przykład','go:mywrapped',''):''}
     ${!appStaffMode()?row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`):''}
     ${!appStaffMode()?row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`):''}
     ${!appStaffMode()?row('pin','Miasto','sheetCity',`<span class="mono">${esc(S.city)}</span>`):''}
@@ -1418,6 +1419,7 @@ const scHome = () => {
     <h1 class="h1">Where are<br>we going?</h1>
     <button class="btn g" data-act="upcomingList">Odkryj wydarzenia ${ic('chevR',18)}</button>
   </div>
+  <div class="pad">${roleCards()}</div>
   ${socialHome()}
   ${LIVE.state!=='ok' ? loadingBox() : f.length===0 ? `
     <div class="pad col" style="gap:12px;padding-top:40px;align-items:flex-start">
@@ -2036,7 +2038,7 @@ const scMyTickets = () => {
       <button class="${tab==='saved'?'on':''}" data-act="mineTab:saved">Zapisane${saved.length?' · '+saved.length:''}</button></div>
   </div>
   <div class="pad" style="max-width:900px;margin:0 auto">
-  ${LIVE.state!=='ok' ? loadingBox() : !up.length && !past.length ? `
+  ${LIVE.state!=='ok' ? loadingBox() : !up.length && !past.length ? `${tab==='going'?sampleTicket():''}
     <div class="col mine-empty" style="align-items:center;text-align:center;gap:12px;padding:42px 10px 10px">
       <span style="width:72px;height:72px;border-radius:24px;background:var(--pink-dim);border:1px solid var(--pink-line);display:grid;place-items:center;color:${PINK}">${ic(tab==='going'?'ticket':'heart',30,1.6)}</span>
       <span class="h3">${tab==='going'?'Tu będą Twoje bilety':'Nic jeszcze nie zapisałeś'}</span>
@@ -3071,7 +3073,7 @@ function wrapGo(d){
   if(n < 0) return;
   if(n >= WRAPPED.length){ S.wrappedStep=0; go('home'); return; }
   S.wrappedStep = n; haptic(5); sfxTap();
-  if(WRAPPED[n].t==='final'){ sfxCoin(); setTimeout(()=>confetti(60),420); }
+  if(WRAPPED[n].t==='final') sfxCoin();
   render();
 }
 
