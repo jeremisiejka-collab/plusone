@@ -892,11 +892,11 @@ const sampleEvent = () => { const ev = EVENTS.filter(e=>e.real && e.day>=localDa
 function sampleTicket(){
   const e = sampleEvent(); if(!e) return '';
   const vip = S.sampleZone==='vip', z = {name:'VIP', color:'#F5B73B'};
-  return `<section class="sticket-wrap"><div class="row" style="justify-content:space-between;gap:10px;align-items:center">
-      <span class="eyebrow pink">Tak wygląda bilet w +1</span>
-      <div class="seg" style="width:auto"><button class="${vip?'':'on'}" data-act="sampleZone:">Zwykły</button><button class="${vip?'on':''}" data-act="sampleZone:vip">VIP</button></div></div>
+  return `<section class="sticket-wrap"><span class="eyebrow pink">Tak wygląda bilet w +1</span>
+    <div class="sticket-tabs" role="tablist"><button role="tab" aria-selected="${!vip}" class="${vip?'':'on'}" data-act="sampleZone:">Bilet zwykły</button><button role="tab" aria-selected="${vip}" class="${vip?'on vip':''}" data-act="sampleZone:vip">Strefa VIP</button></div>
     <div class="sticket ${vip?'vip':''}" style="--z:${vip?z.color:'var(--pink)'}">
       <div class="sticket-top">${e.image?`<img src="${esc(e.image)}" alt="" onerror="this.remove()">`:''}<span class="sticket-stamp">PRZYKŁAD</span></div>
+      ${vip?'<div class="sticket-band">STREFA VIP</div>':''}
       <div class="sticket-body">
         <span class="mono" style="color:var(--z);letter-spacing:.12em">BILET +1${vip?' · STREFA VIP':''}</span>
         <b class="clamp2">${esc(e.name)}</b><span class="mono">${esc(e.when)} · ${esc(e.venue)}</span>

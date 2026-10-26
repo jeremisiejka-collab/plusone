@@ -276,3 +276,10 @@
 .lvrows li > div { flex: 1; } .lvrows b { font: 600 14px/1.2 var(--d); color: var(--t1); }
 .gates { display: flex; flex-wrap: wrap; gap: 8px; }
 .gates span { width: 36px; height: 36px; border-radius: 50%; background: var(--t1); color: var(--bg); display: grid; place-items: center; font: 700 13px/1 var(--m); }
+
+.sticket-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); max-width: 420px; width: 100%; align-self: center; }
+.sticket-tabs button { height: 40px; border-radius: 10px; font: 600 14px/1 var(--d); color: var(--t2); white-space: nowrap; }
+.sticket-tabs button.on { background: var(--surface); color: var(--t1); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+.sticket-tabs button.on.vip { background: #F5B73B; color: #000; }
+.sticket-band { padding: 8px 18px; background: var(--z); color: #000; font: 700 11px/1 var(--m); letter-spacing: .2em; }
+.sticket-stamp { top: 10px; left: 10px; right: auto; }
