@@ -1331,7 +1331,7 @@ function adminExpoTab(key){
   if(m.state==='checking' || !m.state) return loadingBox();
   if(m.state==='ready') return `<div class="expo-wrap"><iframe src="${m.src}index.html" title="${m.title}" class="expo-frame" allow="fullscreen" loading="lazy"></iframe></div>
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><a class="chip" href="${m.src}index.html" target="_blank" rel="noopener">Otwórz na pełnym ekranie</a></div>
-    <p class="mono" style="line-height:1.6;margin-top:10px">Lewy przycisk: przesuwanie · prawy i strzałki: obrót · scroll, + i −: przybliżenie · Escape: odznaczenie. Statusy ${m.items} są demonstracyjne; lista i notatki zapisują się w tej przeglądarce.${key==='venues'?' Narodowy: sektory, loże i bramy z oficjalnej mapy. Torwar: sektory według specyfikacji COS, kształt trybun poglądowy. Bary i toalety w obu obiektach orientacyjnie.':''}</p>`;
+    <p class="mono" style="line-height:1.6;margin-top:10px">Lewy przycisk: przesuwanie · prawy i strzałki: obrót · scroll, + i −: przybliżenie · Escape: odznaczenie. Statusy ${m.items} są demonstracyjne; lista i notatki zapisują się w tej przeglądarce.${key==='venues'?' PGE Narodowy: sektory, loże i bramy z oficjalnej mapy; bary i toalety orientacyjnie.':''}</p>`;
   if(m.state==='denied') return `<section class="dcard" style="max-width:640px"><header><h2>${m.title}</h2></header>
     <p class="dnote" style="margin:0">Mapa otwiera się tylko na <b style="color:var(--t1)">zalogowanym koncie administratora</b>${inPreview()?' — „Widok demo” działa bez logowania, więc mapy w nim nie ma':''}.</p>
     <p class="dnote">Zaloguj się adresem administratora i wróć do tej zakładki.</p>

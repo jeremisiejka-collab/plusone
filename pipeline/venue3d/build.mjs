@@ -179,12 +179,12 @@ function planSvg(m) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${m.width * 2}" height="${m.height * 2}" viewBox="0 0 ${m.width} ${m.height}" font-family="Arial,sans-serif"><rect width="100%" height="100%" fill="#f6f7f9"/>${body}</svg>`;
 }
 
-const maps = [pge(), torwar()];
+// COS Torwar na razie wyłączony ze strony (funkcja torwar() zostaje do ponownego włączenia)
+const maps = [pge()];
 const resolved = await Promise.all(maps);
 const data = {
   events: [
-    { id: 'pge', title: 'PGE Narodowy', subtitle: 'Warszawa · stadion · 4 poziomy', icon: '◎', color: '#94b5d1', soft: '#edf2fa' },
-    { id: 'torwar', title: 'COS Torwar', subtitle: 'Warszawa · hala · 30 sektorów', icon: '▭', color: '#d7afa9', soft: '#f9eeec' }
+    { id: 'pge', title: 'PGE Narodowy', subtitle: 'Warszawa · stadion · 4 poziomy', icon: '◎', color: '#94b5d1', soft: '#edf2fa' }
   ],
   maps: resolved,
   version: 'venue-3d-1'
