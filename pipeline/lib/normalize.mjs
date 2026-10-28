@@ -123,7 +123,7 @@ export function makeEvent(e) {
     id: e.id,
     title: clean(e.title, 160),
     start: e.start,
-    end: e.end || null,
+    end: e.end && e.end > e.start ? e.end : null, // źródła czasem podają koniec przed początkiem (sama data)
     city: normCity(e.city),
     venue: clean(e.venue, 120) || null,
     address: clean(e.address, 160) || null,

@@ -52,19 +52,17 @@ function fromJsonLd(html) {
 
 export default async function ebilet() {
   const byUrl = new Map();
-  // API ma ostrzejszy limit niż strony, więc idzie pierwsze — póki limit jest świeży
-  const full = await fullCatalog();
-  let limited = 0;
-  for (const slug of PAGES) {
-    // eBilet ogranicza liczbę zapytań: po kilku odmowach z rzędu nie męczymy dalej stron kategorii
-    if (limited >= 3 && !slug.startsWith('miasto/')) continue;
+  // eBilet wpuszcza kilkadziesiąt zapytań na raz, potem odpowiada 429. Przebieg jest co godzinę:
+  // strony miast i kategorii co 6 godzin (na początku, póki limit jest świeży), w pozostałych tylko pełne trasy z API.
+  const pagesNow = process.env.EBILET_PAGES === '1' || new Date().getUTCHours() % 6 === 5;
+  for (const slug of pagesNow ? PAGES : []) {
+    if (BLOCKED) break;
     let html;
     try {
       html = await request(`https://www.ebilet.pl/${slug}`, { type: 'text', retries: 0 });
-      limited = 0;
     } catch (e) {
       console.warn(`  ebilet ${slug}: ${e.message}`);
-      if (/HTTP 429/.test(e.message)) { limited++; await sleep(15000); }
+      if (/HTTP 429/.test(e.message)) BLOCKED = true;
       continue;
     }
     const ld = new Map(fromJsonLd(html).map(e => [e.url, e]));
@@ -115,6 +113,10 @@ export default async function ebilet() {
     }
     await sleep(1200);
   }
+  const full = await fullCatalog();
+  // strony odmówiły (limit zapytań) albo nie było ich w tym przebiegu: zostają wpisy ze stron z poprzedniego przebiegu, dopóki są w przyszłości
+  const today = new Date().toISOString().slice(0, 10), have = new Set([...byUrl.values()].map(e => e.id));
+  for (const e of full.previous) if (!e.id.startsWith('ebilet-e') && !have.has(e.id) && (e.end || e.start).slice(0, 10) >= today) byUrl.set((e.links?.[0]?.url || e.id) + '#prev', e);
   // pełne trasy i sale: każdy termin każdego tytułu (także w mniejszych miastach) zamiast tylko najbliższego
   if (full.events.length) {
     // tytuły pobrane w całości zastępują swój jeden „najbliższy termin” ze stron miast
@@ -157,21 +159,18 @@ function rememberTitle(t) {
   TITLES.set(id, { category, subcategory, slug, title: t.titleTitle || t.title, image: t.imagePortrait || t.imageLandscape,
     artists: t.artists || [], subcategoryName: t.subcategoryName, description: t.metaDescription });
 }
-/* zapytania z umiarem: przy 429 (za dużo zapytań) czekamy co najmniej minutę i ponawiamy; po przekroczeniu budżetu czasu przerywamy.
-   Pełny katalog nie musi zmieścić się w jednym przebiegu — kolejne dociągają tytuły odświeżane najdawniej. */
-let T0 = Date.now(), cool = 0;
+/* zapytania z umiarem; przy pierwszej odmowie 429 (za dużo zapytań) kończymy pobieranie w tym przebiegu.
+   Pełny katalog nie musi zmieścić się w jednym przebiegu — kolejne (co godzinę) dociągają tytuły odświeżane najdawniej. */
+let T0 = Date.now(), BLOCKED = false;
 const STAT = { ok: 0, limited: 0 };
 const BUDGET = 10 * 60e3;
 async function pool(items, n, fn, until = T0 + BUDGET, pause = 1500) {
   const out = []; let i = 0;
   await Promise.all(Array.from({ length: n }, async () => {
-    while (i < items.length && Date.now() < Math.min(until, T0 + BUDGET)) {
+    while (i < items.length && !BLOCKED && Date.now() < Math.min(until, T0 + BUDGET)) {
       const k = i++;
-      for (let a = 0; a < 3; a++) {
-        if (cool > Date.now()) await sleep(cool - Date.now());
-        try { out[k] = await fn(items[k]); STAT.ok++; break; }
-        catch (e) { out[k] = null; if (/HTTP 429/.test(e.message)) { STAT.limited++; cool = Date.now() + 60000 * (a + 1); continue; } break; }
-      }
+      try { out[k] = await fn(items[k]); STAT.ok++; }
+      catch (e) { out[k] = null; if (/HTTP 429/.test(e.message)) { STAT.limited++; BLOCKED = true; } }
       await sleep(pause);
     }
   }));
@@ -198,6 +197,25 @@ function fromApiEvent(e, t) {
     description: t.description,
     url: `https://www.ebilet.pl/${cat}/${sub}/${slug}`
   });
+}
+/* tytuł grany w jednym miejscu więcej niż SERIES razy (wystawa, muzeum, cykl koncertów co godzinę) → jeden wpis od pierwszego do ostatniego terminu */
+const SERIES = 12;
+function collapseSeries(events) {
+  const groups = new Map();
+  for (const e of events) {
+    const k = (e.id.match(/^ebilet-e(\d+)-/)?.[1] || e.id) + '|' + (e.venue || '') + '|' + (e.city || '');
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(e);
+  }
+  const out = [];
+  for (const list of groups.values()) {
+    if (list.length <= SERIES) { out.push(...list); continue; }
+    list.sort((a, b) => a.start.localeCompare(b.start));
+    const first = list[0], end = list.map(e => e.end || e.start).sort().pop(), prices = list.map(e => e.priceFrom).filter(p => p != null);
+    const priceFrom = prices.length ? Math.min(...prices) : null;
+    out.push({ ...first, id: first.id.replace(/^(ebilet-e\d+-)c?/, '$1c'), end, priceFrom, links: first.links.map(l => ({ ...l, price: priceFrom })) });
+  }
+  return out;
 }
 /* tytuły znane z poprzedniego przebiegu (adres eBilet = kategoria/podkategoria/slug) */
 function seedFromEvents(events) {
@@ -244,9 +262,10 @@ async function fullCatalog() {
   for (const e of placeEvents) if (!done.has(String(e.titleId))) { const ev = fromApiEvent(e, TITLES.get(String(e.titleId)) || {}); if (ev) events.push(ev); }
   // tytuły nieodświeżone w tym przebiegu: zostają ich terminy z poprzedniego (dopóki są w przyszłości)
   const today = new Date().toISOString().slice(0, 10);
-  for (const e of last.events) { const tid = e.id.match(/^ebilet-e(\d+)-/)?.[1]; if (tid && !done.has(tid) && (e.end || e.start).slice(0, 10) >= today) { events.push(e); done.add(tid); } }
-  // jeden termin = jeden wpis
-  const uniq = new Map(events.map(e => [e.id, e]));
+  const fresh = new Set(done);
+  for (const e of last.events) { const tid = e.id.match(/^ebilet-e(\d+)-/)?.[1]; if (tid && !fresh.has(tid) && (e.end || e.start).slice(0, 10) >= today) { events.push(e); done.add(tid); } }
+  // jeden termin = jeden wpis; wystawy i pokazy z biletami na godziny (dziesiątki terminów w jednym miejscu) = jeden wpis „od–do”
+  const uniq = collapseSeries([...new Map(events.map(e => [e.id, e])).values()]);
   await saveTitleTimes(last.at, [...done].filter(id => res[titleIds.indexOf(id)]));
-  return { events: [...uniq.values()], titleIds: done, places: placeSlugs.size };
+  return { events: uniq, titleIds: done, places: placeSlugs.size, previous: last.all };
 }
