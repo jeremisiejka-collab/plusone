@@ -247,8 +247,8 @@ function adminAct(cmd, p1, p2, a){
     case 'verifyCode': verifyCode(); return true;
     case 'codeBack': CODE.to=''; ACC.authErr=''; S.dir=null; render(); return true;
     case 'pwMode': ACC.pwMode = !ACC.pwMode; ACC.authErr=''; S.dir=null; render(); return true;
-    case 'expoLogin': EXPO.state=null; S.adminTab='expo'; S.afterAuth='admin';
-      if(inPreview()){ try{ sessionStorage.setItem('expoLogin','1'); }catch(e){} previewEnd(); return true; }
+    case 'expoLogin': { const k = MODS[p1] ? p1 : 'expo'; MODS[k].state=null; S.adminTab=k; S.afterAuth='admin';
+      if(inPreview()){ try{ sessionStorage.setItem('expoLogin',k); }catch(e){} previewEnd(); return true; } }
       ACC.authMode='admin'; ACC.authErr=''; go('auth'); return true;
     case 'seatPlan': openSeatPlan(a.slice(9)); return true;
     case 'seatHall': VEN.hall = p1; VEN.sel = null; VEN.row=''; VEN.seat=''; VEN.zoom = false; S.dir=null; render(); return true;
@@ -1297,13 +1297,13 @@ const scAdmin = () => {
         <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
       <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
   const src = LIVE.sources||{}, wm = workMode()==='admin', inApp = typeof renderAppChrome==='function';
-  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
+  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
   const chips = `<div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:${wm?'0 0 18px':'16px 20px'}">
     ${TABS.map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}</div>`;
   // w trybie pulpitu: nagłówek jak na pulpicie; na stronie zakładki są już w górnym menu
   if(wm && tab==='stats') S.adminTab = 'users';
   return wm ? `
-<div class="pg dash ${(S.adminTab||'users')==='expo'?'dash-wide':''}">
+<div class="pg dash ${['expo','venues'].includes(S.adminTab||'users')?'dash-wide':''}">
   ${dashHead('Panel administratora', esc((TABS.find(t=>t[0]===(S.adminTab||'users'))||TABS[0])[1]), '', `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button>`)}
   ${inApp?chips:''}
   <div>${adminTabBody(A, S.adminTab||'users', curList, src)}</div>
@@ -1315,31 +1315,34 @@ const scAdmin = () => {
   <div class="pad">${adminTabBody(A, tab, curList, src)}</div>
 </div>`;
 };
-/* ---- Mapa targów 3D: gotowy moduł (paczka PLUS ONE EXPO) w iframe pod chronioną ścieżką /admin/moduly/expo-map/ ---- */
-const EXPO = { state:null };
-const EXPO_SRC = '/admin/moduly/expo-map/';
-function expoCheck(){
-  if(EXPO.state) return; EXPO.state = 'checking';
-  fetch(EXPO_SRC+'data.js', {cache:'no-store', credentials:'same-origin'})
-    .then(r=>{ EXPO.state = r.status===403 || r.status===401 ? 'denied' : r.ok && (r.headers.get('Content-Type')||'').includes('javascript') ? 'ready' : 'missing'; })
-    .catch(()=>{ EXPO.state = 'missing'; }).finally(()=>{ S.dir=null; render(); });
+/* ---- Moduły 3D w iframe pod chronioną ścieżką /admin/moduly/: Mapa targów (paczka PLUS ONE EXPO) i Obiekty 3D (ten sam silnik) ---- */
+const MODS = {
+  expo: { src:'/admin/moduly/expo-map/', title:'Mapa targów 3D', path:'mapa-targow', items:'stoisk' },
+  venues: { src:'/admin/moduly/venue-3d/', title:'Obiekty 3D', path:'obiekty-3d', items:'sektorów' }
+};
+function expoCheck(m){
+  if(m.state) return; m.state = 'checking';
+  fetch(m.src+'data.js', {cache:'no-store', credentials:'same-origin'})
+    .then(r=>{ m.state = r.status===403 || r.status===401 ? 'denied' : r.ok && (r.headers.get('Content-Type')||'').includes('javascript') ? 'ready' : 'missing'; })
+    .catch(()=>{ m.state = 'missing'; }).finally(()=>{ S.dir=null; render(); });
 }
-function adminExpoTab(){
-  expoCheck();
-  if(EXPO.state==='checking' || !EXPO.state) return loadingBox();
-  if(EXPO.state==='ready') return `<div class="expo-wrap"><iframe src="${EXPO_SRC}index.html" title="Mapa targów 3D" class="expo-frame" allow="fullscreen" loading="lazy"></iframe></div>
-    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><a class="chip" href="${EXPO_SRC}index.html" target="_blank" rel="noopener">Otwórz na pełnym ekranie</a></div>
-    <p class="mono" style="line-height:1.6;margin-top:10px">Lewy przycisk: przesuwanie · prawy i strzałki: obrót · scroll, + i −: przybliżenie · Escape: odznaczenie. Statusy stoisk są demonstracyjne; lista i notatki zapisują się w tej przeglądarce.</p>`;
-  if(EXPO.state==='denied') return `<section class="dcard" style="max-width:640px"><header><h2>Mapa targów 3D</h2></header>
+function adminExpoTab(key){
+  const m = MODS[key]; expoCheck(m);
+  if(m.state==='checking' || !m.state) return loadingBox();
+  if(m.state==='ready') return `<div class="expo-wrap"><iframe src="${m.src}index.html" title="${m.title}" class="expo-frame" allow="fullscreen" loading="lazy"></iframe></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><a class="chip" href="${m.src}index.html" target="_blank" rel="noopener">Otwórz na pełnym ekranie</a></div>
+    <p class="mono" style="line-height:1.6;margin-top:10px">Lewy przycisk: przesuwanie · prawy i strzałki: obrót · scroll, + i −: przybliżenie · Escape: odznaczenie. Statusy ${m.items} są demonstracyjne; lista i notatki zapisują się w tej przeglądarce.${key==='venues'?' Narodowy: sektory, loże i bramy z oficjalnej mapy. Torwar: sektory według specyfikacji COS, kształt trybun poglądowy. Bary i toalety w obu obiektach orientacyjnie.':''}</p>`;
+  if(m.state==='denied') return `<section class="dcard" style="max-width:640px"><header><h2>${m.title}</h2></header>
     <p class="dnote" style="margin:0">Mapa otwiera się tylko na <b style="color:var(--t1)">zalogowanym koncie administratora</b>${inPreview()?' — „Widok demo” działa bez logowania, więc mapy w nim nie ma':''}.</p>
     <p class="dnote">Zaloguj się adresem administratora i wróć do tej zakładki.</p>
-    <button class="btn p" data-act="expoLogin" style="height:50px;margin-top:6px">Zaloguj się jako administrator</button></section>`;
-  return `<section class="dcard" style="max-width:640px"><header><h2>Mapa targów 3D</h2></header>
-    <p class="dnote" style="margin:0">Miejsce w panelu jest gotowe: zakładka, adres <b style="color:var(--t1)">plusoneapp.pl/admin/mapa-targow</b> i chroniona ścieżka modułu dostępna tylko po zalogowaniu administratora.</p>
-    <p class="dnote">Brakuje samej paczki z modułem (folder <b style="color:var(--t1)">modul/</b>: HTML, JS, dane i grafiki). Gdy zostanie dodana do <span class="mono">public/admin/moduly/expo-map/</span>, mapa pojawi się tutaj automatycznie.</p></section>`;
+    <button class="btn p" data-act="expoLogin:${key}" style="height:50px;margin-top:6px">Zaloguj się jako administrator</button></section>`;
+  return `<section class="dcard" style="max-width:640px"><header><h2>${m.title}</h2></header>
+    <p class="dnote" style="margin:0">Miejsce w panelu jest gotowe: zakładka, adres <b style="color:var(--t1)">plusoneapp.pl/admin/${m.path}</b> i chroniona ścieżka modułu dostępna tylko po zalogowaniu administratora.</p>
+    <p class="dnote">Brakuje plików modułu w <span class="mono">public${m.src}</span>. Gdy zostaną dodane, mapa pojawi się tutaj automatycznie.</p></section>`;
 }
 function adminTabBody(A, tab, curList, src){
-  if(tab==='expo') return adminExpoTab();
+  if(tab==='expo') return adminExpoTab('expo');
+  if(tab==='venues') return adminExpoTab('venues');
   return `
   ${A?.error ? `<div class="err">${esc(A.error)}</div>` : !A ? loadingBox() : tab==='stats' ? `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">

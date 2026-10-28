@@ -979,7 +979,7 @@ async function loadAccount(){
   if(S.screen==='loading') S.screen='home';
   S.dir=null; render();
   premiumAfterLogin();
-  try{ if(sessionStorage.getItem('expoLogin')){ sessionStorage.removeItem('expoLogin'); S.adminTab='expo'; ACC.authMode='admin'; ACC.authErr=''; go(isAdmin()?'admin':'auth'); } }catch(e){}
+  try{ if(sessionStorage.getItem('expoLogin')){ const k=sessionStorage.getItem('expoLogin'); sessionStorage.removeItem('expoLogin'); S.adminTab=k==='venues'?'venues':'expo'; ACC.authMode='admin'; ACC.authErr=''; go(isAdmin()?'admin':'auth'); } }catch(e){}
 }
 
 /* wspólne zakończenie logowania: hasłem (submitAuth) i kodem z maila (verifyCode w public/admin.js) */
