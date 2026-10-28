@@ -52,12 +52,17 @@ function fromJsonLd(html) {
 
 export default async function ebilet() {
   const byUrl = new Map();
+  let limited = 0;
   for (const slug of PAGES) {
+    // eBilet ogranicza liczbę zapytań: po kilku odmowach z rzędu nie męczymy dalej stron kategorii
+    if (limited >= 3 && !slug.startsWith('miasto/')) continue;
     let html;
     try {
-      html = await request(`https://www.ebilet.pl/${slug}`, { type: 'text' });
+      html = await request(`https://www.ebilet.pl/${slug}`, { type: 'text', retries: 0 });
+      limited = 0;
     } catch (e) {
       console.warn(`  ebilet ${slug}: ${e.message}`);
+      if (/HTTP 429/.test(e.message)) { limited++; await sleep(15000); }
       continue;
     }
     const ld = new Map(fromJsonLd(html).map(e => [e.url, e]));
@@ -106,7 +111,7 @@ export default async function ebilet() {
         url
       }));
     }
-    await sleep(800);
+    await sleep(1200);
   }
   // pełne trasy i sale: każdy termin każdego tytułu (także w mniejszych miastach) zamiast tylko najbliższego
   const full = await fullCatalog(TITLES);
@@ -150,18 +155,19 @@ function rememberTitle(t) {
   TITLES.set(id, { category, subcategory, slug, title: t.titleTitle || t.title, image: t.imagePortrait || t.imageLandscape,
     artists: t.artists || [], subcategoryName: t.subcategoryName, description: t.metaDescription });
 }
-/* równoległe zapytania z umiarem: przy 429 (za dużo zapytań) czekamy i ponawiamy; po przekroczeniu budżetu czasu przerywamy */
-const T0 = Date.now(), BUDGET = 11 * 60e3;
-let cool = 0;
-async function pool(items, n, fn, pause = 350) {
+/* zapytania z umiarem: przy 429 (za dużo zapytań) czekamy co najmniej minutę i ponawiamy; po przekroczeniu budżetu czasu przerywamy.
+   Pełny katalog nie musi zmieścić się w jednym przebiegu — kolejne dociągają tytuły odświeżane najdawniej. */
+let T0 = Date.now(), cool = 0;
+const BUDGET = 10 * 60e3;
+async function pool(items, n, fn, until = T0 + BUDGET, pause = 1500) {
   const out = []; let i = 0;
   await Promise.all(Array.from({ length: n }, async () => {
-    while (i < items.length && Date.now() - T0 < BUDGET) {
+    while (i < items.length && Date.now() < Math.min(until, T0 + BUDGET)) {
       const k = i++;
       for (let a = 0; a < 3; a++) {
         if (cool > Date.now()) await sleep(cool - Date.now());
         try { out[k] = await fn(items[k]); break; }
-        catch (e) { out[k] = null; if (/HTTP 429/.test(e.message)) { cool = Date.now() + 30000 * (a + 1); continue; } break; }
+        catch (e) { out[k] = null; if (/HTTP 429/.test(e.message)) { cool = Date.now() + 60000 * (a + 1); continue; } break; }
       }
       await sleep(pause);
     }
@@ -192,24 +198,27 @@ function fromApiEvent(e, t) {
 }
 async function fullCatalog(seedTitles) {
   const get = u => request(API + u, { retries: 0, timeout: 20000 });
+  T0 = Date.now();
   // 1) miasta → grupy (tytuły i miejsca)
-  const cities = (await get('/Home/Cities').catch(() => [])).map(c => c.slug).filter(Boolean);
+  // każdy etap ma swój limit czasu, a kolejność miast i sal jest losowa — kolejne przebiegi pokrywają resztę
+  const shuffle = a => a.map(x => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map(p => p[1]);
+  const cities = shuffle(((await pool(['/Home/Cities'], 1, get))[0] || []).map(c => c.slug).filter(Boolean));
   const placeSlugs = new Set();
-  await pool(cities, 2, async c => {
+  await pool(cities, 1, async c => {
     const lp = await get('/LandingPageLocation/' + encodeURIComponent(c));
     for (const s of lp.sections || []) for (const g of s.productSectionInfo?.groups || []) {
       if (g.type === 4) for (const p of await get(`/LandingPage/group/${g.id}/place`).catch(() => [])) placeSlugs.add(p.slug);
       if (g.type === 1) for (const t of await get(`/LandingPage/group/${g.id}/title`).then(r => r.titles || r).catch(() => [])) if (t && t.id) rememberTitle(t);
     }
-  });
+  }, T0 + 2.5 * 60e3);
   // największe sale w kraju (areny, hale) — z pierwszej znanej sali
   const any = [...placeSlugs][0];
   if (any) { const p = await get('/Places/' + any).catch(() => null); if (p) for (const x of await get(`/Places/${p.id}/popular-places`).catch(() => [])) placeSlugs.add(x.slug); }
   // 2) sale → ich wszystkie wydarzenia (rejestrujemy tytuły)
-  const placeEvents = (await pool([...placeSlugs], 2, async slug => {
+  const placeEvents = (await pool(shuffle([...placeSlugs]), 1, async slug => {
     const p = await get('/Places/' + encodeURIComponent(slug));
     return get(`/Places/${p.id}/events?size=300`);
-  })).flat().filter(Boolean);
+  }, T0 + 5 * 60e3)).flat().filter(Boolean);
   for (const e of placeEvents) rememberTitle({ ...e, id: e.titleId });
   // 3) tytuły (ze stron miast i kategorii, grup i sal) → wszystkie terminy
   for (const [id, t] of seedTitles) if (!TITLES.has(id)) TITLES.set(id, t);
@@ -217,7 +226,7 @@ async function fullCatalog(seedTitles) {
   const last = await prevTitles();
   const titleIds = [...TITLES.keys()].filter(id => TITLES.get(id).slug).sort((a, b) => (last.at.get(a) || 0) - (last.at.get(b) || 0));
   const done = new Set(), events = [];
-  const res = await pool(titleIds, 2, id => get(`/titlePage/${id}/events`));
+  const res = await pool(titleIds, 1, id => get(`/titlePage/${id}/events`));
   res.forEach((r, k) => {
     if (!r) return;
     done.add(titleIds[k]);

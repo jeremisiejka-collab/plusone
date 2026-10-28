@@ -39,5 +39,7 @@ jobs:
             echo "Brak zmian."
           else
             git commit -m "Aktualizacja wydarzeń $(date -u +'%Y-%m-%d %H:%M') UTC"
+            # w międzyczasie ktoś mógł wypchnąć zmiany kodu — dołączamy do nich zamiast przegrywać
+            git pull --rebase origin main
             git push
           fi
