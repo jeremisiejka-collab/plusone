@@ -230,27 +230,30 @@ async function fullCatalog() {
   const last = await prevTitles();
   seedFromEvents(last.all);
   const shuffle = a => a.map(x => [Math.random(), x]).sort((p, q) => p[0] - q[0]).map(p => p[1]);
-  // 1) najpierw terminy tytułów, których nie odświeżaliśmy najdłużej (kolejne przebiegi dociągają resztę)
-  const titleIds = [...TITLES.keys()].filter(id => TITLES.get(id).slug).sort((a, b) => (last.at.get(a) || 0) - (last.at.get(b) || 0));
-  const res = await pool(titleIds, 1, id => get(`/titlePage/${id}/events`), T0 + 6 * 60e3);
-  // 2) odkrywanie nowych sal i tytułów w miastach (losowa kolejność, kolejne przebiegi pokrywają resztę)
-  const cities = shuffle(((await pool(['/Home/Cities'], 1, get))[0] || []).map(c => c.slug).filter(Boolean));
+  // co trzeci przebieg zaczyna od odkrywania sal i tytułów w miastach, pozostałe od terminów tytułów
+  const discoverFirst = process.env.EBILET_DISCOVER === '1' || new Date().getUTCHours() % 3 === 1;
   const placeSlugs = new Set();
-  await pool(cities, 1, async c => {
-    const lp = await get('/LandingPageLocation/' + encodeURIComponent(c));
-    for (const s of lp.sections || []) for (const g of s.productSectionInfo?.groups || []) {
-      if (g.type === 4) for (const p of await get(`/LandingPage/group/${g.id}/place`).catch(() => [])) placeSlugs.add(p.slug);
-      if (g.type === 1) for (const t of await get(`/LandingPage/group/${g.id}/title`).then(r => r.titles || r).catch(() => [])) if (t && t.id) rememberTitle(t);
-    }
-  }, T0 + 7.5 * 60e3);
-  // największe sale w kraju (areny, hale) — z pierwszej znanej sali
-  const any = [...placeSlugs][0];
-  if (any) { const p = await get('/Places/' + any).catch(() => null); if (p) for (const x of await get(`/Places/${p.id}/popular-places`).catch(() => [])) placeSlugs.add(x.slug); }
-  // 3) sale → ich wszystkie wydarzenia
-  const placeEvents = (await pool(shuffle([...placeSlugs]), 1, async slug => {
-    const p = await get('/Places/' + encodeURIComponent(slug));
-    return get(`/Places/${p.id}/events?size=300`);
-  }, T0 + 9 * 60e3)).flat().filter(Boolean);
+  let res = [], placeEvents = [], titleIds = [];
+  // terminy tytułów, których nie odświeżaliśmy najdłużej (kolejne przebiegi dociągają resztę)
+  const titles = async () => {
+    titleIds = [...TITLES.keys()].filter(id => TITLES.get(id).slug).sort((a, b) => (last.at.get(a) || 0) - (last.at.get(b) || 0));
+    res = await pool(titleIds, 1, id => get(`/titlePage/${id}/events`), T0 + 6 * 60e3); };
+  // odkrywanie: miasta → grupy (sale i tytuły) → sale → ich wszystkie wydarzenia (losowa kolejność)
+  const discover = async () => {
+    const cities = shuffle(((await pool(['/Home/Cities'], 1, get))[0] || []).map(c => c.slug).filter(Boolean));
+    await pool(cities, 1, async c => {
+      const lp = await get('/LandingPageLocation/' + encodeURIComponent(c));
+      for (const s of lp.sections || []) for (const g of s.productSectionInfo?.groups || []) {
+        if (g.type === 4) for (const p of await get(`/LandingPage/group/${g.id}/place`).catch(() => [])) placeSlugs.add(p.slug);
+        if (g.type === 1) for (const t of await get(`/LandingPage/group/${g.id}/title`).then(r => r.titles || r).catch(() => [])) if (t && t.id) rememberTitle(t);
+      }
+    }, Date.now() + 3 * 60e3);
+    placeEvents = (await pool(shuffle([...placeSlugs]), 1, async slug => {
+      const p = await get('/Places/' + encodeURIComponent(slug));
+      return get(`/Places/${p.id}/events?size=300`);
+    }, Date.now() + 3 * 60e3)).flat().filter(Boolean);
+  };
+  if (discoverFirst) { await discover(); await titles(); } else { await titles(); await discover(); }
   for (const e of placeEvents) rememberTitle({ ...e, id: e.titleId });
   const done = new Set(), events = [];
   res.forEach((r, k) => {
