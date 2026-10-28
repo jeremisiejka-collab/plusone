@@ -63,6 +63,7 @@ export default async function ebilet() {
     const ld = new Map(fromJsonLd(html).map(e => [e.url, e]));
 
     for (const t of fromState(html)) {
+      rememberTitle(t);
       const p = t.nextEventPlace || {};
       const url = t.linkTo || `https://www.ebilet.pl/${t.category}/${t.subcategory}/${t.slug}`;
       if (!t.category || !t.subcategory || byUrl.has(url)) continue;
@@ -107,5 +108,128 @@ export default async function ebilet() {
     }
     await sleep(800);
   }
+  // pełne trasy i sale: każdy termin każdego tytułu (także w mniejszych miastach) zamiast tylko najbliższego
+  const full = await fullCatalog(TITLES);
+  if (full.events.length) {
+    // tytuły pobrane w całości zastępują swój jeden „najbliższy termin” ze stron miast
+    for (const [url, e] of byUrl) if (full.titleIds.has(e.id.slice(7))) byUrl.delete(url);
+    for (const e of full.events) byUrl.set(e.links[0].url + '#' + e.id, e);
+  }
+  console.log(`  ebilet: ${TITLES.size} tytułów, ${full.places} sal, ${full.events.length} terminów z pełnych tras`);
   return [...byUrl.values()];
+}
+
+/* kiedy ostatnio pobrano dany tytuł w całości (pipeline/data/ebilet-titles.json) i poprzednie terminy z public/data/events.json */
+import { readFile, writeFile } from 'node:fs/promises';
+const HERE = new URL('.', import.meta.url);
+const TIMES = new URL('../data/ebilet-titles.json', HERE), EVENTS_JSON = new URL('../../public/data/events.json', HERE);
+async function prevTitles() {
+  let at = new Map(), events = [];
+  try { at = new Map(Object.entries(JSON.parse(await readFile(TIMES, 'utf8')))); } catch {}
+  try { events = JSON.parse(await readFile(EVENTS_JSON, 'utf8')).events.filter(e => e.id.startsWith('ebilet-e')); } catch {}
+  return { at, events };
+}
+async function saveTitleTimes(at, refreshed) {
+  const now = Date.now();
+  for (const id of refreshed) at.set(id, now);
+  // zapominamy tytuły niewidziane od 30 dni
+  for (const [id, t] of at) if (now - t > 30 * 864e5) at.delete(id);
+  await writeFile(TIMES, JSON.stringify(Object.fromEntries(at)));
+}
+
+/* ---------- pełny katalog: sale w miastach + wszystkie terminy tytułów ----------
+   /api/Home/Cities → /api/LandingPageLocation/<miasto> (grupy: tytuły, wydarzenia, miejsca)
+   /api/Places/<slug> → id → /api/Places/<id>/events?size=300 (wszystkie wydarzenia sali)
+   /api/titlePage/<id>/events (wszystkie terminy tytułu we wszystkich miastach) */
+const API = 'https://www.ebilet.pl/api';
+const TITLES = new Map();          // id -> { category, subcategory, slug, title, image, artists, subcategoryName, description }
+function rememberTitle(t) {
+  const id = String(t.id || t.titleId || '');
+  if (!id || TITLES.has(id) && TITLES.get(id).slug) return;
+  const category = t.category || t.categorySlug, subcategory = t.subcategory || t.subcategorySlug, slug = t.slug || t.titleSlug;
+  TITLES.set(id, { category, subcategory, slug, title: t.titleTitle || t.title, image: t.imagePortrait || t.imageLandscape,
+    artists: t.artists || [], subcategoryName: t.subcategoryName, description: t.metaDescription });
+}
+/* równoległe zapytania z umiarem: przy 429 (za dużo zapytań) czekamy i ponawiamy; po przekroczeniu budżetu czasu przerywamy */
+const T0 = Date.now(), BUDGET = 11 * 60e3;
+let cool = 0;
+async function pool(items, n, fn, pause = 350) {
+  const out = []; let i = 0;
+  await Promise.all(Array.from({ length: n }, async () => {
+    while (i < items.length && Date.now() - T0 < BUDGET) {
+      const k = i++;
+      for (let a = 0; a < 3; a++) {
+        if (cool > Date.now()) await sleep(cool - Date.now());
+        try { out[k] = await fn(items[k]); break; }
+        catch (e) { out[k] = null; if (/HTTP 429/.test(e.message)) { cool = Date.now() + 30000 * (a + 1); continue; } break; }
+      }
+      await sleep(pause);
+    }
+  }));
+  return out;
+}
+function fromApiEvent(e, t) {
+  const cat = t.category, sub = t.subcategory, slug = t.slug;
+  if (!cat || !sub || !slug || e.isCancelled) return null;
+  const one = !e.endDate || localTime(e.endDate) === localTime(e.date) || Date.parse(e.endDate) - Date.parse(e.date) < 18 * 3600e3;
+  return makeEvent({
+    id: `ebilet-e${e.titleId}-${e.id}`,
+    source: 'ebilet',
+    title: e.titleTitle || t.title || e.title,
+    start: localTime(e.date),
+    end: one ? null : localTime(e.endDate),
+    city: e.city,
+    venue: e.placeName,
+    address: [e.street, e.postalCode, e.city].filter(Boolean).join(', '),
+    category: category({ category: cat, subcategory: sub, title: t.title }),
+    tags: [t.subcategoryName].filter(Boolean),
+    artists: e.artists || t.artists,
+    priceFrom: e.freeSeats?.minPrice ?? null,
+    image: e.imagePortrait || t.image || e.imageLandscape,
+    description: t.description,
+    url: `https://www.ebilet.pl/${cat}/${sub}/${slug}`
+  });
+}
+async function fullCatalog(seedTitles) {
+  const get = u => request(API + u, { retries: 0, timeout: 20000 });
+  // 1) miasta → grupy (tytuły i miejsca)
+  const cities = (await get('/Home/Cities').catch(() => [])).map(c => c.slug).filter(Boolean);
+  const placeSlugs = new Set();
+  await pool(cities, 2, async c => {
+    const lp = await get('/LandingPageLocation/' + encodeURIComponent(c));
+    for (const s of lp.sections || []) for (const g of s.productSectionInfo?.groups || []) {
+      if (g.type === 4) for (const p of await get(`/LandingPage/group/${g.id}/place`).catch(() => [])) placeSlugs.add(p.slug);
+      if (g.type === 1) for (const t of await get(`/LandingPage/group/${g.id}/title`).then(r => r.titles || r).catch(() => [])) if (t && t.id) rememberTitle(t);
+    }
+  });
+  // największe sale w kraju (areny, hale) — z pierwszej znanej sali
+  const any = [...placeSlugs][0];
+  if (any) { const p = await get('/Places/' + any).catch(() => null); if (p) for (const x of await get(`/Places/${p.id}/popular-places`).catch(() => [])) placeSlugs.add(x.slug); }
+  // 2) sale → ich wszystkie wydarzenia (rejestrujemy tytuły)
+  const placeEvents = (await pool([...placeSlugs], 2, async slug => {
+    const p = await get('/Places/' + encodeURIComponent(slug));
+    return get(`/Places/${p.id}/events?size=300`);
+  })).flat().filter(Boolean);
+  for (const e of placeEvents) rememberTitle({ ...e, id: e.titleId });
+  // 3) tytuły (ze stron miast i kategorii, grup i sal) → wszystkie terminy
+  for (const [id, t] of seedTitles) if (!TITLES.has(id)) TITLES.set(id, t);
+  // najpierw tytuły, których nie odświeżaliśmy najdłużej (kolejne przebiegi dociągają resztę)
+  const last = await prevTitles();
+  const titleIds = [...TITLES.keys()].filter(id => TITLES.get(id).slug).sort((a, b) => (last.at.get(a) || 0) - (last.at.get(b) || 0));
+  const done = new Set(), events = [];
+  const res = await pool(titleIds, 2, id => get(`/titlePage/${id}/events`));
+  res.forEach((r, k) => {
+    if (!r) return;
+    done.add(titleIds[k]);
+    for (const g of r.groups || []) for (const e of g.events || []) { const ev = fromApiEvent(e, TITLES.get(titleIds[k])); if (ev) events.push(ev); }
+  });
+  // wydarzenia sal, których tytułu nie udało się pobrać w całości
+  for (const e of placeEvents) if (!done.has(String(e.titleId))) { const ev = fromApiEvent(e, TITLES.get(String(e.titleId)) || {}); if (ev) events.push(ev); }
+  // tytuły nieodświeżone w tym przebiegu: zostają ich terminy z poprzedniego (dopóki są w przyszłości)
+  const today = new Date().toISOString().slice(0, 10);
+  for (const e of last.events) { const tid = e.id.match(/^ebilet-e(\d+)-/)?.[1]; if (tid && !done.has(tid) && (e.end || e.start).slice(0, 10) >= today) { events.push(e); done.add(tid); } }
+  // jeden termin = jeden wpis
+  const uniq = new Map(events.map(e => [e.id, e]));
+  await saveTitleTimes(last.at, [...done].filter(id => res[titleIds.indexOf(id)]));
+  return { events: [...uniq.values()], titleIds: done, places: placeSlugs.size };
 }

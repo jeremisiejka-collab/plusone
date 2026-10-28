@@ -2279,21 +2279,20 @@ function splitSheet(){
     <button class="btn p" data-act="sendSplit">Poproś o 34 PLUSY</button></div>`);
 }
 function citySheet(){
-  const list = Object.entries(LIVE.cities).slice(0,14);
+  const list = Object.entries(LIVE.cities);
   sheet(`<div class="col" style="gap:14px"><span class="h3">Miasto</span>
-    <div class="sc" style="max-height:56vh;overflow-y:auto">
+    <div class="field"><input id="city-q" placeholder="Szukaj miasta (${list.length})" autocomplete="off" autocapitalize="off"></div>
+    <div class="sc" id="city-list" style="max-height:56vh;overflow-y:auto">
     ${list.length ? list.map(([c,n])=>
-      `<button data-act="city:${esc(c)}" class="row" style="justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);width:100%">
+      `<button data-act="city:${esc(c)}" data-name="${esc(fold(c))}" class="row" style="justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);width:100%">
         <span style="font:500 15px/1 var(--d);${c===S.city?'color:'+PINK:''}">${esc(c)}</span>
         <span class="mono">${n} wydarzeń</span></button>`).join('') : '<span class="mono">Ładuję listę miast…</span>'}</div></div>`);
+  const q = $('#city-q');
+  if(q) q.oninput = () => { const v = fold(q.value.trim()); $$('#city-list [data-name]').forEach(b=>b.style.display = !v || b.dataset.name.includes(v) ? '' : 'none'); };
 }
 function notifSheet(){
   sheet(`<div class="col" style="gap:12px"><span class="h3">Powiadomienia</span>
-    ${[['Kaja wysłała Ci bilet na TAAKI SET','2 min temu'],
-       ['Pula REGULAR na UNSOUND kończy się za 3h','1 godz. temu'],
-       ['Zwrot 46 PLUSÓW z Jasna 1','wczoraj']].map(([t,m])=>`
-      <div class="card" style="padding:14px;display:flex;flex-direction:column;gap:5px">
-        <span style="font:500 14px/1.3 var(--d)">${t}</span><span class="mono">${m}</span></div>`).join('')}
+    <span class="body">Alerty o nowych wydarzeniach, tańszych biletach i przypomnienia dostaniesz w aplikacji +1.</span>
     <button class="btn g" data-act="closeSheet" style="margin-top:6px">Zamknij</button></div>`);
 }
 
