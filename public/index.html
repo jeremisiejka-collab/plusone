@@ -985,17 +985,17 @@ const scAuth = () => {
     ${panel?'':`<div class="seg"><button class="${!reg?'on':''}" data-act="authmode:login">Logowanie</button><button class="${reg?'on':''}" data-act="authmode:register">Nowe konto</button></div>`}
     <div class="col" style="gap:6px">
       <span style="font:600 24px/1.1 var(--d);letter-spacing:-.02em">${adm?'Logowanie administratora':org?'Dla organizatorów':reg?'Dołącz do +1':'Witaj z powrotem'}</span>
-      <span class="body">${adm?'Zaloguj się kontem administratora — kod przyjdzie na maila.':org?'Zaloguj się kontem organizatora: pulpit ze statystykami, Twoje wydarzenia, lista gości i skaner biletów.':reg?'Konto jest za darmo. Bez spamu.':'Zaloguj się e-mailem — przyślemy kod.'}</span>
+      <span class="body">${demoLogin()?'Wpisz cokolwiek albo nic, wybierz rolę i kliknij „Zaloguj się”.':adm?'Zaloguj się kontem administratora — kod przyjdzie na maila.':org?'Zaloguj się kontem organizatora: pulpit ze statystykami, Twoje wydarzenia, lista gości i skaner biletów.':reg?'Konto jest za darmo. Bez spamu.':(demoLogin()?'Wpisz cokolwiek albo nic, wybierz rolę i kliknij „Zaloguj się”.':'Zaloguj się e-mailem — przyślemy kod.')}</span>
     </div>
-    ${!ACC.api?`<div class="err">Logowanie jest chwilowo niedostępne. Spróbuj za moment.</div>`:''}
+    ${!ACC.api&&!demoLogin()?`<div class="err">Logowanie jest chwilowo niedostępne. Spróbuj za moment.</div>`:''}
     ${ACC.authErr?`<div class="err" role="alert">${esc(ACC.authErr)}</div>`:''}
-    ${reg?`<div class="field"><label>IMIĘ (OPCJONALNIE)</label><input id="au-name" autocomplete="given-name" maxlength="60"></div>`:''}
-    ${reg?`<div class="field"><label>CO LUBISZ? (DOSTANIESZ ALERTY TYLKO Z TYCH TEMATÓW)</label>${interestChips(S.regInterests||[])}</div>
+    ${reg&&!demoLogin()?`<div class="field"><label>IMIĘ (OPCJONALNIE)</label><input id="au-name" autocomplete="given-name" maxlength="60"></div>`:''}
+    ${reg&&!demoLogin()?`<div class="field"><label>CO LUBISZ? (DOSTANIESZ ALERTY TYLKO Z TYCH TEMATÓW)</label>${interestChips(S.regInterests||[])}</div>
       <label class="row" style="gap:10px;font:400 14px/1.4 var(--d);color:var(--t2);cursor:pointer"><input id="au-news" type="checkbox" ${S.regNews===false?'':'checked'} style="width:20px;height:20px;accent-color:var(--pink)"> Co czwartek „Na topie w Twoim mieście” na maila</label>`:''}
-    ${ACC.pwMode?`<div class="field"><label>E-MAIL</label><input id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="ty@przyklad.pl"></div>
+    ${demoLogin()?codeLoginHtml():ACC.pwMode?`<div class="field"><label>E-MAIL</label><input id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="ty@przyklad.pl"></div>
     <div class="field"><label>HASŁO${reg?' (MIN. 8 ZNAKÓW)':''}</label><input id="au-pass" type="password" autocomplete="${reg?'new-password':'current-password'}" data-enter="submitAuth"></div>
     <button class="btn p" data-act="submitAuth" ${ACC.busy?'disabled style="opacity:.6"':''}>${ACC.busy?'Chwilka…':panel?'Wejdź do panelu':reg?'Załóż konto':'Zaloguj się'}</button>`:codeLoginHtml()}
-    <button class="mono" data-act="pwMode" style="text-align:center;color:var(--t3)">${ACC.pwMode?'ZALOGUJ SIĘ KODEM Z MAILA':'ZALOGUJ SIĘ HASŁEM'}</button>
+    ${demoLogin()?'':`<button class="mono" data-act="pwMode" style="text-align:center;color:var(--t3)">${ACC.pwMode?'ZALOGUJ SIĘ KODEM Z MAILA':'ZALOGUJ SIĘ HASŁEM'}</button>`}
     ${reg?`<span class="mono" style="text-align:center;line-height:1.6">Przechowujemy tylko Twój e-mail i imię. Konto usuniesz w każdej chwili w Profilu.</span>`:''}
     ${org?`<span class="mono" style="text-align:center;line-height:1.6">Nie masz jeszcze dostępu? Napisz do nas — administrator nada Twojemu kontu rolę organizatora.</span>`:''}
     <div class="row" style="gap:8px;justify-content:center;flex-wrap:wrap">

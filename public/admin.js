@@ -273,6 +273,9 @@ function adminAct(cmd, p1, p2, a){
     case 'gSchAdd': GUIDE.edit.schedule.push({time:'',title:''}); S.dir=null; render(); return true;
     case 'gSchDel': GUIDE.edit.schedule.splice(+p1,1); S.dir=null; render(); return true;
     case 'previewAs': previewAs(p1); return true;
+    case 'demoRole': ACC.demoRole = p1; S.dir=null; render(); return true;
+    case 'demoLogin': { const r = ACC.demoRole || demoRoleDefault(); ACC.demoRole = null; previewAs(r); return true; }
+    case 'realLogin': ACC.realLogin = true; ACC.pwMode = false; ACC.authErr=''; S.dir=null; render(); return true;
     case 'previewEnd': previewEnd(); return true;
     case 'adm': S.adminTab=p1; S.dir=null; S.screen==='admin' ? render() : go('admin'); return true;
     case 'orgReload': ORG.at=0; ORG.data=null; render(); return true;
@@ -1073,7 +1076,25 @@ function seatFind(){
 
 /* ---- LOGOWANIE KODEM Z MAILA (strona i aplikacja; po sukcesie authDone(res, mode) z danego pliku) ---- */
 const CODE = { to:'', busy:false, sentAt:0 };
+/* FAZA ROZWOJU: logowanie bez maila i hasła. Ekran logowania zostaje, ale „Zaloguj się” (z czymkolwiek albo niczym w polach)
+   od razu otwiera pełne demo wybranej roli (previewAs: tylko przykładowe dane w przeglądarce, nic nie idzie do serwera).
+   Prawdziwe konto: mały link „Prawdziwe konto” pod przyciskiem. OPEN_LOGIN = false przywraca logowanie kodem z maila. */
+const OPEN_LOGIN = true;
+const demoLogin = () => OPEN_LOGIN && !ACC.realLogin;
+function demoRoleDefault(){ const m = ACC.authMode; return m==='admin' ? 'admin' : m==='org' ? 'organizer' : 'user'; }
+function demoLoginHtml(){
+  const sel = ACC.demoRole || demoRoleDefault();
+  return `
+    <div class="field"><label>E-MAIL (DOWOLNY, MOŻE BYĆ PUSTY)</label><input id="au-email" type="email" inputmode="email" autocomplete="off" autocapitalize="off" placeholder="cokolwiek" data-enter="demoLogin"></div>
+    <div class="field"><label>HASŁO (DOWOLNE, MOŻE BYĆ PUSTE)</label><input id="au-pass" type="password" autocomplete="off" data-enter="demoLogin"></div>
+    <div class="col" style="gap:8px"><span class="mono">ZALOGUJ JAKO</span>
+      <div class="row" style="gap:8px;flex-wrap:wrap">${PREVIEW_ROLES.map(([k,l])=>`<button class="chip ${sel===k?'on':''}" data-act="demoRole:${k}">${l}</button>`).join('')}</div></div>
+    <button class="btn p" data-act="demoLogin">Zaloguj się</button>
+    <span class="mono" style="text-align:center;line-height:1.6">Wersja testowa: bez maila i hasła. Widzisz całą aplikację na przykładowych danych; rolę zmienisz potem w Koncie.</span>
+    <button class="mono" data-act="realLogin" style="text-align:center;color:var(--t3)">PRAWDZIWE KONTO (KOD Z MAILA)</button>`;
+}
 function codeLoginHtml(){
+  if(demoLogin()) return demoLoginHtml();
   const reg = ACC.authMode==='register';
   if(!CODE.to) return `
     ${reg?`<div class="field"><label>IMIĘ (OPCJONALNIE)</label><input id="au-name" autocomplete="given-name" maxlength="60"></div>`:''}
