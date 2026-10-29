@@ -1,4 +1,5 @@
 // Buduje dane modułu „Obiekty 3D” (public/admin/moduly/venue-3d/) w formacie EXPO_DATA z modułu Mapa targów 3D.
+// Stadion Legii: sektory, loże i wejścia z public/data/venues.json (oficjalna mapa legia.com).
 // PGE Narodowy: sektory, loże i bramy z public/data/venues.json (oficjalna mapa obiektu).
 // COS Torwar: układ 30 sektorów A–Z w 4 trybunach i płyta 63 × 33 m według specyfikacji technicznej COS
 // (torwar.cos.pl/pl/2831/specyfikacja-techniczna-obiektu-cos-torwar). Kształt trybun jest poglądowy.
@@ -61,6 +62,56 @@ async function pge() {
       'Sektory, loże (101–141, Książęca, Platynowa, Biała, 201–230) i bramy 1–6, 10, 11 według oficjalnej mapy obiektu.',
       'Wysokość bryły pokazuje poziom: trybuna dolna, loże +1, loże +2, trybuna górna.',
       ...hall.levels.map(l => l.name + ' (' + l.floor + '): ' + l.has.join('; ') + '.'),
+      'Gastronomia i toalety są w korytarzach każdej trybuny — na mapie zaznaczone orientacyjnie przy narożnikach.',
+      hall.note
+    ]
+  };
+}
+
+/* ---------- Stadion Legii ---------- */
+// sektory, loże i wejścia z public/data/venues.json — przerysowane z oficjalnej mapy legia.com/mapa-stadionu
+async function legia() {
+  const v = JSON.parse(await readFile(new URL('../../public/data/venues.json', import.meta.url), 'utf8'));
+  const hall = (Array.isArray(v) ? v : v.venues).find(x => x.id === 'stadion-legii').halls[0];
+  const LV = Object.fromEntries(hall.levels.map(l => [l.id, l]));
+  const H3 = { lower: 1.3, vip1: 2.1, upper: 3.3 };
+  const STAND = s => s.level === 'vip1' ? 'trybuna zachodnia' : '';
+  const gateName = g => 'Wejście ' + g.n;
+  const near = c => hall.gates.map(g => [Math.hypot(g.x - c[0], g.y - c[1]), g]).sort((a, b) => a[0] - b[0])[0][1];
+  const booths = hall.sectors.map(s => {
+    const poly = [];
+    for (let i = 0; i < s.p.length; i += 2) poly.push([s.p[i], s.p[i + 1]]);
+    const lv = LV[s.level] || { name: s.level, floor: '' }, g = near(centre(poly));
+    return {
+      id: s.id, ...bbox(poly), polygon: poly, name: s.name, area: null, hall: lv.name, floor: lv.name + (STAND(s) ? ', ' + STAND(s) : ''),
+      gate: gateName(g), info: lv.name + ' · najbliżej: ' + gateName(g) + '.' + (/gości/.test(s.name) ? ' Sektor gości oddzielony strefą buforową.' : ''),
+      h3: H3[s.level] || 1.5, confidence: 'source', nameConfidence: 'source',
+      sourceNote: 'Obrys sektora przerysowany z oficjalnej mapy stadionu Legii (legia.com/mapa-stadionu). Najbliższe wejście liczone po odległości na planie — wejście zawsze sprawdzaj na bilecie.'
+    };
+  });
+  const [px1, py1, px2, py2] = hall.pitch;
+  const zones = [
+    { name: 'Boisko / płyta', x: px1, y: py1, w: px2 - px1, h: py2 - py1, type: 'pitch' },
+    ...hall.gates.map(g => ({ name: gateName(g), sign: g.n, x: g.x - 16, y: g.y - 6, w: 32, h: 12, type: 'entrance' })),
+    // gastronomia i toalety są w korytarzach każdej trybuny; tu jako punkty orientacyjne przy narożnikach
+    { name: 'Bar płn.-wsch.', x: -48, y: 20, w: 40, h: 18, type: 'food' },
+    { name: 'Toalety płn.-wsch.', x: -40, y: 44, w: 28, h: 14, type: 'wc' },
+    { name: 'Bar płd.-wsch.', x: 528, y: 20, w: 40, h: 18, type: 'food' },
+    { name: 'Toalety płd.-wsch.', x: 532, y: 44, w: 28, h: 14, type: 'wc' },
+    { name: 'Bar płd.-zach.', x: 528, y: 382, w: 40, h: 18, type: 'food' },
+    { name: 'Toalety płd.-zach.', x: 532, y: 360, w: 28, h: 14, type: 'wc' },
+    { name: 'Bar płn.-zach.', x: -48, y: 382, w: 40, h: 18, type: 'food' },
+    { name: 'Toalety płn.-zach.', x: -40, y: 360, w: 28, h: 14, type: 'wc' }
+  ];
+  return {
+    id: 'legia', title: 'Cały stadion', event: 'Stadion Legii', eventId: 'legia',
+    source: 'Oficjalna mapa stadionu Legii (legia.com/mapa-stadionu) — własny rysunek', sourceImage: 'assets/legia-plan.svg',
+    width: hall.w, height: hall.h, sourceWidth: hall.w, sourceHeight: hall.h, bounds: { x: 0, y: 0, w: hall.w, h: hall.h },
+    badge: 'UL. ŁAZIENKOWSKA 3 / PLAN POGLĄDOWY', booths, zones, levels: hall.levels,
+    notes: [
+      'Sektory 100–126 i 200–225, Gold, loże biznesowe, Skybox i wejścia A1, B1, B2, C1, C2, D1, VIP i Media według oficjalnej mapy stadionu.',
+      'Trybuny: wschodnia (im. Kazimierza Deyny), północna (Żyleta), południowa (im. Lucjana Brychczego) z sektorem gości 121, 122 i 221, zachodnia z lożami biznesowymi i sektorem VIP.',
+      'Wysokość bryły pokazuje poziom: trybuna dolna, strefa VIP i biznes, trybuna górna.',
       'Gastronomia i toalety są w korytarzach każdej trybuny — na mapie zaznaczone orientacyjnie przy narożnikach.',
       hall.note
     ]
@@ -165,7 +216,7 @@ function torwar() {
 
 /* ---------- własny rysunek planu (podkład i „Plan źródłowy”) ---------- */
 function planSvg(m) {
-  const col = { 'Trybuna dolna': '#9aafc9', 'Loże +1': '#d6b16e', 'Loże +2': '#b48ac9', 'Trybuna górna': '#76bda7' };
+  const col = { 'Trybuna dolna': '#9aafc9', 'Loże +1': '#d6b16e', 'Loże +2': '#b48ac9', 'VIP i biznes': '#d6b16e', 'Trybuna górna': '#76bda7' };
   const pts = p => p.map(q => q.join(',')).join(' ');
   const zone = z => {
     const c = z.type === 'pitch' ? '#7fb98a' : z.type === 'wc' ? '#c9c2de' : z.type === 'food' ? '#e2cfa8' : z.type === 'entrance' ? '#9fd0bd' : '#d9d6e2';
@@ -180,11 +231,12 @@ function planSvg(m) {
 }
 
 // COS Torwar na razie wyłączony ze strony (funkcja torwar() zostaje do ponownego włączenia)
-const maps = [pge()];
+const maps = [pge(), legia()];
 const resolved = await Promise.all(maps);
 const data = {
   events: [
-    { id: 'pge', title: 'PGE Narodowy', subtitle: 'Warszawa · stadion · 4 poziomy', icon: '◎', color: '#94b5d1', soft: '#edf2fa' }
+    { id: 'pge', title: 'PGE Narodowy', subtitle: 'Warszawa · stadion · 4 poziomy', icon: '◎', color: '#94b5d1', soft: '#edf2fa' },
+    { id: 'legia', title: 'Stadion Legii', subtitle: 'Warszawa · stadion · 55 sektorów', icon: '▣', color: '#9fc5a3', soft: '#eef6ef' }
   ],
   maps: resolved,
   version: 'venue-3d-1'

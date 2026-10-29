@@ -951,10 +951,12 @@ function stadiumSvg(h){
   const secs = h.sectors.map(x=>{ const c = polyC(x.p), small = x.level==='vip1'||x.level==='vip2', on = sel===x.id;
     return `<g class="sec ${on?'on':''} ${dim(x.level)?'dim':''}" data-seat="${esc(x.id)}" data-label="${esc(x.name)}">
       <polygon points="${x.p.join(',')}" style="fill:${LEVEL_COL[x.level]}"/>${small?'':`<text x="${c[0].toFixed(1)}" y="${(c[1]+3).toFixed(1)}">${esc(x.id)}</text>`}</g>`; }).join('');
-  const gates = h.gates.map(g=>`<g class="gate"><circle cx="${g.x}" cy="${g.y}" r="11"/><text x="${g.x}" y="${g.y+4}">${g.n}</text></g>`).join('');
+  const gates = h.gates.map(g=>`<g class="gate">${g.n.length>2?`<rect x="${g.x-g.n.length*4-4}" y="${g.y-11}" width="${g.n.length*8+8}" height="22" rx="11"/>`:`<circle cx="${g.x}" cy="${g.y}" r="11"/>`}<text x="${g.x}" y="${g.y+4}">${g.n}</text></g>`).join('');
+  // obrys stadionu: elipsa (Narodowy) albo zaokrąglony prostokąt z danych (h.bowl = [x, y, w, h])
+  const bowl = h.bowl ? `<rect class="bowl" x="${h.bowl[0]}" y="${h.bowl[1]}" width="${h.bowl[2]}" height="${h.bowl[3]}" rx="40"/>` : `<ellipse class="bowl" cx="331" cy="281" rx="300" ry="262"/>`;
   return `<svg class="seatmap stadium" viewBox="0 0 ${h.w} ${h.h}" role="img" aria-label="Plan stadionu ${esc(h.name)}">
-    <ellipse class="bowl" cx="331" cy="281" rx="300" ry="262"/>
-    <g class="sec pitch ${dim('floor')?'dim':''} ${sel==='plyta'?'on':''}" data-seat="plyta" data-label="Płyta"><rect x="${px1}" y="${py1}" width="${px2-px1}" height="${py2-py1}" rx="34" style="fill:${LEVEL_COL.floor}"/>
+    ${bowl}
+    <g class="sec pitch ${dim('floor')?'dim':''} ${sel==='plyta'?'on':''}" data-seat="plyta" data-label="Płyta"><rect x="${px1}" y="${py1}" width="${px2-px1}" height="${py2-py1}" rx="${h.bowl?6:34}" style="fill:${LEVEL_COL.floor}"/>
       <text x="${(px1+px2)/2}" y="${(py1+py2)/2+5}" class="pitch-t">PŁYTA</text></g>
     ${secs}${gates}${(h.sides||[]).map(x=>`<text class="side-t" x="${x.x}" y="${x.y}">${esc(x.t)}</text>`).join('')}</svg>`;
 }
@@ -1014,7 +1016,7 @@ const scSeatPlan = () => {
 function scStadium(V, h, e){
   const lv = VEN.level||'all', L = h.levels.find(x=>x.id===lv), sec = VEN.sel && h.sectors.find(x=>x.id===VEN.sel);
   const gate = sec && nearestGate(h, sec), lvOf = id => h.levels.find(x=>x.id===id);
-  const count = id => h.sectors.filter(x=>x.level===id).length;
+  const count = id => h.sectors.filter(x=>x.level===id).length, GW = h.gateWord||'brama', GWS = GW==='brama'?'Bramy':'Wejścia';
   return `<div class="pg dash seatplan">
   <button class="dback" data-act="back" style="margin-bottom:14px">${ic('chevL',12,2)} Wróć</button>
   <div class="col" style="gap:6px"><span class="eyebrow pink">Plan stadionu</span><h1 class="sp-h">${esc(V.name)}</h1>
@@ -1025,19 +1027,19 @@ function scStadium(V, h, e){
   <div class="dgrid">
     <section class="dcard span2" style="padding:14px">
       <div class="seatwrap ${VEN.zoom?'zoom':''}" id="seatwrap">${stadiumSvg(h)}</div>
-      <div class="seatinfo" id="seatinfo">${sec?`${ic('pin',14)} ${esc(sec.name)} · ${esc(lvOf(sec.level).name)} (${esc(lvOf(sec.level).floor)}) · najbliżej brama ${gate.n}`:VEN.sel==='plyta'?`${ic('pin',14)} Płyta · poziom 0`:'Stuknij sektor albo lożę. Kółka z numerami to bramy wejściowe.'}</div>
+      <div class="seatinfo" id="seatinfo">${sec?`${ic('pin',14)} ${esc(sec.name)} · ${esc(lvOf(sec.level).name)} (${esc(lvOf(sec.level).floor)}) · najbliżej ${GW} ${gate.n}`:VEN.sel==='plyta'?`${ic('pin',14)} Płyta · poziom 0`:`Stuknij sektor albo lożę. Znaczniki na obrzeżu to ${GWS.toLowerCase()} na stadion.`}</div>
       <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="chip" data-act="seatZoom" style="display:inline-flex;align-items:center;gap:6px">${ic(VEN.zoom?'cross':'search',14)} ${VEN.zoom?'Dopasuj':'Powiększ'}</button></div>
     </section>
     ${dcard(L?esc(L.name)+' · '+esc(L.floor):'Poziomy stadionu', L ? `<div class="col" style="gap:10px">
         <div><span class="mono">TU MASZ</span><ul class="lvlist yes">${L.has.map(x=>`<li>${ic('check',13,2.4)}${esc(x)}</li>`).join('')}</ul></div>
         <div><span class="mono">TU NIE MA</span><ul class="lvlist no">${L.no.map(x=>`<li>${ic('cross',13,2.4)}${esc(x)}</li>`).join('')}</ul></div></div>`
-      : `<ul class="lvrows">${h.levels.map(x=>`<li data-act="stLevel:${x.id}"><i style="background:${LEVEL_COL[x.id]}"></i><div class="col" style="gap:3px;min-width:0"><b>${esc(x.name)}</b><span class="mono">${esc(x.floor)}${count(x.id)?' · '+count(x.id)+(x.id.startsWith('vip')?' lóż':' sektorów'):''}</span></div>${ic('chevR',14)}</li>`).join('')}</ul>`)}
+      : `<ul class="lvrows">${h.levels.map(x=>`<li data-act="stLevel:${x.id}"><i style="background:${LEVEL_COL[x.id]}"></i><div class="col" style="gap:3px;min-width:0"><b>${esc(x.name)}</b><span class="mono">${esc(x.floor)}${count(x.id)?' · '+count(x.id)+(x.id.startsWith('vip')?(h.gateWord?' stref':' lóż'):' sektorów'):''}</span></div>${ic('chevR',14)}</li>`).join('')}</ul>`)}
     ${dcard('Znajdź swój sektor', `<div class="row" style="gap:8px;align-items:flex-end">
-      <div class="field" style="flex:1"><label>SEKTOR LUB LOŻA</label><input id="st-q" placeholder="np. D12, G30, 205" autocapitalize="characters" data-enter="stFind"></div>
+      <div class="field" style="flex:1"><label>SEKTOR LUB LOŻA</label><input id="st-q" placeholder="${h.gateWord?'np. 113, 207, Gold':'np. D12, G30, 205'}" autocapitalize="characters" data-enter="stFind"></div>
       <button class="btn p" data-act="stFind" style="height:50px;flex:none;width:auto;padding:0 20px">Pokaż</button></div>
-      ${sec?`<p class="dnote">Najbliższa brama: <b style="color:var(--t1)">${gate.n}</b> (orientacyjnie — numer bramy wejścia masz na bilecie).</p>`:''}`)}
-    ${dcard('Bramy wejściowe', `<div class="gates">${h.gates.map(g=>`<span><b>${g.n}</b></span>`).join('')}</div>
-      <p class="dnote">Bramy ${h.gates.map(g=>g.n).join(', ')} rozmieszczone są dookoła stadionu. Na koncertach część bram prowadzi tylko na płytę — sprawdź bilet.</p>`)}
+      ${sec?`<p class="dnote">Najbliżej: ${GW} <b style="color:var(--t1)">${gate.n}</b> (orientacyjnie — ${GW==='brama'?'numer bramy':'wejście'} masz na bilecie).</p>`:''}`)}
+    ${dcard(GWS+' na stadion', `<div class="gates">${h.gates.map(g=>`<span><b>${g.n}</b></span>`).join('')}</div>
+      <p class="dnote">${GWS} ${h.gates.map(g=>g.n).join(', ')} rozmieszczone są dookoła stadionu. Na koncertach część wejść prowadzi tylko na płytę — sprawdź bilet.</p>`)}
   </div>
   <p class="dnote">${esc(h.note||'')}</p>
   <p class="mono" style="line-height:1.6;margin-top:8px">Sektory, loże i bramy na podstawie <a href="${esc(V.source)}" target="_blank" rel="noopener" style="color:var(--pink)">oficjalnej mapy ${esc(V.name)}</a>.</p>
