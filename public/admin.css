@@ -261,6 +261,8 @@
 .seatmap.stadium .sec text { fill: #000; font: 700 10px var(--d); text-anchor: middle; pointer-events: none; }
 .seatmap.stadium .pitch-t { font: 700 16px var(--d); letter-spacing: .2em; fill: rgba(0,0,0,.55); }
 .seatmap.stadium .gate circle, .seatmap.stadium .gate rect { fill: var(--t1); }
+.seatmap.stadium .mark polygon { fill: var(--surface-2); stroke: var(--line); stroke-width: .6; }
+.seatmap.stadium .mark text { font: 600 6.5px var(--m); fill: var(--t3); text-anchor: middle; letter-spacing: .06em; pointer-events: none; }
 .seatmap.stadium .gate text { fill: var(--bg); font: 700 11px var(--m); text-anchor: middle; }
 .seatmap.stadium .side-t { fill: var(--t3); font: 600 9px var(--m); text-anchor: middle; letter-spacing: .14em; }
 .lvchip { display: inline-flex; align-items: center; gap: 6px; }

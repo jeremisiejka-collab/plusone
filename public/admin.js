@@ -948,7 +948,7 @@ function nearestGate(h, sec){ const [x,y] = polyC(sec.p); return h.gates.slice()
 function stadiumSvg(h){
   const lv = VEN.level||'all', sel = VEN.sel, dim = id => lv!=='all' && lv!==id;
   const [px1,py1,px2,py2] = h.pitch;
-  const secs = h.sectors.map(x=>{ const c = polyC(x.p), small = x.level==='vip1'||x.level==='vip2', on = sel===x.id;
+  const secs = h.sectors.map(x=>{ const c = polyC(x.p), small = (x.level==='vip1'||x.level==='vip2') && !h.bowl, on = sel===x.id;
     return `<g class="sec ${on?'on':''} ${dim(x.level)?'dim':''}" data-seat="${esc(x.id)}" data-label="${esc(x.name)}">
       <polygon points="${x.p.join(',')}" style="fill:${LEVEL_COL[x.level]}"/>${small?'':`<text x="${c[0].toFixed(1)}" y="${(c[1]+3).toFixed(1)}">${esc(x.id)}</text>`}</g>`; }).join('');
   const gates = h.gates.map(g=>`<g class="gate">${g.n.length>2?`<rect x="${g.x-g.n.length*4-4}" y="${g.y-11}" width="${g.n.length*8+8}" height="22" rx="11"/>`:`<circle cx="${g.x}" cy="${g.y}" r="11"/>`}<text x="${g.x}" y="${g.y+4}">${g.n}</text></g>`).join('');
@@ -958,6 +958,7 @@ function stadiumSvg(h){
     ${bowl}
     <g class="sec pitch ${dim('floor')?'dim':''} ${sel==='plyta'?'on':''}" data-seat="plyta" data-label="Płyta"><rect x="${px1}" y="${py1}" width="${px2-px1}" height="${py2-py1}" rx="${h.bowl?6:34}" style="fill:${LEVEL_COL.floor}"/>
       <text x="${(px1+px2)/2}" y="${(py1+py2)/2+5}" class="pitch-t">PŁYTA</text></g>
+    ${(h.marks||[]).map(m=>{ const c = polyC(m.p); return `<g class="mark"><polygon points="${m.p.join(',')}"/><text x="${c[0].toFixed(1)}" y="${(c[1]+3).toFixed(1)}">${esc(m.t)}</text></g>`; }).join('')}
     ${secs}${gates}${(h.sides||[]).map(x=>`<text class="side-t" x="${x.x}" y="${x.y}">${esc(x.t)}</text>`).join('')}</svg>`;
 }
 function seatSvg(h){
@@ -1027,7 +1028,7 @@ function scStadium(V, h, e){
   <div class="dgrid">
     <section class="dcard span2" style="padding:14px">
       <div class="seatwrap ${VEN.zoom?'zoom':''}" id="seatwrap">${stadiumSvg(h)}</div>
-      <div class="seatinfo" id="seatinfo">${sec?`${ic('pin',14)} ${esc(sec.name)} · ${esc(lvOf(sec.level).name)} (${esc(lvOf(sec.level).floor)}) · najbliżej ${GW} ${gate.n}`:VEN.sel==='plyta'?`${ic('pin',14)} Płyta · poziom 0`:`Stuknij sektor albo lożę. Znaczniki na obrzeżu to ${GWS.toLowerCase()} na stadion.`}</div>
+      <div class="seatinfo" id="seatinfo">${sec?`${ic('pin',14)} ${esc(sec.name)}${sec.stand?' · '+esc(sec.stand):''} · ${esc(lvOf(sec.level).name)} (${esc(lvOf(sec.level).floor)}) · najbliżej ${GW} ${gate.n}`:VEN.sel==='plyta'?`${ic('pin',14)} Płyta · poziom 0`:`Stuknij sektor albo lożę. Znaczniki na obrzeżu to ${GWS.toLowerCase()} na stadion.`}</div>
       <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="chip" data-act="seatZoom" style="display:inline-flex;align-items:center;gap:6px">${ic(VEN.zoom?'cross':'search',14)} ${VEN.zoom?'Dopasuj':'Powiększ'}</button></div>
     </section>
     ${dcard(L?esc(L.name)+' · '+esc(L.floor):'Poziomy stadionu', L ? `<div class="col" style="gap:10px">

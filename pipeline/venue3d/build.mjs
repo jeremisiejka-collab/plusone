@@ -75,7 +75,6 @@ async function legia() {
   const hall = (Array.isArray(v) ? v : v.venues).find(x => x.id === 'stadion-legii').halls[0];
   const LV = Object.fromEntries(hall.levels.map(l => [l.id, l]));
   const H3 = { lower: 1.3, vip1: 2.1, upper: 3.3 };
-  const STAND = s => s.level === 'vip1' ? 'trybuna zachodnia' : '';
   const gateName = g => 'Wejście ' + g.n;
   const near = c => hall.gates.map(g => [Math.hypot(g.x - c[0], g.y - c[1]), g]).sort((a, b) => a[0] - b[0])[0][1];
   const booths = hall.sectors.map(s => {
@@ -83,8 +82,8 @@ async function legia() {
     for (let i = 0; i < s.p.length; i += 2) poly.push([s.p[i], s.p[i + 1]]);
     const lv = LV[s.level] || { name: s.level, floor: '' }, g = near(centre(poly));
     return {
-      id: s.id, ...bbox(poly), polygon: poly, name: s.name, area: null, hall: lv.name, floor: lv.name + (STAND(s) ? ', ' + STAND(s) : ''),
-      gate: gateName(g), info: lv.name + ' · najbliżej: ' + gateName(g) + '.' + (/gości/.test(s.name) ? ' Sektor gości oddzielony strefą buforową.' : ''),
+      id: s.id, ...bbox(poly), polygon: poly, name: s.name, area: null, hall: lv.name, floor: s.stand || lv.name,
+      gate: gateName(g), info: (s.stand ? s.stand + ' · ' : '') + lv.name + ' · najbliżej: ' + gateName(g) + '.' + (/gości/.test(s.name) ? ' Sektor gości oddzielony strefą buforową.' : s.id === '100' ? ' Strefa Gold: 152 miejsca nad wyjściem zawodników.' : / \(VIP\)/.test(s.name) ? ' Miejsca VIP nad ławkami rezerwowych.' : ''),
       h3: H3[s.level] || 1.5, confidence: 'source', nameConfidence: 'source',
       sourceNote: 'Obrys sektora przerysowany z oficjalnej mapy stadionu Legii (legia.com/mapa-stadionu). Najbliższe wejście liczone po odległości na planie — wejście zawsze sprawdzaj na bilecie.'
     };
@@ -109,7 +108,8 @@ async function legia() {
     width: hall.w, height: hall.h, sourceWidth: hall.w, sourceHeight: hall.h, bounds: { x: 0, y: 0, w: hall.w, h: hall.h },
     badge: 'UL. ŁAZIENKOWSKA 3 / PLAN POGLĄDOWY', booths, zones, levels: hall.levels,
     notes: [
-      'Sektory 100–126 i 200–225, Gold, loże biznesowe, Skybox i wejścia A1, B1, B2, C1, C2, D1, VIP i Media według oficjalnej mapy stadionu.',
+      'Sektory 100–126 i 200–225, sala Gold, loże biznesowe, Skybox i wejścia A1, B1, B2, C1, C2, D1, VIP i Media przerysowane ręcznie z oficjalnej mapy stadionu (pipeline/venues/legia.mjs).',
+      'Strefa Gold: 152 miejsca w sektorze 100 nad wyjściem zawodników; miejsca VIP w sektorach 101–103 i 124–126 nad ławkami rezerwowych (oferta VIP klubu).',
       'Trybuny: wschodnia (im. Kazimierza Deyny), północna (Żyleta), południowa (im. Lucjana Brychczego) z sektorem gości 121, 122 i 221, zachodnia z lożami biznesowymi i sektorem VIP.',
       'Wysokość bryły pokazuje poziom: trybuna dolna, strefa VIP i biznes, trybuna górna.',
       'Gastronomia i toalety są w korytarzach każdej trybuny — na mapie zaznaczone orientacyjnie przy narożnikach.',
