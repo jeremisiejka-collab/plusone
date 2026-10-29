@@ -2626,7 +2626,7 @@ try{ if(sessionStorage.getItem('expoLogin')){ const k=sessionStorage.getItem('ex
 if(location.pathname.replace(/\/+$/,'')==='/admin'){ history.replaceState(null,'','/'); setTimeout(()=>{ if(isAdmin()) go('home'); else { ACC.authMode='admin'; ACC.authErr=''; go('auth'); } }, 1200); }
 /* /admin/mapa-targow i /admin/obiekty-3d — zakładki modułów 3D w panelu administratora */
 const ADMIN_PAGES={'/admin/mapa-targow':'expo','/admin/obiekty-3d':'venues'};
-if(ADMIN_PAGES[location.pathname.replace(/\/+$/,'')]){ S.adminTab=ADMIN_PAGES[location.pathname.replace(/\/+$/,'')]; history.replaceState(null,'','/'); setTimeout(()=>{ if(isAdmin()) go('admin'); else { ACC.authMode='admin'; go('auth'); } }, 1200); }
+if(ADMIN_PAGES[location.pathname.replace(/\/+$/,'')]){ S.adminTab=ADMIN_PAGES[location.pathname.replace(/\/+$/,'')]; history.replaceState(null,'','/'); setTimeout(()=>{ const tab = S.adminTab; if(!isAdmin()) previewAs('admin'); S.adminTab = tab; go('admin'); }, 1200); }
 /* link z maila do uczestników: /?guide=<id> — przewodnik po zalogowaniu, inaczej strona wydarzenia */
 { const gid = new URLSearchParams(location.search).get('guide');
   if(gid){ history.replaceState(null,'','/'); const t0 = Date.now(), wait = () => { if(!ACC.user && Date.now()-t0 < 4000) return setTimeout(wait, 250);

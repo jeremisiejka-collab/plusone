@@ -1017,6 +1017,8 @@ const scSeatPlan = () => {
   <p class="mono" style="line-height:1.6;margin-top:12px">Numeracja i układ na podstawie <a href="${esc(V.source)}" target="_blank" rel="noopener" style="color:var(--pink)">planu widowni ${esc(V.name)}</a>. Przed zakupem sprawdź układ u sprzedawcy — na niektórych wydarzeniach może się różnić.</p>
 </div>`;
 };
+/* stadiony z mapą 3D w module Obiekty 3D (public/admin/moduly/venue-3d, ?obiekt=…) */
+const V3D = {'pge-narodowy':'pge', 'stadion-legii':'legia'};
 function scStadium(V, h, e){
   const lv = VEN.level||'all', L = h.levels.find(x=>x.id===lv), sec = VEN.sel && h.sectors.find(x=>x.id===VEN.sel);
   const gate = sec && nearestGate(h, sec), lvOf = id => h.levels.find(x=>x.id===id);
@@ -1032,7 +1034,8 @@ function scStadium(V, h, e){
     <section class="dcard span2" style="padding:14px">
       <div class="seatwrap ${VEN.zoom?'zoom':''}" id="seatwrap">${stadiumSvg(h)}</div>
       <div class="seatinfo" id="seatinfo">${sec?`${ic('pin',14)} ${esc(sec.name)}${sec.stand?' · '+esc(sec.stand):''} · ${esc(lvOf(sec.level).name)} (${esc(lvOf(sec.level).floor)}) · najbliżej ${GW} ${gate.n}`:VEN.sel==='plyta'?`${ic('pin',14)} Płyta · poziom 0`:`Stuknij sektor albo lożę. Znaczniki na obrzeżu to ${GWS.toLowerCase()} na stadion.`}</div>
-      <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="chip" data-act="seatZoom" style="display:inline-flex;align-items:center;gap:6px">${ic(VEN.zoom?'cross':'search',14)} ${VEN.zoom?'Dopasuj':'Powiększ'}</button></div>
+      <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="chip" data-act="seatZoom" style="display:inline-flex;align-items:center;gap:6px">${ic(VEN.zoom?'cross':'search',14)} ${VEN.zoom?'Dopasuj':'Powiększ'}</button>
+        ${V3D[V.id]?`<a class="chip" href="/admin/moduly/venue-3d/index.html?obiekt=${V3D[V.id]}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px">Widok 3D stadionu</a>`:''}</div>
     </section>
     ${dcard(L?esc(L.name)+' · '+esc(L.floor):'Poziomy stadionu', L ? `<div class="col" style="gap:10px">
         <div><span class="mono">TU MASZ</span><ul class="lvlist yes">${L.has.map(x=>`<li>${ic('check',13,2.4)}${esc(x)}</li>`).join('')}</ul></div>

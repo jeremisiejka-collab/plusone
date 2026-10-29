@@ -829,13 +829,11 @@ export default {
       try { return await preview(req, env); }
       catch (e) { console.error(e); return new Response('Podgląd jest chwilowo niedostępny.', { status: 503, headers: { 'Cache-Control': 'no-store' } }); }
     }
-    // moduły panelu administratora (np. Mapa targów 3D): pliki leżą w public/admin/moduly/, ale serwujemy je
-    // dopiero po sprawdzeniu sesji administratora — chroniony jest też bezpośredni adres HTML modułu
+    // moduły 3D (Mapa targów 3D, Obiekty 3D): pliki w public/admin/moduly/. Faza rozwoju: otwarte dla każdego, bez logowania
+    // (nie ma w nich prywatnych danych — statusy są demonstracyjne, plany obiektów publiczne)
     if (url.pathname.startsWith('/admin/')) {
       const headers = { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex, nofollow' };
-      const user = env.DB ? await currentUser(req, env).catch(() => null) : null;
       if (url.pathname.startsWith('/admin/moduly/')) {
-        if (!isAdmin(user)) return new Response('Tylko dla administratora. Zaloguj się na plusoneapp.pl.', { status: 403, headers: { ...headers, 'Content-Type': 'text/plain; charset=utf-8' } });
         const r = await env.ASSETS.fetch(req);
         const out = new Response(r.body, r);
         for (const [k, v] of Object.entries(headers)) out.headers.set(k, v);

@@ -53,3 +53,6 @@ header{height:76px;gap:32px}.events-bar{padding:0;flex:1;min-width:0}.event-tabs
 @media(max-width:600px){.map-card{height:610px}.map-top{align-items:center;padding-bottom:14px}.map-top h2{font-size:18px}.map-top-actions{max-width:135px}.scene-caption{left:12px;top:15px;font-size:8px}.scene-caption span{display:none}.places-menu{left:auto;right:10px}.places-menu>div{left:auto;right:0}.map-hint{font-size:9px;bottom:58px}.place-marker.compact{padding:3px}.place-marker.compact>span{width:25px;height:25px}}
 
 .scene{user-select:none}.selection-pin{pointer-events:none}.selection-pin>i{pointer-events:auto;padding:5px;cursor:pointer}.selection-pin:hover{border-color:#ffd0e1}.selection-pin>i:hover{color:#ff0059}
+
+/* +1: oryginalne plany źródłowe usunięte z publikacji — bez przycisków Podkład / Plan źródłowy */
+#ground-toggle,#source-open{display:none!important}#detail-source{pointer-events:none;color:inherit;text-decoration:none}
