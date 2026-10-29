@@ -1,0 +1,156 @@
+/* WYGENEROWANE przez pipeline/venue3d/night_css.py z style.css — nie edytuj ręcznie. Tryb nocny włącza ../night.js (html.night). */
+html.night{color-scheme:dark;--ink:#e6edf5;--muted:#93a0ad;--line:#232d38}
+html.night{background:#16191f}
+html.night button:hover{background-color:#131b26}
+html.night header{background:#131313}
+html.night .brand-tag em{color:#6a7682}
+html.night .header-right #planner-toggle[aria-pressed=true]{color:#d20d50;background:#231117;border-color:#351923}
+html.night .header-right .dark-btn{background:#dae2e9;color:#131313;border-color:#dae2e9}
+html.night .dark-btn b{background:#13131322}
+html.night .events-bar{background:#131313}
+html.night .event-tab{color:#74828f}
+html.night .event-icon{color:#5b6771}
+html.night .explore-toolbar{background:#131313}
+html.night .searchbox{border:1px solid #232c37;background:#12161f}
+html.night .searchbox>span{color:#738394}
+html.night .searchbox input::placeholder{color:#64727f}
+html.night .searchbox kbd{border:1px solid #1f2935;color:#64727f;background:#131313}
+html.night .select-row select{border:1px solid #232c37;background:#131313;color:#c5d1dc}
+html.night .explore-toolbar>button{border:1px solid #232c37;background:#131313}
+html.night .explore-toolbar>button span{color:#67737d}
+html.night .explore-toolbar>button[aria-expanded=true]{border-color:#46212e;background:#211016;color:#bd164f}
+html.night .map-card{background:#131313;border:1px solid #1f2732;box-shadow:0 3px 12px #00000007}
+html.night .view-switch{background:#171c24;border:1px solid #1e262f}
+html.night .view-switch button{color:#66737f}
+html.night .view-switch button.active{background:#131313;color:#d3dce4;box-shadow:0 1px 5px #00000023}
+html.night .scene{background:radial-gradient(ellipse at 50% 48%,#131313 20%,#101722 85%)}
+html.night .map-bottom{background:#131313}
+html.night .legend{color:#6e7e8d}
+html.night .legend-source{background:#1b2738;border:1px solid #9fb9df}
+html.night .legend-unknown{background:#141a23;border:1px solid #303a48}
+html.night .map-controls button{color:#b3c0cc}
+html.night .map-controls button:hover{background:#141d29}
+html.night .map-options>button,html.night .map-settings>summary{border:1px solid #202a34;background:#131313f0;box-shadow:0 3px 10px #0000000b;color:#aab7c3}
+html.night .map-options>button{color:#c41551;background:#1f0f14;border-color:#301720}
+html.night .settings-menu{background:#131313;box-shadow:0 10px 40px #00000046;border:1px solid #1f2732}
+html.night .settings-menu button[aria-pressed=true]{background:#121a26;color:#294e76}
+html.night #tooltip{background:#d4dde5;color:#131313;box-shadow:0 10px 24px #00000046}
+html.night #tooltip span{color:#2f3f51}
+html.night .detail{border:1px solid #1f2732;background:#131313;scrollbar-color:#222e3a transparent;box-shadow:0 3px 12px #00000007}
+html.night .detail-cover{background:linear-gradient(140deg,#1f0f15,#131313 75%)}
+html.night .detail-cover .eyebrow{color:#8b6b76}
+html.night .detail-cover .stand-id{color:#ed0053}
+html.night .detail-cover-label{color:#8a7780}
+html.night .stand-preview{filter:drop-shadow(0 8px 8px #fa3e7620)}
+html.night .detail-sub{color:#67747f}
+html.night .detail-stats label{color:#5d6b76}
+html.night .detail-stats strong{color:#b8c4ce}
+html.night .availability strong{color:#a8b4bf}
+html.night .availability strong:before{background:#e7b96a}
+html.night .availability p{color:#5b6c79}
+html.night .availability.local{background:#1f0f16;border:1px solid #2c151d}
+html.night .primary{color:#131313;box-shadow:0 4px 10px #0000002c}
+html.night .primary:hover{background:#e60050}
+html.night .secondary{border:1px solid #202832;background:#131313;color:#a7b2bc}
+html.night .source-note{color:#5c6c7c}
+html.night .source-note summary{color:#62717e}
+html.night .source-note button{color:#a4b7c8}
+html.night .detail-empty:before{background:#221117}
+html.night .detail-empty p{color:#5b6b78}
+html.night .planning-form p{color:#617383}
+html.night .planning-form label{color:#a5b2be}
+html.night .planning-form input,html.night .planning-form select,html.night .planning-form textarea{background:#0f161d;border:1px solid #202b38}
+html.night .directory{background:#131313;border:1px solid #1f2e3a;box-shadow:0 12px 65px #00000051}
+html.night .directory-heading>span{background:#131d27;color:#586a79}
+html.night .directory-heading>button{color:#60707e}
+html.night .filter-tabs button{color:#596b7a}
+html.night .filter-tabs button.active{color:#c7d3dd}
+html.night .list-meta{color:#586875}
+html.night .booth-row.active{background:#211016;border-color:#351a23}
+html.night .booth-number{border:1px solid #1b2a38;background:#131c27;color:#a7baca}
+html.night .booth-row.active .booth-number{color:#131313}
+html.night .booth-row small{color:#576876}
+html.night .row-dot{background:#293947}
+html.night .row-dot.available{background:#5bb08d}
+html.night .row-dot.reserved{background:#e4b15b}
+html.night .row-dot.sold{background:#db7488}
+html.night .directory-foot{color:#556371}
+html.night .directory-foot b{color:#607586}
+html.night .directory-foot button{border:1px solid #1d2c39;color:#5c7384}
+html.night .filter-planner label{color:#617588}
+html.night .filter-planner select{background:#131313}
+html.night .empty-list{color:#5d6e7d}
+html.night .bottom-bar{color:#4f5a67}
+html.night .bottom-bar button,html.night .import-label{color:#536271}
+html.night .map-card.expanded{background:#131313}
+html.night .map-card.expanded~.detail{box-shadow:0 12px 55px #00000051}
+html.night dialog{border:1px solid #202a34;box-shadow:0 30px 100px #0000006a}
+html.night dialog::backdrop{background:#dae1e955}
+html.night #modal-content>.eyebrow{color:#bb3060}
+html.night #modal-content p,html.night #modal-content li{color:#667b8e}
+html.night #modal-content textarea{color:#b7c6d4;border:1px solid #1c2b39;background:#0e141e}
+html.night .short-item small{color:#596c7e}
+html.night .short-item button{color:#5d839e}
+html.night .stat-line{background:#101722}
+html.night .stat-line span{color:#5e798e}
+html.night .stat-line b{color:#c7d3dd}
+html.night #toast{background:#d2dce4;color:#131313}
+@media(max-width:600px){html.night .detail-body>#focus-booth{background:#0e141e}}
+html.night .detail-sub{color:#748492}
+html.night .detail-stats label{color:#708291}
+html.night .availability strong{color:#b0bfcc}
+html.night .availability p{color:#758694}
+html.night .source-note summary{color:#758795}
+html.night .detail-cover .eyebrow,html.night .detail-cover-label{color:#bdabb2}
+html.night .map-top .eyebrow{color:#a8b2ba}
+html.night .legend{color:#a9b3bc}
+html.night .bottom-bar button,html.night .import-label{color:#677f91}
+html.night /* Clear labels at their natural reading size; places remain fixed-size wayfinding. */
+.scene{background:radial-gradient(ellipse at 50% 45%,#131313 0%,#141f2a 100%)}
+html.night .selection-pin{background:#131313;border:1px solid #361a24;box-shadow:0 8px 28px #00000046}
+html.night .selection-pin:after{background:#ff0059}
+html.night .selection-pin:before{background:#ff0059;border:2px solid #131313}
+html.night .selection-pin>span{background:#ff0059;color:#131313}
+html.night .selection-pin small{color:#8f6071}
+html.night .selection-pin i{color:#974967}
+html.night .place-marker{background:#131313;border:1px solid #232c37;box-shadow:0 5px 14px #00000030;color:#abbacc}
+html.night .place-marker>span{background:#131928;color:#5a6d9c}
+html.night .place-marker.cafe>span{background:#332819;color:#cdbeab}
+html.night .place-marker.entrance>span{background:#183126;color:#b2d1c4}
+html.night .place-marker.reception>span{background:#151c28;color:#a6b4c4}
+html.night .place-marker:hover{border-color:#3d5167}
+html.night .places-menu summary{background:#131313f5;border:1px solid #202b38;box-shadow:0 4px 14px #00000012;color:#b4c3cf}
+html.night .places-menu summary span{color:#596976}
+html.night .places-menu>div{background:#131313;border:1px solid #202b38;box-shadow:0 10px 30px #00000039}
+html.night .places-menu button:hover{background:#121c26}
+html.night .places-menu svg{color:#6d8398}
+html.night .places-menu i{color:#526370}
+html.night .map-hint{color:#748694;background:#131313ed;border:1px solid #1c252e}
+html.night .place-marker.wc>span{background:#121626;color:#485895}
+html.night /* Single selection,html.night explicit demo inventory,html.night and easy rotation. */
+#clear-selection{background:#131313c9;border:1px solid #381d29;color:#9d6d80}
+html.night #clear-selection:hover{background:#28131a;color:#c40045}
+html.night .selection-pin:hover{border-color:#ff86b1}
+html.night #demo-toggle{color:#b4cfc6;background:#142a1f;border:1px solid #223c2c}
+html.night #demo-toggle[aria-pressed=false]{background:#121921;color:#a8b2ba;border-color:#1f2830}
+html.night .legend-available{background:#3a7863;border:1px solid #4c9d82}
+html.night .legend-occupied{background:#354862;border:1px solid #465f7d}
+html.night .availability.demo-available,html.night .availability.demo-sold{border:1px solid #23372e;background:#12261c}
+html.night .availability.demo-sold{background:#131b26;border-color:#202b38}
+html.night .availability.demo-available strong:before{background:#5cac90}
+html.night .availability.demo-sold strong:before{background:#4c6480}
+html.night .row-dot.sold{background:#465e7c}
+html.night .row-dot.available{background:#4fa487}
+html.night #rotate-left,html.night #rotate-right{background:#131c28;color:#b6c5d3}
+html.night #reset-view{border:1px solid #202a34}
+html.night /* A spacious architectural diorama with one continuous camera control. */
+.scene{background:#171c24}
+html.night .scene-caption{color:#b3c1cd}
+html.night .scene-caption span{color:#62717e}
+html.night .place-marker{background:#131313f0;box-shadow:0 3px 12px #0000002c}
+html.night .map-hint{background:#131313f2}
+html.night .selection-pin{box-shadow:0 8px 26px #00000051}
+html.night .detail-body>#focus-booth{background:#111a24;border-color:#202a32;color:#b4c4d2}
+html.night .map-controls #reset-view{background:#131313}
+html.night .selection-pin:hover{border-color:#361a24}
+html.night .selection-pin>i:hover{color:#ff0059}

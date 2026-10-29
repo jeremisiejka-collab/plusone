@@ -1,0 +1,6 @@
+/* +1: wspólne dodatki trybu nocnego modułów 3D (kolory paneli są w <moduł>/night.css, generowanym z style.css). */
+html.night .scene{background:radial-gradient(ellipse at 50% 48%,#18212c 20%,#0d1218 85%)}
+html.night .scene-watermark{color:#ffffff10}
+html.night dialog{background:#141a22;color:var(--ink)}
+html.night dialog::backdrop{background:#000a}
+html.night img[src$="plusone.svg"]{filter:none}
