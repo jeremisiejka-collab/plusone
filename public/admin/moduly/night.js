@@ -46,6 +46,18 @@
     const at = assemblyAt; buildGeometry(); assemblyAt = at;   // bez ponownej animacji składania
     updateBoothStates();
   }
+  // osadzenie w panelu (iframe): mapa wypełnia ramkę do dołu, bez przewijania i ucinania; cały obiekt w kadrze
+  function fitFrame(){
+    if (window.top === window) return;
+    document.documentElement.classList.add('embed');
+    const ws = document.querySelector('.workspace'), mc = document.querySelector('.map-card');
+    if (!ws || !mc) return;
+    if (innerWidth > 850) { ws.style.minHeight = '0'; ws.style.height = Math.max(300, innerHeight - ws.getBoundingClientRect().top - scrollY - 12) + 'px'; mc.style.height = ''; }
+    else { ws.style.height = ''; ws.style.minHeight = '0'; mc.style.height = Math.max(300, innerHeight - mc.getBoundingClientRect().top - scrollY - 10) + 'px'; }
+    requestAnimationFrame(() => { resize(); fitCamera(); });
+  }
+  fitFrame();
+  addEventListener('resize', () => requestAnimationFrame(fitFrame));
   apply();
   addEventListener('storage', e => { if (e.key === 'theme') apply(); });
   matchMedia('(prefers-color-scheme: light)').addEventListener?.('change', apply);

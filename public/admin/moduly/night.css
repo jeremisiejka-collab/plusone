@@ -4,3 +4,7 @@ html.night .scene-watermark{color:#ffffff10}
 html.night dialog{background:#141a22;color:var(--ink)}
 html.night dialog::backdrop{background:#000a}
 html.night img[src$="plusone.svg"]{filter:none}
+/* osadzenie w panelu (html.embed, night.js → fitFrame): bez stopki modułu, mapa do dołu ramki */
+html.embed .bottom-bar{display:none}
+/* wąska ramka (telefon): bez logo, przycisków listy i tytułu nad mapą — więcej miejsca na mapę */
+@media(max-width:600px){html.embed header .logo,html.embed .header-right,html.embed .map-top,html.embed .map-hint,html.embed .map-options{display:none}html.embed header{padding-top:4px;min-height:0;height:auto}html.embed .events-bar{margin-top:0}}

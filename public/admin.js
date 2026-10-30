@@ -1353,10 +1353,23 @@ function expoCheck(m){
     .then(r=>{ m.state = r.status===403 || r.status===401 ? 'denied' : r.ok && (r.headers.get('Content-Type')||'').includes('javascript') ? 'ready' : 'missing'; })
     .catch(()=>{ m.state = 'missing'; }).finally(()=>{ S.dir=null; render(); });
 }
+/* wysokość mapy 3D = widoczne miejsce: do dołu okna (strona) albo do paska nawigacji (aplikacja), żeby nic nie było ucięte */
+function sizeExpo(){
+  const w = document.querySelector('.expo-wrap'); if(!w) return;
+  const view = document.getElementById('view'), nav = document.getElementById('nav');
+  let bottom = innerHeight;
+  if(view && view.contains(w)) bottom = Math.min(bottom, view.getBoundingClientRect().bottom);
+  if(nav && !nav.classList.contains('hide') && nav.offsetHeight) bottom = Math.min(bottom, nav.getBoundingClientRect().top);
+  const top = w.getBoundingClientRect().top + (view && view.contains(w) ? view.scrollTop : scrollY) - (view && view.contains(w) ? view.getBoundingClientRect().top : 0);
+  const avail = bottom - (view && view.contains(w) ? view.getBoundingClientRect().top : 0) - top - 12;
+  w.style.height = Math.max(420, Math.round(avail)) + 'px';
+}
+addEventListener('resize', () => requestAnimationFrame(sizeExpo));
 function adminExpoTab(key){
+  setTimeout(sizeExpo, 0);
   const m = MODS[key]; expoCheck(m);
   if(m.state==='checking' || !m.state) return loadingBox();
-  if(m.state==='ready') return `<div class="expo-wrap"><iframe src="${m.src}index.html" title="${m.title}" class="expo-frame" allow="fullscreen" loading="lazy"></iframe></div>
+  if(m.state==='ready') return `<div class="expo-wrap ${typeof renderAppChrome==='function'?'in-app':''}"><iframe src="${m.src}index.html" title="${m.title}" class="expo-frame" allow="fullscreen" loading="lazy"></iframe></div>
     <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><a class="chip" href="${m.src}index.html" target="_blank" rel="noopener">Otwórz na pełnym ekranie</a></div>
     <p class="mono" style="line-height:1.6;margin-top:10px">Lewy przycisk: przesuwanie · prawy i strzałki: obrót · scroll, + i −: przybliżenie · Escape: odznaczenie. Statusy ${m.items} są demonstracyjne; lista i notatki zapisują się w tej przeglądarce.${key==='venues'?' PGE Narodowy: sektory, loże i bramy z oficjalnej mapy; bary i toalety orientacyjnie.':''}</p>`;
   if(m.state==='denied') return `<section class="dcard" style="max-width:640px"><header><h2>${m.title}</h2></header>
