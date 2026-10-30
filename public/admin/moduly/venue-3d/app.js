@@ -82,8 +82,8 @@ function updateBoothStates(){const visible=new Set(activeBooths());for(const g o
 function stopPresentation(){cameraTween=null;}
 function initialAngle(){}
 function setCameraPose(zoom=1.3){controls.target.set(0,0,0);camera.position.set(82,130,160);camera.zoom=zoom;camera.updateProjectionMatrix();controls.update();requestDraw()}
-function startCamera(){setCameraPose(W<600?.8:1.15)}  // +1: na starcie cały obiekt w kadrze
-function fitCamera(){setCameraPose(W<600?.8:1.15)}
+function startCamera(){setCameraPose(W<600?.98:1.15)}  // +1: na starcie cały obiekt w kadrze
+function fitCamera(){setCameraPose(W<600?.98:1.15)}
 function animateCamera(target){const from={target:controls.target.clone(),position:camera.position.clone(),zoom:camera.zoom},point=new THREE.Vector3(target.x,0,target.z),offset=camera.position.clone().sub(controls.target);cameraTween={start:performance.now(),from,to:{target:point,position:point.clone().add(offset),zoom:target.zoom},duration:650};requestDraw()}
 function focusBooth(b){const g=geo.find(g=>g.b===b)||geo.find(g=>g.b.id===b.id);if(g)animateCamera({x:g.center[0],z:g.center[1],zoom:Math.min(7,Math.max(3,32/Math.max(b.w*worldScale,b.h*worldScale)))})}
 function focusZone(index){const z=zoneModels.find(z=>z.index===index);if(!z)return;const span=Math.max(z.z.w,z.z.h)*worldScale;animateCamera({x:z.center[0],z:z.center[1],zoom:Math.max(1.7,Math.min(5.4,74/span))});$('#places-menu').open=false;toast(z.z.name)}

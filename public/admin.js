@@ -1331,7 +1331,7 @@ const scAdmin = () => {
   if(wm && tab==='stats') S.adminTab = 'users';
   return wm ? `
 <div class="pg dash ${['expo','venues'].includes(S.adminTab||'users')?'dash-wide':''}">
-  ${dashHead('Panel administratora', esc((TABS.find(t=>t[0]===(S.adminTab||'users'))||TABS[0])[1]), '', `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button>`)}
+  ${['expo','venues'].includes(S.adminTab) ? '' : dashHead('Panel administratora', esc((TABS.find(t=>t[0]===(S.adminTab||'users'))||TABS[0])[1]), '', `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button>`)}
   ${inApp?chips:''}
   <div>${adminTabBody(A, S.adminTab||'users', curList, src)}</div>
 </div>` : `

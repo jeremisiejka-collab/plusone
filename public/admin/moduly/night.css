@@ -7,4 +7,6 @@ html.night img[src$="plusone.svg"]{filter:none}
 /* osadzenie w panelu (html.embed, night.js → fitFrame): bez stopki modułu, mapa do dołu ramki */
 html.embed .bottom-bar{display:none}
 /* wąska ramka (telefon): bez logo, przycisków listy i tytułu nad mapą — więcej miejsca na mapę */
-@media(max-width:600px){html.embed header .logo,html.embed .header-right,html.embed .map-top,html.embed .map-hint,html.embed .map-options{display:none}html.embed header{padding-top:4px;min-height:0;height:auto}html.embed .events-bar{margin-top:0}}
+/* w ramce panelu tytuł nad mapą jest zbędny (nazwa obiektu jest w zakładkach) — więcej wysokości dla mapy */
+html.embed .map-top{display:none}html.embed .workspace{margin-top:12px}
+@media(max-width:600px){html.embed header .logo,html.embed .header-right,html.embed .map-hint,html.embed .map-options,html.embed .select-row label:first-child{display:none}html.embed .explore-toolbar{padding-top:10px;padding-bottom:10px}html.embed header{padding-top:4px;min-height:0;height:auto}html.embed .events-bar{margin-top:0}}
