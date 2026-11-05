@@ -4,6 +4,7 @@
 
 import previewHtml from '../private/app.html';
 import { smtpSend } from './smtp.js';
+import { withSecurityHeaders, rateLimit } from './security.js';
 import { premiumApi, welcomeInside, zoneInfo, scanGuest, crewInfo, forgotPassword, resetPassword, findReset, adminOrganizers, adminNewsletter, mailDetect, scheduled, guestTicketPage, initPremium } from './premium.js';
 
 const DAY = 864e5;
@@ -744,6 +745,9 @@ async function api(req, env) {
 
   if (path === '/api/health') return json({ ok: true, db: !!env.DB, mail: env.DB ? await hasMailer(env) : false });
   if (!env.DB) return fail(503, 'Baza danych nie jest jeszcze podłączona.');
+  // limity zapytań (worker/security.js): logowanie, rejestracja, maile i każda zmiana danych
+  const wait = await rateLimit(env, req, path, m);
+  if (wait) return json({ error: 'Za dużo prób. Spróbuj ponownie za ' + Math.ceil(wait / 60) + ' min.' }, 429, { 'Retry-After': String(wait) });
 
   if (path === '/api/state' && m === 'GET') return publicState(env);
   if (path === '/api/auth/register' && m === 'POST') return register(req, env);
@@ -815,9 +819,9 @@ async function api(req, env) {
 initPremium({ json, fail, body, sha256, randomToken, hashPassword, startSession, cleanText, cleanEmail, EMAIL_RE, DAY, siteUrl,
   sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight });
 
-export default {
+const WORKER = {
   scheduled(event, env, ctx) { ctx.waitUntil(scheduled(event, env)); },
-  async fetch(req, env) {
+  async route(req, env) {
     const url = new URL(req.url);
     // stary adres aplikacji testowej
     if (url.pathname === '/preview' || url.pathname.startsWith('/preview/')) return Response.redirect(new URL('/app', url), 301);
@@ -853,3 +857,6 @@ export default {
     return env.ASSETS.fetch(req);
   }
 };
+// każda odpowiedź Workera dostaje nagłówki bezpieczeństwa (worker/security.js)
+WORKER.fetch = async (req, env) => withSecurityHeaders(await WORKER.route(req, env));
+export default WORKER;

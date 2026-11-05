@@ -1,0 +1,39 @@
+name: Bezpieczeństwo
+
+# Przy każdym wypchnięciu na main i co tydzień: wycieki kluczy w całej historii repozytorium (gitleaks)
+# i znane podatności bibliotek (npm audit). Nie blokuje publikacji strony — wynik widać w zakładce Actions.
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['public/data/events.json', 'pipeline/data/**']
+  schedule:
+    - cron: '23 4 * * 1'   # poniedziałki ok. 5:23 czasu polskiego
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Wycieki kluczy (gitleaks)
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz gitleaks
+          ./gitleaks detect --source . --config .gitleaks.toml --redact --no-banner
+
+  dependencies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Podatności bibliotek (npm audit)
+        run: |
+          if [ -f package-lock.json ]; then npm audit --audit-level=high; else echo "Brak zależności npm do sprawdzenia."; fi

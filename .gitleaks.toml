@@ -1,0 +1,8 @@
+# Skanowanie wycieków kluczy (gitleaks, .github/workflows/security.yml): domyślne reguły + dwa sprawdzone wyjątki.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Nie są sekretami: skrót sha256 klucza operacji (sam klucz jest tylko u właściciela) i publiczny klucz search-only źródła wydarzeń."
+regexTarget = "line"
+regexes = ['''"OPS_KEY_SHA256"''', '''publiczny klucz "search-only"''']

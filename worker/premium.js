@@ -144,10 +144,13 @@ async function venuesOf(env, userId) {
   const { results } = await env.DB.prepare('SELECT venue FROM org_venues WHERE user_id = ?').bind(userId).all();
   return results.map(r => r.venue);
 }
-/* wydarzenia organizatora: miejsce albo nazwa wydarzenia pasuje do jego listy (od 30 dni wstecz) */
+/* czy wydarzenie należy do organizatora: miejsce zawiera nazwę z jego listy (min. 4 znaki), a tytuł tylko przy dłuższej,
+   jednoznacznej nazwie (min. 8 znaków) — krótkie nazwy typu „Klub” nie mogą dawać dostępu do cudzych wydarzeń */
+const orgOwns = (e, keys) => keys.some(k => (k.length >= 4 && fold(e.venue).includes(k)) || (k.length >= 8 && fold(e.title).includes(k)));
+/* wydarzenia organizatora (od 30 dni wstecz) */
 async function orgEvents(env, venues) {
-  const ev = await loadEvents(env), keys = venues.map(fold).filter(k => k.length > 2), from = new Date(Date.now() - 30 * DAY).toISOString().slice(0, 10);
-  return ev.list.filter(e => (e.end || e.start).slice(0, 10) >= from && keys.some(k => fold(e.venue).includes(k) || fold(e.title).includes(k)));
+  const ev = await loadEvents(env), keys = venues.map(fold), from = new Date(Date.now() - 30 * DAY).toISOString().slice(0, 10);
+  return ev.list.filter(e => (e.end || e.start).slice(0, 10) >= from && orgOwns(e, keys));
 }
 /* jak countBy, ale zwraca wiersze (np. dzienne kubełki) z dwoma parametrami czasu przed listą wydarzeń */
 async function countRows(env, sql, ids, from) {
@@ -204,8 +207,7 @@ async function canTouchEvent(env, user, eventId) {
   if (isAdmin(user)) return true;
   const e = (await loadEvents(env)).byId.get(eventId);
   if (!e) return false;
-  const keys = (await venuesOf(env, user.id)).map(fold);
-  return keys.some(k => k.length > 2 && (fold(e.venue).includes(k) || fold(e.title).includes(k)));
+  return orgOwns(e, (await venuesOf(env, user.id)).map(fold));
 }
 async function guestList(req, env, user) {
   const id = new URL(req.url).searchParams.get('event') || '';
