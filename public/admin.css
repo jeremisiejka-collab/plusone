@@ -316,3 +316,16 @@ button, [role="button"], .btn, .chip, summary, [data-act]:not(input):not(textare
 #sheet, .sheet, .sc, .live-list, .live-feed, .seatwrap { overscroll-behavior: contain; }
 /* formularze i paski przewijania przeglądarki w kolorach wybranego motywu (motyw ustawia strona, nie system) */
 :root { color-scheme: dark; } :root[data-theme="light"] { color-scheme: light; }
+
+/* Panel administratora → Posty: podgląd postu 4:5 i story 9:16 */
+.post-card { display: grid; grid-template-columns: auto 1fr; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.post-prev { display: flex; gap: 10px; align-items: flex-start; }
+.post-prev canvas { width: 160px; height: auto; aspect-ratio: 1080 / 1350; border-radius: 12px; background: #0B0B0D; border: 1px solid var(--line); opacity: .4; transition: opacity .3s; }
+.post-prev canvas[data-post$="story"] { width: 118px; aspect-ratio: 1080 / 1920; }
+.post-prev canvas.on { opacity: 1; }
+.post-cap { white-space: pre-wrap; font: 400 13px/1.5 var(--m, 'JetBrains Mono', monospace); color: var(--t2); background: var(--bg2, rgba(127,127,127,.08)); border-radius: 12px; padding: 12px 14px; margin: 6px 0 4px; max-height: 180px; overflow: auto; overscroll-behavior: contain; user-select: text; -webkit-user-select: text; }
+@media (max-width: 760px) {
+  .post-card { grid-template-columns: 1fr; }
+  .post-prev canvas { width: calc(55% - 5px); }
+  .post-prev canvas[data-post$="story"] { width: calc(45% - 5px); }
+}

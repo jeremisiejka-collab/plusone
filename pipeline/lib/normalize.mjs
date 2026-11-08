@@ -132,6 +132,8 @@ export function makeEvent(e) {
     artists: [...new Set((e.artists || []).map(a => clean(a)).filter(Boolean))].slice(0, 20),
     priceFrom: e.priceFrom ?? null,
     image: e.image || null,
+    // zapasowe grafiki (np. poziomy baner obok plakatu) — pipeline/lib/images.mjs wybiera najładniejszą i usuwa to pole
+    alts: [...new Set([e.alt].flat().filter(u => u && u !== e.image))],
     description: clean(e.description, 600),
     links: [{ source: e.source, url: e.url, price: e.priceFrom ?? null }],
     sources: [e.source]

@@ -36,6 +36,7 @@ jobs:
           git add public/data/events.json
           if [ -f pipeline/data/ebilet-titles.json ]; then git add pipeline/data/ebilet-titles.json; fi
           if [ -f pipeline/data/sport-venues.json ]; then git add pipeline/data/sport-venues.json; fi
+          git add public/data/posts.json pipeline/data/posts-history.json pipeline/data/image-sizes.json
           if git diff --cached --quiet; then
             echo "Brak zmian."
           else

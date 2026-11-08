@@ -88,6 +88,7 @@ export default async function ebilet() {
         priceFrom: null,
         // plakat (pion) zamiast poziomego baneru — w aplikacji karty są pionowe
         image: t.imagePortrait || t.imageLandscape,
+        alt: [t.imageLandscape],
         description: t.metaDescription,
         url
       }));
@@ -156,7 +157,7 @@ function rememberTitle(t) {
   const id = String(t.id || t.titleId || '');
   if (!id || TITLES.has(id) && TITLES.get(id).slug) return;
   const category = t.category || t.categorySlug, subcategory = t.subcategory || t.subcategorySlug, slug = t.slug || t.titleSlug;
-  TITLES.set(id, { category, subcategory, slug, title: t.titleTitle || t.title, image: t.imagePortrait || t.imageLandscape,
+  TITLES.set(id, { category, subcategory, slug, title: t.titleTitle || t.title, image: t.imagePortrait || t.imageLandscape, alt: t.imageLandscape,
     artists: t.artists || [], subcategoryName: t.subcategoryName, description: t.metaDescription });
 }
 /* zapytania z umiarem; przy pierwszej odmowie 429 (za dużo zapytań) kończymy pobieranie w tym przebiegu.
@@ -194,6 +195,7 @@ function fromApiEvent(e, t) {
     artists: e.artists || t.artists,
     priceFrom: e.freeSeats?.minPrice ?? null,
     image: e.imagePortrait || t.image || e.imageLandscape,
+    alt: [t.image, e.imageLandscape, t.alt],
     description: t.description,
     url: `https://www.ebilet.pl/${cat}/${sub}/${slug}`
   });

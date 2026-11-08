@@ -208,7 +208,7 @@ function stopScan(){
 /* wywoływane po każdym przerysowaniu ekranu */
 function adminAfterRender(){
   if(S.screen==='scan') startScan(); else stopScan();
-  viewAsBar(); workBar(); previewBar(); guideAfterRender(); sampleTicketAfterRender(); seatAfterRender();
+  viewAsBar(); workBar(); previewBar(); guideAfterRender(); sampleTicketAfterRender(); seatAfterRender(); postsAfterRender();
 }
 
 /* akcje z data-act obsługiwane w tym module; zwraca true, jeśli rozpoznano */
@@ -232,6 +232,8 @@ function adminAct(cmd, p1, p2, a){
     case 'newsTest': apiCall('/api/admin/newsletter','POST',{test:true}).then(r=>toast(r.sent?'Newsletter wysłany do Ciebie':'Nie wysłano — sprawdź główny e-mail',!r.sent)).catch(e=>toast(esc(e.message),true)); return true;
     case 'newsSend': if(confirm('Wysłać newsletter do wszystkich zapisanych?')) apiCall('/api/admin/newsletter','POST',{}).then(r=>toast('Wysłano: '+r.sent+' z '+r.of)).catch(e=>toast(esc(e.message),true)); return true;
     case 'alertsRun': apiCall('/api/admin/alerts/run','POST',{}).then(()=>toast('Alerty przeliczone')).catch(e=>toast(esc(e.message),true)); return true;
+    case 'post': postAct(p1, a.split(':')[2], a.split(':')[3]); return true;
+    case 'postMore': POSTS.more=true; S.dir=null; render(); return true;
     case 'orgSort': S.orgSort=p1; S.dir=null; render(); return true;
     case 'orgSearch': S.orgQ=$('#org-q')?.value||''; S.dir=null; render(); return true;
     case 'orgOpen': ORG.user=+p1; ORG.data=null; go('org'); return true;
@@ -1471,7 +1473,7 @@ const scAdmin = () => {
         <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
       <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
   const src = LIVE.sources||{}, wm = workMode()==='admin', inApp = typeof renderAppChrome==='function';
-  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
+  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],['posts','Posty'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
   const chips = `<div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:${wm?'0 0 18px':'16px 20px'}">
     ${TABS.map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}</div>`;
   // w trybie pulpitu: nagłówek jak na pulpicie; na stronie zakładki są już w górnym menu
@@ -1489,6 +1491,142 @@ const scAdmin = () => {
   <div class="pad">${adminTabBody(A, tab, curList, src)}</div>
 </div>`;
 };
+/* ---- POSTY: post 4:5 i story 9:16 z najfajniejszych wydarzeń (wybór: pipeline/lib/posts.mjs → /data/posts.json) ----
+   Rysujemy na płótnie w przeglądarce; grafika idzie przez /api/admin/img (ten sam adres = można zapisać PNG). */
+const POSTS = { data:null, at:0, loading:false, err:'', more:false, cache:new Map(), imgs:new Map() };
+const POST_FMT = { post:[1080,1350], story:[1080,1920] };
+function postsLoad(){
+  if(POSTS.loading) return; POSTS.loading = true;
+  fetch('/data/posts.json?t='+Date.now(), {cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject(new Error('Brak postów')))
+    .then(d=>{ POSTS.data=d; POSTS.err=''; }).catch(e=>{ POSTS.err=e.message; })
+    .finally(()=>{ POSTS.loading=false; POSTS.at=Date.now(); if(S.screen==='admin'&&S.adminTab==='posts'){ S.dir=null; render(); } });
+}
+/* propozycje spoza dzisiejszej listy: najwyżej oceniane nadchodzące wydarzenia z grafiką */
+function postExtra(){
+  const have = new Set((POSTS.data?.items||[]).map(p=>p.id)), from = new Date(Date.now()+864e5).toISOString().slice(0,10);
+  const seen = new Set();
+  return EVENTS.filter(e=>e.real!==false && e.image && !have.has(e.id) && e.start && e.start.slice(0,10)>=from)
+    .sort((a,b)=>(b.hot||0)-(a.hot||0)).filter(e=>{ const k=e.name.toLowerCase().slice(0,18); if(seen.has(k)) return false; seen.add(k); return true; })
+    .slice(0,12).map(e=>({ id:e.id, reason:'pick', title:e.name, start:e.start, when:postWhen(e.start), city:e.city, venue:e.venue, priceFrom:e.from??null, image:e.image,
+      caption:[e.name,'',postWhen(e.start).replace(/^./,s=>s.toUpperCase()),[e.venue,e.city].filter(Boolean).join(', '),'','Szczegóły i bilety: plusoneapp.pl','','#plusone #wydarzenia #'+String(e.city||'').split('/')[0].normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l').replace(/[^A-Za-z]/g,'').toLowerCase()].join('\n') }));
+}
+const postWhen = st => { const d = new Date(st.slice(0,10)+'T12:00:00Z'), t = st.slice(11,16);
+  return ['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'][d.getUTCDay()]+', '+d.getUTCDate()+' '+['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'][d.getUTCMonth()]+(t&&t!=='00:00'?', godz. '+t:''); };
+const postItems = () => [...(POSTS.data?.items||[]), ...(POSTS.more?postExtra():[])];
+function postImg(url){
+  if(!POSTS.imgs.has(url)) POSTS.imgs.set(url, new Promise(res=>{
+    const im = new Image(); im.decoding='async';
+    im.onload = ()=>res(im); im.onerror = ()=>res(null);
+    im.src = '/api/admin/img?u='+encodeURIComponent(url);
+  }));
+  return POSTS.imgs.get(url);
+}
+function postWrap(c, text, maxW, maxLines){
+  const words = String(text).split(/\s+/), lines = [];
+  let cur = '';
+  for(const w of words){ const t = cur ? cur+' '+w : w; if(c.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } }
+  if(cur) lines.push(cur);
+  if(lines.length > maxLines){ lines.length = maxLines; let l = lines[maxLines-1]; while(l.length && c.measureText(l+'…').width > maxW) l = l.slice(0,-1); lines[maxLines-1] = l.replace(/[\s,.;:–-]+$/,'')+'…'; }
+  return lines;
+}
+function postRound(c, x, y, w, h, r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+/* znak +1 (te same prostokąty co GLYPH w logo) */
+function postLogo(c, x, y, s){
+  c.fillStyle='#000'; postRound(c, x, y, s, s, s*.24); c.fill();
+  c.fillStyle='#FF0059'; const k = s/100, ox = x+6.45*k, oy = y+8.3*k;
+  [[13.7,34.8,40.1,14],[27.4,22.9,13.2,37.6],[59.4,22.9,14,37.6]].forEach(([a,b,w,h])=>c.fillRect(ox+a*k, oy+b*k, w*k, h*k));
+}
+async function postDraw(item, kind){
+  const key = item.id+'|'+kind;
+  if(POSTS.cache.has(key)) return POSTS.cache.get(key);
+  const job = (async()=>{
+    try{ await Promise.all(['700 64px "Space Grotesk"','500 34px "Space Grotesk"','500 26px "JetBrains Mono"'].map(f=>document.fonts.load(f))); }catch(e){}
+    const [W,H] = POST_FMT[kind], story = kind==='story';
+    const cv = document.createElement('canvas'); cv.width=W; cv.height=H;
+    const c = cv.getContext('2d');
+    c.fillStyle='#0B0B0D'; c.fillRect(0,0,W,H);
+    const M = 60, top = story ? 200 : 64;
+    // nagłówek: logo + adres
+    postLogo(c, M, top, 76);
+    c.fillStyle='#F5F5F7'; c.font='700 40px "Space Grotesk"'; c.textBaseline='middle'; c.fillText('Plus One', M+100, top+38);
+    c.font='500 24px "JetBrains Mono"'; c.fillStyle='rgba(245,245,247,.6)'; c.textAlign='right'; c.fillText('PLUSONEAPP.PL', W-M, top+38); c.textAlign='left';
+    // najpierw tekst (żeby znać jego wysokość), potem plakat w oryginalnych proporcjach — bez przycinania i bez rozmytych pasów
+    const tw = W-2*M, maxL = story?3:2, F = story?{t:80,w:40,v:34}:{t:64,w:34,v:30};
+    let size = F.t, lines;
+    for(; size>=40; size-=4){ c.font=`700 ${size}px "Space Grotesk"`; lines = postWrap(c, item.title, tw, maxL); if(!lines[lines.length-1].endsWith('…')) break; }
+    size = Math.max(size, 40); c.font=`700 ${size}px "Space Grotesk"`; lines = postWrap(c, item.title, tw, maxL);
+    const info = [[String(item.when||'').replace(/^./, s=>s.toUpperCase()), F.w, '#FF0059'], [[item.venue, item.city].filter(Boolean).join(', '), F.v, 'rgba(245,245,247,.72)'],
+      ...(item.priceFrom>0?[['Bilety od '+Math.round(item.priceFrom)+' zł', F.v, 'rgba(245,245,247,.72)']]:[])].filter(x=>x[0]);
+    const textH = 46+26 + lines.length*size*1.08 + 18 + info.reduce((h,[,f])=>h+f*1.4, 0);
+    const im = item.image ? await postImg(item.image) : null;
+    const r = im ? im.naturalWidth/im.naturalHeight : (item.imageRatio||.75);
+    const boxT = top+76+40, bottom = story ? 250 : 64, gap = 44, boxW = W-2*M, boxH = H-boxT-bottom-textH-gap;
+    let pw = boxW, ph = pw/r; if(ph > boxH){ ph = boxH; pw = ph*r; }
+    const px = (W-pw)/2, py = boxT;
+    c.save(); postRound(c, px, py, pw, ph, 28); c.clip();
+    if(im) c.drawImage(im, px, py, pw, ph); else { c.fillStyle='#1A1A1F'; c.fillRect(px,py,pw,ph); }
+    c.restore();
+    c.strokeStyle='rgba(255,255,255,.08)'; c.lineWidth=2; postRound(c, px, py, pw, ph, 28); c.stroke();
+    // tekst pod plakatem (w story nad dolnym paskiem Instagrama)
+    let y = story ? H-bottom-textH : py+ph+gap;
+    const label = item.reason==='new' ? 'NOWE W +1' : 'NA TOPIE';
+    c.font='700 24px "JetBrains Mono"'; c.textBaseline='middle'; const lw = c.measureText(label).width+36;
+    c.fillStyle='#FF0059'; postRound(c, M, y, lw, 46, 23); c.fill();
+    c.fillStyle='#fff'; c.fillText(label, M+18, y+24);
+    y += 46+26; c.textBaseline='top';
+    c.font=`700 ${size}px "Space Grotesk"`; c.fillStyle='#F5F5F7';
+    lines.forEach((l,i)=>c.fillText(l, M, y+i*size*1.08)); y += lines.length*size*1.08 + 18;
+    for(const [t,f,col] of info){ c.font=`500 ${f}px "Space Grotesk"`; c.fillStyle=col; c.fillText(postWrap(c, t, tw, 1)[0], M, y); y += f*1.4; }
+    return cv;
+  })();
+  POSTS.cache.set(key, job);
+  return job;
+}
+function postsAfterRender(){
+  if(S.screen!=='admin' || S.adminTab!=='posts') return;
+  const items = postItems();
+  $$('canvas[data-post]').forEach(el=>{
+    if(el.__drawn) return; el.__drawn = true;
+    const [i, kind] = el.dataset.post.split('|'), it = items.find(p=>p.id===i);
+    if(it) postDraw(it, kind).then(cv=>{ const c=el.getContext('2d'); el.width=cv.width/3; el.height=cv.height/3; c.drawImage(cv,0,0,el.width,el.height); el.classList.add('on'); });
+  });
+}
+const postFile = (it, kind) => postDraw(it, kind).then(cv=>new Promise(res=>cv.toBlob(b=>res(new File([b], `plusone-${kind}-${it.title.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w]+/g,'-').toLowerCase().slice(0,40)}.png`, {type:'image/png'})),'image/png')));
+function postAct(a, id, kind){
+  const it = postItems().find(p=>p.id===id); if(!it) return;
+  if(a==='copy'){ try{ navigator.clipboard.writeText(it.caption); toast('Opis skopiowany'); }catch(e){ toast('Nie udało się skopiować', true); } return; }
+  postFile(it, kind).then(f=>{
+    if(a==='share' && navigator.canShare?.({files:[f]})) return navigator.share({files:[f], text:it.caption}).catch(()=>{});
+    const u = URL.createObjectURL(f), l = document.createElement('a'); l.href=u; l.download=f.name; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(u), 4000);
+  }).catch(()=>toast('Nie udało się przygotować grafiki', true));
+}
+function adminPostsTab(){
+  if(!POSTS.data && !POSTS.err && !POSTS.loading) setTimeout(postsLoad, 0);
+  else if(Date.now()-POSTS.at > 10*60e3 && !POSTS.loading) setTimeout(postsLoad, 0);
+  const share = !!navigator.canShare && matchMedia('(pointer: coarse)').matches;
+  const items = postItems(), d = POSTS.data;
+  const card = it => `
+    <div class="post-card">
+      <div class="post-prev"><canvas data-post="${esc(it.id)}|post" width="360" height="450" aria-label="Post"></canvas><canvas data-post="${esc(it.id)}|story" width="360" height="640" aria-label="Story"></canvas></div>
+      <div class="col" style="gap:6px;min-width:0">
+        <span class="mono" style="color:${it.reason==='new'?'var(--pink)':'var(--t2)'}">${it.reason==='new'?'NOWE W +1':it.reason==='pick'?'PROPOZYCJA':'NA TOPIE'}</span>
+        <span class="h4">${esc(it.title)}</span>
+        <span class="mono">${esc(it.when+' · '+it.city)}</span>
+        <div class="post-cap">${esc(it.caption)}</div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          ${share?`<button class="chip on" data-act="post:share:${esc(it.id)}:post">Udostępnij post</button><button class="chip on" data-act="post:share:${esc(it.id)}:story">Udostępnij story</button>`:''}
+          <button class="chip" data-act="post:dl:${esc(it.id)}:post">Pobierz post</button>
+          <button class="chip" data-act="post:dl:${esc(it.id)}:story">Pobierz story</button>
+          <button class="chip" data-act="post:copy:${esc(it.id)}">Kopiuj opis</button>
+        </div>
+      </div>
+    </div>`;
+  return `
+    <p class="mono" style="line-height:1.6;margin:0 0 16px">Codziennie rano automat wybiera 5 najfajniejszych wydarzeń z ładnymi zdjęciami (różne kategorie, bez powtórek przez 30 dni), a w ciągu dnia od razu dodaje świeżo wrzucone duże wydarzenia. Post 1080×1350 i story 1080×1920 są gotowe do wrzucenia na Instagram, z opisem.${d?` Lista z ${esc(new Date(d.updatedAt).toLocaleString('pl-PL',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}))}.`:''}</p>
+    ${POSTS.err && !items.length ? `<div class="err">${esc(POSTS.err)}</div>` : !d && !items.length ? loadingBox() : ''}
+    ${items.map(card).join('') || (d?'<span class="mono">Dziś nic nie spełnia warunków — zobacz propozycje.</span>':'')}
+    ${POSTS.more?'':`<button class="btn" data-act="postMore" style="height:48px;margin-top:8px">Więcej propozycji</button>`}`;
+}
 /* ---- Moduły 3D w iframe pod chronioną ścieżką /admin/moduly/: Mapa targów (paczka PLUS ONE EXPO) i Obiekty 3D (ten sam silnik) ---- */
 const MODS = {
   expo: { src:'/admin/moduly/expo-map/', title:'Mapa targów 3D', path:'mapa-targow', items:'stoisk' },
@@ -1530,6 +1668,7 @@ function adminExpoTab(key){
 function adminTabBody(A, tab, curList, src){
   if(tab==='expo') return adminExpoTab('expo');
   if(tab==='venues') return adminExpoTab('venues');
+  if(tab==='posts') return adminPostsTab();
   return `
   ${A?.error ? `<div class="err">${esc(A.error)}</div>` : !A ? loadingBox() : tab==='stats' ? `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">

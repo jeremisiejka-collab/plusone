@@ -56,6 +56,7 @@ function merge(a, b) {
     artists: [...new Set([...p.artists, ...q.artists])].slice(0, 20),
     priceFrom: prices.length ? Math.min(...prices) : null,
     image: p.image || q.image,
+    alts: [...new Set([p.image, q.image, ...(p.alts || []), ...(q.alts || [])].filter(u => u && u !== (p.image || q.image)))],
     description: p.description.length >= q.description.length ? p.description : q.description,
     links: [...p.links, ...q.links.filter(l => !p.links.some(x => x.url === l.url))],
     sources: [...new Set([...p.sources, ...q.sources])]
