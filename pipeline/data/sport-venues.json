@@ -1,0 +1,152 @@
+{
+ "PlusLiga|GKS Katowice": {
+  "venue": "Arena Katowice",
+  "address": "ul. Nowa Bukowa 1",
+  "city": "Katowice"
+ },
+ "PlusLiga|NEONET Norwid Częstochowa": {
+  "venue": "Hala Częstochowa",
+  "address": "ul. Żużlowa 4",
+  "city": "Częstochowa"
+ },
+ "PlusLiga|ZAKSA Kędzierzyn-Koźle": {
+  "venue": "HWS Azoty im. K. Pietrzyka",
+  "address": "ul Mostowa 1a",
+  "city": "Kędzierzyn-Koźle"
+ },
+ "PlusLiga|Asseco Resovia Rzeszów": {
+  "venue": "Hala Podpromie",
+  "address": "ul. Podpromie 10",
+  "city": "Rzeszów"
+ },
+ "PlusLiga|Ślepsk Malow Suwałki": {
+  "venue": "Suwałki Arena",
+  "address": "ul. Zarzecze 26",
+  "city": "Suwałki"
+ },
+ "PlusLiga|Jastrzębie Barkom": {
+  "venue": "HWS w Jastrzębiu-Zdroju",
+  "address": "Aleja Jana Pawła II 6",
+  "city": "Jastrzębie Zdrój"
+ },
+ "PlusLiga|Energa Indykpol AZS Olsztyn": {
+  "venue": "Hala Urania",
+  "address": "Aleja Marszałka Józefa Piłsudskiego 44",
+  "city": "Olsztyn"
+ },
+ "PlusLiga|PGE Projekt Warszawa": {
+  "venue": "HWS Arena Ursynów",
+  "address": "ul. Pileckiego 122",
+  "city": "Warszawa"
+ },
+ "PlusLiga|PGE GiEK SKRA Bełchatów": {
+  "venue": "Hala Energia",
+  "address": "Dąbrowskiego 11A",
+  "city": "Bełchatów"
+ },
+ "PlusLiga|Aluron CMC Warta Zawiercie": {
+  "venue": "HWS w  Zawierciu",
+  "address": "ul. Blanowska 40",
+  "city": "Zawiercie"
+ },
+ "PlusLiga|BOGDANKA LUK Lublin": {
+  "venue": "HSW Globus",
+  "address": "Kazimierza Wielkiego 8",
+  "city": "Lublin"
+ },
+ "PlusLiga|Energa Trefl Gdańsk": {
+  "venue": "Ergo Arena",
+  "address": "Plac Dwóch Miast 1",
+  "city": "Gdańsk"
+ },
+ "PlusLiga|Stilon Gorzów": {
+  "venue": "Arena Gorzów",
+  "address": "Słowiańska 16",
+  "city": "Gorzów Wielkopolski"
+ },
+ "PlusLiga|Podziemia Kredowe ChKS Chełm": {
+  "venue": "HS MOSiR Chełm",
+  "address": "Graniczna 2A",
+  "city": "Chełm"
+ },
+ "PLK|2310": {
+  "venue": "Prezero Arena Gliwice",
+  "city": "Gliwice",
+  "address": "Akademicka 50, 44-100 Gliwice"
+ },
+ "PLK|11309": {
+  "venue": "3mk Arena Ostrów",
+  "city": "Ostrów Wielkopolski ",
+  "address": "Andrzeja Kowalczyka 1, 63-400 Ostrów Wielkopolski "
+ },
+ "PLK|943": {
+  "venue": "Hala Enea Arena",
+  "city": "Szczecin",
+  "address": "ul. Szafera 3/5/7, 71-245 Szczecin"
+ },
+ "PLK|22": {
+  "venue": "MOSiR Globus",
+  "city": "Lublin",
+  "address": "Kazimierza Wielkiego 8, 20-611 Lublin"
+ },
+ "PLK|33": {
+  "venue": "Hala Mistrzów",
+  "city": "Włocławek",
+  "address": "Chopina 8, 87-800 Włocławek"
+ },
+ "PLK|101": {
+  "venue": "Kujawsko-Pomorska Arena Toruń",
+  "city": "Toruń",
+  "address": "ul. Gen. J. Bema 73-89, 87-100 Toruń"
+ },
+ "PLK|11": {
+  "venue": "Torwar",
+  "city": "Warszawa",
+  "address": "ul.Łazienkowska 6a, 00-449 Warszawa"
+ },
+ "PLK|110": {
+  "venue": "Hala Orbita",
+  "city": "Wrocław",
+  "address": "Wejherowska 34, 54-239 Wrocław"
+ },
+ "PLK|4162": {
+  "venue": "Grupa Moderator Arena",
+  "city": "Bydgoszcz",
+  "address": "Toruńska 59, 85-023 Bydgoszcz"
+ },
+ "PLK|8607": {
+  "venue": "Hala Gryfia",
+  "city": "Słupsk",
+  "address": "Szczecińska 99, 76-200 Słupsk"
+ },
+ "PLK|11296": {
+  "venue": "Hala Widowiskowo-Sportowa Aqua Zdrój",
+  "city": "Wałbrzych",
+  "address": "ul. Ratuszowa 6, 58-304 Wałbrzych"
+ },
+ "PLK|769": {
+  "venue": "Centrum Rekreacyjno-Sportowe",
+  "city": "Zielona Góra",
+  "address": "Sulechowska 41, 65-022 Zielona Góra"
+ },
+ "PLK|1490": {
+  "venue": "HWS Centrum im.Z.Cybulskiego",
+  "city": "Dąbrowa Górnicza",
+  "address": "Al. Róż 3, 41-300 Dąbrowa Górnicza"
+ },
+ "PLK|121": {
+  "venue": "Polsat Plus Arena Gdynia",
+  "city": "Gdynia",
+  "address": "ul. Kazimierza Górskiego 8, 81-304 Gdynia"
+ },
+ "PLK|112": {
+  "venue": "Hala Sportowa 100-lecia Sopotu",
+  "city": "Sopot",
+  "address": "ul. Jakuba Goyki 7, 81-817 Sopot"
+ },
+ "PLK|11257": {
+  "venue": "Hala Koło",
+  "city": "Warszawa",
+  "address": "ul. Obozowa 60, 01-423 Warszawa"
+ }
+}

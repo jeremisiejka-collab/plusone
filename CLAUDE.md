@@ -10,6 +10,8 @@
 - Na stronie podglądy wydarzeń mają tylko dwa formaty: pionowy **3:4** i poziomy **4:3**, ze wspólną wysokością we wszystkich sekcjach. Kadruj przez `object-fit: cover`, bez rozciągania i pasów. Pełny plakat na stronie wydarzenia zachowuje oryginalne proporcje z `imageRatio` lub wczytanego obrazka.
 - Pobieraj grafiki w możliwie oryginalnych proporcjach (Going: `c_limit` zamiast `c_fill`, eBilet: plakat pionowy przed banerem).
 
+- **Sport** (`pipeline/sources/sport.mjs`, źródło `sport`, w aplikacji „Terminarz ligi”): oficjalne terminarze — Ekstraklasa (ekstraklasa.org, dane meczów z kodu strony: stadion, miasto, adres), PlusLiga (plusliga.pl + strona meczu z halą i miastem), PGE PLK koszykówka (plk.pl, hala ze strony drużyny). Mecze z najbliższych 8 tygodni, bez grafik (herby to nie plakaty). Hale gospodarzy w `pipeline/data/sport-venues.json`. TAURON Liga wyłączona (tauronliga.pl bez ciasteczek serwuje terminarz PlusLigi). Piłka ręczna i hokej: strony lig niedostępne dla skrapera.
+
 ## Aplikacja
 - Zachętę do instalacji odkładamy do publikacji w App Store. **W nagłówku strony nie ma przycisku „Aplikacja”** (link do aplikacji zostaje tylko w stopce); bez wyskakującego komunikatu instalacyjnego.
 - Aplikacja na telefon to `/app` (`private/app.html`, wygląd i funkcje inne niż strona). **Wygląd aplikacji = oryginał sprzed rozdzielenia (commit `a9a30d5`)** — nie przenoś do niej zmian wyglądu strony. Aplikacja ma własny, zamrożony arkusz `public/app.css` (strona używa `public/desktop.css`).
