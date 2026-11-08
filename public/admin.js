@@ -888,7 +888,8 @@ function liveBanner(){
 /* ---- ŁATWY PODGLĄD: kafelki ról, przykładowy bilet ---- */
 /* kafelki „Zobacz +1 oczami…” — dla gości i w trybie podglądu */
 function roleCards(){
-  if(ACC.user && !inPreview()) return '';
+  // demo ról tylko do wyjścia z już włączonego podglądu (administrator: „Zobacz jako”); goście nie mają wejścia do demo
+  if(!inPreview()) return '';
   const icons = {user:'user', staff:'scan', organizer:'star', admin:'shield'};
   return `<section class="rolecards"><div class="col" style="gap:4px"><span class="eyebrow pink">Widok demo</span>
     <b>${inPreview()?'Oglądasz jako: '+esc(roleName(PREVIEW.role)):'Zobacz +1 oczami każdej osoby'}</b>
@@ -1035,7 +1036,7 @@ function scStadium(V, h, e){
       <div class="seatwrap ${VEN.zoom?'zoom':''}" id="seatwrap">${stadiumSvg(h)}</div>
       <div class="seatinfo" id="seatinfo">${sec?`${ic('pin',14)} ${esc(sec.name)}${sec.stand?' · '+esc(sec.stand):''} · ${esc(lvOf(sec.level).name)} (${esc(lvOf(sec.level).floor)}) · najbliżej ${GW} ${gate.n}`:VEN.sel==='plyta'?`${ic('pin',14)} Płyta · poziom 0`:`Stuknij sektor albo lożę. Znaczniki na obrzeżu to ${GWS.toLowerCase()} na stadion.`}</div>
       <div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="chip" data-act="seatZoom" style="display:inline-flex;align-items:center;gap:6px">${ic(VEN.zoom?'cross':'search',14)} ${VEN.zoom?'Dopasuj':'Powiększ'}</button>
-        ${V3D[V.id]?`<a class="chip" href="/admin/moduly/venue-3d/index.html?obiekt=${V3D[V.id]}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px">Widok 3D stadionu</a>`:''}</div>
+        ${V3D[V.id]&&isAdmin()?`<a class="chip" href="/admin/moduly/venue-3d/index.html?obiekt=${V3D[V.id]}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px">Widok 3D stadionu</a>`:''}</div>
     </section>
     ${dcard(L?esc(L.name)+' · '+esc(L.floor):'Poziomy stadionu', L ? `<div class="col" style="gap:10px">
         <div><span class="mono">TU MASZ</span><ul class="lvlist yes">${L.has.map(x=>`<li>${ic('check',13,2.4)}${esc(x)}</li>`).join('')}</ul></div>
@@ -1082,8 +1083,12 @@ const CODE = { to:'', busy:false, sentAt:0 };
 /* FAZA ROZWOJU: logowanie bez maila i hasła. Ekran logowania zostaje, ale „Zaloguj się” (z czymkolwiek albo niczym w polach)
    od razu otwiera pełne demo wybranej roli (previewAs: tylko przykładowe dane w przeglądarce, nic nie idzie do serwera).
    Prawdziwe konto: mały link „Prawdziwe konto” pod przyciskiem. OPEN_LOGIN = false przywraca logowanie kodem z maila. */
-const OPEN_LOGIN = true;
+const OPEN_LOGIN = false;
 const demoLogin = () => OPEN_LOGIN && !ACC.realLogin;
+/* logowanie kodem wymaga podłączonej poczty (/api/health → mail); bez niej ekran logowania od razu pokazuje e-mail i hasło */
+const MAILER = { on: null };
+fetch('/api/health', {cache:'no-store'}).then(r=>r.json()).then(j=>{ MAILER.on = !!j.mail; if(!MAILER.on && S.screen==='auth'){ S.dir=null; render(); } }).catch(()=>{});
+const codeOk = () => MAILER.on !== false;
 function demoRoleDefault(){ const m = ACC.authMode; return m==='admin' ? 'admin' : m==='org' ? 'organizer' : 'user'; }
 function demoLoginHtml(){
   const sel = ACC.demoRole || demoRoleDefault();

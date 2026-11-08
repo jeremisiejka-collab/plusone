@@ -121,8 +121,10 @@ async function register(req, env) {
   if (password.length > 200) return fail(400, 'Hasło jest za długie.');
   if (await env.DB.prepare('SELECT 1 FROM users WHERE email = ?').bind(email).first())
     return fail(409, 'To konto już istnieje — zaloguj się.');
+  // adres administratora: konto zakłada się tylko kodem z maila (dowód, że to ta skrzynka), nigdy samym hasłem
+  if (await isAdminEmail(env, email)) return fail(403, 'Tego adresu nie można zarejestrować hasłem. Zaloguj się kodem z maila.');
 
-  const owner = await isAdminEmail(env, email) ? 1 : 0, role = owner ? 'admin' : 'user';
+  const owner = 0, role = 'user';
   const city = cleanText(b.city, 60) || null;
   const now = Date.now();
   const interests = JSON.stringify(cleanInterests(b.interests)), newsletter = b.newsletter ? 1 : 0;
@@ -178,14 +180,14 @@ async function verifyLoginCode(req, env) {
   if (!u) {
     // nowe konto: hasło losowe (logowanie i tak odbywa się kodem)
     const owner = await isAdminEmail(env, email) ? 1 : 0;
-    const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, owner, city, interests, newsletter, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, owner, city, interests, newsletter, created_at, last_seen, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)')
       .bind(email, cleanText(b.name, 60), await hashPassword(randomToken()), owner ? 'admin' : 'user', owner, cleanText(b.city, 60) || null,
         JSON.stringify(cleanInterests(b.interests)), b.newsletter ? 1 : 0, now, now).run();
     u = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(res.meta.last_row_id).first(); created = true;
   }
   await syncAdmin(env, u);
   await env.DB.batch([
-    env.DB.prepare('UPDATE users SET last_seen = ?, must_change = 0 WHERE id = ?').bind(now, u.id),
+    env.DB.prepare('UPDATE users SET last_seen = ?, must_change = 0, email_verified = 1 WHERE id = ?').bind(now, u.id),
     env.DB.prepare('DELETE FROM sessions WHERE user_id = ? AND expires_at < ?').bind(u.id, now)
   ]);
   u.must_change = 0;
@@ -659,6 +661,8 @@ async function adminInvite(req, env, user) {
   const ex = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
   if (ex) {
     const ops = [];
+    if (!(await env.DB.prepare('SELECT email_verified FROM users WHERE id = ?').bind(ex.id).first('email_verified')))
+      return fail(409, 'To konto nie ma potwierdzonego adresu e-mail. Poproś tę osobę o zalogowanie się kodem z maila i zaproś ją ponownie.');
     if (perms.preview) ops.push(env.DB.prepare('INSERT OR IGNORE INTO preview_access (user_id, granted_at) VALUES (?, ?)').bind(ex.id, Date.now()));
     if (perms.curate) ops.push(env.DB.prepare('UPDATE users SET perm_curate = 1 WHERE id = ?').bind(ex.id));
     if (perms.scan && !perms.org) ops.push(env.DB.prepare('UPDATE users SET perm_scan = 1 WHERE id = ?').bind(ex.id));
@@ -706,8 +710,8 @@ async function acceptInvite(req, env) {
   if (await env.DB.prepare('SELECT 1 FROM users WHERE email = ?').bind(inv.email).first())
     return fail(409, 'To konto już istnieje — zaloguj się.');
   const now = Date.now();
-  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, perm_curate, perm_scan, perm_org, created_at, last_seen) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    // dawne zaproszenia „administrator” dają dziś rolę organizatora
+  const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, perm_curate, perm_scan, perm_org, created_at, last_seen, email_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)')
+    // dawne zaproszenia „administrator” dają dziś rolę organizatora; link z zaproszenia potwierdza adres
     .bind(inv.email, name, await hashPassword(password), 'user', inv.curate, inv.scan === 1 && !inv.admin ? 1 : 0, inv.scan === 2 || inv.admin ? 1 : 0, now, now).run();
   const id = res.meta.last_row_id;
   await env.DB.batch([
@@ -817,7 +821,7 @@ async function api(req, env) {
 
 /* wspólne narzędzia dla worker/premium.js */
 initPremium({ json, fail, body, sha256, randomToken, hashPassword, startSession, cleanText, cleanEmail, EMAIL_RE, DAY, siteUrl,
-  sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight });
+  sendMail, hasMailer, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight });
 
 const WORKER = {
   scheduled(event, env, ctx) { ctx.waitUntil(scheduled(event, env)); },
@@ -833,11 +837,13 @@ const WORKER = {
       try { return await preview(req, env); }
       catch (e) { console.error(e); return new Response('Podgląd jest chwilowo niedostępny.', { status: 503, headers: { 'Cache-Control': 'no-store' } }); }
     }
-    // moduły 3D (Mapa targów 3D, Obiekty 3D): pliki w public/admin/moduly/. Faza rozwoju: otwarte dla każdego, bez logowania
-    // (nie ma w nich prywatnych danych — statusy są demonstracyjne, plany obiektów publiczne)
+    // moduły panelu administratora (Mapa targów 3D, Obiekty 3D): pliki leżą w public/admin/moduly/, ale serwujemy je
+    // dopiero po sprawdzeniu sesji administratora — chroniony jest też bezpośredni adres HTML modułu
     if (url.pathname.startsWith('/admin/')) {
       const headers = { 'Cache-Control': 'private, no-store', 'X-Robots-Tag': 'noindex, nofollow' };
       if (url.pathname.startsWith('/admin/moduly/')) {
+        const user = env.DB ? await currentUser(req, env).catch(() => null) : null;
+        if (!isAdmin(user)) return new Response('Tylko dla administratora. Zaloguj się na plusoneapp.pl.', { status: 403, headers: { ...headers, 'Content-Type': 'text/plain; charset=utf-8' } });
         const r = await env.ASSETS.fetch(req);
         const out = new Response(r.body, r);
         for (const [k, v] of Object.entries(headers)) out.headers.set(k, v);

@@ -29,7 +29,7 @@
     // skrót klucza do jednorazowych operacji (np. zaproszenia administratorów); sam klucz nie trafia do repozytorium
     "OPS_KEY_SHA256": "fae9da9f529852a48f5b3e9aab60aaacc10917fc6716290fdedacafeb8973c79",
     // faza rozwoju: aplikacja /app otwarta bez logowania i dla każdego konta; "0" przywraca dostęp tylko z zaproszeniem
-    "APP_OPEN": "1"
+    "APP_OPEN": "0"
   },
   "observability": { "enabled": true },
   // alerty co 6 h (worker/premium.js → runAlerts) i newsletter w czwartek ok. 10:00 (NEWSLETTER_CRON)

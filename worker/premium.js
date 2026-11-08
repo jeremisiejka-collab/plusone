@@ -4,10 +4,10 @@
    Dane wydarzeń bierzemy z public/data/events.json (env.ASSETS). Schemat: migrations/0007_premium.sql. */
 /* narzędzia z worker/index.js (przekazane przez initPremium — główny moduł Workera może eksportować tylko obsługę żądań) */
 let json, fail, body, sha256, randomToken, hashPassword, startSession, cleanText, cleanEmail, EMAIL_RE, DAY, siteUrl,
-  sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight;
+  sendMail, hasMailer, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight;
 export function initPremium(h) {
   ({ json, fail, body, sha256, randomToken, hashPassword, startSession, cleanText, cleanEmail, EMAIL_RE, DAY, siteUrl,
-    sendMail, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight } = h);
+    sendMail, hasMailer, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight } = h);
 }
 
 import { vapidKeys, pushUser } from './push.js';
@@ -284,6 +284,7 @@ export async function adminOrganizers(env) {
 /* ---------------- reset hasła ---------------- */
 export async function forgotPassword(req, env) {
   const b = await body(req), email = cleanEmail(b.email);
+  if (!(await hasMailer(env))) return fail(503, 'Wysyłka maili jest chwilowo niedostępna. Spróbuj później.');
   const u = EMAIL_RE.test(email) && await env.DB.prepare('SELECT id, name FROM users WHERE email = ?').bind(email).first();
   if (u) {
     const token = randomToken();
