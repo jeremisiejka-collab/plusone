@@ -1834,7 +1834,7 @@ function scDownloads(){
 function workNavHtml(){
   const cur = S.screen==='admin' ? 'admin:'+(S.adminTab||'stats') : S.screen;
   const items = workMode()==='admin'
-    ? [['go:dash','Pulpit',['dash']],['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:expo','Mapa targów 3D',['admin:expo']],['adm:venues','Obiekty 3D',['admin:venues']],['adm:posts','Posty',['admin:posts']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
+    ? [['go:dash','Pulpit',['dash']],['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:expo','Mapa targów 3D',['admin:expo']],['adm:venues','Obiekty 3D',['admin:venues']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
     : [['go:org','Pulpit',['org']],['go:orgEvents','Wydarzenia',['orgEvents']],['go:scan','Skaner',['scan']]];
   return items.map(([a,l,on])=>`<button data-act="${a}" ${on.includes(cur)?'aria-current="page"':''}>${l}</button>`).join('');
 }
@@ -2634,9 +2634,6 @@ if(ADMIN_PAGES[location.pathname.replace(/\/+$/,'')]){ S.adminTab=ADMIN_PAGES[lo
 { const gid = new URLSearchParams(location.search).get('guide');
   if(gid){ history.replaceState(null,'','/'); const t0 = Date.now(), wait = () => { if(!ACC.user && Date.now()-t0 < 4000) return setTimeout(wait, 250);
     if(ACC.user) openGuide(gid); else if(EVENTS.some(e=>e.id===gid)) openEvent(gid); else setTimeout(()=>{ if(EVENTS.some(e=>e.id===gid)) openEvent(gid); }, 1500); }; setTimeout(wait, 400); } }
-/* link z posta w mediach społecznościowych: /?e=<id> — od razu strona wydarzenia (utm_source zostaje dla statystyk) */
-{ const eid = new URLSearchParams(location.search).get('e');
-  if(eid){ const t0 = Date.now(), open = () => { if(EVENTS.some(e=>e.id===eid)) openEvent(eid); else if(Date.now()-t0 < 6000) setTimeout(open, 300); }; setTimeout(open, 600); } }
 if(/[?&]register\b/.test(location.search)){ ACC.authMode='register'; S.prev='home'; S.screen='auth'; }
 render();
 loadLive();

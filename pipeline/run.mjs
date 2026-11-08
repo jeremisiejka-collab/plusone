@@ -9,7 +9,6 @@ import { dedup } from './lib/dedup.mjs';
 import { cityGeo } from './lib/geo.mjs';
 import { measureImages } from './lib/images.mjs';
 import { hotScore } from './lib/hot.mjs';
-import { buildPosts } from './lib/posts.mjs';
 import ra from './sources/ra.mjs';
 import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
@@ -73,8 +72,7 @@ const events = dedup(valid)
   .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 
 const img = await measureImages(events, prevEvents);
-for (const e of events) e.hot = hotScore(e);   // ocena uwzględnia grafikę wybraną przez measureImages
-console.log(`Grafiki: zmierzono ${img.measured} nowych, lepsza grafika w ${img.swapped}, usunięte/miniatury ${img.dropped}, bez proporcji ${img.missing}`);
+console.log(`Grafiki: zmierzono ${img.measured} nowych, bez proporcji ${img.missing}`);
 
 const cities = {};
 for (const e of events) cities[e.city] = (cities[e.city] || 0) + 1;
@@ -98,9 +96,6 @@ const head = JSON.stringify({
 });
 // jedno wydarzenie na linię — małe diffy w gicie przy commitach co 4h
 await writeFile(OUT, head.slice(0, -1) + ',"events":[\n' + events.map(e => JSON.stringify(e)).join(',\n') + '\n]}\n');
-
-const posts = await buildPosts(events, img.sizes);
-console.log(`Posty na dziś (${posts.date}): ${posts.items.map(p => p.title).join(' | ')}`);
 
 console.log(`\nSurowe: ${raw.length} → po filtrze: ${valid.length} → po złączeniu duplikatów: ${events.length}`);
 console.log('Miasta (top 10):', Object.entries(cities).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([c, n]) => `${c} ${n}`).join(', '));

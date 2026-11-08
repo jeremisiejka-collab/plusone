@@ -80,21 +80,6 @@ async function syncAdmins(env) {
   for (const u of results) await syncAdmin(env, u);
 }
 
-/* Grafika wydarzenia przez nasz adres — panel „Posty” rysuje z niej post i story na płótnie (canvas),
-   a obrazki z innych domen bez CORS blokują zapis PNG. Tylko hosty źródeł wydarzeń, tylko obrazki, maks. 12 MB. */
-const IMG_HOSTS = new Set(['www.ebilet.pl', 'ebilet.pl', 'res.cloudinary.com', 'images.ra.co', 'go2warsaw.pl', 'www.go2warsaw.pl']);
-async function adminImage(req) {
-  let u;
-  try { u = new URL(new URL(req.url).searchParams.get('u') || ''); } catch { return new Response('Zły adres', { status: 400 }); }
-  if (u.protocol !== 'https:' || !IMG_HOSTS.has(u.hostname)) return new Response('Niedozwolony adres', { status: 400 });
-  let r;
-  try { r = await fetch(u.toString(), { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; plusone/1.0; +https://plusoneapp.pl)', Accept: 'image/avif,image/webp,image/png,image/jpeg,image/*' }, redirect: 'follow', cf: { cacheTtl: 86400 } }); }
-  catch { return new Response('Brak grafiki', { status: 502 }); }
-  const type = r.headers.get('content-type') || '';
-  if (!r.ok || !type.startsWith('image/') || +(r.headers.get('content-length') || 0) > 12e6) return new Response('Brak grafiki', { status: 502 });
-  return new Response(r.body, { headers: { 'Content-Type': type, 'Cache-Control': 'private, max-age=3600', 'X-Content-Type-Options': 'nosniff' } });
-}
-
 /* uprawnienia: administrator = właściciel (owner, tylko konto z ADMIN_EMAIL_SHA256), organizator, obsługa biletów, użytkownik */
 const isOwner = u => !!u && !!u.owner;
 const isAdmin = isOwner;
@@ -838,7 +823,6 @@ async function api(req, env) {
     if (!isAdmin(user)) return fail(403, 'Tylko dla admina.');
     if (path === '/api/admin/live' && m === 'GET') return isOwner(user) ? liveStats(req, env, json, warsawMidnight) : fail(403, 'Panel założyciela jest tylko dla właściciela.');
     if (path === '/api/admin/stats' && m === 'GET') return adminStats(req, env);
-    if (path === '/api/admin/img' && m === 'GET') return adminImage(req);
     if (path === '/api/admin/users' && m === 'GET') return adminUsers(req, env);
     const previewUser = path.match(/^\/api\/admin\/users\/(\d+)\/preview$/);
     if (previewUser && m === 'POST') return adminPreviewAccess(req, env, previewUser[1]);
