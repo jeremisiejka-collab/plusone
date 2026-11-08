@@ -3525,15 +3525,22 @@ function attachGestures(){
   v.onpointerdown=v.onpointermove=v.onpointerup=v.onpointercancel=null;
   if(ptr){
     let y0=null,dy=0;
-    v.onpointerdown = e=>{ if(e.pointerType!=='mouse' && v.scrollTop<=0) y0=e.clientY; };
-    v.onpointermove = e=>{ if(y0===null) return; dy=Math.max(0,(e.clientY-y0)*.5);
+    // tylko gdy naprawdę jesteśmy na samej górze: strona WWW przewija okno, aplikacja #view — sprawdzamy oba
+    const atTop = () => v.scrollTop<=0 && (document.scrollingElement||document.documentElement).scrollTop<=0;
+    let x0=0;
+    v.onpointerdown = e=>{ if(e.pointerType!=='mouse' && atTop() && !e.target.closest('.rail,.hero-rail,#mapbox,.seatwrap,input,textarea,select')){ y0=e.clientY; x0=e.clientX; } };
+    v.onpointermove = e=>{ if(y0===null) return;
+      // przewijanie w bok albo strona już się przesunęła = to nie jest pociągnięcie w dół
+      if(!atTop() || Math.abs(e.clientX-x0) > Math.abs(e.clientY-y0)){ y0=null; dy=0; ptr.style.height='0px'; return; }
+      dy=Math.max(0,(e.clientY-y0)*.5);
       if(dy>0){ ptr.style.height=Math.min(dy,64)+'px'; } };
     v.onpointerup = ()=>{ if(y0===null) return;
       if(dy>52){ haptic(12); ptr.style.height='64px';
         loadLive().then(()=>{ toast(LIVE.state==='ok'?'Odświeżono · '+inCity().length+' wydarzeń · '+esc(S.city):'Brak połączenia',true); sfxTap(); }); }
       else ptr.style.height='0px';
       y0=null; dy=0; };
-    v.onpointercancel=v.onpointerup;
+    // przeglądarka przejęła gest (zwykłe przewijanie) — nie odświeżamy
+    v.onpointercancel = ()=>{ y0=null; dy=0; ptr.style.height='0px'; };
   }
 
   // swipe to send

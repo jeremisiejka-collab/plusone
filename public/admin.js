@@ -273,7 +273,7 @@ function adminAct(cmd, p1, p2, a){
     case 'gSchAdd': GUIDE.edit.schedule.push({time:'',title:''}); S.dir=null; render(); return true;
     case 'gSchDel': GUIDE.edit.schedule.splice(+p1,1); S.dir=null; render(); return true;
     case 'previewAs': previewAs(p1); return true;
-    case 'liveDays': LIVEP.days = +p1 || 1; liveLoad(true); return true;
+    case 'liveDays': LIVEP.days = +p1 || 1; $$('[data-act^="liveDays:"]').forEach(b=>b.classList.toggle('on', b.dataset.act==='liveDays:'+LIVEP.days)); liveLoad(true); return true;
     case 'demoRole': ACC.demoRole = p1; S.dir=null; render(); return true;
     case 'demoLogin': { const r = ACC.demoRole || demoRoleDefault(); ACC.demoRole = null; previewAs(r); return true; }
     case 'realLogin': ACC.realLogin = true; ACC.pwMode = false; ACC.authErr=''; S.dir=null; render(); return true;
@@ -878,7 +878,10 @@ async function guideZoneAssign(){
 /* baner na stronie głównej: bilet zeskanowany w ciągu ostatnich 14 godzin → przewodnik */
 function liveBanner(){
   const t = (TICKETS.list||[]).filter(x=>x.usedAt && Date.now()-x.usedAt < 14*3600e3).sort((a,b)=>b.usedAt-a.usedAt)[0];
-  if(ACC.user && (!TICKETS.at || Date.now()-TICKETS.at > 60e3) && !TICKETS.loading){ TICKETS.loading = true; loadTickets(true).then(()=>{ TICKETS.loading=false; if(['home','list'].includes(S.screen)){ S.dir=null; render(); } }); }
+  if(ACC.user && (!TICKETS.at || Date.now()-TICKETS.at > 60e3) && !TICKETS.loading){ TICKETS.loading = true;
+    // przerysowanie tylko, gdy zmienił się baner (nowy zeskanowany bilet) — inaczej ekran „mrugał” co minutę
+    const key = () => (TICKETS.list||[]).filter(x=>x.usedAt && Date.now()-x.usedAt < 14*3600e3).map(x=>x.code+':'+x.usedAt).join('|'), before = key();
+    loadTickets(true).then(()=>{ TICKETS.loading=false; if(['home','list'].includes(S.screen) && key()!==before){ S.dir=null; render(); } }); }
   if(!t) return '';
   const e = EVENTS.find(x=>x.id===t.eventId);
   return `<button class="glive" data-act="guide:${esc(t.eventId)}"><span class="glive-dot"></span>
@@ -1207,12 +1210,18 @@ const CITY_PL = { Warsaw:'Warszawa', Krakow:'Kraków', Cracow:'Kraków', Wroclaw
 const cityPL = c => c ? c.replace(/^[^,]+/, m => CITY_PL[m] || m) : c;
 const evTitle = id => { const e = typeof EVENTS !== 'undefined' && EVENTS.find(x => x.id === id); return e ? e.name : null; };
 function liveLoad(force){
-  if(LIVEP.busy || (!force && LIVEP.data && Date.now()-LIVEP.at < 9e3)) return;
+  if(LIVEP.busy){ if(force) LIVEP.again = true; return; }
+  if(!force && LIVEP.data && Date.now()-LIVEP.at < 9e3) return;
   LIVEP.busy = true;
   apiCall('/api/admin/live?days='+LIVEP.days).then(d=>{ LIVEP.data = d; }).catch(e=>{ LIVEP.data = { error:e.message }; })
-    .finally(()=>{ LIVEP.at = Date.now(); LIVEP.busy = false; if(S.screen==='dash'){ S.dir=null; render(); } });
+    .finally(()=>{ LIVEP.at = Date.now(); LIVEP.busy = false; if(S.screen!=='dash') return;
+      if(LIVEP.again){ LIVEP.again = false; liveLoad(true); return; }   // w trakcie zmieniono zakres — pobierz jeszcze raz
+      // podmieniamy tylko sekcję ruchu (bez przerysowania pulpitu, bez skoku przewijania i animacji)
+      const old = document.querySelector('.live-sec');
+      if(old){ const t = document.createElement('div'); t.innerHTML = liveSection(); const n = t.firstElementChild; if(n){ old.replaceWith(n); if(typeof bind==='function') bind(n); } }
+      else { S.dir=null; render(); } });
 }
-function liveTick(){ clearInterval(LIVEP.timer); LIVEP.timer = setInterval(()=>{ if(S.screen!=='dash') return clearInterval(LIVEP.timer); if(document.visibilityState==='visible' && !document.querySelector('#sheetwrap.on, .sheet-open')) liveLoad(true); }, 10e3); }
+function liveTick(){ clearInterval(LIVEP.timer); LIVEP.timer = setInterval(()=>{ if(S.screen!=='dash'){ clearInterval(LIVEP.timer); LIVEP.timer = 0; return; } if(document.visibilityState==='visible' && !document.querySelector('#sheetwrap.on, .sheet-open')) liveLoad(true); }, 10e3); }
 const fmtDur = ms => { const s = Math.round(ms/1000); return s < 60 ? s+' s' : Math.floor(s/60)+' min '+String(s%60).padStart(2,'0')+' s'; };
 function hourBars(arr, h0){
   const max = Math.max(1, ...arr), W = 300, H = 90, bw = W/24;
@@ -1227,10 +1236,13 @@ function rankList(items, label, val, max){
 }
 function adminLiveTab(){
   if(!isOwner() || inPreview()) return '';
-  liveLoad(); liveTick();
+  liveLoad(); if(!LIVEP.timer) liveTick();
+  return liveSection() + (LIVEP.data && !LIVEP.data.error ? `<h2 class="live-h" style="margin:26px 0 14px">Konta i wydarzenia</h2>` : '');
+}
+function liveSection(){
   const D = LIVEP.data;
-  if(!D) return loadingBox();
-  if(D.error) return `<div class="err">${esc(D.error)}</div>`;
+  if(!D) return `<section class="live-sec">${loadingBox()}</section>`;
+  if(D.error) return `<section class="live-sec"><div class="err">${esc(D.error)}</div></section>`;
   const L = (D.live || []).map(r=>({...r, city: cityPL(r.city)})), by = k => { const m = {}; L.forEach(r=>{ const v = r[k]||'—'; m[v]=(m[v]||0)+1; }); return Object.entries(m).sort((a,b)=>b[1]-a[1]); };
   const scr = by('screen'), cities = by('city'), rng = D.days===1?'dziś':D.days===7?'7 dni':'30 dni';
   const diff = D.prevVisitors ? Math.round((D.visitors-D.prevVisitors)/D.prevVisitors*100) : null;
@@ -1268,8 +1280,7 @@ function adminLiveTab(){
         <span class="mono clamp1">${r.kind==='view'?'ekran':'kliknięcie'} · ${esc(cityPL(r.city)||'nieznane miasto')} · ${esc(r.device||'')} · ${esc(SRC_NAME(r.src||''))}</span></div>
         <span class="mono" style="flex:none">${ago(r.ts)}</span></li>`).join('')}</ul>` : '<p class="dempty">Jeszcze brak ruchu.</p>', '', 'span2')}
   </div>
-  <p class="mono" style="line-height:1.6;margin-top:12px">Bez ciasteczek i bez zapisywania adresów IP: osoba jest rozpoznawana tylko w obrębie jednego dnia. Administratorzy, roboty i podgląd linków nie są liczeni. Dane z ostatnich 90 dni. „Wyjście do …” = kliknięcie w zakup biletu u sprzedawcy.</p></section>
-  <h2 class="live-h" style="margin:26px 0 14px">Konta i wydarzenia</h2>`;
+  <p class="mono" style="line-height:1.6;margin-top:12px">Bez ciasteczek i bez zapisywania adresów IP: osoba jest rozpoznawana tylko w obrębie jednego dnia. Administratorzy, roboty i podgląd linków nie są liczeni. Dane z ostatnich 90 dni. „Wyjście do …” = kliknięcie w zakup biletu u sprzedawcy.</p></section>`;
 }
 
 /* ---- PULPIT ADMINISTRATORA ---- */
