@@ -58,7 +58,7 @@ export async function buildPosts(events, sizes, { now = new Date() } = {}) {
     && !(e.end && Date.parse(e.end) - Date.parse(e.start) > 4 * DAY) && e.category !== 'Sport' && (!history[e.id] || history[e.id] === today));
 
   // posty z dzisiaj zostają (te same grafiki do końca dnia), o ile wydarzenie wciąż jest w bazie
-  const items = (prev?.date === today ? prev.items : []).filter(p => byId.has(p.id));
+  const items = (prev?.date === today ? prev.items : []).filter(p => byId.get(p.id)?.image);   // grafika odrzucona w przeglądzie = post wypada
   const tours = new Set(items.map(p => tourKey(byId.get(p.id))));
   const cats = {};
   for (const p of items) cats[byId.get(p.id).category] = (cats[byId.get(p.id).category] || 0) + 1;
