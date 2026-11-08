@@ -38,7 +38,7 @@
   .web-account { background: var(--inv); color: var(--inv-t); font-weight: 600; }
   .web-theme { border: 1px solid var(--line-2); padding: 0; width: 42px; }
   .web-app { border: 1px solid var(--line-2); font-weight: 600; }
-  .web-app:hover, .web-app[aria-current="page"] { border-color: var(--pink); color: var(--pink); background: var(--pink-dim); }
+  .web-app[aria-current="page"]{ border-color: var(--pink); color: var(--pink); background: var(--pink-dim); }@media (hover: hover) and (pointer: fine){.web-app:hover{ border-color: var(--pink); color: var(--pink); background: var(--pink-dim); }}
   .web-hero { position: relative; isolation: isolate; padding: 28px 0 46px; overflow: hidden; }
   .web-hero h1 { font: 600 clamp(52px, 5.5vw, 80px)/1.04 var(--d); letter-spacing: -.03em; margin-top: 24px; }
   .web-hero h1 span { color: var(--pink); }
@@ -52,12 +52,12 @@
   body:not(.demo) .search-wrap > div { height: 58px !important; border-radius: 16px !important; }
   body:not(.demo) #q { min-width: 0; font-size: 16px !important; }
   body:not(.demo) .filter-row { flex-wrap: wrap; overflow: visible !important; }
-  body:not(.demo) .chip:hover { border-color: var(--pink); color: var(--t1); }
-  body:not(.demo) .chip.on:hover { color: #000; }
+  @media (hover: hover) and (pointer: fine){body:not(.demo) .chip:hover{ border-color: var(--pink); color: var(--t1); }}
+  @media (hover: hover) and (pointer: fine){body:not(.demo) .chip.on:hover{ color: #000; }}
   body:not(.demo) .calendar-grid,
   body:not(.demo) .catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
   body:not(.demo) .event-row { min-width: 0; transition: background .15s; }
-  body:not(.demo) .event-row:hover { background: var(--surface); }
+  @media (hover: hover) and (pointer: fine){body:not(.demo) .event-row:hover{ background: var(--surface); }}
   body:not(.demo) .catalog-grid .event-row { padding: 22px 0 !important; }
   body:not(.demo) .event-row .h4 { font-size: 17px; line-height: 1.3; }
   body:not(.demo) .catalog-more { max-width: 420px; margin: 24px auto 0; }
@@ -171,15 +171,15 @@
 .shelf-all { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 100px;
   border: 1px solid var(--line-2); font: 500 12px/1 var(--d); color: var(--t1); transition: background .2s, border-color .2s; }
 .shelf-all::after { content: '→'; transition: transform .2s; }
-.shelf-all:hover { border-color: var(--pink); }
-.shelf-all:hover::after { transform: translateX(3px); }
+@media (hover: hover) and (pointer: fine){.shelf-all:hover{ border-color: var(--pink); }}
+@media (hover: hover) and (pointer: fine){.shelf-all:hover::after{ transform: translateX(3px); }}
 
 .rail-wrap { position: relative; }
 .rail { display: flex; align-items: flex-start; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
   scroll-padding-inline: 16px; padding: 4px 16px 6px; margin: -4px -16px 0; }
 .rail > * { scroll-snap-align: start; flex: none; }
 .rail-more { width: calc(var(--poster-h) * .75); min-height: var(--poster-h); padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; border: 1px solid var(--pink-line); border-radius: 16px; background: var(--pink-dim); color: var(--pink); font: 600 17px/1.3 var(--d); text-align: center; }
-.rail-more:hover { border-color: var(--pink); }
+@media (hover: hover) and (pointer: fine){.rail-more:hover{ border-color: var(--pink); }}
 .rail-arrow { display: none; }
 .rail-dots { display: flex; justify-content: center; gap: 6px; padding-top: 14px; min-height: 20px; }
 .rail-dots i { width: 6px; height: 6px; border-radius: 6px; background: var(--line-2); transition: width .35s cubic-bezier(.2,.7,.2,1), background .35s; }
@@ -259,8 +259,8 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
     background: rgba(var(--bg-rgb), .82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid var(--line-2); color: var(--t1);
     box-shadow: 0 10px 30px -10px rgba(0,0,0,.5); opacity: 0; transition: opacity .25s, transform .25s; }
   .rail-arrow.l { left: -22px; } .rail-arrow.r { right: -22px; }
-  .rail-wrap:hover .rail-arrow:not(:disabled), .rail-wrap:focus-within .rail-arrow:not(:disabled) { opacity: 1; }
-  .rail-arrow:hover { transform: scale(1.08); border-color: var(--pink); }
+  .rail-wrap:focus-within .rail-arrow:not(:disabled){ opacity: 1; }@media (hover: hover) and (pointer: fine){.rail-wrap:hover .rail-arrow:not(:disabled){ opacity: 1; }}
+  @media (hover: hover) and (pointer: fine){.rail-arrow:hover{ transform: scale(1.08); border-color: var(--pink); }}
   .rail-dots { display: none; }
   .terms { margin: 0; padding: 0 0 4px; }
   /* okładka przyklejona po lewej: cały plakat mieści się w oknie */
@@ -305,7 +305,7 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
 
 /* Mapa podąża za motywem całej witryny. */
 #mapbox .reg { fill: var(--surface-2); stroke: var(--line-2); }
-#mapbox .reg:hover { fill: var(--pink-dim); stroke: var(--pink); }
+@media (hover: hover) and (pointer: fine){#mapbox .reg:hover{ fill: var(--pink-dim); stroke: var(--pink); }}
 #mapbox .city .core { stroke: var(--bg); }
 #mapbox .city.on .core { stroke: var(--t1); }
 #mapbox .city text { fill: var(--t1); stroke: var(--bg); }

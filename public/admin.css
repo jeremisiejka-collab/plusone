@@ -92,7 +92,7 @@
 .dstats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .dstats > * { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 14px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); text-align: left; color: var(--t1); }
 .dstats button { cursor: pointer; transition: border-color .2s; }
-.dstats button:hover { border-color: var(--pink-line); }
+@media (hover: hover) and (pointer: fine){.dstats button:hover{ border-color: var(--pink-line); }}
 .dstats b { font: 600 24px/1 var(--d); letter-spacing: -.02em; }
 .dstats span { font: 400 12px/1.3 var(--d); color: var(--t2); }
 .dhealth { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); margin-bottom: 10px; }
@@ -205,7 +205,7 @@
 .rolegrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .rolegrid button { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); text-align: left; color: var(--t1); cursor: pointer; transition: border-color .2s, transform .15s; }
 .rolegrid button:active { transform: scale(.98); }
-.rolegrid button.on, .rolegrid button:hover { border-color: var(--pink-line); }
+.rolegrid button.on{ border-color: var(--pink-line); }@media (hover: hover) and (pointer: fine){.rolegrid button:hover{ border-color: var(--pink-line); }}
 .rolegrid button > span { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--pink-dim); color: var(--pink); }
 .rolegrid b { font: 600 14px/1.2 var(--d); }
 .rolegrid em { font: 400 11px/1.35 var(--m); font-style: normal; color: var(--t3); }
@@ -235,7 +235,7 @@
 .seatmap .seat { cursor: pointer; }
 .seatmap .seat rect { fill: var(--pink); opacity: .82; transition: opacity .15s; }
 .seatmap .seat text { fill: #000; font: 600 3.6px var(--m); text-anchor: middle; pointer-events: none; }
-.seatmap .seat:hover rect { opacity: 1; }
+@media (hover: hover) and (pointer: fine){.seatmap .seat:hover rect{ opacity: 1; }}
 .seatmap .seat.on rect { fill: var(--t1); opacity: 1; stroke: var(--pink); stroke-width: 1.2; }
 .seatmap .seat.on text { fill: var(--bg); }
 .seatmap .rowl { fill: var(--t3); font: 600 3.8px var(--m); text-anchor: middle; }
@@ -254,7 +254,7 @@
 .seatmap.stadium .bowl { fill: var(--surface-3); }
 .seatmap.stadium .sec { cursor: pointer; transition: opacity .2s; }
 .seatmap.stadium .sec polygon, .seatmap.stadium .sec rect { stroke: var(--surface-2); stroke-width: 1; opacity: .85; }
-.seatmap.stadium .sec:hover polygon { opacity: 1; }
+@media (hover: hover) and (pointer: fine){.seatmap.stadium .sec:hover polygon{ opacity: 1; }}
 .seatmap.stadium .sec.dim { opacity: .14; }
 .seatmap.stadium .sec.on polygon, .seatmap.stadium .sec.on rect { fill: var(--t1) !important; opacity: 1; stroke: var(--bg); stroke-width: 2; }
 .seatmap.stadium .sec.on text { fill: var(--bg); }
@@ -303,3 +303,16 @@ html, body { font-variant-emoji: text; }
 .live-list, .live-feed { max-height: 460px; overflow-y: auto; }
 .live-h { font: 600 18px/1.2 var(--d); letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; margin: 0; }
 .live-sec { margin-bottom: 8px; }
+
+/* ---- Telefon jak natywna aplikacja (strona i aplikacja; wg skilla mobile-native) ----
+   brak szarego błysku przy dotknięciu i powiększania czcionki w poziomie; kliknięcie bez 300 ms czekania na podwójne stuknięcie;
+   przytrzymanie przycisku nie zaznacza jego napisu (treść, np. adresy i opisy, nadal da się zaznaczyć);
+   pola formularzy min. 16 px na ekranach dotykowych, żeby iPhone nie przybliżał strony. */
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+button, a, summary, label, select, [role="button"], [data-act] { touch-action: manipulation; }
+button, [role="button"], .btn, .chip, summary, [data-act]:not(input):not(textarea) { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+@media (pointer: coarse) { input:not([style*="font"]), textarea:not([style*="font"]), select:not([style*="font"]) { font-size: 16px !important; } }
+/* przewijane listy w oknach i panelach nie ciągną za sobą strony pod spodem */
+#sheet, .sheet, .sc, .live-list, .live-feed, .seatwrap { overscroll-behavior: contain; }
+/* formularze i paski przewijania przeglądarki w kolorach wybranego motywu (motyw ustawia strona, nie system) */
+:root { color-scheme: dark; } :root[data-theme="light"] { color-scheme: light; }

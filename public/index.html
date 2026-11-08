@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <meta name="theme-color" content="#000000">
 <script>
 /* motyw ustawiany przed narysowaniem strony (bez mignięcia): wybór użytkownika albo ustawienie systemu */
@@ -79,8 +79,8 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
 .jump{padding:7px 13px;border-radius:100px;font:500 11px/1 var(--m);letter-spacing:.04em;
   background:rgba(var(--fg),.07);color:rgba(var(--fg),.6);transition:.15s}
 .jump.on{background:var(--pink);color:#000}
-.jump:hover{background:rgba(var(--fg),.14)}
-.jump.on:hover{background:#ff2d72}
+@media (hover: hover) and (pointer: fine){.jump:hover{background:rgba(var(--fg),.14)}}
+@media (hover: hover) and (pointer: fine){.jump.on:hover{background:#ff2d72}}
 
 @media (max-width:760px){
   html,body{background:var(--bg)}
@@ -137,7 +137,7 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
 .statc b{display:block;font:700 26px/1 var(--d);margin-top:8px}
 .listbtn{width:100%;display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid var(--line);text-align:left}
 .reg{fill:#101014;stroke:rgba(255,255,255,.2);stroke-width:2;stroke-linejoin:round;transition:fill .25s,stroke .25s;cursor:pointer}
-.reg:hover{fill:#2a0a17;stroke:rgba(255,0,89,.75)}
+@media (hover: hover) and (pointer: fine){.reg:hover{fill:#2a0a17;stroke:rgba(255,0,89,.75)}}
 .city{cursor:pointer}
 .city .hit{fill:transparent}
 .city .core{transition:transform .2s cubic-bezier(.3,1.6,.5,1);stroke:#000;stroke-width:2.5}
@@ -250,7 +250,7 @@ body:not(.demo) .demo-only, body:not(.demo) #jumpbar, body.demo .live-only{displ
 .sheet-x{position:absolute;top:12px;right:14px;z-index:2;width:30px;height:30px;border-radius:50%;
   border:1px solid var(--line-2);background:var(--surface);color:var(--t2);font-size:19px;line-height:1;
   display:grid;place-items:center;cursor:pointer;padding:0}
-.sheet-x:hover{color:var(--t1)}
+@media (hover: hover) and (pointer: fine){.sheet-x:hover{color:var(--t1)}}
 .grab{width:38px;height:4px;border-radius:3px;background:rgba(var(--fg),.2);margin:0 auto 16px}
 
 /* offline banner */
