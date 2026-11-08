@@ -5,12 +5,12 @@
 // obrazki wydarzeń i kafelki map z dowolnego https, zapytania tylko do nas, Nominatim i Overpass (mapa), ramki tylko nasze.
 export const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",   // statystyki odwiedzin Cloudflare (Web Analytics)
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "media-src 'self' blob: https:",
-  "connect-src 'self' https://nominatim.openstreetmap.org https://overpass-api.de",
+  "connect-src 'self' https://nominatim.openstreetmap.org https://overpass-api.de https://cloudflareinsights.com",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
   "frame-src 'self'",
