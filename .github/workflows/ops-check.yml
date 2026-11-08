@@ -11,4 +11,6 @@ jobs:
       - env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
+          ID=$(npx --yes wrangler@4 d1 list --json 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const d=JSON.parse(s).find(x=>x.name==='plusone');console.log(d?d.uuid:'')})")
+          sed -i "s/00000000-0000-0000-0000-000000000000/$ID/" wrangler.jsonc
           npx --yes wrangler@4 d1 execute plusone --remote --json --command "SELECT COUNT(*) AS users, SUM(owner=1) AS owners, SUM(owner=1 AND pass IS NOT NULL AND pass LIKE 'pbkdf2%') AS owners_with_password, SUM(perm_org=1) AS organizers, SUM(perm_scan=1) AS staff, SUM(pass IS NOT NULL AND pass LIKE 'pbkdf2%') AS with_password FROM users" | grep -v '"sql"'
