@@ -330,7 +330,7 @@ const scMyWrapped = () => {
   ${!W ? loadingBox() : W.error ? `<div class="err">${esc(W.error)}</div>` : !g.length ? `<div class="col mine-empty" style="align-items:center;text-align:center;gap:12px;padding:40px 10px">
       <span style="width:72px;height:72px;border-radius:24px;background:var(--pink-dim);display:grid;place-items:center;color:${PINK}">${ic('star',30)}</span>
       <span class="h3">Tu będzie Twoje Wrapped</span><span class="body">Stukaj „Mam bilet” przy wydarzeniach — zbierzemy, gdzie byłeś, z kim i kto grał Ci najczęściej.</span>
-      <button class="btn p" data-act="go:wrapped" style="height:50px;max-width:320px">Zobacz przykładowy miesiąc</button></div>` : `
+      <button class="btn p" data-act="upcomingList" style="height:50px;max-width:320px">Znajdź wydarzenie</button></div>` : `
     <div class="wgrid">
       ${card('Wydarzenia', pl(g.length), past?`${past} już za Tobą`:'', 330)}
       ${card('Najczęściej', esc(CAT_NAME[cats[0]?.[0]]||cats[0]?.[0]||'—'), cats.slice(1,3).map(c=>CAT_NAME[c[0]]||c[0]).join(' · '), 280)}
