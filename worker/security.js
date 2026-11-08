@@ -60,7 +60,8 @@ const RULES = [
   ['POST', '/api/admin/invites', 100, 'who'],
   ['POST', '/api/social/messages', 300, 'who'],
   ['POST', '/api/social/code', 20, 'who'],
-  ['POST', '/api/org/guests', 500, 'who']
+  ['POST', '/api/org/guests', 500, 'who'],
+  ['POST', '/api/t', 6000, 'who']   // statystyki odwiedzin: sygnał co 30 s + kliknięcia
 ];
 const GENERAL = 1200; // każda inna zmiana danych (POST/PUT/PATCH/DELETE) na godzinę
 

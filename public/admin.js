@@ -273,6 +273,7 @@ function adminAct(cmd, p1, p2, a){
     case 'gSchAdd': GUIDE.edit.schedule.push({time:'',title:''}); S.dir=null; render(); return true;
     case 'gSchDel': GUIDE.edit.schedule.splice(+p1,1); S.dir=null; render(); return true;
     case 'previewAs': previewAs(p1); return true;
+    case 'liveDays': LIVEP.days = +p1 || 1; LIVEP.data = null; liveLoad(true); S.dir=null; render(); return true;
     case 'demoRole': ACC.demoRole = p1; S.dir=null; render(); return true;
     case 'demoLogin': { const r = ACC.demoRole || demoRoleDefault(); ACC.demoRole = null; previewAs(r); return true; }
     case 'realLogin': ACC.realLogin = true; ACC.pwMode = false; ACC.authErr=''; S.dir=null; render(); return true;
@@ -1141,6 +1142,135 @@ async function verifyCode(){
   }catch(e){ CODE.busy = false; ACC.authErr = e.message; S.dir=null; render(); }
 }
 
+/* ---- STATYSTYKI ODWIEDZIN → Panel założyciela (worker/stats.js) ----
+   Bez ciasteczek i bez localStorage: co 30 s (i przy zmianie ekranu) wysyłamy, na jakim ekranie jest karta, co kliknięto
+   (nazwa akcji, nie treść) i skąd przyszła wizyta (utm_source / strona odsyłająca). Nie liczymy właścicieli, podglądu ani robotów. */
+const STATS = (() => {
+  const sp = new URLSearchParams(location.search), app = location.pathname.startsWith('/app');
+  let ref = ''; try { const r = document.referrer && new URL(document.referrer); if(r && r.host !== location.host) ref = r.host.replace(/^www\./,''); } catch(e){}
+  const src = (sp.get('utm_source') || (sp.has('fbclid') ? 'facebook' : sp.has('gclid') ? 'google ads' : sp.has('ttclid') ? 'tiktok' : '') || ref || 'bezpośrednio').toLowerCase().slice(0, 60);
+  const q = []; let seen = '', timer = 0, started = false;
+  const off = () => navigator.webdriver || (typeof ACC !== 'undefined' && ACC.user && ACC.user.owner) || (typeof inPreview === 'function' && inPreview());
+  const cur = () => typeof S === 'undefined' ? {} : { s: S.screen, e: S.screen === 'event' || S.screen === 'seatplan' ? (S.eventId || VEN?.eventId || null) : null };
+  function send(bye){
+    if(off()){ q.length = 0; return; }
+    const body = JSON.stringify({ app, src, now: cur(), items: q.splice(0, 40), bye: !!bye });
+    try { fetch('/api/t', { method:'POST', headers:{'Content-Type':'application/json'}, body, keepalive:true, credentials:'same-origin' }).catch(()=>{}); } catch(e){}
+  }
+  const soon = (ms=1500) => { clearTimeout(timer); timer = setTimeout(() => send(), ms); };
+  function watch(){
+    if(typeof S === 'undefined') return;
+    const c = cur(), k = c.s + '|' + (c.e||'');
+    if(c.s && k !== seen){ seen = k; q.push({ k:'view', s:c.s, e:c.e, t:Date.now() }); soon(); }
+  }
+  document.addEventListener('click', ev => {
+    const ext = ev.target.closest('a[href^="http"]');
+    if(ext){ try { const h = new URL(ext.href).host.replace(/^www\./,''); if(h !== location.host){ q.push({ k:'click', a:'wyjście:'+h, s:cur().s, e:cur().e, t:Date.now() }); soon(400); return; } } catch(e){} }
+    const el = ev.target.closest('[data-act]'); if(!el) return;
+    const [name, ...rest] = el.dataset.act.split(':'), p1 = rest.join(':');
+    const isEv = p1 && typeof EVENTS !== 'undefined' && EVENTS.some(x => x.id === p1);
+    const a = isEv || !p1 || p1.length > 24 || /@|\d{5,}/.test(p1) ? name : name + ':' + p1;   // bez adresów e-mail i długich identyfikatorów
+    q.push({ k:'click', a, s:cur().s, e: isEv ? p1 : cur().e, t:Date.now() }); soon();
+  }, true);
+  setInterval(watch, 800);
+  setInterval(() => { if(document.visibilityState === 'visible') send(); }, 30e3);
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden') send(true); else soon(300); });
+  setTimeout(() => { watch(); send(); started = true; }, 2500);
+  return { send };
+})();
+
+/* ---- PANEL ZAŁOŻYCIELA: na żywo, wejścia, źródła, kliknięcia (tylko właściciel) ---- */
+const LIVEP = { data:null, at:0, days:1, busy:false, timer:0 };
+const SCREEN_PL = { start:'Start', home:'Odkrywaj', list:'Wydarzenia', map:'Mapa', event:'Strona wydarzenia', tickets:'Bilety', wallet:'Portfel',
+  auth:'Logowanie', profile:'Konto', downloads:'Aplikacja', seatplan:'Plan sali', guide:'Przewodnik', ticket:'Bilet z QR', wrapped:'Wrapped',
+  admin:'Panel admina', dash:'Pulpit admina', org:'Pulpit organizatora', orgEvents:'Wydarzenia organizatora', scan:'Skaner', meet:'Znajdź swoje +1', social:'Znajdź swoje +1' };
+const ACT_PL = { ev:'Otwarcie wydarzenia', go:'Menu', back:'Wstecz', closeSheet:'Zamknięcie okna', upcomingList:'Lista „Już niedługo”', bigList:'Lista „Duże wydarzenia”',
+  authgo:'Logowanie / rejestracja', authmode:'Przełączenie logowania', submitAuth:'Wysłanie logowania', sendCode:'Wysłanie kodu', sheetCity:'Wybór miasta', city:'Zmiana miasta',
+  mapGo:'Mapa', mapPin:'Pinezka na mapie', mapWhen:'Filtr daty na mapie', theme:'Tryb dzień/noc', share:'Udostępnij', shareLink:'Udostępnij link', copyLink:'Kopiuj link',
+  save:'Zapisz wydarzenie', going:'Mam bilet', ticketQR:'Bilet z QR', seatPlan:'Plan sali', guide:'Przewodnik', when:'Filtr daty', cat:'Kategoria', sort:'Sortowanie',
+  resetFilters:'Wyczyść filtry', clearQ:'Wyczyść wyszukiwanie', more:'Pokaż więcej', descToggle:'Rozwiń opis', fabHome:'Przycisk +1', guest:'Przeglądaj bez konta',
+  waitlist:'Lista oczekujących', sheetNotif:'Powiadomienia', mine:'Moje', mineTab:'Moje: zakładka', big:'Duże wydarzenia', calNext:'Kalendarz', price:'Cena', qty:'Liczba biletów' };
+const SRC_NAME = s => ({ 'bezpośrednio':'Wejście bezpośrednie', facebook:'Facebook', fb:'Facebook', instagram:'Instagram', ig:'Instagram',
+  tiktok:'TikTok', google:'Google', 'google ads':'Google Ads', youtube:'YouTube', newsletter:'Newsletter', 'youtube.com':'YouTube', 'l.facebook.com':'Facebook', 'lm.facebook.com':'Facebook', 'm.facebook.com':'Facebook', 'facebook.com':'Facebook',
+  'instagram.com':'Instagram', 'l.instagram.com':'Instagram', 't.co':'X / Twitter', 'google.com':'Google', 'google.pl':'Google', 'tiktok.com':'TikTok' }[s] || s);
+function actName(a){
+  if(!a) return '—';
+  if(a.startsWith('wyjście:')) return 'Wyjście do ' + a.slice(8) + ' (kup bilet)';
+  const [n, p] = a.split(':'); const base = ACT_PL[n] || n;
+  return p ? base + ': ' + (n==='go' ? (SCREEN_PL[p]||p) : p) : base;
+}
+/* Cloudflare podaje miasta po angielsku */
+const CITY_PL = { Warsaw:'Warszawa', Krakow:'Kraków', Cracow:'Kraków', Wroclaw:'Wrocław', Lodz:'Łódź', Poznan:'Poznań', Gdansk:'Gdańsk', Bialystok:'Białystok',
+  Czestochowa:'Częstochowa', Torun:'Toruń', Rzeszow:'Rzeszów', 'Zielona Gora':'Zielona Góra', 'Gorzow Wielkopolski':'Gorzów Wielkopolski', Bielsko:'Bielsko-Biała',
+  'Bielsko-Biala':'Bielsko-Biała', Plock:'Płock', Elblag:'Elbląg', Wloclawek:'Włocławek', Tychy:'Tychy', Rybnik:'Rybnik', Sosnowiec:'Sosnowiec', Gliwice:'Gliwice', Zabrze:'Zabrze',
+  'Nowy Sacz':'Nowy Sącz', Koszalin:'Koszalin', Slupsk:'Słupsk', Legnica:'Legnica', Kalisz:'Kalisz', Konin:'Konin', Pila:'Piła', Lomza:'Łomża', Suwalki:'Suwałki' };
+const cityPL = c => c ? c.replace(/^[^,]+/, m => CITY_PL[m] || m) : c;
+const evTitle = id => { const e = typeof EVENTS !== 'undefined' && EVENTS.find(x => x.id === id); return e ? e.name : null; };
+function liveLoad(force){
+  if(LIVEP.busy || (!force && LIVEP.data && Date.now()-LIVEP.at < 9e3)) return;
+  LIVEP.busy = true;
+  apiCall('/api/admin/live?days='+LIVEP.days).then(d=>{ LIVEP.data = d; }).catch(e=>{ LIVEP.data = { error:e.message }; })
+    .finally(()=>{ LIVEP.at = Date.now(); LIVEP.busy = false; if(S.screen==='admin' && S.adminTab==='live'){ S.dir=null; render(); } });
+}
+function liveTick(){ clearInterval(LIVEP.timer); LIVEP.timer = setInterval(()=>{ if(S.screen==='admin' && S.adminTab==='live' && document.visibilityState==='visible') liveLoad(true); else clearInterval(LIVEP.timer); }, 10e3); }
+const fmtDur = ms => { const s = Math.round(ms/1000); return s < 60 ? s+' s' : Math.floor(s/60)+' min '+String(s%60).padStart(2,'0')+' s'; };
+function hourBars(arr, h0){
+  const max = Math.max(1, ...arr), W = 300, H = 90, bw = W/24;
+  return `<div class="dchart"><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Odwiedzający w godzinach">
+    <line x1="0" y1="${H-.5}" x2="${W}" y2="${H-.5}" stroke="var(--line-2)"/>${arr.map((v,i)=>{ const h = v/max*(H-4);
+      return (v?`<rect x="${(i*bw+1).toFixed(1)}" y="${(H-h).toFixed(1)}" width="${(bw-2).toFixed(1)}" height="${Math.max(h,1.5).toFixed(1)}" rx="1.5" fill="${i===h0?'var(--pink)':'var(--t3)'}"/>`:'')
+      + `<rect x="${(i*bw).toFixed(1)}" y="0" width="${bw.toFixed(1)}" height="${H}" fill="transparent"><title>${i}:00 · ${v} os.</title></rect>`; }).join('')}</svg>
+    <div class="dchart-axis mono"><span>0:00</span><span>12:00</span><span>23:00</span></div></div>`;
+}
+function rankList(items, label, val, max){
+  return items.length ? `<ul class="dbars">${items.map(r=>`<li><span class="clamp1">${label(r)}</span>${meter(val(r), max)}<b>${pl(val(r))}</b></li>`).join('')}</ul>` : '<p class="dempty">Jeszcze brak danych.</p>';
+}
+function adminLiveTab(){
+  if(!isOwner()) return `<p class="dempty">Panel założyciela jest tylko dla właściciela.</p>`;
+  if(inPreview()) return `<p class="dempty">W podglądzie nie ma prawdziwych statystyk.</p>`;
+  liveLoad(); liveTick();
+  const D = LIVEP.data;
+  if(!D) return loadingBox();
+  if(D.error) return `<div class="err">${esc(D.error)}</div>`;
+  const L = (D.live || []).map(r=>({...r, city: cityPL(r.city)})), by = k => { const m = {}; L.forEach(r=>{ const v = r[k]||'—'; m[v]=(m[v]||0)+1; }); return Object.entries(m).sort((a,b)=>b[1]-a[1]); };
+  const scr = by('screen'), cities = by('city'), rng = D.days===1?'dziś':D.days===7?'7 dni':'30 dni';
+  const diff = D.prevVisitors ? Math.round((D.visitors-D.prevVisitors)/D.prevVisitors*100) : null;
+  const mx = a => Math.max(1, ...a.map(r=>r.v ?? r.n ?? r[1] ?? 0));
+  return `
+  <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+    ${[[1,'Dziś'],[7,'7 dni'],[30,'30 dni']].map(([d,l])=>`<button class="chip ${LIVEP.days===d?'on':''}" data-act="liveDays:${d}">${l}</button>`).join('')}
+    <span class="mono" style="margin-left:auto">Odświeża się co 10 s · ${new Date(D.now).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span></div>
+  <div class="dkpis">
+    <div class="dkpi live-kpi"><span class="dkpi-l"><i class="live-dot"></i>Teraz na stronie</span><b>${pl(L.length)}</b><span class="dkpi-s">${pl(L.filter(r=>r.app).length)} w aplikacji · ${pl(L.filter(r=>r.device==='telefon').length)} na telefonie</span></div>
+    ${kpi('Odwiedzający · '+rng, D.visitors, diff===null?'pierwszy okres z danymi':`<em>${diff>=0?'+':''}${diff}%</em> względem poprzedniego okresu`, 'users')}
+    ${kpi('Wyświetlenia ekranów', D.views, `${pl(D.clicks)} kliknięć`, 'bolt')}
+    ${kpi('Średni czas wizyty', fmtDur(D.avgMs), 'od wejścia do ostatniego ruchu', 'clock')}
+  </div>
+  <div class="dgrid">
+    ${dcard('Kto jest teraz na stronie', L.length ? `<ul class="dlist live-list">${L.slice(0,25).map(r=>`<li>
+        <span class="dav">${r.app?ic('star',14):ic('pin',14)}</span>
+        <div class="col" style="flex:1;min-width:0;gap:3px"><span class="h4 clamp1">${esc(SCREEN_PL[r.screen]||r.screen||'—')}${r.event_id&&evTitle(r.event_id)?': '+esc(evTitle(r.event_id)):''}</span>
+        <span class="mono clamp1">${esc(r.city||'nieznane miasto')} · ${esc(r.device||'')} · ${esc(SRC_NAME(r.src||''))}${r.app?' · aplikacja':''}</span></div>
+        <span class="mono" style="flex:none">od ${fmtDur(D.now-r.first)}</span></li>`).join('')}</ul>` : '<p class="dempty">W tej chwili nikogo nie ma. Lista odświeża się sama.</p>',
+      '', 'span2')}
+    ${dcard('Na jakich ekranach są teraz', rankList(scr, r=>esc(SCREEN_PL[r[0]]||r[0]), r=>r[1], mx(scr)))}
+    ${dcard('Skąd są teraz', rankList(cities, r=>esc(r[0]), r=>r[1], mx(cities)))}
+    ${dcard('Odwiedzający dziś, godzina po godzinie', hourBars(D.perHour, D.hourNow) + legend([['var(--pink)','Bieżąca godzina', D.perHour[D.hourNow]||0]]))}
+    ${dcard('Odwiedzający w 30 dni', barChart([D.daily.v], D.dailyFrom) + legend([['var(--pink)','Osoby', sum(D.daily.v)],['var(--t3)','Wyświetlenia ekranów', sum(D.daily.n)]]))}
+    ${dcard('Skąd przyszli · '+rng, rankList(D.srcs||[], r=>esc(SRC_NAME(r.k)), r=>r.v, mx(D.srcs||[])))}
+    ${dcard('Miasta · '+rng, rankList(D.cities||[], r=>esc(cityPL(r.k)), r=>r.v, mx(D.cities||[])))}
+    ${dcard('Co klikali · '+rng, rankList(D.acts||[], r=>esc(actName(r.k)), r=>r.n, mx(D.acts||[])), '', 'span2')}
+    ${dcard('Najczęściej oglądane ekrany · '+rng, rankList(D.screens||[], r=>esc(SCREEN_PL[r.k]||r.k), r=>r.n, mx(D.screens||[])))}
+    ${dcard('Najczęściej oglądane wydarzenia · '+rng, rankList((D.events||[]).filter(r=>evTitle(r.k)), r=>`<a data-act="ev:${esc(r.k)}" style="cursor:pointer">${esc(evTitle(r.k))}</a>`, r=>r.v, mx(D.events||[])))}
+    ${dcard('Urządzenia · '+rng, rankList(D.devices||[], r=>esc(r.k||'—'), r=>r.v, mx(D.devices||[])))}
+    ${dcard('Ostatnie ruchy', (D.feed||[]).length ? `<ul class="dlist live-feed">${D.feed.slice(0,30).map(r=>`<li>
+        <div class="col" style="flex:1;min-width:0;gap:3px"><span class="h4 clamp1">${r.kind==='view'?esc(SCREEN_PL[r.screen]||r.screen||'—')+(r.event_id&&evTitle(r.event_id)?': '+esc(evTitle(r.event_id)):''):esc(actName(r.act))}</span>
+        <span class="mono clamp1">${r.kind==='view'?'ekran':'kliknięcie'} · ${esc(cityPL(r.city)||'nieznane miasto')} · ${esc(r.device||'')} · ${esc(SRC_NAME(r.src||''))}</span></div>
+        <span class="mono" style="flex:none">${ago(r.ts)}</span></li>`).join('')}</ul>` : '<p class="dempty">Jeszcze brak ruchu.</p>', '', 'span2')}
+  </div>
+  <p class="mono" style="line-height:1.6;margin-top:12px">Bez ciasteczek i bez zapisywania adresów IP: osoba jest rozpoznawana tylko w obrębie jednego dnia. Właściciele, roboty i podgląd linków nie są liczeni. Dane z ostatnich 90 dni. „Wyjście do …” = kliknięcie w zakup biletu u sprzedawcy.</p>`;
+}
+
 /* ---- PULPIT ADMINISTRATORA ---- */
 const scDash = () => {
   if(!isAdmin()) return scAdmin();
@@ -1329,13 +1459,13 @@ const scAdmin = () => {
         <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
       <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
   const src = LIVE.sources||{}, wm = workMode()==='admin', inApp = typeof renderAppChrome==='function';
-  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
+  const TABS = [...(isOwner()&&!inPreview()?[['live','Na żywo']]:[]),...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
   const chips = `<div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:${wm?'0 0 18px':'16px 20px'}">
     ${TABS.map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}</div>`;
   // w trybie pulpitu: nagłówek jak na pulpicie; na stronie zakładki są już w górnym menu
   if(wm && tab==='stats') S.adminTab = 'users';
   return wm ? `
-<div class="pg dash ${['expo','venues'].includes(S.adminTab||'users')?'dash-wide':''}">
+<div class="pg dash ${['expo','venues','live'].includes(S.adminTab||'users')?'dash-wide':''}">
   ${['expo','venues'].includes(S.adminTab) ? '' : dashHead('Panel administratora', esc((TABS.find(t=>t[0]===(S.adminTab||'users'))||TABS[0])[1]), '', `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button>`)}
   ${inApp?chips:''}
   <div>${adminTabBody(A, S.adminTab||'users', curList, src)}</div>
@@ -1386,6 +1516,7 @@ function adminExpoTab(key){
     <p class="dnote">Brakuje plików modułu w <span class="mono">public${m.src}</span>. Gdy zostaną dodane, mapa pojawi się tutaj automatycznie.</p></section>`;
 }
 function adminTabBody(A, tab, curList, src){
+  if(tab==='live') return adminLiveTab();
   if(tab==='expo') return adminExpoTab('expo');
   if(tab==='venues') return adminExpoTab('venues');
   return `

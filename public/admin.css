@@ -294,3 +294,10 @@
 
 /* znaki z wariantem emoji (strzałki, ©, ®) zawsze jako zwykły tekst — bez iPhonowych emoji */
 html, body { font-variant-emoji: text; }
+
+/* Panel założyciela (zakładka Na żywo) */
+.live-kpi b { color: var(--pink); }
+.live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--pink); margin-right: 2px; animation: livePulse 1.6s ease-in-out infinite; }
+@keyframes livePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.75); } }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+.live-list, .live-feed { max-height: 460px; overflow-y: auto; }

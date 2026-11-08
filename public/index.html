@@ -1836,7 +1836,7 @@ function scDownloads(){
 function workNavHtml(){
   const cur = S.screen==='admin' ? 'admin:'+(S.adminTab||'stats') : S.screen;
   const items = workMode()==='admin'
-    ? [['go:dash','Pulpit',['dash']],['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:expo','Mapa targów 3D',['admin:expo']],['adm:venues','Obiekty 3D',['admin:venues']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
+    ? [['go:dash','Pulpit',['dash']],...(isOwner()&&!inPreview()?[['adm:live','Na żywo',['admin:live']]]:[]),['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:expo','Mapa targów 3D',['admin:expo']],['adm:venues','Obiekty 3D',['admin:venues']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
     : [['go:org','Pulpit',['org']],['go:orgEvents','Wydarzenia',['orgEvents']],['go:scan','Skaner',['scan']]];
   return items.map(([a,l,on])=>`<button data-act="${a}" ${on.includes(cur)?'aria-current="page"':''}>${l}</button>`).join('');
 }

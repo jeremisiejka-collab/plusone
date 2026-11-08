@@ -5,6 +5,7 @@
 import previewHtml from '../private/app.html';
 import { smtpSend } from './smtp.js';
 import { withSecurityHeaders, rateLimit } from './security.js';
+import { track, liveStats, cleanupStats } from './stats.js';
 import { premiumApi, welcomeInside, zoneInfo, scanGuest, crewInfo, forgotPassword, resetPassword, findReset, adminOrganizers, adminNewsletter, mailDetect, scheduled, guestTicketPage, initPremium } from './premium.js';
 
 const DAY = 864e5;
@@ -753,6 +754,7 @@ async function api(req, env) {
   const wait = await rateLimit(env, req, path, m);
   if (wait) return json({ error: 'Za dużo prób. Spróbuj ponownie za ' + Math.ceil(wait / 60) + ' min.' }, 429, { 'Retry-After': String(wait) });
 
+  if (path === '/api/t' && m === 'POST') return track(req, env, json);   // statystyki odwiedzin (Panel założyciela)
   if (path === '/api/state' && m === 'GET') return publicState(env);
   if (path === '/api/auth/register' && m === 'POST') return register(req, env);
   if (path === '/api/auth/login' && m === 'POST') return login(req, env);
@@ -792,6 +794,7 @@ async function api(req, env) {
       return adminCurate(req, env, user);
     }
     if (!isAdmin(user)) return fail(403, 'Tylko dla admina.');
+    if (path === '/api/admin/live' && m === 'GET') return isOwner(user) ? liveStats(req, env, json, warsawMidnight) : fail(403, 'Panel założyciela jest tylko dla właściciela.');
     if (path === '/api/admin/stats' && m === 'GET') return adminStats(req, env);
     if (path === '/api/admin/users' && m === 'GET') return adminUsers(req, env);
     const previewUser = path.match(/^\/api\/admin\/users\/(\d+)\/preview$/);
@@ -824,7 +827,7 @@ initPremium({ json, fail, body, sha256, randomToken, hashPassword, startSession,
   sendMail, hasMailer, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight });
 
 const WORKER = {
-  scheduled(event, env, ctx) { ctx.waitUntil(scheduled(event, env)); },
+  scheduled(event, env, ctx) { ctx.waitUntil(scheduled(event, env)); if (env.DB) ctx.waitUntil(cleanupStats(env).catch(e => console.error('stats cleanup', e))); },
   async route(req, env) {
     const url = new URL(req.url);
     // stary adres aplikacji testowej
