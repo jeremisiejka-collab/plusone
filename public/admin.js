@@ -273,7 +273,7 @@ function adminAct(cmd, p1, p2, a){
     case 'gSchAdd': GUIDE.edit.schedule.push({time:'',title:''}); S.dir=null; render(); return true;
     case 'gSchDel': GUIDE.edit.schedule.splice(+p1,1); S.dir=null; render(); return true;
     case 'previewAs': previewAs(p1); return true;
-    case 'liveDays': LIVEP.days = +p1 || 1; LIVEP.data = null; liveLoad(true); S.dir=null; render(); return true;
+    case 'liveDays': LIVEP.days = +p1 || 1; liveLoad(true); return true;
     case 'demoRole': ACC.demoRole = p1; S.dir=null; render(); return true;
     case 'demoLogin': { const r = ACC.demoRole || demoRoleDefault(); ACC.demoRole = null; previewAs(r); return true; }
     case 'realLogin': ACC.realLogin = true; ACC.pwMode = false; ACC.authErr=''; S.dir=null; render(); return true;
@@ -1179,7 +1179,7 @@ const STATS = (() => {
   return { send };
 })();
 
-/* ---- PANEL ZAŁOŻYCIELA: na żywo, wejścia, źródła, kliknięcia (tylko właściciel) ---- */
+/* ---- RUCH NA STRONIE: na żywo, wejścia, źródła, kliknięcia — część Pulpitu administratora (scDash) ---- */
 const LIVEP = { data:null, at:0, days:1, busy:false, timer:0 };
 const SCREEN_PL = { start:'Start', home:'Odkrywaj', list:'Wydarzenia', map:'Mapa', event:'Strona wydarzenia', tickets:'Bilety', wallet:'Portfel',
   auth:'Logowanie', profile:'Konto', downloads:'Aplikacja', seatplan:'Plan sali', guide:'Przewodnik', ticket:'Bilet z QR', wrapped:'Wrapped',
@@ -1210,9 +1210,9 @@ function liveLoad(force){
   if(LIVEP.busy || (!force && LIVEP.data && Date.now()-LIVEP.at < 9e3)) return;
   LIVEP.busy = true;
   apiCall('/api/admin/live?days='+LIVEP.days).then(d=>{ LIVEP.data = d; }).catch(e=>{ LIVEP.data = { error:e.message }; })
-    .finally(()=>{ LIVEP.at = Date.now(); LIVEP.busy = false; if(S.screen==='admin' && S.adminTab==='live'){ S.dir=null; render(); } });
+    .finally(()=>{ LIVEP.at = Date.now(); LIVEP.busy = false; if(S.screen==='dash'){ S.dir=null; render(); } });
 }
-function liveTick(){ clearInterval(LIVEP.timer); LIVEP.timer = setInterval(()=>{ if(S.screen==='admin' && S.adminTab==='live' && document.visibilityState==='visible') liveLoad(true); else clearInterval(LIVEP.timer); }, 10e3); }
+function liveTick(){ clearInterval(LIVEP.timer); LIVEP.timer = setInterval(()=>{ if(S.screen!=='dash') return clearInterval(LIVEP.timer); if(document.visibilityState==='visible' && !document.querySelector('#sheetwrap.on, .sheet-open')) liveLoad(true); }, 10e3); }
 const fmtDur = ms => { const s = Math.round(ms/1000); return s < 60 ? s+' s' : Math.floor(s/60)+' min '+String(s%60).padStart(2,'0')+' s'; };
 function hourBars(arr, h0){
   const max = Math.max(1, ...arr), W = 300, H = 90, bw = W/24;
@@ -1226,8 +1226,7 @@ function rankList(items, label, val, max){
   return items.length ? `<ul class="dbars">${items.map(r=>`<li><span class="clamp1">${label(r)}</span>${meter(val(r), max)}<b>${pl(val(r))}</b></li>`).join('')}</ul>` : '<p class="dempty">Jeszcze brak danych.</p>';
 }
 function adminLiveTab(){
-  if(!isOwner()) return `<p class="dempty">Panel założyciela jest tylko dla właściciela.</p>`;
-  if(inPreview()) return `<p class="dempty">W podglądzie nie ma prawdziwych statystyk.</p>`;
+  if(!isOwner() || inPreview()) return '';
   liveLoad(); liveTick();
   const D = LIVEP.data;
   if(!D) return loadingBox();
@@ -1236,8 +1235,9 @@ function adminLiveTab(){
   const scr = by('screen'), cities = by('city'), rng = D.days===1?'dziś':D.days===7?'7 dni':'30 dni';
   const diff = D.prevVisitors ? Math.round((D.visitors-D.prevVisitors)/D.prevVisitors*100) : null;
   const mx = a => Math.max(1, ...a.map(r=>r.v ?? r.n ?? r[1] ?? 0));
-  return `
+  return `<section class="live-sec">
   <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+    <h2 class="live-h"><i class="live-dot"></i>Ruch na stronie</h2>
     ${[[1,'Dziś'],[7,'7 dni'],[30,'30 dni']].map(([d,l])=>`<button class="chip ${LIVEP.days===d?'on':''}" data-act="liveDays:${d}">${l}</button>`).join('')}
     <span class="mono" style="margin-left:auto">Odświeża się co 10 s · ${new Date(D.now).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span></div>
   <div class="dkpis">
@@ -1268,7 +1268,8 @@ function adminLiveTab(){
         <span class="mono clamp1">${r.kind==='view'?'ekran':'kliknięcie'} · ${esc(cityPL(r.city)||'nieznane miasto')} · ${esc(r.device||'')} · ${esc(SRC_NAME(r.src||''))}</span></div>
         <span class="mono" style="flex:none">${ago(r.ts)}</span></li>`).join('')}</ul>` : '<p class="dempty">Jeszcze brak ruchu.</p>', '', 'span2')}
   </div>
-  <p class="mono" style="line-height:1.6;margin-top:12px">Bez ciasteczek i bez zapisywania adresów IP: osoba jest rozpoznawana tylko w obrębie jednego dnia. Właściciele, roboty i podgląd linków nie są liczeni. Dane z ostatnich 90 dni. „Wyjście do …” = kliknięcie w zakup biletu u sprzedawcy.</p>`;
+  <p class="mono" style="line-height:1.6;margin-top:12px">Bez ciasteczek i bez zapisywania adresów IP: osoba jest rozpoznawana tylko w obrębie jednego dnia. Administratorzy, roboty i podgląd linków nie są liczeni. Dane z ostatnich 90 dni. „Wyjście do …” = kliknięcie w zakup biletu u sprzedawcy.</p></section>
+  <h2 class="live-h" style="margin:26px 0 14px">Konta i wydarzenia</h2>`;
 }
 
 /* ---- PULPIT ADMINISTRATORA ---- */
@@ -1279,13 +1280,13 @@ const scDash = () => {
   const head = dashHead('Panel administratora', `Dzień dobry${firstName()?', '+firstName():''}`, todayLong()+' · ostatnie 30 dni',
     `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button><button class="chip on" data-act="adm:invites">${ic('plus',14)} Zaproś</button>`);
   if(A?.error) return `<div class="pg dash">${head}<div class="err">${esc(A.error)}</div></div>`;
-  if(!A || !A.stats?.series) return `<div class="pg dash">${head}${loadingBox()}</div>`;
+  if(!A || !A.stats?.series) return `<div class="pg dash">${head}${adminLiveTab()}${loadingBox()}</div>`;
   const T = A.stats, ser = T.series, from = T.seriesFrom, src = LIVE.sources||{};
   const top = (T.topSaved||[]).map(r=>({...r, e:EVENTS.find(e=>e.id===r.event_id)})).filter(r=>r.e).slice(0,6), topMax = Math.max(1,...top.map(r=>r.n));
   const pend = (A.invites||[]).filter(i=>!i.used_at&&i.expires_at>Date.now()).length;
   const okSrc = Object.values(src).filter(v=>v.ok).length, allSrc = Object.keys(src).length;
   const cities = T.cities||[], cMax = Math.max(1,...cities.map(c=>c.n));
-  return `<div class="pg dash">${head}
+  return `<div class="pg dash">${head}${adminLiveTab()}
   <div class="dkpis">
     ${kpi('Użytkownicy', T.users, `<em>+${pl(T.new7)}</em> w 7 dni`, 'users')}
     ${kpi('Aktywni dziś', T.activeToday||0, `${pl(T.active7)} w tym tygodniu`, 'bolt')}
@@ -1459,13 +1460,13 @@ const scAdmin = () => {
         <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
       <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
   const src = LIVE.sources||{}, wm = workMode()==='admin', inApp = typeof renderAppChrome==='function';
-  const TABS = [...(isOwner()&&!inPreview()?[['live','Na żywo']]:[]),...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
+  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
   const chips = `<div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:${wm?'0 0 18px':'16px 20px'}">
     ${TABS.map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}</div>`;
   // w trybie pulpitu: nagłówek jak na pulpicie; na stronie zakładki są już w górnym menu
   if(wm && tab==='stats') S.adminTab = 'users';
   return wm ? `
-<div class="pg dash ${['expo','venues','live'].includes(S.adminTab||'users')?'dash-wide':''}">
+<div class="pg dash ${['expo','venues'].includes(S.adminTab||'users')?'dash-wide':''}">
   ${['expo','venues'].includes(S.adminTab) ? '' : dashHead('Panel administratora', esc((TABS.find(t=>t[0]===(S.adminTab||'users'))||TABS[0])[1]), '', `<button class="chip" data-act="adminReload">${ic('undo',14)} Odśwież</button>`)}
   ${inApp?chips:''}
   <div>${adminTabBody(A, S.adminTab||'users', curList, src)}</div>
@@ -1516,7 +1517,6 @@ function adminExpoTab(key){
     <p class="dnote">Brakuje plików modułu w <span class="mono">public${m.src}</span>. Gdy zostaną dodane, mapa pojawi się tutaj automatycznie.</p></section>`;
 }
 function adminTabBody(A, tab, curList, src){
-  if(tab==='live') return adminLiveTab();
   if(tab==='expo') return adminExpoTab('expo');
   if(tab==='venues') return adminExpoTab('venues');
   return `

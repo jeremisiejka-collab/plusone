@@ -51,6 +51,7 @@ const RULES = [
   ['POST', '/api/auth/reset', 20, 'ip'],
   ['POST', '/api/invite/accept', 20, 'ip'],
   ['POST', '/api/ops/welcome-admins', 5, 'ip'],
+  ['POST', '/api/ops/admin-links', 5, 'ip'],
   ['GET', '/api/crew/join', 120, 'ip'],
   ['POST', '/api/guide/notify', 30, 'who'],
   ['POST', '/api/crew/invite', 60, 'who'],

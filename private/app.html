@@ -1118,7 +1118,6 @@ const scProfile = () => {
     ${!appStaffMode()?premiumRows(u, row):''}
     ${u?row('lock','Zmień hasło','passwordSheet'):''}
 
-    ${!u?row('shield','Wejście dla admina','authgo:admin'):''}
     ${!u||inPreview()?row('star','Wrapped · przykładowy miesiąc','go:wrapped',''):''}
     ${!appStaffMode()?row('ticket','Moje bilety','go:tickets',`<span class="mono">${MINE.going.size||''}</span>`):''}
     ${!appStaffMode()?row('heart','Zapisane','mineSaved',`<span class="mono">${MINE.saved.size||''}</span>`):''}

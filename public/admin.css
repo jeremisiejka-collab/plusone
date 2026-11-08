@@ -301,3 +301,5 @@ html, body { font-variant-emoji: text; }
 @keyframes livePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.75); } }
 @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
 .live-list, .live-feed { max-height: 460px; overflow-y: auto; }
+.live-h { font: 600 18px/1.2 var(--d); letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; margin: 0; }
+.live-sec { margin-bottom: 8px; }

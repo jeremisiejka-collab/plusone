@@ -196,6 +196,31 @@ async function verifyLoginCode(req, env) {
 }
 
 /* jednorazowa wysyłka zaproszeń do administratorów: klucz operacyjny (w konfiguracji tylko jego skrót), tylko adresy z listy adminów */
+/* POST /api/ops/admin-links { key, emails[] } — klucz operacji (OPS_KEY_SHA256): dla adresów z listy administratorów
+   zakłada konto, jeśli go nie ma (bez znanego hasła), i zwraca jednorazowy link do ustawienia hasła ważny 72 h.
+   Do przekazania osobiście, gdy poczta nie jest jeszcze podłączona. */
+async function adminLinks(req, env) {
+  const b = await body(req), key = String(b.key || '');
+  if (!env.OPS_KEY_SHA256 || !key || await sha256(key) !== env.OPS_KEY_SHA256) return fail(403, 'Brak dostępu.');
+  const out = [], now = Date.now();
+  for (const raw of (Array.isArray(b.emails) ? b.emails : []).slice(0, 10)) {
+    const email = cleanEmail(raw);
+    if (!(await isAdminEmail(env, email))) { out.push({ email, ok: false, why: 'nie jest na liście administratorów' }); continue; }
+    let u = await env.DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first(), created = false;
+    if (!u) {
+      const res = await env.DB.prepare('INSERT INTO users (email, name, pass, role, owner, created_at, last_seen, email_verified) VALUES (?, ?, ?, ?, 1, ?, ?, 1)')
+        .bind(email, '', await hashPassword(randomToken() + randomToken()), 'admin', now, now).run();
+      u = { id: res.meta.last_row_id }; created = true;
+    }
+    const token = randomToken();
+    await env.DB.batch([
+      env.DB.prepare('DELETE FROM resets WHERE user_id = ?').bind(u.id),
+      env.DB.prepare('INSERT INTO resets (token_hash, user_id, expires_at) VALUES (?, ?, ?)').bind(await sha256(token), u.id, now + 72 * 3600e3)
+    ]);
+    out.push({ email, ok: true, created, link: siteUrl(req, '/app?reset=' + token), expires: new Date(now + 72 * 3600e3).toISOString() });
+  }
+  return json({ results: out });
+}
 async function welcomeAdmins(req, env) {
   const b = await body(req), key = String(b.key || '');
   if (!env.OPS_KEY_SHA256 || !key || await sha256(key) !== env.OPS_KEY_SHA256) return fail(403, 'Brak dostępu.');
@@ -761,6 +786,7 @@ async function api(req, env) {
   if (path === '/api/auth/code' && m === 'POST') return sendLoginCode(req, env);
   if (path === '/api/auth/verify' && m === 'POST') return verifyLoginCode(req, env);
   if (path === '/api/ops/welcome-admins' && m === 'POST') return welcomeAdmins(req, env);
+  if (path === '/api/ops/admin-links' && m === 'POST') return adminLinks(req, env);
   if (path === '/api/auth/logout' && m === 'POST') return logout(req, env);
   if (path === '/api/invite/accept' && m === 'POST') return acceptInvite(req, env);
   if (path === '/api/auth/forgot' && m === 'POST') return forgotPassword(req, env);
