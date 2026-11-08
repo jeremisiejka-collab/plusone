@@ -196,13 +196,14 @@ async function verifyLoginCode(req, env) {
 }
 
 /* jednorazowa wysyłka zaproszeń do administratorów: klucz operacyjny (w konfiguracji tylko jego skrót), tylko adresy z listy adminów */
-/* POST /api/ops/admin-links { key, emails[] } — klucz operacji (OPS_KEY_SHA256): dla adresów z listy administratorów
-   zakłada konto, jeśli go nie ma (bez znanego hasła), i zwraca jednorazowy link do ustawienia hasła ważny 72 h.
+/* POST /api/ops/admin-links { key, emails[], untilUsed? } — klucz operacji (OPS_KEY_SHA256): dla adresów z listy administratorów
+   zakłada konto, jeśli go nie ma (bez znanego hasła), i zwraca jednorazowy link do ustawienia hasła ważny 72 h
+   (untilUsed: bez limitu czasu, aż do użycia; nowy link unieważnia poprzedni).
    Do przekazania osobiście, gdy poczta nie jest jeszcze podłączona. */
 async function adminLinks(req, env) {
   const b = await body(req), key = String(b.key || '');
   if (!env.OPS_KEY_SHA256 || !key || await sha256(key) !== env.OPS_KEY_SHA256) return fail(403, 'Brak dostępu.');
-  const out = [], now = Date.now();
+  const out = [], now = Date.now(), until = now + (b.untilUsed ? 3650 * DAY : 72 * 3600e3);
   for (const raw of (Array.isArray(b.emails) ? b.emails : []).slice(0, 10)) {
     const email = cleanEmail(raw);
     if (!(await isAdminEmail(env, email))) { out.push({ email, ok: false, why: 'nie jest na liście administratorów' }); continue; }
@@ -215,9 +216,9 @@ async function adminLinks(req, env) {
     const token = randomToken();
     await env.DB.batch([
       env.DB.prepare('DELETE FROM resets WHERE user_id = ?').bind(u.id),
-      env.DB.prepare('INSERT INTO resets (token_hash, user_id, expires_at) VALUES (?, ?, ?)').bind(await sha256(token), u.id, now + 72 * 3600e3)
+      env.DB.prepare('INSERT INTO resets (token_hash, user_id, expires_at) VALUES (?, ?, ?)').bind(await sha256(token), u.id, until)
     ]);
-    out.push({ email, ok: true, created, link: siteUrl(req, '/app?reset=' + token), expires: new Date(now + 72 * 3600e3).toISOString() });
+    out.push({ email, ok: true, created, link: siteUrl(req, '/app?reset=' + token), expires: b.untilUsed ? 'do użycia' : new Date(until).toISOString() });
   }
   return json({ results: out });
 }
