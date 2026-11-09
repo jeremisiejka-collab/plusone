@@ -15,13 +15,7 @@
   "source": "https://commons.wikimedia.org/wiki/File:ArenaGorzow_siatkowka.jpg"
  },
  "Arena Katowice|Katowice": {
-  "image": "https://plusoneapp.pl/img/obiekty/arena-katowice-katowice.jpg",
-  "ratio": 1.494,
-  "author": "Marek Mróz",
-  "license": "CC BY-SA 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:2023-07_Katowice_Stadion_Miejski_(4).jpg",
-  "auto": "venue",
-  "query": "Arena Katowice stadion"
+  "file": "2025-04 Katowice stadion Arena Katowice (47).jpg"
  },
  "Centrum Rekreacyjno-Sportowe|Zielona Góra": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-rekreacyjno-sportowe-zielona-gora.jpg",
@@ -115,13 +109,8 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowa-w-dabrowie.g.jpg"
  },
  "HWS w Zawierciu|Zawiercie": {
-  "image": "https://plusoneapp.pl/img/obiekty/hws-w-zawierciu-zawiercie.jpg",
-  "ratio": 3.099,
-  "author": "Carl92 at Polish Wikipedia",
-  "license": "Public domain",
-  "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowo_widowiskowa_czestochowa.jpg",
-  "auto": "venue",
-  "query": "Hala sportowa Zawiercie"
+  "file": "Zawiercie.jpg",
+  "kind": "city"
  },
  "Hala Częstochowa|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-czestochowa-czestochowa.jpg",
@@ -269,12 +258,8 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala-gliwice-20170620.jpg"
  },
  "Przestrzeń Muzyki Współczesnej Hashtag Lab|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/przestrzen-muzyki-wspolczesnej-hashtag-lab-warszawa.jpg",
-  "ratio": 1.501,
-  "author": "Cybularny",
-  "license": "CC0",
-  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
-  "auto": "city"
+  "query": "Warsaw skyline",
+  "kind": "city"
  },
  "SARA sala teatralnowidowiskowa UCKiN UwB|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/sara-sala-teatralnowidowiskowa-uckin-uwb-bialystok.jpg",
@@ -366,20 +351,12 @@
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Miejski_im._Henryka_Reymana_w_Krakowie.jpg"
  },
  "TBA - Warsaw|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/tba-warsaw-warszawa.jpg",
-  "ratio": 1.501,
-  "author": "Cybularny",
-  "license": "CC0",
-  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
-  "auto": "city"
+  "query": "Warsaw skyline",
+  "kind": "city"
  },
  "TBA|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/tba-warszawa.jpg",
-  "ratio": 1.501,
-  "author": "Cybularny",
-  "license": "CC0",
-  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
-  "auto": "city"
+  "query": "Warsaw skyline",
+  "kind": "city"
  },
  "Tarczyński Arena|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tarczynski-arena-wroclaw.jpg",
@@ -404,11 +381,7 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Torwar_2020a.jpg"
  },
  "Warszawa|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
-  "ratio": 1.501,
-  "author": "Cybularny",
-  "license": "CC0",
-  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
-  "auto": "city"
+  "query": "Warsaw skyline",
+  "kind": "city"
  }
 }

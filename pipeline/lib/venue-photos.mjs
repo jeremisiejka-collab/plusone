@@ -120,11 +120,11 @@ export async function addVenuePhotos(events, { maxLookups = 60 } = {}) {
     if (STOP) break;
     const [venue, city] = k.split('|');
     const real = venue && fold(venue) !== fold(city) && !/^tba\b|^tbc\b|^online$/i.test(venue);
-    const q = photos[k]?.query;
-    let file = q ? await fromQuery(q) : real && (await fromWikipedia(venue, city) || await fromCommons(venue, city)), kind = 'venue';
+    const q = photos[k]?.query, pin = photos[k]?.file;
+    let file = pin || (q ? await fromQuery(q) : null) || (!q && real && (await fromWikipedia(venue, city) || await fromCommons(venue, city))), kind = photos[k]?.kind || 'venue';
     if (!file) { file = await fromCity(city); kind = 'city'; }
     const p = file && await download(file, slug(k));
-    if (p) { photos[k] = { ...p, auto: kind, ...(q ? { query: q } : {}) }; found++; }
+    if (p) { photos[k] = { ...p, auto: kind, ...(q ? { query: q } : {}), ...(pin ? { file: pin } : {}) }; found++; }
     console.log(`  zdjęcie miejsca ${k}: ${p ? kind + ' ' + file : 'nie znaleziono' + (file ? ' (nie pobrano ' + file + ')' : '')}`);
     await sleep(1200);
   }
