@@ -54,6 +54,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ul._Chmielna_20,_Warszawa_(3).jpg",
   "auto": "venue"
  },
+ "Chmury|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Chorten Arena|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
   "ratio": 4.116,
@@ -111,6 +120,22 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Zielona_G%C3%B3ra,_sala_koncertowa.jpg",
   "auto": "venue"
+ },
+ "Forum Horyzonty|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Gdynia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Grupa Moderator Arena|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/grupa-moderator-arena-bydgoszcz.jpg",
@@ -210,6 +235,14 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:W%C5%82oc%C5%82awek-Hall_of_the_Masters.JPG"
  },
+ "Hala Odra|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-odra-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Hala Orbita|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-orbita-wroclaw.jpg",
   "ratio": 1.5,
@@ -270,6 +303,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:%E2%80%9EKij%C3%B3w%E2%80%9D_Cinema,_1962_design._Witold_C%C4%99ckiewicz,_34_Krasi%C5%84skiego_Alley,_Krak%C3%B3w,_Poland.jpg",
   "auto": "venue"
  },
+ "Klub PODWÓRKO.art / Scena UCHO|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/klub-podworko-art-scena-ucho-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Kraków Stare Miasto|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-stare-miasto-krakow.jpg",
   "ratio": 1.335,
@@ -328,6 +369,15 @@
   "author": "WikipedyjniAK",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Orlen_Stadion_2025.jpg"
+ },
+ "Palladium|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Pałac Młodzieży w Bydgoszczy|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/palac-mlodziezy-w-bydgoszczy-bydgoszcz.jpg",
@@ -451,6 +501,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Story Disco Club|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Strefa Kultury Firlej|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/strefa-kultury-firlej-wroclaw.jpg",
   "ratio": 1.711,
@@ -558,6 +616,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Wrocławska Akademia Baletu|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -573,5 +639,21 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Slaski_tydzien_4973.JPG",
   "auto": "venue"
+ },
+ "Zamek Łeba Resort & SPA|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/zamek-leba-resort-spa-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
+ "Łąkowa 59 A|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/lakowa-59-a-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  }
 }
