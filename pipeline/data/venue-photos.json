@@ -15,6 +15,12 @@
   "source": "https://commons.wikimedia.org/wiki/File:ArenaGorzow_siatkowka.jpg"
  },
  "Arena Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/arena-katowice-katowice.jpg",
+  "ratio": 1.501,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2025-04_Katowice_stadion_Arena_Katowice_(47).jpg",
+  "auto": "venue",
   "file": "2025-04 Katowice stadion Arena Katowice (47).jpg"
  },
  "Centrum Rekreacyjno-Sportowe|Zielona Góra": {
@@ -109,8 +115,13 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowa-w-dabrowie.g.jpg"
  },
  "HWS w Zawierciu|Zawiercie": {
-  "file": "Zawiercie.jpg",
-  "kind": "city"
+  "image": "https://plusoneapp.pl/img/obiekty/hws-w-zawierciu-zawiercie.jpg",
+  "ratio": 2,
+  "author": "X ziomal X",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Zawiercie.jpg",
+  "auto": "city",
+  "file": "Zawiercie.jpg"
  },
  "Hala Częstochowa|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-czestochowa-czestochowa.jpg",
@@ -258,8 +269,13 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala-gliwice-20170620.jpg"
  },
  "Przestrzeń Muzyki Współczesnej Hashtag Lab|Warszawa": {
-  "query": "Warsaw skyline",
-  "kind": "city"
+  "image": "https://plusoneapp.pl/img/obiekty/przestrzen-muzyki-wspolczesnej-hashtag-lab-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "SARA sala teatralnowidowiskowa UCKiN UwB|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/sara-sala-teatralnowidowiskowa-uckin-uwb-bialystok.jpg",
@@ -351,12 +367,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Miejski_im._Henryka_Reymana_w_Krakowie.jpg"
  },
  "TBA - Warsaw|Warszawa": {
-  "query": "Warsaw skyline",
-  "kind": "city"
+  "image": "https://plusoneapp.pl/img/obiekty/tba-warsaw-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "TBA|Warszawa": {
-  "query": "Warsaw skyline",
-  "kind": "city"
+  "image": "https://plusoneapp.pl/img/obiekty/tba-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Tarczyński Arena|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tarczynski-arena-wroclaw.jpg",
@@ -381,7 +407,12 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Torwar_2020a.jpg"
  },
  "Warszawa|Warszawa": {
-  "query": "Warsaw skyline",
-  "kind": "city"
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  }
 }
