@@ -1276,11 +1276,17 @@ function collapse(list){
 const series = e => EVENTS.filter(x=>x.real && x.day>=localDay() && !ACC.hidden.has(x.id) && seriesKey(x)===seriesKey(e))
   .sort((a,b)=>a.start.localeCompare(b.start));
 const terms = n => n===1 ? 'termin' : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 'terminy' : 'terminów';
+/* to samo wydarzenie pod różnymi tytułami i w różnych miastach (trasa) — w sekcjach strony głównej pokazujemy je raz */
+const NAME_STOP = /\b(tour|trasa|koncert|concert|live|in|w|we|na|the|i|x|vs|warszawa|warsaw|krakow|wroclaw|gdansk|poznan|lodz|katowice|lublin|szczecin|gdynia|sopot|torun|bydgoszcz|bialystok|rzeszow|listopada|grudnia|stycznia|lutego|marca|kwietnia|maja|czerwca|lipca|sierpnia|wrzesnia|pazdziernika|edycja|edition)\b/g;
+const nameKey = e => fold(e.name).replace(/[0-9]+/g,' ').replace(NAME_STOP,' ').split(/[^a-z]+/).filter(w=>w.length>1).slice(0,3).join(' ') || e.id;
+function uniqNames(list, seen = new Set()){
+  return list.filter(e=>{ const k = nameKey(e); if(seen.has(k)) return false; seen.add(k); return true; });
+}
 /* „Na topie”: najfajniejsze najbliższe wydarzenia (hot z pipeline/lib/hot.mjs; polecane przez admina na początku) */
 function topPicks(n=10){
   const lim = addDays(45), fe = new Set(ACC.featured);
-  return collapse(EVENTS.filter(e=>e.real && e.day>=localDay() && e.day<=lim && !ACC.hidden.has(e.id) && (e.city===S.city || e.big) && (e.hot>=6 || fe.has(e.id)))
-    .sort((a,b)=>(fe.has(b.id)-fe.has(a.id)) || ((b.hot+(b.city===S.city?4:0))-(a.hot+(a.city===S.city?4:0))) || a.start.localeCompare(b.start))).slice(0,n);
+  return uniqNames(collapse(EVENTS.filter(e=>e.real && e.day>=localDay() && e.day<=lim && !ACC.hidden.has(e.id) && (e.city===S.city || e.big) && (e.hot>=6 || fe.has(e.id)))
+    .sort((a,b)=>(fe.has(b.id)-fe.has(a.id)) || ((b.hot+(b.city===S.city?4:0))-(a.hot+(a.city===S.city?4:0))) || a.start.localeCompare(b.start)))).slice(0,n);
 }
 function surprise(){
   const pool = topPicks(20).filter(e=>e.day<=addDays(7));
@@ -1388,8 +1394,10 @@ function upcomingPreview(events){
 
 const scHome = () => {
   const f = collapse(inCity());
-  const soon = upcomingPreview(f), soonIds = new Set(soon.map(e=>e.id));
-  const later = f.filter(e=>!soonIds.has(e.id));
+  // żadne wydarzenie nie powtarza się między sekcjami: „Już niedługo” bez tego, co jest „Na topie”
+  const topSeen = new Set(topPicks().map(nameKey));
+  const soon = upcomingPreview(f.filter(e=>!topSeen.has(nameKey(e)))), soonIds = new Set(soon.map(e=>e.id));
+  const later = f.filter(e=>!soonIds.has(e.id) && !topSeen.has(nameKey(e)));
   return `
 <div class="pg" style="padding:64px 0 112px">
   ${ACC.user?`<div class="pad">${liveBanner()}</div>`:''}
@@ -1435,8 +1443,8 @@ const scHome = () => {
   ${(()=>{
     const bg = collapse(bigAll().sort((a,b)=>(a.city===S.city?0:1)-(b.city===S.city?0:1) || (b.hot-a.hot) || a.start.localeCompare(b.start)));
     if(!bg.length) return '';
-    const shown = new Set(topPicks().map(e=>seriesKey(e))), rest = bg.filter(e=>!shown.has(seriesKey(e)));
-    const pick = [...rest.filter(e=>e.city===S.city), ...rest.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...rest.filter(e=>e.city!==S.city&&(!e.image||e.multi))].slice(0,10);
+    const shown = new Set([...topPicks(), ...soon].map(nameKey)), rest = bg.filter(e=>!shown.has(nameKey(e)));
+    const pick = uniqNames([...rest.filter(e=>e.city===S.city), ...rest.filter(e=>e.city!==S.city&&e.image&&!e.multi), ...rest.filter(e=>e.city!==S.city&&(!e.image||e.multi))]).slice(0,10);
     return shelf('Duże wydarzenia',
       bg.some(e=>e.city===S.city) ? 'Najpierw '+esc(S.city)+', potem reszta Polski' : 'Festiwale, stadiony i areny w całej Polsce',
       `<button class="shelf-all" data-act="bigList">Wszystkie · ${bg.length}</button>`,

@@ -24,9 +24,29 @@ function venueMatch(a, b) {
 
 const minutes = s => +s.slice(11, 13) * 60 + +s.slice(14, 16);
 
+/* to samo miejsce i dokładnie ta sama godzina, a tytuły pod różnymi nazwami („WWOFF” / „WWO, Sokół in Warszawa”):
+   - hala, arena, stadion (naraz jedno wydarzenie) — wystarczy miejsce i godzina,
+   - inne miejsca (kluby i teatry mają kilka sal) — dodatkowo wspólny początek słowa w tytułach (wwo / wwoff). */
+const VENUE_GENERIC = new Set(['teatr', 'klub', 'club', 'hala', 'sala', 'scena', 'cos', 'by', 'im', 'imienia', 'warszawie', 'krakowie', 'wroclawiu', 'gdansku', 'poznaniu', 'lodzi', 'katowicach']);
+const ARENA = /arena|stadion|stadium|torwar|hala stulecia|spodek|expo xxi|narodowy|atlas|ergo|tauron/;
+const vTokens = (v, city) => new Set([...tokens(v)].filter(t => !VENUE_GENERIC.has(t) && !norm(city).split(' ').includes(t)));
+function sameSlot(a, b) {
+  const ma = minutes(a.start), mb = minutes(b.start);
+  if (!ma || ma !== mb || !a.venue || !b.venue) return false;
+  const x = vTokens(a.venue, a.city), y = vTokens(b.venue, b.city);
+  if (!x.size || !y.size || jaccard(x, y) < 0.67) return false;
+  if (ARENA.test(norm(a.venue)) || ARENA.test(norm(b.venue))) return true;
+  const ta = [...tokens(a.title)].filter(t => t.length >= 3), tb = [...tokens(b.title)].filter(t => t.length >= 3);
+  return ta.some(p => tb.some(q => p.startsWith(q) || q.startsWith(p)));
+}
+
 function same(a, b) {
+  // allevents (wydarzenia z Facebooka) dubluje się też samo ze sobą — różni organizatorzy ogłaszają ten sam koncert
+  const loose = a.sources.includes('allevents') || b.sources.includes('allevents');
+  if (loose && sameSlot(a, b)) return true;
   // to samo źródło nie dubluje się samo ze sobą — dwa wpisy = dwa terminy (np. 2 seanse jednego dnia)
   if (a.sources.some(s => b.sources.includes(s))) return false;
+  if (sameSlot(a, b)) return true;
   // godziny muszą być bliskie (różne źródła podają start drzwi vs. start koncertu); 00:00 = brak godziny
   const ma = minutes(a.start), mb = minutes(b.start);
   if (ma && mb && Math.abs(ma - mb) > 120) return false;
