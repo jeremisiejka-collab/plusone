@@ -45,8 +45,10 @@ async function fromWikipedia(venue, city) {
   const d = await api('pl.wikipedia.org', { action: 'query', generator: 'search', gsrsearch: `${venue} ${city}`, gsrlimit: '6', prop: 'pageimages', piprop: 'name' });
   const pages = Object.values(d?.query?.pages || {}).sort((a, b) => a.index - b.index);
   for (const p of pages) {
-    const t = words(p.title).filter(w => !words(city).includes(w));
-    if (p.pageimage && !BAD_FILE.test(p.pageimage) && !COLLAGE.test(p.pageimage) && !PLACE_PAGE.test(p.title) && need.some(w => t.includes(w))) return p.pageimage;
+    // tytuł artykułu ma całą nazwę obiektu; przy nazwie jednowyrazowej („Chmury”, „Odra”) także miasto w tytule albo w nazwie zdjęcia
+    const tw = words(p.title), fw = words(p.pageimage || ''), cw = [...words(city.split('/')[0]), ...(CITY_EN[fold(city.split('/')[0])] || [])].map(w => w.slice(0, 5));
+    const inCity = [...tw, ...fw].some(w => cw.some(c => w.startsWith(c)));
+    if (p.pageimage && !BAD_FILE.test(p.pageimage) && !COLLAGE.test(p.pageimage) && !PLACE_PAGE.test(p.title) && need.every(w => tw.includes(w)) && (need.length >= 2 || inCity)) return p.pageimage;
   }
   return null;
 }
