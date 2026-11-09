@@ -1564,13 +1564,7 @@ const scList = () => {
       <button class="chip on" data-act="resetFilters" style="margin-top:6px">Pokaż wszystko</button>
     </div>`:`
   <div class="pad catalog-grid">${S.sort==='date' ? byDay(f.slice(0,S.limit), bigListRow) : f.slice(0,S.limit).map(bigListRow).join('')}</div>
-  ${f.length>S.limit?`<div class="pad catalog-more" style="padding-top:16px"><button class="btn g" data-act="more" style="height:46px;font:500 13px/1 var(--d)">Pokaż więcej (${f.length-S.limit})</button></div>`:''}
-  <div class="pad" style="padding-top:20px">
-    <div class="card" style="padding:16px;display:flex;gap:12px;align-items:center">
-      <span style="color:${PINK};display:flex">${ic('bell',19)}</span>
-      <span class="mono" style="flex:1;line-height:1.5">Dane z serwisów biletowych i przewodników po mieście · aktualizacja ${LIVE.updatedAt?new Date(LIVE.updatedAt).toLocaleString('pl-PL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):''}</span>
-    </div>
-  </div>`}
+  ${f.length>S.limit?`<div class="pad catalog-more" style="padding-top:16px"><button class="btn g" data-act="more" style="height:46px;font:500 13px/1 var(--d)">Pokaż więcej (${f.length-S.limit})</button></div>`:''}`}
 </div>`;
 };
 

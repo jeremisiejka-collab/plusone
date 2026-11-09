@@ -61,6 +61,8 @@ const now = nowLocal();
 const today = now.slice(0, 10);
 const valid = raw.map(cleanEventText).filter(e =>
   e.title && e.start && e.city && e.links[0].url &&
+  // tylko wydarzenia z prawdziwym zdjęciem — bez zastępczych grafik w aplikacji
+  e.image &&
   // odrzuć minione: koniec (albo start) przed dziś
   (e.end || e.start).slice(0, 10) >= today
 );
