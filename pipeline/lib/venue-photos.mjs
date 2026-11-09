@@ -20,6 +20,7 @@ const GENERIC = new Set(['hala', 'stadion', 'arena', 'miejski', 'miejska', 'im',
 const BAD_FILE = /\.(svg|gif|webm|ogv|tiff?|pdf)$|logo|herb|crest|emblem|coat[_ ]of|flag|map|mapa|plan|location|signature|podpis|icon|ikona/i;
 const COLLAGE = /collage|kola[zż]|montage|monta[zż]|panorama_miasta|mozaika/i;
 const PLACE_PAGE = /\((miasto|gmina|wie[sś]|powiat|osiedle|dzielnica|województwo)\)/i;
+const CITY_EN = { warszawa: ['warsaw'], krakow: ['krakow', 'cracow'], lodz: ['lodz'], wroclaw: ['wroclaw', 'breslau'], gdansk: ['gdansk', 'danzig'], poznan: ['poznan'] };
 const words = s => fold(s).split(/[^a-z0-9]+/).filter(w => w.length > 2 && !GENERIC.has(w));
 
 let BUDGET = 0, STOP = false;
@@ -62,17 +63,26 @@ async function fromCommons(venue, city) {
 }
 /* ręczne hasło z venue-photos.json ({ "query": "…" }): pierwszy pasujący plik z Commons */
 async function fromQuery(q) {
-  const d = await api('commons.wikimedia.org', { action: 'query', list: 'search', srsearch: q + ' filetype:bitmap', srnamespace: '6', srlimit: '10' });
-  return (d?.query?.search || []).map(x => x.title.replace(/^File:/, '')).find(n => !BAD_FILE.test(n) && !COLLAGE.test(n)) || null;
+  const w = q.split(/\s+/);
+  for (let n = w.length; n >= 2; n--) {
+    const d = await api('commons.wikimedia.org', { action: 'query', list: 'search', srsearch: w.slice(0, n).join(' ') + ' filetype:bitmap', srnamespace: '6', srlimit: '10' });
+    const hit = (d?.query?.search || []).map(x => x.title.replace(/^File:/, '')).find(f => !BAD_FILE.test(f) && !COLLAGE.test(f));
+    if (hit) return hit;
+  }
+  return null;
 }
 async function fromCity(city) {
   const d = await api('pl.wikipedia.org', { action: 'query', titles: city.split('/')[0], redirects: '1', prop: 'pageimages', piprop: 'name' });
   const p = Object.values(d?.query?.pages || {})[0];
   if (p?.pageimage && !BAD_FILE.test(p.pageimage) && !COLLAGE.test(p.pageimage)) return p.pageimage;
-  // artykuł o mieście ma kolaż — szukamy pojedynczego zdjęcia miasta (rynek, panorama, stare miasto)
-  const name = city.split('/')[0], need = words(name);
-  const c = await api('commons.wikimedia.org', { action: 'query', list: 'search', srsearch: `${name} stare miasto rynek widok filetype:bitmap`, srnamespace: '6', srlimit: '15' });
-  return (c?.query?.search || []).map(x => x.title.replace(/^File:/, '')).find(n => !BAD_FILE.test(n) && !COLLAGE.test(n) && need.some(w => words(n).includes(w))) || null;
+  // artykuł o mieście ma kolaż — szukamy pojedynczego zdjęcia miasta (stare miasto, rynek, panorama); pliki bywają po angielsku
+  const name = city.split('/')[0], need = [...words(name), ...(CITY_EN[fold(name)] || [])];
+  for (const q of [`${name} Stare Miasto`, `${name} rynek`, `${(CITY_EN[fold(name)] || [name])[0]} old town`, name]) {
+    const c = await api('commons.wikimedia.org', { action: 'query', list: 'search', srsearch: q + ' filetype:bitmap', srnamespace: '6', srlimit: '15' });
+    const hit = (c?.query?.search || []).map(x => x.title.replace(/^File:/, '')).find(n => !BAD_FILE.test(n) && !COLLAGE.test(n) && need.some(w => words(n).includes(w)));
+    if (hit) return hit;
+  }
+  return null;
 }
 
 /* pobiera plik (miniatura 1280 px) i dane autora */

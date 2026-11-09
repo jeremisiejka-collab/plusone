@@ -15,7 +15,7 @@
   "source": "https://commons.wikimedia.org/wiki/File:ArenaGorzow_siatkowka.jpg"
  },
  "Arena Katowice|Katowice": {
-  "query": "Arena Katowice stadion GKS mecz"
+  "query": "Arena Katowice stadion"
  },
  "Centrum Rekreacyjno-Sportowe|Zielona Góra": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-rekreacyjno-sportowe-zielona-gora.jpg",
@@ -25,16 +25,10 @@
   "source": "https://commons.wikimedia.org/wiki/File:MOSiRZielonaGora.jpg"
  },
  "Chorten Arena|Białystok": {
-  "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
-  "ratio": 1.501,
-  "author": "Szymon Staniec",
-  "license": "CC BY 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
-  "auto": "city",
-  "query": "Stadion Miejski Białystok Jagiellonia trybuny"
+  "query": "Stadion Miejski Białystok"
  },
  "EXBUD Arena|Kielce": {
-  "query": "Suzuki Arena Kielce stadion Korona"
+  "query": "Suzuki Arena Kielce"
  },
  "Enea Stadion|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/enea-stadion-poznan.jpg",
@@ -103,13 +97,7 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowa-w-dabrowie.g.jpg"
  },
  "HWS w Zawierciu|Zawiercie": {
-  "image": "https://plusoneapp.pl/img/obiekty/hws-w-zawierciu-zawiercie.jpg",
-  "ratio": 2,
-  "author": "X ziomal X",
-  "license": "CC BY-SA 3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Zawiercie.jpg",
-  "auto": "city",
-  "query": "Hala MOSiR Zawiercie siatkówka"
+  "query": "Hala sportowa Zawiercie"
  },
  "Hala Częstochowa|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-czestochowa-czestochowa.jpg",
@@ -141,7 +129,7 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Gryfia_Slupsk_1.JPG"
  },
  "Hala Koło|Warszawa": {
-  "query": "Hala Koło Warszawa Obozowa"
+  "query": "Hala Koło Warszawa"
  },
  "Hala Mistrzów|Włocławek": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-mistrzow-wloclawek.jpg",
