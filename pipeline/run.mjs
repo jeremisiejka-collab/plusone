@@ -9,6 +9,7 @@ import { dedup } from './lib/dedup.mjs';
 import { cityGeo } from './lib/geo.mjs';
 import { measureImages } from './lib/images.mjs';
 import { hotScore } from './lib/hot.mjs';
+import { addVenuePhotos } from './lib/venue-photos.mjs';
 import ra from './sources/ra.mjs';
 import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
@@ -61,8 +62,7 @@ const now = nowLocal();
 const today = now.slice(0, 10);
 const valid = raw.map(cleanEventText).filter(e =>
   e.title && e.start && e.city && e.links[0].url &&
-  // tylko wydarzenia z prawdziwym zdjęciem — bez zastępczych grafik w aplikacji
-  e.image &&
+
   // odrzuć minione: koniec (albo start) przed dziś
   (e.end || e.start).slice(0, 10) >= today
 );
@@ -73,6 +73,9 @@ const events = dedup(valid)
   .map(e => ({ ...e, hot: hotScore(e), priceDrop: priceDrop(e, stamp) }))
   .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 
+// wydarzenia bez grafiki: prawdziwe zdjęcie miejsca (nie ukrywamy ich i nie rysujemy zastępczych grafik)
+const vp = await addVenuePhotos(events);
+console.log(`Zdjęcia miejsc: nowe ${vp.found}, użyte w ${vp.used} wydarzeniach, wciąż bez zdjęcia ${vp.missing}${vp.pending ? ` (do znalezienia w kolejnych przebiegach: ${vp.pending})` : ''}`);
 const img = await measureImages(events, prevEvents);
 console.log(`Grafiki: zmierzono ${img.measured} nowych, bez proporcji ${img.missing}`);
 

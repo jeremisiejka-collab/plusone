@@ -4,8 +4,7 @@
    - koszykówka: PGE Polska Liga Koszykówki (plk.pl — terminarz w kodzie strony, hala ze strony drużyny)
    Hale i stadiony gospodarzy pamiętamy w pipeline/data/sport-venues.json, żeby nie pobierać ich przy każdym przebiegu.
    Tylko nadchodzące mecze z najbliższych 8 tygodni. Ligi nie publikują grafik meczów (herby nie są plakatami), więc zdjęciem meczu
-   jest prawdziwe zdjęcie stadionu / hali z Wikimedia Commons (pipeline/data/venue-photos.json, pliki w public/img/obiekty/,
-   autor i licencja dopisane do opisu). Mecz w obiekcie bez zdjęcia nie trafia do aplikacji. */
+   jest prawdziwe zdjęcie stadionu / hali (pipeline/lib/venue-photos.mjs, wspólne dla wszystkich wydarzeń bez grafiki). */
 import { readFile, writeFile } from 'node:fs/promises';
 import { request, sleep } from '../lib/http.mjs';
 import { makeEvent } from '../lib/normalize.mjs';
@@ -135,27 +134,14 @@ async function plk(venues) {
   return out;
 }
 
-/* zdjęcie obiektu + podpis autora (licencje CC wymagają uznania autorstwa) */
-let PHOTOS = {};
-function withPhoto(e) {
-  const p = PHOTOS[`${e.venue}|${e.city}`];
-  if (!p) return null;
-  e.image = p.image; e.imageRatio = p.ratio;
-  e.description = `${e.description} Zdjęcie obiektu: ${p.author}, ${p.license}, Wikimedia Commons.`;
-  return e;
-}
-
 export default async function sport() {
-  try { PHOTOS = JSON.parse(await readFile(new URL('../data/venue-photos.json', import.meta.url), 'utf8')); } catch { /* bez zdjęć */ }
   let venues = {};
   try { venues = JSON.parse(await readFile(CACHE, 'utf8')); } catch { /* pierwszy przebieg */ }
   const out = [], errors = [];
   for (const [name, fn] of [['Ekstraklasa', () => ekstraklasa()], ['PlusLiga', () => volley('plusliga.pl', 'PlusLiga', venues)],
     // TAURON Liga (kobiety): tauronliga.pl bez ciasteczek serwuje terminarz PlusLigi — wyłączone, żeby nie dublować meczów
     ['PLK', () => plk(venues)]]) {
-    try { const all = await fn(), l = all.map(withPhoto).filter(Boolean); out.push(...l);
-      const miss = [...new Set(all.filter(e => !PHOTOS[`${e.venue}|${e.city}`]).map(e => `${e.venue}|${e.city}`))];
-      if (miss.length) console.log(`  sport ${name}: bez zdjęcia obiektu (pominięte): ${miss.join('; ')}`); console.log(`  sport ${name}: ${l.length}`); }
+    try { const l = await fn(); out.push(...l); console.log(`  sport ${name}: ${l.length}`); }
     catch (e) { errors.push(name + ': ' + e.message); console.warn(`  sport ${name}: ${e.message}`); }
   }
   await writeFile(CACHE, JSON.stringify(venues, null, 1));
