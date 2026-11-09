@@ -15,6 +15,12 @@
   "source": "https://commons.wikimedia.org/wiki/File:ArenaGorzow_siatkowka.jpg"
  },
  "Arena Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/arena-katowice-katowice.jpg",
+  "ratio": 1.494,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2023-07_Katowice_Stadion_Miejski_(4).jpg",
+  "auto": "venue",
   "query": "Arena Katowice stadion"
  },
  "Centrum Rekreacyjno-Sportowe|Zielona Góra": {
@@ -25,9 +31,21 @@
   "source": "https://commons.wikimedia.org/wiki/File:MOSiRZielonaGora.jpg"
  },
  "Chorten Arena|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
+  "ratio": 4.116,
+  "author": "es12077",
+  "license": "Attribution",
+  "source": "https://commons.wikimedia.org/wiki/File:Stadion_Miejski_-_Bia%C5%82ystok1.jpg",
+  "auto": "venue",
   "query": "Stadion Miejski Białystok"
  },
  "EXBUD Arena|Kielce": {
+  "image": "https://plusoneapp.pl/img/obiekty/exbud-arena-kielce.jpg",
+  "ratio": 1.55,
+  "author": "MKS1973fan derivative work: Staszek Szybki Jest",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Korona_Kielce_Super_Stadion_1.jpg",
+  "auto": "venue",
   "query": "Suzuki Arena Kielce"
  },
  "Enea Stadion|Poznań": {
@@ -97,6 +115,12 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowa-w-dabrowie.g.jpg"
  },
  "HWS w Zawierciu|Zawiercie": {
+  "image": "https://plusoneapp.pl/img/obiekty/hws-w-zawierciu-zawiercie.jpg",
+  "ratio": 3.099,
+  "author": "Carl92 at Polish Wikipedia",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowo_widowiskowa_czestochowa.jpg",
+  "auto": "venue",
   "query": "Hala sportowa Zawiercie"
  },
  "Hala Częstochowa|Częstochowa": {
@@ -129,6 +153,12 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Gryfia_Slupsk_1.JPG"
  },
  "Hala Koło|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-kolo-warszawa.jpg",
+  "ratio": 1.635,
+  "author": "Panek",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowa_ko%C5%82o_obozowa.jpg",
+  "auto": "venue",
   "query": "Hala Koło Warszawa"
  },
  "Hala Mistrzów|Włocławek": {
@@ -238,6 +268,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala-gliwice-20170620.jpg"
  },
+ "Przestrzeń Muzyki Współczesnej Hashtag Lab|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/przestrzen-muzyki-wspolczesnej-hashtag-lab-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
+ },
  "SARA sala teatralnowidowiskowa UCKiN UwB|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/sara-sala-teatralnowidowiskowa-uckin-uwb-bialystok.jpg",
   "ratio": 1.501,
@@ -327,6 +365,22 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Miejski_im._Henryka_Reymana_w_Krakowie.jpg"
  },
+ "TBA - Warsaw|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/tba-warsaw-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
+ },
+ "TBA|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/tba-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
+ },
  "Tarczyński Arena|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tarczynski-arena-wroclaw.jpg",
   "ratio": 1.498,
@@ -334,11 +388,27 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Wroclaw.jpg"
  },
+ "Teatr Komedii Impro|Łódź": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-komedii-impro-lodz.jpg",
+  "ratio": 0.634,
+  "author": "Mietek Ł",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:%C5%81%C3%B3d%C5%BA,_Stare_Miasto_-_panoramio.jpg",
+  "auto": "city"
+ },
  "Torwar|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/torwar-warszawa.jpg",
   "ratio": 1.662,
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Torwar_2020a.jpg"
+ },
+ "Warszawa|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
  }
 }
