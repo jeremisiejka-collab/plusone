@@ -25,6 +25,12 @@
   "source": "https://commons.wikimedia.org/wiki/File:MOSiRZielonaGora.jpg"
  },
  "Chorten Arena|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city",
   "query": "Stadion Miejski Białystok Jagiellonia trybuny"
  },
  "EXBUD Arena|Kielce": {
@@ -97,6 +103,12 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowa-w-dabrowie.g.jpg"
  },
  "HWS w Zawierciu|Zawiercie": {
+  "image": "https://plusoneapp.pl/img/obiekty/hws-w-zawierciu-zawiercie.jpg",
+  "ratio": 2,
+  "author": "X ziomal X",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Zawiercie.jpg",
+  "auto": "city",
   "query": "Hala MOSiR Zawiercie siatkówka"
  },
  "Hala Częstochowa|Częstochowa": {
@@ -215,6 +227,14 @@
   "author": "WikipedyjniAK",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Orlen_Stadion_2025.jpg"
+ },
+ "Playhaus|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/playhaus-krakow.jpg",
+  "ratio": 1.501,
+  "author": "KazimierzP",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w,_Rynek_Linia_A-B_-_fotopolska.eu_(338618).jpg",
+  "auto": "city"
  },
  "Polsat Plus Arena Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/polsat-plus-arena-gdynia-gdynia.jpg",
