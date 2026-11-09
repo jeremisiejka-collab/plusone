@@ -15,12 +15,7 @@
   "source": "https://commons.wikimedia.org/wiki/File:ArenaGorzow_siatkowka.jpg"
  },
  "Arena Katowice|Katowice": {
-  "image": "https://plusoneapp.pl/img/obiekty/arena-katowice-katowice.jpg",
-  "ratio": 1.501,
-  "author": "Lestat (Jan Mehlich)",
-  "license": "CC BY-SA 3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Ma%C5%82a_hala_Spodka_01.JPG",
-  "auto": "venue"
+  "query": "Arena Katowice stadion GKS mecz"
  },
  "Centrum Rekreacyjno-Sportowe|Zielona Góra": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-rekreacyjno-sportowe-zielona-gora.jpg",
@@ -30,20 +25,10 @@
   "source": "https://commons.wikimedia.org/wiki/File:MOSiRZielonaGora.jpg"
  },
  "Chorten Arena|Białystok": {
-  "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
-  "ratio": 1.501,
-  "author": "Szymon Staniec",
-  "license": "CC BY 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
-  "auto": "city"
+  "query": "Stadion Miejski Białystok Jagiellonia trybuny"
  },
  "EXBUD Arena|Kielce": {
-  "image": "https://plusoneapp.pl/img/obiekty/exbud-arena-kielce.png",
-  "ratio": 0.956,
-  "author": "YogiCK",
-  "license": "CC BY-SA 3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Collage_of_views_of_Kielce.png",
-  "auto": "city"
+  "query": "Suzuki Arena Kielce stadion Korona"
  },
  "Enea Stadion|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/enea-stadion-poznan.jpg",
@@ -112,12 +97,7 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowa-w-dabrowie.g.jpg"
  },
  "HWS w Zawierciu|Zawiercie": {
-  "image": "https://plusoneapp.pl/img/obiekty/hws-w-zawierciu-zawiercie.jpg",
-  "ratio": 2,
-  "author": "X ziomal X",
-  "license": "CC BY-SA 3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Zawiercie.jpg",
-  "auto": "city"
+  "query": "Hala MOSiR Zawiercie siatkówka"
  },
  "Hala Częstochowa|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-czestochowa-czestochowa.jpg",
@@ -149,12 +129,7 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Gryfia_Slupsk_1.JPG"
  },
  "Hala Koło|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/hala-kolo-warszawa.jpg",
-  "ratio": 0.802,
-  "author": "Kolanin",
-  "license": "CC BY-SA 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Collage_of_main_sights_of_Ko%C5%82o.jpg",
-  "auto": "venue"
+  "query": "Hala Koło Warszawa Obozowa"
  },
  "Hala Mistrzów|Włocławek": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-mistrzow-wloclawek.jpg",
@@ -173,7 +148,7 @@
  "Hala Podpromie|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-podpromie-rzeszow.jpg",
   "ratio": 1.506,
-  "author": "No machine-readable author provided. Houx assumed (based on copyright claims).",
+  "author": "Houx",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Podpromie.JPG",
   "auto": "venue"
@@ -241,14 +216,6 @@
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Orlen_Stadion_2025.jpg"
  },
- "Playhaus|Kraków": {
-  "image": "https://plusoneapp.pl/img/obiekty/playhaus-krakow.jpg",
-  "ratio": 1,
-  "author": "wyżej",
-  "license": "CC BY-SA 3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Kola%C5%BC_Krakowa.JPG",
-  "auto": "city"
- },
  "Polsat Plus Arena Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/polsat-plus-arena-gdynia-gdynia.jpg",
   "ratio": 1.5,
@@ -263,14 +230,6 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala-gliwice-20170620.jpg"
  },
- "Przestrzeń Muzyki Współczesnej Hashtag Lab|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/przestrzen-muzyki-wspolczesnej-hashtag-lab-warszawa.jpg",
-  "ratio": 0.771,
-  "author": "Foxy1219(montage), Radek Kołakowski, Marek和Ewa Wojciechowscy , ekeidar, Marcin B",
-  "license": "CC BY-SA 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_montage.JPG",
-  "auto": "city"
- },
  "SARA sala teatralnowidowiskowa UCKiN UwB|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/sara-sala-teatralnowidowiskowa-uckin-uwb-bialystok.jpg",
   "ratio": 1.501,
@@ -282,7 +241,7 @@
  "Sala Koncertowa Radia Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/sala-koncertowa-radia-wroclaw-wroclaw.jpg",
   "ratio": 1.333,
-  "author": "No machine-readable author provided. Julo assumed (based on copyright claims).",
+  "author": "Julo",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:PolskieRadioWroclaw-ulKarkonoska.jpg",
   "auto": "venue"
@@ -360,22 +319,6 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Miejski_im._Henryka_Reymana_w_Krakowie.jpg"
  },
- "TBA - Warsaw|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/tba-warsaw-warszawa.jpg",
-  "ratio": 0.771,
-  "author": "Foxy1219(montage), Radek Kołakowski, Marek和Ewa Wojciechowscy , ekeidar, Marcin B",
-  "license": "CC BY-SA 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_montage.JPG",
-  "auto": "city"
- },
- "TBA|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/tba-warszawa.jpg",
-  "ratio": 0.771,
-  "author": "Foxy1219(montage), Radek Kołakowski, Marek和Ewa Wojciechowscy , ekeidar, Marcin B",
-  "license": "CC BY-SA 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_montage.JPG",
-  "auto": "city"
- },
  "Tarczyński Arena|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tarczynski-arena-wroclaw.jpg",
   "ratio": 1.498,
@@ -383,27 +326,11 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Wroclaw.jpg"
  },
- "Teatr Komedii Impro|Łódź": {
-  "image": "https://plusoneapp.pl/img/obiekty/teatr-komedii-impro-lodz.png",
-  "ratio": 0.625,
-  "author": "Michał Oziębło",
-  "license": "CC BY-SA 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Lodz_Collage_2017_(by_EL-042).png",
-  "auto": "city"
- },
  "Torwar|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/torwar-warszawa.jpg",
   "ratio": 1.662,
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Torwar_2020a.jpg"
- },
- "Warszawa|Warszawa": {
-  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
-  "ratio": 0.771,
-  "author": "Foxy1219(montage), Radek Kołakowski, Marek和Ewa Wojciechowscy , ekeidar, Marcin B",
-  "license": "CC BY-SA 4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_montage.JPG",
-  "auto": "city"
  }
 }

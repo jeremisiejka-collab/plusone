@@ -18,6 +18,8 @@ const strip = s => String(s || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').
 const GENERIC = new Set(['hala', 'stadion', 'arena', 'miejski', 'miejska', 'im', 'imienia', 'sportowa', 'sportowo', 'widowiskowa', 'widowiskowo', 'sportowe',
   'centrum', 'mosir', 'hws', 'hsw', 'hs', 'osir', 'klub', 'sala', 'scena', 'teatr', 'w', 'we', 'na', 'i', 'the', 'club', 'pilkarski', 'park', 'dom', 'kultury', 'ul', 'al']);
 const BAD_FILE = /\.(svg|gif|webm|ogv|tiff?|pdf)$|logo|herb|crest|emblem|coat[_ ]of|flag|map|mapa|plan|location|signature|podpis|icon|ikona/i;
+const COLLAGE = /collage|kola[zż]|montage|monta[zż]|panorama_miasta|mozaika/i;
+const PLACE_PAGE = /\((miasto|gmina|wie[sś]|powiat|osiedle|dzielnica|województwo)\)/i;
 const words = s => fold(s).split(/[^a-z0-9]+/).filter(w => w.length > 2 && !GENERIC.has(w));
 
 let BUDGET = 0, STOP = false;
@@ -42,7 +44,7 @@ async function fromWikipedia(venue, city) {
   const pages = Object.values(d?.query?.pages || {}).sort((a, b) => a.index - b.index);
   for (const p of pages) {
     const t = words(p.title).filter(w => !words(city).includes(w));
-    if (p.pageimage && !BAD_FILE.test(p.pageimage) && need.some(w => t.includes(w))) return p.pageimage;
+    if (p.pageimage && !BAD_FILE.test(p.pageimage) && !COLLAGE.test(p.pageimage) && !PLACE_PAGE.test(p.title) && need.some(w => t.includes(w))) return p.pageimage;
   }
   return null;
 }
@@ -53,14 +55,23 @@ async function fromCommons(venue, city) {
   const d = await api('commons.wikimedia.org', { action: 'query', list: 'search', srsearch: `${venue} ${city} filetype:bitmap`, srnamespace: '6', srlimit: '8' });
   for (const x of d?.query?.search || []) {
     const name = x.title.replace(/^File:/, '');
-    if (!BAD_FILE.test(name) && need.some(w => words(name).includes(w))) return name;
+    if (!BAD_FILE.test(name) && !COLLAGE.test(name) && need.some(w => words(name).includes(w))) return name;
   }
   return null;
+}
+/* ręczne hasło z venue-photos.json ({ "query": "…" }): pierwszy pasujący plik z Commons */
+async function fromQuery(q) {
+  const d = await api('commons.wikimedia.org', { action: 'query', list: 'search', srsearch: q + ' filetype:bitmap', srnamespace: '6', srlimit: '10' });
+  return (d?.query?.search || []).map(x => x.title.replace(/^File:/, '')).find(n => !BAD_FILE.test(n) && !COLLAGE.test(n)) || null;
 }
 async function fromCity(city) {
   const d = await api('pl.wikipedia.org', { action: 'query', titles: city.split('/')[0], redirects: '1', prop: 'pageimages', piprop: 'name' });
   const p = Object.values(d?.query?.pages || {})[0];
-  return p?.pageimage && !BAD_FILE.test(p.pageimage) ? p.pageimage : null;
+  if (p?.pageimage && !BAD_FILE.test(p.pageimage) && !COLLAGE.test(p.pageimage)) return p.pageimage;
+  // artykuł o mieście ma kolaż — szukamy pojedynczego zdjęcia miasta (rynek, panorama, stare miasto)
+  const name = city.split('/')[0], need = words(name);
+  const c = await api('commons.wikimedia.org', { action: 'query', list: 'search', srsearch: `${name} stare miasto rynek widok filetype:bitmap`, srnamespace: '6', srlimit: '15' });
+  return (c?.query?.search || []).map(x => x.title.replace(/^File:/, '')).find(n => !BAD_FILE.test(n) && !COLLAGE.test(n) && need.some(w => words(n).includes(w))) || null;
 }
 
 /* pobiera plik (miniatura 1280 px) i dane autora */
@@ -75,7 +86,9 @@ async function download(file, name) {
       await mkdir(DIR, { recursive: true });
       await writeFile(new URL(name + '.' + ext, DIR), Buffer.from(await r.arrayBuffer()));
       const m = ii.extmetadata || {};
-      return { image: SITE + name + '.' + ext, ratio: +(ii.thumbwidth / ii.thumbheight).toFixed(3), author: strip(m.Artist?.value).slice(0, 80) || 'autor nieznany',
+      // „No machine-readable author provided. Houx assumed …” → „Houx”
+      const author = strip(m.Artist?.value).replace(/^No machine-readable author provided\.\s*(\S+) assumed.*$/i, '$1').slice(0, 80);
+      return { image: SITE + name + '.' + ext, ratio: +(ii.thumbwidth / ii.thumbheight).toFixed(3), author: author || 'autor nieznany',
         license: strip(m.LicenseShortName?.value) || 'licencja wolna', source: ii.descriptionurl };
     }
     await sleep(15000 * (t + 1));
@@ -88,23 +101,25 @@ export async function addVenuePhotos(events, { maxLookups = 60 } = {}) {
   let photos = {};
   try { photos = JSON.parse(await readFile(FILE, 'utf8')); } catch { /* pierwszy raz */ }
   const key = e => `${e.venue || e.city}|${e.city}`;
-  const todo = [...new Set(events.filter(e => !e.image && !photos[key(e)]).map(key))];
+  // do znalezienia: nowe miejsca i wpisy z ręcznym hasłem ({ "query": … }) bez pobranego zdjęcia
+  const todo = [...new Set([...Object.keys(photos).filter(k => !photos[k].image), ...events.filter(e => !e.image && !photos[key(e)]).map(key)])];
   BUDGET = maxLookups * 4; STOP = false;
   let found = 0;
   for (const k of todo.slice(0, maxLookups)) {
     if (STOP) break;
     const [venue, city] = k.split('|');
     const real = venue && fold(venue) !== fold(city) && !/^tba\b|^tbc\b|^online$/i.test(venue);
-    let file = real && (await fromWikipedia(venue, city) || await fromCommons(venue, city)), kind = 'venue';
+    const q = photos[k]?.query;
+    let file = q ? await fromQuery(q) : real && (await fromWikipedia(venue, city) || await fromCommons(venue, city)), kind = 'venue';
     if (!file) { file = await fromCity(city); kind = 'city'; }
     const p = file && await download(file, slug(k));
-    if (p) { photos[k] = { ...p, auto: kind }; found++; }
+    if (p) { photos[k] = { ...p, auto: kind, ...(q ? { query: q } : {}) }; found++; }
     await sleep(1200);
   }
   let used = 0;
   for (const e of events) {
     const p = !e.image && photos[key(e)];
-    if (!p) continue;
+    if (!p?.image) continue;
     e.image = p.image; e.imageRatio = p.ratio; used++;
     const credit = `Zdjęcie ${p.auto === 'city' ? 'miasta' : 'obiektu'}: ${p.author}, ${p.license}, Wikimedia Commons.`;
     if (!e.description?.includes('Wikimedia Commons')) e.description = [e.description, credit].filter(Boolean).join(' ');
