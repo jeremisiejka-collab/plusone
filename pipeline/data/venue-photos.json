@@ -7,6 +7,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_miasta_Ostr%C3%B3w_Wielkopolski.jpg",
   "auto": "city"
  },
+ "AFTER EGO|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/after-ego-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Arena Gorzów|Gorzów Wielkopolski": {
   "image": "https://plusoneapp.pl/img/obiekty/arena-gorzow-gorzow-wielkopolski.jpg",
   "ratio": 1.778,
@@ -46,6 +54,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ul._Chmielna_20,_Warszawa_(3).jpg",
   "auto": "venue"
  },
+ "Chmury|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/chmury-warszawa.jpg",
+  "ratio": 1.333,
+  "author": "Margarettize",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Dziedziniec_pa%C5%82acu_w_Baranowie_Sanomierskim..JPG",
+  "auto": "venue"
+ },
  "Chorten Arena|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
   "ratio": 4.116,
@@ -54,6 +70,24 @@
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Miejski_-_Bia%C5%82ystok1.jpg",
   "auto": "venue",
   "query": "Stadion Miejski Białystok"
+ },
+ "Club Stereo|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "DZIK - Dom Zabawy i Kultury|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "EXBUD Arena|Kielce": {
   "image": "https://plusoneapp.pl/img/obiekty/exbud-arena-kielce.jpg",
@@ -84,6 +118,14 @@
   "author": "autor nieznany",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Zielona_G%C3%B3ra,_sala_koncertowa.jpg",
+  "auto": "venue"
+ },
+ "Forum Horyzonty|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/forum-horyzonty-krakow.jpg",
+  "ratio": 1.501,
+  "author": "Klearchos Kapoutsis from Santorini, Greece",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:ERA_New_Horizons_(3773535062).jpg",
   "auto": "venue"
  },
  "Grupa Moderator Arena|Bydgoszcz": {
@@ -184,6 +226,14 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:W%C5%82oc%C5%82awek-Hall_of_the_Masters.JPG"
  },
+ "Hala Odra|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-odra-szczecin.png",
+  "ratio": 1.495,
+  "author": "Shaqspeare",
+  "license": "CC BY-SA 2.5",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw_Islands.png",
+  "auto": "venue"
+ },
  "Hala Orbita|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-orbita-wroclaw.jpg",
   "ratio": 1.5,
@@ -219,6 +269,15 @@
   "author": "RedaktorKurz",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Aqua_Zdr%C3%B3j_Liga_Narod%C3%B3w.jpg"
+ },
+ "Hopito Chmielna|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "KGHM Zagłębie Arena|Lubin": {
   "image": "https://plusoneapp.pl/img/obiekty/kghm-zaglebie-arena-lubin.jpg",
@@ -293,6 +352,22 @@
   "author": "WikipedyjniAK",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Orlen_Stadion_2025.jpg"
+ },
+ "Palladium|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/palladium-warszawa.jpg",
+  "ratio": 1.331,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Budynek_Assicurazioni_Generali_Trieste_ul._Z%C5%82ota_7.jpg",
+  "auto": "venue"
+ },
+ "Pałac Młodzieży w Bydgoszczy|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/palac-mlodziezy-w-bydgoszczy-bydgoszcz.jpg",
+  "ratio": 1.501,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pa%C5%82ac_M%C5%82odzie%C5%BCy_w_Bydgoszczy_2023_1.jpg",
+  "auto": "venue"
  },
  "Playhaus|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/playhaus-krakow.jpg",
@@ -399,6 +474,15 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_im._Ernesta_Pohla_w_Zabrzu_(2026).jpg"
  },
+ "Stand-up Lokal|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Strefa Kultury Firlej|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/strefa-kultury-firlej-wroclaw.jpg",
   "ratio": 1.711,
@@ -463,12 +547,30 @@
   "source": "https://commons.wikimedia.org/wiki/File:%C5%81%C3%B3d%C5%BA,_Stare_Miasto_-_panoramio.jpg",
   "auto": "city"
  },
+ "Terminal Kultury Gocław|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Torwar|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/torwar-warszawa.jpg",
   "ratio": 1.662,
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Torwar_2020a.jpg"
+ },
+ "VooDoo Club|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Warszawa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -478,6 +580,23 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Wilcza 31/4A|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Wrocławska Akademia Baletu|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wroclawska-akademia-baletu-wroclaw.jpg",
+  "ratio": 1.313,
+  "author": "Hrs Poland",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Opera_We_Wroclawiu_(152991775).jpeg",
+  "auto": "venue"
  },
  "Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
