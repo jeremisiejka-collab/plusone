@@ -565,6 +565,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Wroclaw.jpg"
  },
+ "Teatr Atelier Sopot|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-atelier-sopot-sopot.jpg",
+  "ratio": 1.778,
+  "author": "André Natan Feigeles-Olko",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Teatr_Atelier_de_Sopot_%C3%A0_l%27%C3%A9t%C3%A9_2017.jpg",
+  "auto": "venue"
+ },
  "Teatr Komedii Impro|Łódź": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-komedii-impro-lodz.jpg",
   "ratio": 0.634,
