@@ -28,10 +28,11 @@ async function api(host, params) {
   for (let t = 0; t < 3; t++) {
     try {
       const r = await fetch(`https://${host}/w/api.php?` + new URLSearchParams({ format: 'json', ...params }), { headers: H, signal: AbortSignal.timeout(15000) });
-      if (r.status === 429) { await sleep(15000 * (t + 1)); continue; }
+      if (r.status === 429) { console.warn(`  Wikimedia 429 (${host}), czekam`); await sleep(15000 * (t + 1)); continue; }
       return await r.json();
-    } catch { await sleep(3000); }
+    } catch (e) { console.warn(`  Wikimedia: ${e.message}`); await sleep(3000); }
   }
+  console.warn('  Wikimedia nie odpowiada — dokończymy w następnym przebiegu');
   STOP = true;   // Wikimedia nas spowalnia — dokończymy w następnym przebiegu
   return null;
 }
@@ -114,6 +115,7 @@ export async function addVenuePhotos(events, { maxLookups = 60 } = {}) {
     if (!file) { file = await fromCity(city); kind = 'city'; }
     const p = file && await download(file, slug(k));
     if (p) { photos[k] = { ...p, auto: kind, ...(q ? { query: q } : {}) }; found++; }
+    console.log(`  zdjęcie miejsca ${k}: ${p ? kind + ' ' + file : 'nie znaleziono' + (file ? ' (nie pobrano ' + file + ')' : '')}`);
     await sleep(1200);
   }
   let used = 0;
