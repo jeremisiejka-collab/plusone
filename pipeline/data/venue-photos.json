@@ -23,12 +23,36 @@
   "auto": "venue",
   "file": "2025-04 Katowice stadion Arena Katowice (47).jpg"
  },
+ "Bliss House Zakamycze|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/bliss-house-zakamycze-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Centrum Rekreacyjno-Sportowe|Zielona Góra": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-rekreacyjno-sportowe-zielona-gora.jpg",
   "ratio": 1.333,
   "author": "Emptywords",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:MOSiRZielonaGora.jpg"
+ },
+ "Chmielna 10/23|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/chmielna-10-23-warszawa.jpg",
+  "ratio": 0.75,
+  "author": "Qkiel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ul._Chmielna_20,_Warszawa_(3).jpg",
+  "auto": "venue"
+ },
+ "Chmury|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/chmury-warszawa.jpg",
+  "ratio": 1.333,
+  "author": "Margarettize",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Dziedziniec_pa%C5%82acu_w_Baranowie_Sanomierskim..JPG",
+  "auto": "venue"
  },
  "Chorten Arena|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
@@ -38,6 +62,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Miejski_-_Bia%C5%82ystok1.jpg",
   "auto": "venue",
   "query": "Stadion Miejski Białystok"
+ },
+ "Club Stereo|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/club-stereo-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
+ },
+ "DZIK - Dom Zabawy i Kultury|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/dzik-dom-zabawy-i-kultury-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
  },
  "EXBUD Arena|Kielce": {
   "image": "https://plusoneapp.pl/img/obiekty/exbud-arena-kielce.jpg",
@@ -68,6 +108,14 @@
   "author": "autor nieznany",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Zielona_G%C3%B3ra,_sala_koncertowa.jpg",
+  "auto": "venue"
+ },
+ "Forum Horyzonty|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/forum-horyzonty-krakow.jpg",
+  "ratio": 1.501,
+  "author": "Klearchos Kapoutsis from Santorini, Greece",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:ERA_New_Horizons_(3773535062).jpg",
   "auto": "venue"
  },
  "Grupa Moderator Arena|Bydgoszcz": {
@@ -204,12 +252,44 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Aqua_Zdr%C3%B3j_Liga_Narod%C3%B3w.jpg"
  },
+ "Hopito Chmielna|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/hopito-chmielna-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
+ },
  "KGHM Zagłębie Arena|Lubin": {
   "image": "https://plusoneapp.pl/img/obiekty/kghm-zaglebie-arena-lubin.jpg",
   "ratio": 1.794,
   "author": "Flyrecord",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lubin-Dialog-Arena-FlyRecord-2.jpg"
+ },
+ "Kino Kijów.Centrum|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-kijow-centrum-krakow.jpg",
+  "ratio": 1.707,
+  "author": "Zygmunt Put",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:%E2%80%9EKij%C3%B3w%E2%80%9D_Cinema,_1962_design._Witold_C%C4%99ckiewicz,_34_Krasi%C5%84skiego_Alley,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
+ "Kraków Stare Miasto|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-stare-miasto-krakow.jpg",
+  "ratio": 1.335,
+  "author": "Igor123121",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Droga_do_Zamku_street,_Old_Town,_bird%27s_eye_view_2025,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
+ "Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Kujawsko-Pomorska Arena Toruń|Toruń": {
   "image": "https://plusoneapp.pl/img/obiekty/kujawsko-pomorska-arena-torun-torun.jpg",
@@ -224,6 +304,14 @@
   "author": "autor nieznany",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowo_widowiskowa_globus,_lublin.jpg"
+ },
+ "MTP Group|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/mtp-group-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Miejski Stadion Piłkarski Raków|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/miejski-stadion-pilkarski-rakow-czestochowa.jpg",
@@ -245,6 +333,14 @@
   "author": "WikipedyjniAK",
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Orlen_Stadion_2025.jpg"
+ },
+ "Palladium|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/palladium-warszawa.jpg",
+  "ratio": 1.331,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Budynek_Assicurazioni_Generali_Trieste_ul._Z%C5%82ota_7.jpg",
+  "auto": "venue"
  },
  "Playhaus|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/playhaus-krakow.jpg",
@@ -351,6 +447,22 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_im._Ernesta_Pohla_w_Zabrzu_(2026).jpg"
  },
+ "Stand-up Lokal|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/stand-up-lokal-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
+ },
+ "Strefa Kultury Firlej|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/strefa-kultury-firlej-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Suwałki Arena|Suwałki": {
   "image": "https://plusoneapp.pl/img/obiekty/suwalki-arena-suwalki.jpg",
   "ratio": 1.333,
@@ -384,6 +496,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "TUTAJ mwk|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Tarczyński Arena|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tarczynski-arena-wroclaw.jpg",
   "ratio": 1.498,
@@ -399,12 +519,28 @@
   "source": "https://commons.wikimedia.org/wiki/File:%C5%81%C3%B3d%C5%BA,_Stare_Miasto_-_panoramio.jpg",
   "auto": "city"
  },
+ "Terminal Kultury Gocław|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/terminal-kultury-goclaw-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
+ },
  "Torwar|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/torwar-warszawa.jpg",
   "ratio": 1.662,
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Torwar_2020a.jpg"
+ },
+ "VooDoo Club|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/voodoo-club-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
  },
  "Warszawa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -414,5 +550,29 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Wilcza 31/4A|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/wilcza-31-4a-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2022_Warszawa_hotel_Ibis_Stare_Miasto,_napis,_1.jpg",
+  "auto": "city"
+ },
+ "Wrocławska Akademia Baletu|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wroclawska-akademia-baletu-wroclaw.jpg",
+  "ratio": 1.313,
+  "author": "Hrs Poland",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Opera_We_Wroclawiu_(152991775).jpeg",
+  "auto": "venue"
+ },
+ "Wyspa Słodowa 7|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wyspa-slodowa-7-wroclaw.jpg",
+  "ratio": 1.501,
+  "author": "Anastasiya Lvova",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Slaski_tydzien_4973.JPG",
+  "auto": "venue"
  }
 }
