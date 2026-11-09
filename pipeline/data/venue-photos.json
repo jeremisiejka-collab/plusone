@@ -1,4 +1,12 @@
 {
+ "3mk Arena Ostrów|Ostrów Wielkopolski": {
+  "image": "https://plusoneapp.pl/img/obiekty/3mk-arena-ostrow-ostrow-wielkopolski.jpg",
+  "ratio": 2.397,
+  "author": "Tobiii",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_miasta_Ostr%C3%B3w_Wielkopolski.jpg",
+  "auto": "city"
+ },
  "Arena Gorzów|Gorzów Wielkopolski": {
   "image": "https://plusoneapp.pl/img/obiekty/arena-gorzow-gorzow-wielkopolski.jpg",
   "ratio": 1.778,
@@ -6,12 +14,36 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:ArenaGorzow_siatkowka.jpg"
  },
+ "Arena Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/arena-katowice-katowice.jpg",
+  "ratio": 1.501,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Ma%C5%82a_hala_Spodka_01.JPG",
+  "auto": "venue"
+ },
  "Centrum Rekreacyjno-Sportowe|Zielona Góra": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-rekreacyjno-sportowe-zielona-gora.jpg",
   "ratio": 1.333,
   "author": "Emptywords",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:MOSiRZielonaGora.jpg"
+ },
+ "Chorten Arena|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
+ "EXBUD Arena|Kielce": {
+  "image": "https://plusoneapp.pl/img/obiekty/exbud-arena-kielce.png",
+  "ratio": 0.956,
+  "author": "YogiCK",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Collage_of_views_of_Kielce.png",
+  "auto": "city"
  },
  "Enea Stadion|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/enea-stadion-poznan.jpg",
@@ -26,6 +58,30 @@
   "author": "Lisarlena",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:GdanskSopot_ErgoArena_20110603.jpg"
+ },
+ "Filharmonia Zielonogórska|Zielona Góra": {
+  "image": "https://plusoneapp.pl/img/obiekty/filharmonia-zielonogorska-zielona-gora.jpg",
+  "ratio": 1.333,
+  "author": "autor nieznany",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Zielona_G%C3%B3ra,_sala_koncertowa.jpg",
+  "auto": "venue"
+ },
+ "Grupa Moderator Arena|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/grupa-moderator-arena-bydgoszcz.jpg",
+  "ratio": 1.325,
+  "author": "Pit1233",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bdg_Artego_Arena_2_09-2014.jpg",
+  "auto": "venue"
+ },
+ "HS MOSiR Chełm|Chełm": {
+  "image": "https://plusoneapp.pl/img/obiekty/hs-mosir-chelm-chelm.jpg",
+  "ratio": 1.441,
+  "author": "autor nieznany",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:G%C3%B3rka_katedralna.jpg",
+  "auto": "city"
  },
  "HSW Globus|Lublin": {
   "image": "https://plusoneapp.pl/img/obiekty/mosir-globus-lublin.jpg",
@@ -55,6 +111,22 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowa-w-dabrowie.g.jpg"
  },
+ "HWS w Zawierciu|Zawiercie": {
+  "image": "https://plusoneapp.pl/img/obiekty/hws-w-zawierciu-zawiercie.jpg",
+  "ratio": 2,
+  "author": "X ziomal X",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Zawiercie.jpg",
+  "auto": "city"
+ },
+ "Hala Częstochowa|Częstochowa": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-czestochowa-czestochowa.jpg",
+  "ratio": 3.099,
+  "author": "Carl92 at Polish Wikipedia",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowo_widowiskowa_czestochowa.jpg",
+  "auto": "venue"
+ },
  "Hala Enea Arena|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-enea-arena-szczecin.jpg",
   "ratio": 1.5,
@@ -76,6 +148,14 @@
   "license": "Attribution",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Gryfia_Slupsk_1.JPG"
  },
+ "Hala Koło|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-kolo-warszawa.jpg",
+  "ratio": 0.802,
+  "author": "Kolanin",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Collage_of_main_sights_of_Ko%C5%82o.jpg",
+  "auto": "venue"
+ },
  "Hala Mistrzów|Włocławek": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-mistrzow-wloclawek.jpg",
   "ratio": 1.333,
@@ -89,6 +169,14 @@
   "author": "Andrzej Romański",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:PLK_Intermarche_Basket_Cup.jpg"
+ },
+ "Hala Podpromie|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-podpromie-rzeszow.jpg",
+  "ratio": 1.506,
+  "author": "No machine-readable author provided. Houx assumed (based on copyright claims).",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Hala_Podpromie.JPG",
+  "auto": "venue"
  },
  "Hala Sportowa 100-lecia Sopotu|Sopot": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-sportowa-100-lecia-sopotu-sopot.jpg",
@@ -153,6 +241,14 @@
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Orlen_Stadion_2025.jpg"
  },
+ "Playhaus|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/playhaus-krakow.jpg",
+  "ratio": 1,
+  "author": "wyżej",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kola%C5%BC_Krakowa.JPG",
+  "auto": "city"
+ },
  "Polsat Plus Arena Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/polsat-plus-arena-gdynia-gdynia.jpg",
   "ratio": 1.5,
@@ -166,6 +262,46 @@
   "author": "Pawel Niemczuk",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala-gliwice-20170620.jpg"
+ },
+ "Przestrzeń Muzyki Współczesnej Hashtag Lab|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/przestrzen-muzyki-wspolczesnej-hashtag-lab-warszawa.jpg",
+  "ratio": 0.771,
+  "author": "Foxy1219(montage), Radek Kołakowski, Marek和Ewa Wojciechowscy , ekeidar, Marcin B",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_montage.JPG",
+  "auto": "city"
+ },
+ "SARA sala teatralnowidowiskowa UCKiN UwB|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/sara-sala-teatralnowidowiskowa-uckin-uwb-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
+ "Sala Koncertowa Radia Wrocław|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/sala-koncertowa-radia-wroclaw-wroclaw.jpg",
+  "ratio": 1.333,
+  "author": "No machine-readable author provided. Julo assumed (based on copyright claims).",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:PolskieRadioWroclaw-ulKarkonoska.jpg",
+  "auto": "venue"
+ },
+ "Smolna|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/smolna-warszawa.jpg",
+  "ratio": 1.317,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Smolna_w_Warszawie_2017.jpg",
+  "auto": "venue"
+ },
+ "Stadion Cracovii im. Józefa Piłsudskiego|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/stadion-cracovii-im-jozefa-pilsudskiego-krakow.jpg",
+  "ratio": 1.494,
+  "author": "Thom R.",
+  "license": "CC BY-SA 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Stade_J%C3%B3zef_Pi%C5%82sudski.jpg",
+  "auto": "venue"
  },
  "Stadion Miejski Legii Warszawa im. Marszałka Józefa Piłsudskiego|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/stadion-miejski-legii-warszawa-im-marszalka-jozefa-pilsudski.jpg",
@@ -209,12 +345,36 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_im._Ernesta_Pohla_w_Zabrzu_(2026).jpg"
  },
+ "Suwałki Arena|Suwałki": {
+  "image": "https://plusoneapp.pl/img/obiekty/suwalki-arena-suwalki.jpg",
+  "ratio": 1.333,
+  "author": "Szajrud21",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Suwa%C5%82ki_Arena_od_wewn%C4%85trz.jpg",
+  "auto": "venue"
+ },
  "Synerise Arena - Stadion Miejski im. Henryka Reymana|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/synerise-arena-stadion-miejski-im-henryka-reymana-krakow.jpg",
   "ratio": 1.5,
   "author": "Piotr Tomaszewski, fly4pix.pl",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Miejski_im._Henryka_Reymana_w_Krakowie.jpg"
+ },
+ "TBA - Warsaw|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/tba-warsaw-warszawa.jpg",
+  "ratio": 0.771,
+  "author": "Foxy1219(montage), Radek Kołakowski, Marek和Ewa Wojciechowscy , ekeidar, Marcin B",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_montage.JPG",
+  "auto": "city"
+ },
+ "TBA|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/tba-warszawa.jpg",
+  "ratio": 0.771,
+  "author": "Foxy1219(montage), Radek Kołakowski, Marek和Ewa Wojciechowscy , ekeidar, Marcin B",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_montage.JPG",
+  "auto": "city"
  },
  "Tarczyński Arena|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tarczynski-arena-wroclaw.jpg",
@@ -223,11 +383,27 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Wroclaw.jpg"
  },
+ "Teatr Komedii Impro|Łódź": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-komedii-impro-lodz.png",
+  "ratio": 0.625,
+  "author": "Michał Oziębło",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Lodz_Collage_2017_(by_EL-042).png",
+  "auto": "city"
+ },
  "Torwar|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/torwar-warszawa.jpg",
   "ratio": 1.662,
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Torwar_2020a.jpg"
+ },
+ "Warszawa|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 0.771,
+  "author": "Foxy1219(montage), Radek Kołakowski, Marek和Ewa Wojciechowscy , ekeidar, Marcin B",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_montage.JPG",
+  "auto": "city"
  }
 }
