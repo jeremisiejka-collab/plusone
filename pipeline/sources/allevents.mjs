@@ -19,7 +19,7 @@ const CATS = { parties: ['Clubs', 10, 4], music: [null, 6, 3], concerts: ['Conce
   festivals: ['Festivals', 2, 1], art: ['Culture', 2, 1], theatre: ['Theatre', 2, 1] };
 // nie „wyjścia”: szkolenia, kursy, biznes, rekrutacje, religijne i senioralne — tych nie pokazujemy
 const JUNK = /szkoleni|\bkurs|webinar|konferencj|networking|rekrutac|\bpraca\b|career|training|workshop for business|seminar|seminari|biznes|business|\bwarsztat(y)? (dla firm|biznes)|discount group|bal seniora|seniorów|msza|trener|rekolekc|modlitw|egzamin|dzień otwarty|targi pracy|\bonline\b|zoom|masterclass|coaching|inwest|kryptowalut|mlm|nieruchomo/i;
-const PER_RUN = 70;          // stron listy na jeden przebieg (co godzinę) — pełny obieg w kilka godzin
+const PER_RUN = 30;          // stron listy na przebieg (co godzinę); allevents przy szybszym tempie przestaje odpowiadać — pełny obieg w ok. 11 h
 const KEEP_DAYS = 4;
 
 const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
@@ -109,7 +109,7 @@ export default async function allevents() {
       store.events[c.eid] = { ...prev, ...c, city: cityFrom(c.address, city), cat: prev?.cat && prev.cat !== 'music' ? prev.cat : cat, seen: now };
       if (!prev) fresh++;
     }
-    await sleep(700);
+    await sleep(1500);
   }
   store.cursor = (store.cursor + PER_RUN) % jobs.length;
   if (!pages) throw new Error('allevents.in nie odpowiada');

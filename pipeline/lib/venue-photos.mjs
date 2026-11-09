@@ -18,7 +18,7 @@ const strip = s => String(s || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').
 const GENERIC = new Set(['hala', 'stadion', 'arena', 'miejski', 'miejska', 'im', 'imienia', 'sportowa', 'sportowo', 'widowiskowa', 'widowiskowo', 'sportowe',
   'centrum', 'mosir', 'hws', 'hsw', 'hs', 'osir', 'klub', 'sala', 'scena', 'teatr', 'w', 'we', 'na', 'i', 'the', 'club', 'pilkarski', 'park', 'dom', 'kultury', 'ul', 'al']);
 const BAD_FILE = /\.(svg|gif|webm|ogv|tiff?|pdf)$|logo|herb|crest|emblem|coat[_ ]of|flag|map|mapa|plan|location|signature|podpis|icon|ikona/i;
-const COLLAGE = /collage|kola[zż]|montage|monta[zż]|panorama_miasta|mozaika/i;
+const COLLAGE = /hotel|ibis|napis|reklama|billboard|collage|kola[zż]|montage|monta[zż]|panorama_miasta|mozaika/i;
 const PLACE_PAGE = /\((miasto|gmina|wie[sś]|powiat|osiedle|dzielnica|województwo)\)/i;
 const CITY_EN = { warszawa: ['warsaw'], krakow: ['krakow', 'cracow'], lodz: ['lodz'], wroclaw: ['wroclaw', 'breslau'], gdansk: ['gdansk', 'danzig'], poznan: ['poznan'] };
 const words = s => fold(s).split(/[^a-z0-9]+/).filter(w => w.length > 2 && !GENERIC.has(w));
@@ -57,7 +57,9 @@ async function fromCommons(venue, city) {
   const d = await api('commons.wikimedia.org', { action: 'query', list: 'search', srsearch: `${venue} ${city} filetype:bitmap`, srnamespace: '6', srlimit: '8' });
   for (const x of d?.query?.search || []) {
     const name = x.title.replace(/^File:/, '');
-    if (!BAD_FILE.test(name) && !COLLAGE.test(name) && need.some(w => words(name).includes(w))) return name;
+    // plik musi mieć w nazwie i słowo z nazwy obiektu, i miasto (sama „Palladium” czy „Chmury” trafia w przypadkowe zdjęcia)
+    const fw = words(name), cw = [...words(city.split('/')[0]), ...(CITY_EN[fold(city.split('/')[0])] || [])];
+    if (!BAD_FILE.test(name) && !COLLAGE.test(name) && need.some(w => fw.includes(w)) && cw.some(w => fw.includes(w))) return name;
   }
   return null;
 }
@@ -122,6 +124,9 @@ export async function addVenuePhotos(events, { maxLookups = 60 } = {}) {
     const real = venue && fold(venue) !== fold(city) && !/^tba\b|^tbc\b|^online$/i.test(venue);
     const q = photos[k]?.query, pin = photos[k]?.file;
     let file = pin || (q ? await fromQuery(q) : null) || (!q && real && (await fromWikipedia(venue, city) || await fromCommons(venue, city))), kind = photos[k]?.kind || 'venue';
+    // zdjęcie miasta: jedno, sprawdzone, wspólne dla wszystkich miejsc w mieście (wpis „Miasto|Miasto”)
+    const cityKey = `${city}|${city}`;
+    if (!file && photos[cityKey]?.image && k !== cityKey) { photos[k] = { ...photos[cityKey], auto: 'city' }; found++; console.log(`  zdjęcie miejsca ${k}: zdjęcie miasta`); continue; }
     if (!file) { file = await fromCity(city); kind = 'city'; }
     const p = file && await download(file, slug(k));
     if (p) { photos[k] = { ...p, auto: kind, ...(q ? { query: q } : {}), ...(pin ? { file: pin } : {}) }; found++; }
