@@ -15,8 +15,9 @@ import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
 import go2warsaw from './sources/go2warsaw.mjs';
 import sport from './sources/sport.mjs';
+import allevents from './sources/allevents.mjs';
 
-const SOURCES = { going, ebilet, ra, go2warsaw, sport };
+const SOURCES = { going, ebilet, ra, go2warsaw, sport, allevents };
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, '..', 'public', 'data', 'events.json');
 
