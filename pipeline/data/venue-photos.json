@@ -188,6 +188,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Blue_City_od_strony_Alej_Jerozolimskich_2018.jpg",
   "auto": "venue"
  },
+ "Boardowa|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Breslavia|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Bulwar Flotylli Pińskiej 1A|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -361,6 +377,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_wyspa_Piasek,_widok_na_wysp%C4%99_S%C5%82odow%C4%85_2020-09-08.jpg",
   "auto": "venue"
+ },
+ "Czasoprzestrzeń|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "DZIK - Dom Zabawy i Kultury|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -841,6 +865,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Jazz Like That - Swing Studio|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Józefa Dietla 91|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/jozefa-dietla-91-krakow.jpg",
   "ratio": 1.716,
@@ -1262,6 +1294,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:UlicaMeiselsa-WidokNaZach%C3%B3d-Kazimierz-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Miasto i Gmina Jelcz-Laskowice|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Miejski Stadion Piłkarski Raków|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/miejski-stadion-pilkarski-rakow-czestochowa.jpg",
   "ratio": 1.333,
@@ -1578,6 +1618,15 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Południk 2.0|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "PraCoVnia Art-Club|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1628,6 +1677,22 @@
   "query": "Warsaw skyline"
  },
  "Prądzyńskiego 39A|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "RO Music Club|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Radio Wrocław Kultura|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
   "author": "Jar.ciurus",
@@ -1934,6 +1999,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
+ },
+ "Strefa 57|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/strefa-57-krakow.jpg",
+  "ratio": 1.501,
+  "author": "mik Krakow",
+  "license": "CC BY-SA 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Strefa_Forum_Krak%C3%B3w_na_NieKongresie_Animator%C3%B3w_Kultury_2016_(28200071415).jpg",
+  "auto": "venue"
  },
  "Strefa Kultury Firlej|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/strefa-kultury-firlej-wroclaw.jpg",
@@ -2244,6 +2317,15 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "WARSAW EXPO XXI|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Warsaw Presidential Hotel|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warsaw-presidential-hotel-warszawa.jpg",
   "ratio": 0.749,
@@ -2311,6 +2393,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Wratislavia Statek|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wratislavia-statek-wroclaw.jpg",
+  "ratio": 1.333,
+  "author": "Julo",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wratislavia_(ex._%22Johannes_R._Becher%22_ship,_1961)_in_Wroc%C5%82aw_(4).jpg",
+  "auto": "venue"
+ },
  "Wratislavia|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/wratislavia-wroclaw.jpg",
   "ratio": 0.823,
@@ -2318,6 +2408,22 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:AZS_Wratislavia_Wroc%C5%82aw.jpg",
   "auto": "venue"
+ },
+ "Wroclaw [Wroclove]|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wroclaw-wroclove-wroclaw.jpg",
+  "ratio": 1.572,
+  "author": "Pudelek (Marcin Szala)",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw_G%C5%82%C3%B3wny_(Breslau_Hauptbahnhof)_by_night.JPG",
+  "auto": "venue"
+ },
+ "Wroclaw|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Wrocławska Akademia Baletu|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -2357,6 +2463,14 @@
   "author": "Anastasiya Lvova",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Slaski_tydzien_4973.JPG",
+  "auto": "venue"
+ },
+ "Wystawowa 1|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wystawowa-1-wroclaw.jpg",
+  "ratio": 0.667,
+  "author": "Kriskros",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:PL-DS,_Wroc%C5%82aw,_ul._Wystawowa_1;_Zesp%C3%B3%C5%82_Hali_Stulecia-_Hala_Stulecia;_A-5259-343-Wm.jpg",
   "auto": "venue"
  },
  "ZEN COM Expo|Rzeszów": {
