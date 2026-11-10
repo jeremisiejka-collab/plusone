@@ -81,6 +81,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Polesie_ak.png",
   "auto": "venue"
  },
+ "Auditorium Maximum Uniwersytetu Jagiellońskiego|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/auditorium-maximum-uniwersytetu-jagiellonskiego-krakow.jpg",
+  "ratio": 1.501,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_-_Auditorium_Maximum_UJ_01.jpg",
+  "auto": "venue"
+ },
+ "Awaria Prądu|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Babiniec - przestrzeń rozwoju i wsparcia|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -98,6 +114,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Beyond Music Club|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Big Book Cafe|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -141,6 +165,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa-nowy-swiat-2-CBF-1-jpg-lq_074.jpg",
   "auto": "venue"
  },
+ "COOLinarium - atelier kulinarne|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Cafe Plakatowka|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -149,6 +181,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Centrum Jana Pawła II|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/centrum-jana-pawla-ii-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_-_Centrum_Jana_Paw%C5%82a_II.JPG",
+  "auto": "venue"
  },
  "Centrum Kultury Ursus filia Kolorowa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -167,12 +207,28 @@
   "source": "https://commons.wikimedia.org/wiki/File:Centrum_Promocji_Kultury_Praga_Poludnie_Warszawa_(1).JPG",
   "auto": "venue"
  },
+ "Centrum Reanimacji Kultury|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Centrum Rekreacyjno-Sportowe|Zielona Góra": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-rekreacyjno-sportowe-zielona-gora.jpg",
   "ratio": 1.333,
   "author": "Emptywords",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:MOSiRZielonaGora.jpg"
+ },
+ "Chicago Jazz|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Chmielna 10/23|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/chmielna-10-23-warszawa.jpg",
@@ -260,6 +316,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Dwór Kościuszko|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/dwor-kosciuszko-krakow.jpg",
+  "ratio": 1.48,
+  "author": "Lesnydzban",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Dw%C3%B3r_Ko%C5%9Bciuszko,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "EXBUD Arena|Kielce": {
   "image": "https://plusoneapp.pl/img/obiekty/exbud-arena-kielce.jpg",
   "ratio": 1.55,
@@ -317,6 +381,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:GdanskSopot_ErgoArena_20110603.jpg"
  },
+ "Fabryczna 13|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Filharmonia Zielonogórska|Zielona Góra": {
   "image": "https://plusoneapp.pl/img/obiekty/filharmonia-zielonogorska-zielona-gora.jpg",
   "ratio": 1.333,
@@ -358,6 +430,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Garage Pub|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -367,6 +447,14 @@
   "auto": "city"
  },
  "Good Day Café|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Gromadzka 24c|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
@@ -435,6 +523,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Zawiercie.jpg",
   "auto": "city",
   "file": "Zawiercie.jpg"
+ },
+ "HYPE PARK|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Hala Częstochowa|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-czestochowa-czestochowa.jpg",
@@ -541,6 +637,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Aqua_Zdr%C3%B3j_Liga_Narod%C3%B3w.jpg"
  },
+ "Holistic Sport Center|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Hopito Chmielna|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -565,6 +669,22 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "ICE Kraków Congress Centre|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/ice-krakow-congress-centre-krakow.jpg",
+  "ratio": 1.191,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Congress_Centre_from_balloon_-_2.jpg",
+  "auto": "venue"
+ },
+ "Jabłeczna 18|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
  "Jagiellońska 82B|Warszawa": {
@@ -634,7 +754,31 @@
   "source": "https://commons.wikimedia.org/wiki/File:%E2%80%9EKij%C3%B3w%E2%80%9D_Cinema,_1962_design._Witold_C%C4%99ckiewicz,_34_Krasi%C5%84skiego_Alley,_Krak%C3%B3w,_Poland.jpg",
   "auto": "venue"
  },
+ "Kino Kijów|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-kijow-krakow.jpg",
+  "ratio": 1.707,
+  "author": "Zygmunt Put",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:%E2%80%9EKij%C3%B3w%E2%80%9D_Cinema,_1962_design._Witold_C%C4%99ckiewicz,_34_Krasi%C5%84skiego_Alley,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
+ "Kino Pod Baranami|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-pod-baranami-krakow.jpg",
+  "ratio": 0.75,
+  "author": "Franek Vetulani",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krzysztof_Zanussi_at_Kino_pod_Baranami_in_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Klub - Piwnica \"Przepraszam\"|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Klub Gwarek|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
@@ -701,6 +845,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Budynek_klubu_Proxima_w_Warszawie_2025.jpg",
   "auto": "venue"
  },
+ "Klub RE|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Klub Spotkań Poczta Główna|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -710,6 +862,38 @@
   "auto": "city"
  },
  "Klub Zaścianek|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Klubokawiarnia Recepcja|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Komuny Paryskiej 16|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/komuny-paryskiej-16-wroclaw.jpg",
+  "ratio": 1.333,
+  "author": "Joee",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_ul._Komuny_Paryskiej_2022-08-06_01.jpg",
+  "auto": "venue"
+ },
+ "Krakowska 5|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakowska-5-krakow.jpg",
+  "ratio": 1.501,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_-_Galeria_Krakowska_noc%C4%85.jpg",
+  "auto": "venue"
+ },
+ "Krakowskie Forum Kultury|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
@@ -733,12 +917,44 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Księcia Witolda 60/3|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Kujawsko-Pomorska Arena Toruń|Toruń": {
   "image": "https://plusoneapp.pl/img/obiekty/kujawsko-pomorska-arena-torun-torun.jpg",
   "ratio": 1.693,
   "author": "Arvedui89",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Arena_Toru%C5%84_(POL)_2014.JPG"
+ },
+ "Kulinarne Kreacje|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "LOFToDANCE Łukasz Raś|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Lastriko|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Legia Sports Bar&Rest|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -748,6 +964,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Liberty Cafe|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/liberty-cafe-krakow.jpg",
+  "ratio": 0.732,
+  "author": "Silar",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:02022_0170_Cafe_Liberty_Krak%C3%B3w.jpg",
+  "auto": "venue"
  },
  "Lotnisko Chopina|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/lotnisko-chopina-warszawa.jpg",
@@ -766,6 +990,14 @@
   "auto": "venue"
  },
  "Lubicz 1840 art craft stage|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "MGOKiS Dobczyce|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
@@ -820,6 +1052,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Rak%C3%B3w_otwarcie.jpg"
  },
+ "Momenty - klub muzyczny|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Motor Lublin Arena|Lublin": {
   "image": "https://plusoneapp.pl/img/obiekty/motor-lublin-arena-lublin.jpg",
   "ratio": 1.333,
@@ -852,6 +1092,14 @@
   "auto": "venue"
  },
  "NOCE KRK|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "New Day Blues Pub|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
@@ -902,6 +1150,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ulia_oczki_w_warszawie.JPG",
   "auto": "venue"
  },
+ "OPT Zamek|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Odessa Club|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -935,6 +1191,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Oławska 13|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/olawska-13-wroclaw.jpg",
+  "ratio": 1.501,
+  "author": "Fred Romero from Paris, France",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw_-_Biurowiec_%22Quantum_O%C5%82awska%22.jpg",
+  "auto": "venue"
+ },
  "Ośrodek Kulturalno-Rekreacyjny „Gubałówka”|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -952,6 +1216,22 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "PROZA|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "PUB Sportowy Wembley|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Palladium|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -960,6 +1240,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Pasteura 17a/1|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/pasteura-17a-1-wroclaw.jpg",
+  "ratio": 0.87,
+  "author": "Aw58",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_ul._Pasteura_17A,_tablica_pami%C4%85tkowa_ku_czci_profesora_J%C3%B3zefa_Dudka.jpg",
+  "auto": "venue"
  },
  "Pałac Kultury i Nauki Warszawa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/palac-kultury-i-nauki-warszawa-warszawa.jpg",
@@ -976,6 +1264,22 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Pa%C5%82ac_M%C5%82odzie%C5%BCy_w_Bydgoszczy_2023_1.jpg",
   "auto": "venue"
+ },
+ "Pałac Potockich|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/palac-potockich-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pa%C5%82acPotockich-Fasada-WidokOdStronyParku-POL,_Krzeszowice.jpg",
+  "auto": "venue"
+ },
+ "Piwnica - Stary Klasztor Purkyniego 1|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Playhaus|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/playhaus-krakow.jpg",
@@ -1033,6 +1337,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Mother%27s_Cake_Progresja_Warszawa_2014_(15674906035).jpg",
   "auto": "venue"
  },
+ "Przejście Garncarskie 2|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/przejscie-garncarskie-2-wroclaw.jpg",
+  "ratio": 1.333,
+  "author": "Joee",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Przej%C5%9Bcie_Garncarskie_2020-12-17_06.jpg",
+  "auto": "venue"
+ },
  "Przestrzeń Muzyki Współczesnej Hashtag Lab|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/przestrzen-muzyki-wspolczesnej-hashtag-lab-warszawa.jpg",
   "ratio": 1.504,
@@ -1051,6 +1363,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Restauracja Grenier|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Rondo Mogilskie 1|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/rondo-mogilskie-1-krakow.jpg",
   "ratio": 1.499,
@@ -1067,12 +1387,28 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Ruska 47/48a|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Rynek 26|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/rynek-26-rzeszow.jpg",
   "ratio": 1.501,
   "author": "Marcin Konsek",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:2018_Rzesz%C3%B3w,_ul._Matejki_2_i_Rynek_22-25,_Kamienice.jpg",
+  "auto": "venue"
+ },
+ "Rynek 58|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-58-wroclaw.jpg",
+  "ratio": 1.506,
+  "author": "fot. Slawek Ilski",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw-RYNEK_-_panorama_z_ko%C5%9Bcio%C5%82a_p.w._%C5%9Bw._El%C5%BCbiety_-_panoramio.jpg",
   "auto": "venue"
  },
  "Rynek Główny 27|Kraków": {
@@ -1222,6 +1558,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Stawowa 30|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/stawowa-30-wroclaw.jpg",
+  "ratio": 0.75,
+  "author": "Raf24~commonswiki",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Stawowa,_WRO.jpg",
+  "auto": "venue"
+ },
  "Story Disco Club|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -1232,6 +1576,22 @@
  },
  "Strefa Kultury Firlej|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/strefa-kultury-firlej-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Studio Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/studio-krakow-krakow.jpg",
+  "ratio": 1.494,
+  "author": "Lilly M",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Caliban_Klub_Studio_Krak%C3%B3w_18_02_09_026.jpg",
+  "auto": "venue"
+ },
+ "Studio Na Grobli Instytutu Grotowskiego|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
@@ -1352,6 +1712,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:%C5%81%C3%B3d%C5%BA,_Stare_Miasto_-_panoramio.jpg",
   "auto": "city"
  },
+ "Teatr Nowy Proxima w Krakowie|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-nowy-proxima-w-krakowie-krakow.jpg",
+  "ratio": 0.75,
+  "author": "Chris Olszewski",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Teatr_Nowy_Proxima,_41_Krakowska_Street_in_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
+ "Teatr Łaźnia Nowa|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-laznia-nowa-krakow.jpg",
+  "ratio": 1.502,
+  "author": "Zygmunt Put",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Laznia_Nowa_Theater,_25_os._Szkolne,Nowa_Huta,Krakow,Poland.JPG",
+  "auto": "venue"
+ },
  "Terminal Kultury Gocław - filia CPK|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1401,6 +1777,46 @@
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Torwar_2020a.jpg"
+ },
+ "Transformator|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/transformator-wroclaw.jpg",
+  "ratio": 1.399,
+  "author": "Danuta B.",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Transformator_-_fotopolska.eu_(156686).jpg",
+  "auto": "venue"
+ },
+ "Tęczowa 57G|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Uczulenie|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Urząd Gminy Liszki|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "VIII Liceum Ogólnokształcące im. Stanisława Wyspiańskiego w Krakowie|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "VooDoo Club|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -1494,6 +1910,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Wybrzeże Wyspiańskiego|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wybrzeze-wyspianskiego-wroclaw.jpg",
+  "ratio": 1.506,
+  "author": "Neo[EZN]",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw_-_fotopolska.eu_(142599).jpg",
+  "auto": "venue"
+ },
  "Wyspa Słodowa 7|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/wyspa-slodowa-7-wroclaw.jpg",
   "ratio": 1.501,
@@ -1518,6 +1942,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Zelwerowicza 18A|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Zgrany Wawer|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1535,6 +1967,30 @@
   "source": "https://commons.wikimedia.org/wiki/File:Klub_Stodo%C5%82a_w_Warszawie_2021.jpg",
   "auto": "venue"
  },
+ "os. Dywizjonu 303 1|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/os-dywizjonu-303-1-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Luxetowiec",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w,_os._Dywizjonu_303;_fot._06.jpg",
+  "auto": "venue"
+ },
+ "ul M. Konopnickiej 26|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/ul-m-konopnickiej-26-krakow.jpg",
+  "ratio": 1.7,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaMariiKonopnickiej-WidokNaP%C3%B3%C5%82noc-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
+ "ul.Dąbrowskich 41|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Łąkowa 59 A|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/lakowa-59-a-gdynia.jpg",
   "ratio": 2.27,
@@ -1543,12 +1999,36 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Świdnicka 8B|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Żelazna 59|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/zelazna-59-warszawa.jpg",
   "ratio": 1.574,
   "author": "Adrian Grycuk",
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_%C5%BBelazna_przy_ulicy_Ogrodowej_w_Warszawie_2023.jpg",
+  "auto": "venue"
+ },
+ "ŻyWa Pracownia|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Żydowskie Muzeum Galicja|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/zydowskie-muzeum-galicja-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Lesnydzban",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Muzeum_%C5%BBydowskie_Galicja_(cropped).jpg",
   "auto": "venue"
  }
 }
