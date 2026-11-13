@@ -286,6 +286,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:MOSiRZielonaGora.jpg"
  },
+ "Centrum Sztuki Współczesnej Zamek Ujazdowski|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/centrum-sztuki-wspolczesnej-zamek-ujazdowski-warszawa.jpg",
+  "ratio": 1.526,
+  "author": "Chris Olszewski",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Front_facade_of_the_Ujazd%C3%B3w_Castle,_Warsaw,_2019.jpg",
+  "auto": "venue"
+ },
  "Chicago Jazz|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -419,6 +427,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Dwie Zmiany|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/dwie-zmiany-sopot.jpg",
+  "ratio": 1.333,
+  "author": "Emptywords",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sopot_Molo_and_main_square_2024_aerial.jpg",
+  "auto": "city"
  },
  "Dworcowa 26|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/dworcowa-26-wroclaw.jpg",
