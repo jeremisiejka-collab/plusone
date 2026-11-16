@@ -16,6 +16,8 @@ const decode = s => String(s || '').replace(/&amp;/g, '&').replace(/&quot;/g, '"
 function ticketUrl(t) {
   try {
     const u = new URL(t);
+    // widżety do osadzania (biletomat.pl/embedded/…) działają tylko na stronie PIK — otwarte osobno pokazują błąd
+    if (/\/(embedded|embeddables|widget|iframe)\b/i.test(u.pathname)) return null;
     if (!/(^|\.)(ebilet\.pl|biletyna\.pl|eventim\.pl|goingapp\.pl|ticketmaster\.pl|kupbilecik\.pl|bilety24\.pl|biletomat\.pl|abilet\.pl)$/.test(u.hostname)) return null;
     for (const k of [...u.searchParams.keys()]) if (/^(utm_|partner|affid|aff|ref|subid)/i.test(k)) u.searchParams.delete(k);
     return u.toString();

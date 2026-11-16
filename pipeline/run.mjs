@@ -11,6 +11,7 @@ import { measureImages } from './lib/images.mjs';
 import { hotScore } from './lib/hot.mjs';
 import { addVenuePhotos } from './lib/venue-photos.mjs';
 import { writeOg } from './lib/og.mjs';
+import { checkLinks } from './lib/links.mjs';
 import ra from './sources/ra.mjs';
 import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
@@ -84,6 +85,10 @@ const events = dedup(dedup(valid))
   .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
 
 // wydarzenia bez grafiki: prawdziwe zdjęcie miejsca (nie ukrywamy ich i nie rysujemy zastępczych grafik)
+// linki „Kup bilet” muszą działać: martwe i widżety odrzucamy, wydarzenie bez działającego linku znika
+const lc = await checkLinks(events);
+events.splice(0, events.length, ...lc.events);
+console.log(`Linki: sprawdzono ${lc.checked}, usunięte martwe ${lc.removedLinks}, wydarzenia bez działającego linku ${lc.removedEvents}`);
 const vp = await addVenuePhotos(events);
 console.log(`Zdjęcia miejsc: nowe ${vp.found}, użyte w ${vp.used} wydarzeniach, wciąż bez zdjęcia ${vp.missing}${vp.pending ? ` (do znalezienia w kolejnych przebiegach: ${vp.pending})` : ''}`);
 const img = await measureImages(events, prevEvents);
