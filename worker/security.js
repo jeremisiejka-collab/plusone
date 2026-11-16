@@ -53,6 +53,7 @@ const RULES = [
   ['POST', '/api/ops/welcome-admins', 5, 'ip'],
   ['POST', '/api/ops/admin-links', 5, 'ip'],
   ['GET', '/api/feed/allevents', 1500, 'ip'],   // pośrednik dla automatu wydarzeń (GitHub Actions)
+  ['GET', '/api/nearby', 300, 'ip'],              // „Plan na noc” (OpenStreetMap)
   ['GET', '/api/crew/join', 120, 'ip'],
   ['POST', '/api/guide/notify', 30, 'who'],
   ['POST', '/api/crew/invite', 60, 'who'],

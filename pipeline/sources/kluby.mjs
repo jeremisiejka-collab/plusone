@@ -8,6 +8,18 @@ import { makeEvent, localTime, guessCategory } from '../lib/normalize.mjs';
 
 const UA = { 'User-Agent': 'Mozilla/5.0 (compatible; plusone-events-bot/1.0; +https://plusoneapp.pl)' };
 const MONTHS = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
+const fold = x => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').toLowerCase().trim();
+/* miasto: znana nazwa w miejscu/adresie, inaczej po kodzie pocztowym (Atlas Arena ma w adresie „Aleksandrówka”, 94-020 = Łódź) */
+const CITIES = ['Warszawa', 'Kraków', 'Wrocław', 'Gdańsk', 'Gdynia', 'Sopot', 'Poznań', 'Łódź', 'Katowice', 'Lublin', 'Szczecin', 'Bydgoszcz', 'Toruń', 'Białystok', 'Rzeszów',
+  'Kielce', 'Olsztyn', 'Opole', 'Gliwice', 'Zabrze', 'Bielsko-Biała', 'Częstochowa', 'Radom', 'Kazimierz Dolny', 'Zielona Góra', 'Gorzów Wielkopolski', 'Płock', 'Elbląg'];
+const POSTAL = [[0, 4, 'Warszawa'], [30, 31, 'Kraków'], [50, 54, 'Wrocław'], [80, 80, 'Gdańsk'], [81, 81, 'Gdynia'], [60, 61, 'Poznań'], [90, 94, 'Łódź'], [40, 40, 'Katowice'], [20, 20, 'Lublin'], [70, 71, 'Szczecin']];
+function cityOf(text) {
+  const t = fold(text);
+  const known = CITIES.find(c => new RegExp(`(^|[^a-z])${fold(c)}([^a-z]|$)`).test(t));
+  if (known) return known;
+  const pc = String(text).match(/\b(\d{2})-\d{3}\b/);
+  return pc ? POSTAL.find(([a, b]) => +pc[1] >= a && +pc[1] <= b)?.[2] || null : null;
+}
 const p2 = n => String(n).padStart(2, '0');
 const text = s => String(s || '').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/‍/g, '').replace(/\s+/g, ' ').trim();
 
@@ -72,7 +84,7 @@ const SITES = [
     venue: 'Klub Stodoła', city: 'Warszawa', address: 'ul. Batorego 10, 02-591 Warszawa', category: 'Concerts' }
 ];
 const CACHE = new URL('../data/kluby.json', import.meta.url);
-const REFRESH = 3 * 864e5, PER_SITE = 60;
+const REFRESH = 3 * 864e5, PER_SITE = 150;
 
 function ldEvent(html) {
   for (const m of html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)) {
@@ -98,7 +110,8 @@ async function ldSite(site, cache) {
       // sama data bez godziny (Stodoła) — godzina otwarcia drzwi z treści strony
       const doors = text(h).match(/Otwarcie drzwi:?\s*(\d{1,2}:\d{2})/i)?.[1];
       cache[u] = { at: Date.now(), e: e ? { name: e.name, start: e.startDate, end: e.endDate, image: [e.image].flat()[0]?.url || [e.image].flat()[0] || null,
-        place: e.location?.name, price: [e.offers].flat().map(o => +o?.price).filter(x => x > 0).sort((a, b) => a - b)[0] ?? null,
+        place: e.location?.name, addr: typeof e.location?.address === 'string' ? e.location.address : [e.location?.address?.streetAddress, e.location?.address?.postalCode, e.location?.address?.addressLocality].filter(Boolean).join(', '),
+        locality: typeof e.location?.address === 'object' ? e.location.address.addressLocality : null, price: [e.offers].flat().map(o => +o?.price).filter(x => x > 0).sort((a, b) => a - b)[0] ?? null,
         performer: [e.performer].flat().map(x => x?.name).filter(Boolean), description: e.description, doors } : null };
       fresh++;
     } catch { /* następnym razem */ }
@@ -110,10 +123,14 @@ async function ldSite(site, cache) {
     if (!e?.start || !e.name) continue;
     let start = localTime(String(e.start).replace(/([+-]\d{2}:?\d{2}|Z)$/, ''));
     if (start?.endsWith('T00:00') && e.doors) start = start.slice(0, 11) + e.doors.padStart(5, '0');
+    // klub (np. Stodoła) pokazuje też trasy organizatora w innych miastach: miasto i miejsce z danych wydarzenia
+    const city = cityOf([e.place, e.addr, e.locality].join(', ')) || site.city;
+    const home = !e.place || fold(e.place).includes(fold(site.venue).replace(/^klub /, '')) || fold(site.venue).includes(fold(e.place));
     out.push(makeEvent({
       id: 'klub-' + site.name.toLowerCase().replace(/[^a-z]/g, '') + '-' + u.replace(/\/$/, '').split('/').pop().replace(/\.html$/, ''),
-      source: 'kluby', title: e.name, start,
-      city: site.city, venue: e.place && !/^(Warszawa|Klub)$/i.test(e.place) ? e.place.replace(/\s+-\s+/, ' – ') : site.venue, address: site.address,
+      source: 'kluby', title: e.name.replace(/\s*\((WARSZAWA|KRAKÓW|WROCŁAW|GDAŃSK|POZNAŃ|ŁÓDŹ|KATOWICE|LUBLIN|SZCZECIN|GDYNIA|SOPOT|BYDGOSZCZ|TORUŃ|BIAŁYSTOK|RZESZÓW|OPOLE|KIELCE|OLSZTYN|ZABRZE|GLIWICE|[A-ZĄĆĘŁŃÓŚŹŻ -]{3,20})\)\s*$/, ''), start,
+      city, venue: home ? (e.place && !/^(Warszawa|Klub)$/i.test(e.place) ? e.place.replace(/\s+-\s+/, ' – ') : site.venue) : e.place,
+      address: home ? site.address : (e.addr || city),
       category: guessCategory(e.name) === 'Other' ? site.category : guessCategory(e.name),
       artists: e.performer, priceFrom: e.price, image: e.image, description: e.description, url: u
     }));

@@ -57,7 +57,13 @@ function same(a, b) {
   if (ab.some(x => x && aa.has(x))) return true;
   // tytuł jednego zawiera całość drugiego ("Cult of Luna" vs "Cult of Luna – Warszawa 2027")
   const [s, l] = ta.size <= tb.size ? [ta, tb] : [tb, ta];
-  return s.size >= 2 && [...s].every(t => l.has(t));
+  if (s.size >= 2 && [...s].every(t => l.has(t))) return true;
+  // jednowyrazowy tytuł („KULT”) zawarty w dłuższym („Kult - Trasa Pomarańczowa 2026”) — tylko gdy oba podają to samo miejsce
+  if (s.size === 1 && [...s][0].length >= 4 && l.has([...s][0]) && a.venue && b.venue) {
+    const x = vTokens(a.venue, a.city), y = vTokens(b.venue, b.city);
+    return x.size > 0 && y.size > 0 && jaccard(x, y) >= 0.67;
+  }
+  return false;
 }
 
 /* pierwszeństwo danych przy łączeniu (lepsze opisy/zdjęcia/ceny) */

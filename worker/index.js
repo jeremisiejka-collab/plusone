@@ -5,6 +5,8 @@
 import previewHtml from '../private/app.html';
 import { smtpSend } from './smtp.js';
 import { withSecurityHeaders, rateLimit } from './security.js';
+import { sharePage } from './share.js';
+import { nearby } from './nearby.js';
 import { track, liveStats, cleanupStats } from './stats.js';
 import { premiumApi, welcomeInside, zoneInfo, scanGuest, crewInfo, forgotPassword, resetPassword, findReset, adminOrganizers, adminNewsletter, mailDetect, scheduled, guestTicketPage, initPremium } from './premium.js';
 
@@ -795,8 +797,9 @@ async function api(req, env) {
   const wait = await rateLimit(env, req, path, m);
   if (wait) return json({ error: 'Za dużo prób. Spróbuj ponownie za ' + Math.ceil(wait / 60) + ' min.' }, 429, { 'Retry-After': String(wait) });
 
-  if (path === '/api/t' && m === 'POST') return track(req, env, json);
-  if (path === '/api/feed/allevents' && m === 'GET') return allEventsProxy(url);   // statystyki odwiedzin (Panel założyciela)
+  if (path === '/api/t' && m === 'POST') return track(req, env, json);   // statystyki odwiedzin (Panel założyciela)
+  if (path === '/api/feed/allevents' && m === 'GET') return allEventsProxy(url);
+  if (path === '/api/nearby' && m === 'GET') return nearby(req, env, json);   // „Plan na noc”: lokale w pobliżu
   if (path === '/api/state' && m === 'GET') return publicState(env);
   if (path === '/api/auth/register' && m === 'POST') return register(req, env);
   if (path === '/api/auth/login' && m === 'POST') return login(req, env);
@@ -879,6 +882,8 @@ const WORKER = {
       if (!env.DB) return new Response('Chwilowo niedostępne.', { status: 503 });
       return guestTicketPage(env, url.pathname.slice(3));
     }
+    // podgląd linku do wydarzenia i miejsca (worker/share.js)
+    if (/^\/(e|miejsce)\/[^/]+\/?$/.test(url.pathname)) return sharePage(req, env, url);
     if (url.pathname === '/app' || url.pathname.startsWith('/app/')) {
       try { return await preview(req, env); }
       catch (e) { console.error(e); return new Response('Podgląd jest chwilowo niedostępny.', { status: 503, headers: { 'Cache-Control': 'no-store' } }); }

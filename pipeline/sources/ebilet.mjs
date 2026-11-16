@@ -192,7 +192,8 @@ function fromApiEvent(e, t) {
     category: category({ category: cat, subcategory: sub, title: t.title }),
     tags: [t.subcategoryName].filter(Boolean),
     artists: e.artists || t.artists,
-    priceFrom: e.freeSeats?.minPrice ?? null,
+    // eBilet podaje 0, gdy nie zna ceny (wyprzedane, sprzedaż jeszcze nie ruszyła) — to nie „wstęp wolny”
+    priceFrom: e.freeSeats?.minPrice > 0 ? e.freeSeats.minPrice : null,
     image: e.imagePortrait || t.image || e.imageLandscape,
     description: t.description,
     url: `https://www.ebilet.pl/${cat}/${sub}/${slug}`

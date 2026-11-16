@@ -10,6 +10,7 @@ import { cityGeo } from './lib/geo.mjs';
 import { measureImages } from './lib/images.mjs';
 import { hotScore } from './lib/hot.mjs';
 import { addVenuePhotos } from './lib/venue-photos.mjs';
+import { writeOg } from './lib/og.mjs';
 import ra from './sources/ra.mjs';
 import going from './sources/going.mjs';
 import ebilet from './sources/ebilet.mjs';
@@ -71,7 +72,13 @@ const valid = raw.map(cleanEventText).filter(e =>
 );
 
 const stamp = new Date().toISOString();
-const events = dedup(valid)
+// eBilet podaje 0 zł, gdy nie zna ceny — także we wpisach zapamiętanych z wcześniejszych przebiegów
+for (const e of valid) if (e.sources.includes('ebilet') && e.priceFrom === 0) {
+  e.links = e.links.map(l => l.source === 'ebilet' && l.price === 0 ? { ...l, price: null } : l);
+  const ps = e.links.map(l => l.price).filter(p => p != null); e.priceFrom = ps.length ? Math.min(...ps) : null;
+}
+// dwa przejścia: po pierwszym połączeniu (np. klub + eBilet) wpis ma lepszy tytuł i godzinę i łączy się z kolejnymi kopiami
+const events = dedup(dedup(valid))
   .map(e => ({ ...e, big: isBig(e), firstSeen: firstSeen.get(e.id) || stamp }))
   .map(e => ({ ...e, hot: hotScore(e), priceDrop: priceDrop(e, stamp) }))
   .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
@@ -104,6 +111,9 @@ const head = JSON.stringify({
 });
 // jedno wydarzenie na linię — małe diffy w gicie przy commitach co 4h
 await writeFile(OUT, head.slice(0, -1) + ',"events":[\n' + events.map(e => JSON.stringify(e)).join(',\n') + '\n]}\n');
+
+const og = await writeOg(events, new URL('../public/data/og/', import.meta.url));
+console.log(`Podglądy linków: ${og.events} wydarzeń, ${og.venues} miejsc w ${og.files} plikach`);
 
 console.log(`\nSurowe: ${raw.length} → po filtrze: ${valid.length} → po złączeniu duplikatów: ${events.length}`);
 console.log('Miasta (top 10):', Object.entries(cities).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([c, n]) => `${c} ${n}`).join(', '));

@@ -103,6 +103,17 @@ function cityFrom(address, fallback) {
   return fallback;
 }
 
+/* „KULT | 20.11.2026 | Klub Stodoła” → „KULT”: wycinamy części z datą, miastem albo nazwą miejsca */
+const fold2 = x => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+function cleanTitle(t, venue, city) {
+  const parts = String(t).split(/\s+[|•]\s+/);
+  if (parts.length < 2) return t;
+  const v = fold2(venue), c = fold2(city);
+  const keep = parts.filter((p, i) => i === 0 || !(/^\s*\d{1,2}[./-]\d{1,2}([./-]\d{2,4})?\s*$/.test(p) || (v && fold2(p).includes(v)) || (v && v.includes(fold2(p)) && fold2(p).length > 3)
+    || fold2(p) === c || /^(klub|club|teatr|hala)\b/i.test(p.trim())));
+  return keep.join(' | ').trim() || parts[0];
+}
+
 export default async function allevents() {
   let store = { cursor: 0, events: {} };
   try { store = JSON.parse(await readFile(STORE, 'utf8')); } catch { /* pierwszy przebieg */ }
@@ -149,7 +160,7 @@ export default async function allevents() {
     return makeEvent({
       id: 'allevents-' + e.eid,
       source: 'allevents',
-      title: e.title,
+      title: cleanTitle(e.title, e.venue, e.city),
       start: e.start,
       end: e.end && e.end.slice(0, 10) !== e.start.slice(0, 10) && Date.parse(e.end) - Date.parse(e.start) < 4 * 864e5 ? e.end : null,
       city: e.city,
