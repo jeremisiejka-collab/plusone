@@ -48,6 +48,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Akademia Muzyczna w Bydgoszczy|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/akademia-muzyczna-w-bydgoszczy-bydgoszcz.jpg",
+  "ratio": 1.221,
+  "author": "Piotr1952",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz,_Akademia_Muzyczna_-_fotopolska.eu_(330834).jpg",
+  "auto": "venue"
+ },
  "Aleje Jerozolimskie 2|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/aleje-jerozolimskie-2-warszawa.jpg",
   "ratio": 1.565,
@@ -237,6 +245,30 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Bulwar Maurycego Beniowskiego 5|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Busweekend|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
+ "Bydgoszcz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "CBF Nowy Świat|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/cbf-nowy-swiat-warszawa.jpg",
   "ratio": 0.667,
@@ -244,6 +276,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa-nowy-swiat-2-CBF-1-jpg-lq_074.jpg",
   "auto": "venue"
+ },
+ "CH NOWY TURZYN|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "COOLinarium - atelier kulinarne|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -359,6 +399,22 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Chodkiewicza 7/4|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Chomiąża Szlachecka 40|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Chorten Arena|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/chorten-arena-bialystok.jpg",
   "ratio": 4.116,
@@ -426,6 +482,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_wyspa_Piasek,_widok_na_wysp%C4%99_S%C5%82odow%C4%85_2020-09-08.jpg",
   "auto": "venue"
  },
+ "Cukrownia Żnin|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Czasoprzestrzeń|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -475,6 +539,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Dom Kultury Słowianin|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "Dom Literatury w Warszawie|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -533,6 +605,30 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Dworcowa 51|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/dworcowa-51-bydgoszcz.jpg",
+  "ratio": 1.501,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Dworcowa_2023.jpg",
+  "auto": "venue"
+ },
+ "Dworcowa 72|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
+ "Dworzec Pks Szczecin|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/dworzec-pks-szczecin-szczecin.jpg",
+  "ratio": 1.333,
+  "author": "Janusz Jakubowski from Warsaw, Poland",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:MAN_NG313,_-10239,_PKS_Szczecin_(27859038825).jpg",
+  "auto": "venue"
+ },
  "Dwór Kościuszko|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/dwor-kosciuszko-krakow.jpg",
   "ratio": 1.48,
@@ -547,6 +643,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Długa 16a|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "EXBUD Arena|Kielce": {
@@ -590,6 +694,14 @@
   "author": "Patryk Duszkiewicz",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_(Elektrownia_Powi%C5%9Ble)_-_tablica.jpg",
+  "auto": "venue"
+ },
+ "Enea Arena|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/enea-arena-szczecin.jpg",
+  "ratio": 1.501,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Netto_Arena_dron_(1).jpg",
   "auto": "venue"
  },
  "Enea Stadion - B17|Poznań": {
@@ -638,6 +750,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:DS_Eskulap_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
  },
+ "Evento Bydgoszcz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "FAMA Centrum Biblioteczno-Kulturalne|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -660,6 +780,14 @@
   "author": "autor nieznany",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Zielona_G%C3%B3ra,_sala_koncertowa.jpg",
+  "auto": "venue"
+ },
+ "Filharmonia im. Mieczysława Karłowicza w Szczecinie|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/filharmonia-im-mieczyslawa-karlowicza-w-szczecinie-szczecin.jpg",
+  "ratio": 1.381,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_filharmonia_dron_(1).jpg",
   "auto": "venue"
  },
  "Forum Fun & Food|Kraków": {
@@ -695,6 +823,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "GOKSiR Przecław|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Galeria MM|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/galeria-mm-poznan.jpg",
   "ratio": 1.582,
@@ -727,12 +863,28 @@
   "source": "https://commons.wikimedia.org/wiki/File:Sebastian_M%C3%BCnster,_Cosmographia-_Gda%C5%84sk,_Gniezno,_Pozna%C5%84,_Toru%C5%84.png",
   "auto": "venue"
  },
+ "Goleniowska 67|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Good Day Café|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Gościeradz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
  "Gromadzka 24c|Kraków": {
@@ -951,6 +1103,14 @@
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Urania_Olsztyn.jpg"
  },
+ "Hala Widowiskowo - Sportowa SPODEK|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-widowiskowo-sportowa-spodek-katowice.jpg",
+  "ratio": 1.501,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_Spodek_E_aerial_2026.jpg",
+  "auto": "venue"
+ },
  "Hala Widowiskowo-Sportowa Aqua Zdrój|Wałbrzych": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-widowiskowo-sportowa-aqua-zdroj-walbrzych.jpg",
   "ratio": 1.615,
@@ -1059,12 +1219,36 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Jazz Club Hipnoza (official venue profile)|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "Jazz Like That - Swing Studio|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Jazzment Klub|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Jezioro Głębokie / parking leśny w stronę Wołczkowa|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "Jezioro Rusałka|Poznań": {
@@ -1116,12 +1300,44 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Karkonosze|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Karowa 20|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/karowa-20-warszawa.jpg",
   "ratio": 1.499,
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Karowa_w_Warszawie_2019.jpg",
+  "auto": "venue"
+ },
+ "Katowice Miasto Ogrodów|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-miasto-ogrodow-katowice.jpg",
+  "ratio": 1.494,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice-%C5%9Ar%C3%B3dmie%C5%9Bcie_S_-_pl._Sejmu_%C5%9Al%C4%85skiego_(7).jpg",
+  "auto": "venue"
+ },
+ "Katowice Rynek Plac Nad Rawą Jarmark Bożonarodzeniowy|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
+ "Katowice al. Korfantego 68|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-al-korfantego-68-katowice.jpg",
+  "ratio": 1.499,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_al._Korfantego_141c_2026.jpg",
   "auto": "venue"
  },
  "Katowice|Katowice": {
@@ -1226,6 +1442,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Klub Hormon Szczecin|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "Klub Hybrydy|Warszawa": {
@@ -1407,6 +1631,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Korzeniowskiego 7|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Kościuszki 69|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -1447,6 +1679,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Krzemienna 10|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Krzywy Gryf|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Księcia Witolda 60/3|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -1469,6 +1717,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Kurkowa 4/1|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/kurkowa-4-1-szczecin.jpg",
+  "ratio": 1.333,
+  "author": "Szczecinolog",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kurkowa_Street_in_Szczecin,_September_2022_01.jpg",
+  "auto": "venue"
  },
  "LOFToDANCE Łukasz Raś|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -1510,6 +1766,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:02022_0170_Cafe_Liberty_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "Lipowa 6|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
  },
  "Lokum Stonewall|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
@@ -1663,12 +1927,28 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Rak%C3%B3w_otwarcie.jpg"
  },
+ "Miejskie Centrum Kultury w Bydgoszczy|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/miejskie-centrum-kultury-w-bydgoszczy-bydgoszcz.jpg",
+  "ratio": 1.293,
+  "author": "Pit1233",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Miejski_O%C5%9Brodek_Kultury_1.jpg",
+  "auto": "venue"
+ },
  "Miejskie Zakłady Autobusowe Warszawa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/miejskie-zaklady-autobusowe-warszawa-warszawa.jpg",
   "ratio": 1.535,
   "author": "Panek",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Budynki_mza_warszawa_braci_zaluskich.jpg",
+  "auto": "venue"
+ },
+ "Międzynarodowe Centrum Kongresowe w Katowicach|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/miedzynarodowe-centrum-kongresowe-w-katowicach-katowice.jpg",
+  "ratio": 1.49,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_05.15_MCK_3.JPG",
   "auto": "venue"
  },
  "Momenty - klub muzyczny|Wrocław": {
@@ -1726,6 +2006,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Młyny Rothera|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/mlyny-rothera-bydgoszcz.jpg",
+  "ratio": 1.501,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:M%C5%82yny_Rothera_z_powietrza.jpg",
+  "auto": "venue"
+ },
  "Młyńska 12|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/mlynska-12-poznan.jpg",
   "ratio": 0.75,
@@ -1750,6 +2038,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "NOSPR|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/nospr-katowice.jpg",
+  "ratio": 1.509,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_NOSPR_fasada_2026.jpg",
+  "auto": "venue"
+ },
  "NOVA Szkoła Tańca Katowice|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
   "ratio": 0.667,
@@ -1772,6 +2068,14 @@
   "author": "Abzeronow",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:National_Forum_of_Music,_Wroc%C5%82aw,_20240811.jpg",
+  "auto": "venue"
+ },
+ "National Polish Radio Symphony Orchestra|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/national-polish-radio-symphony-orchestra-katowice.jpg",
+  "ratio": 0.75,
+  "author": "John Samuel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Building_of_Polish_National_Radio_Symphony_Orchestra,_Katowice_01.jpg",
   "auto": "venue"
  },
  "New Day Blues Pub|Kraków": {
@@ -1808,6 +2112,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Nowa Dekadencja - Szczecińskie Centrum Kultury|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Nowohuckie Centrum Kultury|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/nowohuckie-centrum-kultury-krakow.jpg",
   "ratio": 2.51,
@@ -1840,6 +2152,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ulia_oczki_w_warszawie.JPG",
   "auto": "venue"
+ },
+ "OFF M galeria|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "OP ENHEIM|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -1898,6 +2218,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Ogrody Śródmieście|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Okolice Krakowa|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1937,6 +2265,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Over the Under Pub|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
  },
  "Oławska 13|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/olawska-13-wroclaw.jpg",
@@ -2068,6 +2404,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Pa%C5%82ac_M%C5%82odzie%C5%BCy_w_Bydgoszczy_2023_1.jpg",
   "auto": "venue"
  },
+ "Pałac Młodzieży w Katowicach|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/palac-mlodziezy-w-katowicach-katowice.jpg",
+  "ratio": 1.509,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_Pa%C5%82ac_M%C5%82odzie%C5%BCy_N_2026.jpg",
+  "auto": "venue"
+ },
  "Pałac Potockich|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/palac-potockich-krakow.jpg",
   "ratio": 1.333,
@@ -2084,12 +2428,28 @@
   "source": "https://commons.wikimedia.org/wiki/File:Czerniejewo,_zespol_parkowo-palacowy,_palac_2.jpg",
   "auto": "venue"
  },
+ "Pinokio 3.0 - Łączy Pokolenia|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Piwnica - Stary Klasztor Purkyniego 1|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Piwnica Kany|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "Piąty Dom|Katowice": {
@@ -2260,6 +2620,22 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Pub Korba katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
+ "Pyrzycki Dom Kultury|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "RCK Rogoźno|Poznań": {
@@ -2527,6 +2903,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Scena Gliwicka 120:|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/scena-gliwicka-120-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Marek Mróz",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2024-09_Katowice-Za%C5%82%C4%99%C5%BCe_Scena_Gliwicka_120_(6).jpg",
+  "auto": "venue"
+ },
  "Schron|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/schron-poznan.jpg",
   "ratio": 1.501,
@@ -2534,6 +2918,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Fallout_shelter_in_Pozna%C5%84.JPG",
   "auto": "venue"
+ },
+ "Siedlecka 1a|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "Skorzęcin|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
@@ -2640,6 +3032,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Stargardzkie Centrum Kultury|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "Stary Klasztor|Wrocław": {
@@ -2794,6 +3194,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Szczecin|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Szkoła Podstawowa Nr 267 im. Juliusza Słowackiego w Warszawie|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -2802,6 +3210,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Szkoła Tańca Katarzyna Pawlak|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "Szkoła Tańca Mil Pasos|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
@@ -2967,6 +3383,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_214_Krasinski_Palace_Valerius_Statue.jpg",
   "auto": "venue"
  },
+ "Thugutta 6F|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Topolowa 42|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -2997,6 +3421,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Transformator_-_fotopolska.eu_(156686).jpg",
   "auto": "venue"
+ },
+ "Trzebawie|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "Tęczowa 57G|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -3045,6 +3477,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Vertigo_Jazz_Club_%26_Restaurant_-_wn%C4%99trze.jpg",
   "auto": "venue"
+ },
+ "Vibe Club|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
  },
  "VooDoo Club|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -3300,6 +3740,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "ks. Piotra Skargi 3|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "os. Dywizjonu 303 1|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/os-dywizjonu-303-1-krakow.jpg",
   "ratio": 1.333,
@@ -3380,6 +3828,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "winyle.fm|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Łuczniczka Hala Sportowo-Widowiskowa|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/luczniczka-hala-sportowo-widowiskowa-bydgoszcz.jpg",
+  "ratio": 0.8,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pomnik_Luczniczka_2023.jpg",
+  "auto": "venue"
+ },
  "Łąkowa 59 A|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/lakowa-59-a-gdynia.jpg",
   "ratio": 2.27,
@@ -3428,6 +3892,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Żabno 51A|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Żelazna 59|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/zelazna-59-warszawa.jpg",
   "ratio": 1.574,
@@ -3435,6 +3907,14 @@
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_%C5%BBelazna_przy_ulicy_Ogrodowej_w_Warszawie_2023.jpg",
   "auto": "venue"
+ },
+ "Żniński Dom Kultury|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
  },
  "ŻyWa Pracownia|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
