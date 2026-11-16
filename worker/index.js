@@ -80,6 +80,21 @@ async function syncAdmins(env) {
   for (const u of results) await syncAdmin(env, u);
 }
 
+/* Pośrednik dla automatu wydarzeń: allevents.in blokuje serwery GitHub Actions, a odpowiada Cloudflare.
+   Przepuszcza wyłącznie strony allevents.in potrzebne pipeline/sources/allevents.mjs (lista, strona wydarzenia, kalendarz),
+   bez ciasteczek i nagłówków użytkownika; limit zapytań w worker/security.js. */
+const ALLEVENTS_PATH = /^\/(?:[a-z-]+\/[a-z-]+(?:\?page=\d{1,3})?|[a-z-]+\/[^/?#\s]{1,200}\/\d{6,20}|api\/addtocal\.php\?event_id=\d{6,20}&type=ical)$/;
+async function allEventsProxy(url) {
+  const p = url.searchParams.get('p') || '';
+  if (!ALLEVENTS_PATH.test(p)) return new Response('Niedozwolony adres', { status: 400 });
+  try {
+    const r = await fetch('https://allevents.in' + p, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; plusone-events-bot/1.0; +https://plusoneapp.pl)', Accept: 'text/html,text/calendar,*/*', 'Accept-Language': 'pl-PL,pl;q=0.9,en;q=0.8' }, redirect: 'follow', cf: { cacheTtl: 900 } });
+    const type = r.headers.get('content-type') || 'text/plain';
+    if (!/^text\//.test(type)) return new Response('Nieobsługiwana treść', { status: 502 });
+    return new Response(await r.text(), { status: r.status, headers: { 'Content-Type': type, 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } });
+  } catch { return new Response('allevents.in nie odpowiada', { status: 502 }); }
+}
+
 /* uprawnienia: administrator = właściciel (owner, tylko konto z ADMIN_EMAIL_SHA256), organizator, obsługa biletów, użytkownik */
 const isOwner = u => !!u && !!u.owner;
 const isAdmin = isOwner;
@@ -780,7 +795,8 @@ async function api(req, env) {
   const wait = await rateLimit(env, req, path, m);
   if (wait) return json({ error: 'Za dużo prób. Spróbuj ponownie za ' + Math.ceil(wait / 60) + ' min.' }, 429, { 'Retry-After': String(wait) });
 
-  if (path === '/api/t' && m === 'POST') return track(req, env, json);   // statystyki odwiedzin (Panel założyciela)
+  if (path === '/api/t' && m === 'POST') return track(req, env, json);
+  if (path === '/api/feed/allevents' && m === 'GET') return allEventsProxy(url);   // statystyki odwiedzin (Panel założyciela)
   if (path === '/api/state' && m === 'GET') return publicState(env);
   if (path === '/api/auth/register' && m === 'POST') return register(req, env);
   if (path === '/api/auth/login' && m === 'POST') return login(req, env);

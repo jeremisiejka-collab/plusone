@@ -61,7 +61,7 @@ function same(a, b) {
 }
 
 /* pierwszeństwo danych przy łączeniu (lepsze opisy/zdjęcia/ceny) */
-const RANK = { going: 4, ebilet: 3, go2warsaw: 2, ra: 1, allevents: 0.5 };
+const RANK = { kluby: 5, going: 4, ebilet: 3, go2warsaw: 2, pik: 1.5, ra: 1, allevents: 0.5 };
 
 function merge(a, b) {
   const [p, q] = (RANK[b.sources[0]] || 0) > (RANK[a.sources[0]] || 0) ? [b, a] : [a, b];

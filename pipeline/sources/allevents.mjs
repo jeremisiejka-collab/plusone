@@ -9,6 +9,18 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { request, sleep } from '../lib/http.mjs';
 import { makeEvent, guessCategory } from '../lib/normalize.mjs';
 
+/* allevents.in blokuje serwery GitHub Actions — wtedy pobieramy przez nasz serwer (worker: /api/feed/allevents, tylko adresy allevents.in) */
+const PROXY = 'https://plusoneapp.pl/api/feed/allevents?p=';
+let viaProxy = false;
+async function get(path, timeout = 20000) {
+  if (!viaProxy) {
+    try { return await request('https://allevents.in' + path, { type: 'text', headers: UA, retries: 0, timeout }); }
+    catch (e) {
+      if (/HTTP 404/.test(e.message)) throw e;   // strona nie istnieje (np. za ostatnią stroną listy) — to nie blokada
+      viaProxy = true; console.log(`  allevents: bezpośrednio nie odpowiada (${e.message.slice(0, 60)}), dalej przez plusoneapp.pl`); }
+  }
+  return request(PROXY + encodeURIComponent(path), { type: 'text', retries: 1, timeout: timeout + 10000 });
+}
 const STORE = new URL('../data/allevents.json', import.meta.url);
 const UA = { 'User-Agent': 'Mozilla/5.0 (compatible; plusone-events-bot/1.0; +https://plusoneapp.pl)' };
 const CITIES = { warsaw: 'Warszawa', krakow: 'Kraków', wroclaw: 'Wrocław', gdansk: 'Gdańsk', poznan: 'Poznań', lodz: 'Łódź', katowice: 'Katowice',
@@ -19,7 +31,7 @@ const CATS = { parties: ['Clubs', 10, 4], music: [null, 6, 3], concerts: ['Conce
   festivals: ['Festivals', 2, 1], art: ['Culture', 2, 1], theatre: ['Theatre', 2, 1] };
 // nie „wyjścia”: szkolenia, kursy, biznes, rekrutacje, religijne i senioralne — tych nie pokazujemy
 const JUNK = /szkoleni|\bkurs|webinar|konferencj|networking|rekrutac|\bpraca\b|career|training|workshop for business|seminar|seminari|biznes|business|\bwarsztat(y)? (dla firm|biznes)|discount group|bal seniora|seniorów|msza|trener|rekolekc|modlitw|egzamin|dzień otwarty|targi pracy|\bonline\b|zoom|masterclass|coaching|inwest|kryptowalut|mlm|nieruchomo/i;
-const PER_RUN = 30;          // stron listy na przebieg (co godzinę); allevents przy szybszym tempie przestaje odpowiadać — pełny obieg w ok. 11 h
+const PER_RUN = 50;          // stron listy na przebieg (co godzinę) — pełny obieg w ok. 7 h
 const KEEP_DAYS = 4;
 
 const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
@@ -65,7 +77,7 @@ function parseList(html) {
 /* nazwa miejsca: LOCATION z kalendarza („Smolna 38, Warszawa, ulica Smolna 38, …”) */
 async function venueOf(eid) {
   try {
-    const ics = await request(`https://allevents.in/api/addtocal.php?event_id=${eid}&type=ical`, { type: 'text', headers: UA, retries: 1, timeout: 15000 });
+    const ics = await get(`/api/addtocal.php?event_id=${eid}&type=ical`, 15000);
     const loc = ics.match(/^LOCATION:(.*)$/m)?.[1]?.replace(/\\,/g, ',').trim();
     const end = ics.match(/^DTEND:(\d{8}T\d{4})/m)?.[1];
     return { venue: loc ? loc.split(',')[0].trim() : null, location: loc || null, end: end ? `${end.slice(0, 4)}-${end.slice(4, 6)}-${end.slice(6, 8)}T${end.slice(9, 11)}:${end.slice(11, 13)}` : null };
@@ -75,7 +87,9 @@ async function venueOf(eid) {
 /* plakat ze strony wydarzenia, gdy karta listy go nie ma */
 async function pageImage(link) {
   try {
-    const html = await request(link, { type: 'text', headers: UA, retries: 1, timeout: 20000 });
+    const path = new URL(link).pathname;
+    let plain = path; try { plain = decodeURIComponent(path); } catch { /* zostaje zakodowana */ }
+    const html = await get(plain);
     const u = html.match(/<meta property="og:image"\s+content="([^"]+)"/)?.[1];
     return u && /cdn-az\.allevents\.in\/events\d*\/banners\//.test(u) ? decode(u) : null;
   } catch { return null; }
@@ -100,8 +114,8 @@ export default async function allevents() {
   for (let k = 0; k < Math.min(PER_RUN, jobs.length) && fails < 6; k++) {
     const [slug, city, cat, p] = jobs[(store.cursor + k) % jobs.length];
     let html;
-    try { html = await request(`https://allevents.in/${slug}/${cat}${p > 1 ? '?page=' + p : ''}`, { type: 'text', headers: UA, retries: 1, timeout: 20000 }); }
-    catch { fails++; await sleep(5000); continue; }
+    try { html = await get(`/${slug}/${cat}${p > 1 ? '?page=' + p : ''}`); }
+    catch (e) { if (!/HTTP 404/.test(e.message)) { fails++; await sleep(5000); } continue; }
     pages++;
     for (const c of parseList(html)) {
       if (!c.start || c.start.slice(0, 10) < today || JUNK.test(c.title)) continue;
