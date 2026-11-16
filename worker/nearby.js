@@ -3,6 +3,8 @@
    Adres zamieniamy na współrzędne w Nominatim, lokale bierzemy z Overpass; wynik trzymamy w pamięci podręcznej Cloudflare
    przez 7 dni (zasady obu darmowych serwisów: mało zapytań, z identyfikacją aplikacji). */
 const UA = { 'User-Agent': 'plusoneapp.pl/1.0 (+https://plusoneapp.pl)', 'Accept-Language': 'pl' };
+const OVERPASS = ['https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass-api.de/api/interpreter'];
 const fold = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
 
 export async function nearby(req, env, json) {
@@ -29,9 +31,16 @@ export async function nearby(req, env, json) {
     if (g[0]) {
       const lat = +g[0].lat, lon = +g[0].lon;
       const oq = `[out:json][timeout:15];(nwr(around:700,${lat},${lon})[amenity~"^(restaurant|bar|pub|cafe|biergarten)$"][name];);out center 60;`;
-      const or = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', headers: { ...UA, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(oq) });
-      if (!or.ok) throw new Error('overpass ' + or.status);
-      const o = await or.json();
+      // główny serwer Overpass nie przyjmuje połączeń z Cloudflare (522) — publiczne serwery zapasowe po kolei
+      let o = null, last = '';
+      for (const host of OVERPASS) {
+        try {
+          const or = await fetch(host, { method: 'POST', headers: { ...UA, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(oq), signal: AbortSignal.timeout(12000) });
+          if (or.ok) { o = await or.json(); break; }
+          last = new URL(host).hostname + ' ' + or.status;
+        } catch (e) { last = new URL(host).hostname + ' ' + (e?.name || 'błąd'); }
+      }
+      if (!o) throw new Error('overpass: ' + last);
       const R = 6371e3, rad = x => x * Math.PI / 180;
       const dist = (a, b) => { const dp = rad(a - lat), dl = rad(b - lon); return 2 * R * Math.asin(Math.sqrt(Math.sin(dp / 2) ** 2 + Math.cos(rad(lat)) * Math.cos(rad(a)) * Math.sin(dl / 2) ** 2)); };
       const own = fold(venue).split(/\s+/).filter(w => w.length > 3)[0];
