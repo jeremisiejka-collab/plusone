@@ -371,3 +371,8 @@ body:not(.demo) .event-art { --r: .8; height: auto !important; aspect-ratio: var
 .pl-place b { font: 600 15px/1.25 var(--d); } .pl-place span { font: 400 12.5px/1.3 var(--d); color: var(--t2); }
 @media (hover: hover) and (pointer: fine) { .pl-place:hover b { color: var(--pink); } }
 .pl-src { color: var(--t3); }
+.pl-g { grid-template-columns: 22px minmax(0, 1fr); display: grid; gap: 10px; align-items: start; padding: 6px 0; }
+.pl-g .gm-pin { margin-top: 1px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
+.pl-g .col > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-more { margin-top: 4px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--surface); color: var(--t1); font: 600 13px/1 var(--d); text-align: center; }
+@media (hover: hover) and (pointer: fine) { .pl-more:hover { border-color: var(--pink); } }

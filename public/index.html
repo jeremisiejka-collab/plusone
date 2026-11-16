@@ -1698,7 +1698,10 @@ function laterTonight(e){
     .sort((a,b)=>(b.hot||0)-(a.hot||0) || a.start.localeCompare(b.start))).slice(0,2);
 }
 const walk = m => m<=1 ? '1 min pieszo' : Math.round(m)+' min pieszo';
-const KIND = {restaurant:'restauracja', bar:'bar', pub:'pub', cafe:'kawiarnia', biergarten:'ogródek piwny'};
+const KIND = {restaurant:'restauracja', bar:'bar', pub:'pub', cafe:'kawiarnia', fast_food:'szybkie jedzenie', nightclub:'klub', biergarten:'ogródek piwny'};
+/* pinezka w stylu Google Maps; klik otwiera lokal w Google Maps (nazwa + adres, inaczej nazwa + współrzędne) */
+const GPIN = `<svg class="gm-pin" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#EA4335" d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#7B1A12"/></svg>`;
+const gmaps = f => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(f.street ? [f.name, f.street, f.city].filter(Boolean).join(', ') : f.name+' '+f.lat+','+f.lon);
 const hhmm = t => String(Math.floor(((t%1440)+1440)%1440/60)).padStart(2,'0')+':'+String(((t%60)+60)%60).padStart(2,'0');
 function planHtml(e){
   const p = PLAN[e.id], after = laterTonight(e);
@@ -1706,7 +1709,8 @@ function planHtml(e){
   const food = p?.food || [];
   const step = (t, label, body, main) => `<div class="pl-step${main?' main':''}"><span class="pl-t">${t}</span><span class="pl-rail"><i></i></span><div class="pl-box"><span class="mono">${label}</span>${body}</div></div>`;
   const before = !p ? `<span class="pl-wait">Szukam miejsc w pobliżu…</span>`
-    : food.length ? food.map(f=>`<a class="pl-place" href="https://www.openstreetmap.org/${f.type}/${f.id}" target="_blank" rel="noopener"><b>${esc(f.name)}</b><span>${esc(KIND[f.kind]||f.kind)} · ${walk(f.min)}</span></a>`).join('')
+    : food.length ? food.slice(0, PLAN.more===e.id ? 24 : 6).map(f=>`<a class="pl-place pl-g" href="${gmaps(f)}" target="_blank" rel="noopener">${GPIN}<span class="col" style="min-width:0"><b>${esc(f.name)}</b><span>${esc(KIND[f.kind]||f.kind)} · ${walk(f.min)}${f.street?' · '+esc(f.street):''}</span></span></a>`).join('')
+      + (food.length>6 && PLAN.more!==e.id ? `<button class="pl-more" data-act="planMore:${esc(e.id)}">Pokaż wszystkie lokale w pobliżu (${food.length})</button>` : '')
     : '';
   return `<span class="eyebrow">Plan na noc</span>
     <div class="pl">
@@ -1714,11 +1718,11 @@ function planHtml(e){
       ${step(e.time, 'Wydarzenie', `<b class="pl-main">${esc(e.name)}</b><span class="pl-sub">${esc(e.venue)}</span>`, true)}
       ${after.length ? step(after[0].time, 'Po', after.map(x=>`<button class="pl-place" data-act="ev:${x.id}"><b>${esc(x.name)}</b><span>${esc(x.time)} · ${esc(x.venue)}</span></button>`).join('')) : ''}
     </div>
-    ${food.length ? '<span class="mono pl-src">Lokale z OpenStreetMap, czas dojścia w przybliżeniu</span>' : ''}`;
+    ${food.length ? '<span class="mono pl-src">Lokale z OpenStreetMap, otwierają się w Google Maps · czas dojścia w przybliżeniu</span>' : ''}`;
 }
 async function loadPlan(e){
   if(PLAN[e.id] || PLAN['_'+e.id]) return; PLAN['_'+e.id] = 1;
-  const key = 'plan:'+fold(e.venue+'|'+e.city);
+  const key = 'plan2:'+fold(e.venue+'|'+e.city);
   let cached = null; try{ cached = JSON.parse(localStorage.getItem(key)||'null'); }catch(x){}
   if(cached && Date.now()-cached.at < 7*864e5){ PLAN[e.id] = cached; return fillPlan(e); }
   try{
@@ -2203,6 +2207,7 @@ function act(a){
     case 'shareLink': { const e=ev(); closeSheet(); shareUrl(eventUrl(e), e.name, e.when+' · '+e.venue); break; }
     case 'copyLink': { const u=eventUrl(ev()); try{navigator.clipboard.writeText(u); toast('Link skopiowany');}catch(x){ toast(u, true, 5000); } closeSheet(); break; }
     case 'venue': openVenue(p1); break;
+    case 'planMore': PLAN.more=p1; fillPlan(ev()); break;
     case 'shareVenue': { const l=venueEvents(S.venue); if(l[0]) shareUrl(venueUrl(S.venue), l[0].venue, 'Nadchodzące wydarzenia · '+l[0].city); break; }
     case 'qset': S.query=decodeURIComponent(p1||''); S.limit=40; S.dir=null; render(); break;
     case 'promo': promoSheet(); break;
