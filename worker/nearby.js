@@ -1,10 +1,8 @@
 /* „Plan na noc”: lokale w pobliżu miejsca wydarzenia (restauracje, bary, puby, kawiarnie) z OpenStreetMap.
    GET /api/nearby?a=<adres>&c=<miasto>&v=<nazwa miejsca> → { food: [{ name, kind, min, type, id }] }
-   Adres zamieniamy na współrzędne w Nominatim, lokale bierzemy z Overpass; wynik trzymamy w pamięci podręcznej Cloudflare
+   Adres zamieniamy na współrzędne i szukamy lokali w pobliżu w Nominatim (Overpass nie odpowiada serwerom Cloudflare); wynik trzymamy w pamięci podręcznej Cloudflare
    przez 7 dni (zasady obu darmowych serwisów: mało zapytań, z identyfikacją aplikacji). */
 const UA = { 'User-Agent': 'plusoneapp.pl/1.0 (+https://plusoneapp.pl)', 'Accept-Language': 'pl' };
-const OVERPASS = ['https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter',
-  'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass-api.de/api/interpreter'];
 const fold = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
 
 export async function nearby(req, env, json) {
@@ -30,23 +28,22 @@ export async function nearby(req, env, json) {
     }
     if (g[0]) {
       const lat = +g[0].lat, lon = +g[0].lon;
-      const oq = `[out:json][timeout:15];(nwr(around:700,${lat},${lon})[amenity~"^(restaurant|bar|pub|cafe|biergarten)$"][name];);out center 60;`;
-      // główny serwer Overpass nie przyjmuje połączeń z Cloudflare (522) — publiczne serwery zapasowe po kolei
-      let o = null, last = '';
-      for (const host of OVERPASS) {
-        try {
-          const or = await fetch(host, { method: 'POST', headers: { ...UA, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(oq), signal: AbortSignal.timeout(12000) });
-          if (or.ok) { o = await or.json(); break; }
-          last = new URL(host).hostname + ' ' + or.status;
-        } catch (e) { last = new URL(host).hostname + ' ' + (e?.name || 'błąd'); }
+      // lokale w prostokącie ok. 1 km wokół miejsca: Nominatim (Overpass nie odpowiada serwerom Cloudflare); odstęp 1,1 s — zasady Nominatim
+      const vb = [lon - 0.007, lat + 0.0045, lon + 0.007, lat - 0.0045].map(x => x.toFixed(5)).join(',');
+      const els = [];
+      for (const kind of ['restaurant', 'bar', 'cafe']) {
+        await new Promise(r => setTimeout(r, 1100));
+        const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=8&bounded=1&viewbox=${vb}&q=%5B${kind}%5D`, { headers: UA });
+        if (!r.ok) throw new Error('nominatim ' + r.status);
+        for (const x of await r.json()) els.push({ type: x.osm_type, id: x.osm_id, lat: +x.lat, lon: +x.lon, tags: { name: x.name, amenity: x.type } });
       }
-      if (!o) throw new Error('overpass: ' + last);
+      const o = { elements: els };
       const R = 6371e3, rad = x => x * Math.PI / 180;
       const dist = (a, b) => { const dp = rad(a - lat), dl = rad(b - lon); return 2 * R * Math.asin(Math.sqrt(Math.sin(dp / 2) ** 2 + Math.cos(rad(lat)) * Math.cos(rad(a)) * Math.sin(dl / 2) ** 2)); };
       const own = fold(venue).split(/\s+/).filter(w => w.length > 3)[0];
       const seen = new Set();
       food = (o.elements || []).map(x => ({ type: x.type, id: x.id, name: x.tags?.name, kind: x.tags?.amenity, d: dist(x.lat ?? x.center?.lat, x.lon ?? x.center?.lon) }))
-        .filter(x => x.name && isFinite(x.d) && x.d > 25 && !(own && fold(x.name).includes(own)))
+        .filter(x => x.name && ['restaurant', 'bar', 'pub', 'cafe', 'biergarten'].includes(x.kind) && isFinite(x.d) && x.d > 25 && !(own && fold(x.name).includes(own)))
         .sort((a, b) => a.d - b.d).filter(x => { const k = fold(x.name); if (seen.has(k)) return false; seen.add(k); return true; })
         .slice(0, 3).map(({ d, ...x }) => ({ ...x, min: Math.max(1, Math.round(d / 75)) }));
     }
