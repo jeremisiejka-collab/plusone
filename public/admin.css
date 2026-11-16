@@ -314,5 +314,8 @@ button, [role="button"], .btn, .chip, summary, [data-act]:not(input):not(textare
 @media (pointer: coarse) { input:not([style*="font"]), textarea:not([style*="font"]), select:not([style*="font"]) { font-size: 16px !important; } }
 /* przewijane listy w oknach i panelach nie ciągną za sobą strony pod spodem */
 #sheet, .sheet, .sc, .live-list, .live-feed, .seatwrap { overscroll-behavior: contain; }
+/* paski przewijane w bok („Na topie”, „Już niedługo”, chipy): blokujemy tylko przewijanie w bok — ruch w dół zaczęty
+   na pasku musi przewijać stronę (inaczej strona „staje”, gdy palec trafi na pasek) */
+.sc[style*="overflow-x"], .rail, .hero-rail, .event-grid { overscroll-behavior-x: contain; overscroll-behavior-y: auto; touch-action: pan-x pan-y; }
 /* formularze i paski przewijania przeglądarki w kolorach wybranego motywu (motyw ustawia strona, nie system) */
 :root { color-scheme: dark; } :root[data-theme="light"] { color-scheme: light; }
