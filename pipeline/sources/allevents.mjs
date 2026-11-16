@@ -32,7 +32,7 @@ const CATS = { parties: ['Clubs', 10, 4], music: [null, 6, 3], concerts: ['Conce
 // nie „wyjścia”: szkolenia, kursy, biznes, rekrutacje, religijne i senioralne — tych nie pokazujemy
 const JUNK = /szkoleni|\bkurs|webinar|konferencj|networking|rekrutac|\bpraca\b|career|training|workshop for business|seminar|seminari|biznes|business|\bwarsztat(y)? (dla firm|biznes)|discount group|bal seniora|seniorów|msza|trener|rekolekc|modlitw|egzamin|dzień otwarty|targi pracy|\bonline\b|zoom|masterclass|coaching|inwest|kryptowalut|mlm|nieruchomo/i;
 const PER_RUN = 50;          // stron listy na przebieg (co godzinę) — pełny obieg w ok. 7 h
-const KEEP_DAYS = 4;
+const KEEP_DAYS = 14;        // wydarzenia widziane w ostatnich 2 tygodniach zostają, nawet gdy allevents chwilowo blokuje
 
 const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
 /* „Sun, 22 Nov, 2026 - 06:00 PM” → „2026-11-22T18:00” */
@@ -115,7 +115,7 @@ export default async function allevents() {
     const [slug, city, cat, p] = jobs[(store.cursor + k) % jobs.length];
     let html;
     try { html = await get(`/${slug}/${cat}${p > 1 ? '?page=' + p : ''}`); }
-    catch (e) { if (!/HTTP 404/.test(e.message)) { fails++; await sleep(5000); } continue; }
+    catch (e) { if (!/HTTP 404/.test(e.message)) { fails++; console.log(`  allevents: ${e.message.slice(0, 90)}`); await sleep(8000); } continue; }
     pages++;
     for (const c of parseList(html)) {
       if (!c.start || c.start.slice(0, 10) < today || JUNK.test(c.title)) continue;
