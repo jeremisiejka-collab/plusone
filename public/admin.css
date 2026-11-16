@@ -319,3 +319,7 @@ button, [role="button"], .btn, .chip, summary, [data-act]:not(input):not(textare
 .sc[style*="overflow-x"], .rail, .hero-rail, .event-grid { overscroll-behavior-x: contain; overscroll-behavior-y: auto; touch-action: pan-x pan-y; }
 /* formularze i paski przewijania przeglądarki w kolorach wybranego motywu (motyw ustawia strona, nie system) */
 :root { color-scheme: dark; } :root[data-theme="light"] { color-scheme: light; }
+
+/* pola wpisywania (wyszukiwarka, formularze) bez różowej ramki fokusu — pole ma własne obramowanie;
+   ramka zostaje tylko na przyciskach i linkach przy obsłudze klawiaturą */
+input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
