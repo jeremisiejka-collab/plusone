@@ -21,13 +21,17 @@ export async function nearby(req, env, json) {
   try {
     let g = [];
     for (const q of queries) {
-      g = await (await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=pl&q=' + encodeURIComponent(q), { headers: UA })).json();
+      const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=pl&q=' + encodeURIComponent(q), { headers: UA });
+      if (!r.ok) throw new Error('nominatim ' + r.status);
+      g = await r.json();
       if (g[0]) break;
     }
     if (g[0]) {
       const lat = +g[0].lat, lon = +g[0].lon;
       const oq = `[out:json][timeout:15];(nwr(around:700,${lat},${lon})[amenity~"^(restaurant|bar|pub|cafe|biergarten)$"][name];);out center 60;`;
-      const o = await (await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', headers: { ...UA, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(oq) })).json();
+      const or = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', headers: { ...UA, 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'data=' + encodeURIComponent(oq) });
+      if (!or.ok) throw new Error('overpass ' + or.status);
+      const o = await or.json();
       const R = 6371e3, rad = x => x * Math.PI / 180;
       const dist = (a, b) => { const dp = rad(a - lat), dl = rad(b - lon); return 2 * R * Math.asin(Math.sqrt(Math.sin(dp / 2) ** 2 + Math.cos(rad(lat)) * Math.cos(rad(a)) * Math.sin(dl / 2) ** 2)); };
       const own = fold(venue).split(/\s+/).filter(w => w.length > 3)[0];
@@ -38,7 +42,7 @@ export async function nearby(req, env, json) {
         .slice(0, 3).map(({ d, ...x }) => ({ ...x, min: Math.max(1, Math.round(d / 75)) }));
     }
   } catch (e) {
-    return json({ food: [], error: 'Mapa chwilowo nie odpowiada.' }, 502, { 'Cache-Control': 'no-store' });
+    return json({ food: [], error: 'Mapa chwilowo nie odpowiada.', detail: String(e?.message || e).slice(0, 80) }, 502, { 'Cache-Control': 'no-store' });
   }
   // pusty wynik pamiętamy krócej (dobę), pełny — tydzień
   const res = json({ food }, 200, { 'Cache-Control': `public, max-age=${food.length ? 604800 : 86400}` });
