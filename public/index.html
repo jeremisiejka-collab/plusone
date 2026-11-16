@@ -1722,8 +1722,7 @@ async function loadPlan(e){
   let cached = null; try{ cached = JSON.parse(localStorage.getItem(key)||'null'); }catch(x){}
   if(cached && Date.now()-cached.at < 7*864e5){ PLAN[e.id] = cached; return fillPlan(e); }
   try{
-    const q = [e.address&&e.address!==e.city?e.address:e.venue, e.city].join(', ');
-    const r = await fetch('/api/nearby?q='+encodeURIComponent(q)+'&v='+encodeURIComponent(e.venue));
+    const r = await fetch('/api/nearby?a='+encodeURIComponent(e.address&&e.address!==e.city?e.address:'')+'&c='+encodeURIComponent(e.city)+'&v='+encodeURIComponent(e.venue));
     const d = await r.json();
     PLAN[e.id] = {at:Date.now(), food:d.food||[], err:!r.ok};
   }catch(x){ PLAN[e.id] = {at:Date.now(), food:[], err:true}; }
