@@ -121,6 +121,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_-_Auditorium_Maximum_UJ_01.jpg",
   "auto": "venue"
  },
+ "Aula Artis|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Aula UAM|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/aula-uam-poznan.jpg",
+  "ratio": 1.394,
+  "author": "MOs810",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Aula_UAM_Poznan.JPG",
+  "auto": "venue"
+ },
  "Awaria Prądu|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -428,6 +444,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Dom Tramwajarza|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/dom-tramwajarza-poznan.jpg",
+  "ratio": 1.6,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Dom_Tramwajarza_Pozna%C5%84_RB1.JPG",
+  "auto": "venue"
+ },
  "Dwie Zmiany|Sopot": {
   "image": "https://plusoneapp.pl/img/obiekty/dwie-zmiany-sopot.jpg",
   "ratio": 1.333,
@@ -494,6 +518,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_(Elektrownia_Powi%C5%9Ble)_-_tablica.jpg",
   "auto": "venue"
+ },
+ "Enea Stadion - B17|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/enea-stadion-b17-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Enea Stadion|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/enea-stadion-poznan.jpg",
@@ -589,6 +621,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
+ },
+ "Gniezno|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/gniezno-poznan.png",
+  "ratio": 0.669,
+  "author": "Sebastian Münster",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Sebastian_M%C3%BCnster,_Cosmographia-_Gda%C5%84sk,_Gniezno,_Pozna%C5%84,_Toru%C5%84.png",
+  "auto": "venue"
  },
  "Good Day Café|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -805,6 +845,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Aqua_Zdr%C3%B3j_Liga_Narod%C3%B3w.jpg"
  },
+ "Hala im. Mieczysława Łopatki w Gnieźnie|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Holistic Sport Center|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -938,6 +986,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Karowa_w_Warszawie_2019.jpg",
   "auto": "venue"
  },
+ "Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "Kino Kijów.Centrum|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/kino-kijow-centrum-krakow.jpg",
   "ratio": 1.707,
@@ -970,12 +1026,36 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krzysztof_Zanussi_at_Kino_pod_Baranami_in_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Kino Rialto|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-rialto-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kino_Rialto_Pozna%C5%84_RB1.JPG",
+  "auto": "venue"
+ },
+ "Kinoteatr Rialto|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/kinoteatr-rialto-katowice.jpg",
+  "ratio": 1.342,
+  "author": "PetrusSilesius",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_Rialto.jpg",
+  "auto": "venue"
+ },
  "Klub - Piwnica \"Przepraszam\"|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Klub 2progi|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/klub-2progi-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Klub Buda|Kraków": {
@@ -1109,6 +1189,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Klub pod Minogą|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Klub Łącznik|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -1132,6 +1220,22 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_ul._Komuny_Paryskiej_2022-08-06_01.jpg",
   "auto": "venue"
+ },
+ "Koncertowa Cafe|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Kościuszki 69|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Krakowska 5|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakowska-5-krakow.jpg",
@@ -1229,6 +1333,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:02022_0170_Cafe_Liberty_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Lokum Stonewall|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Lotnisko Chopina|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/lotnisko-chopina-warszawa.jpg",
   "ratio": 1.727,
@@ -1285,6 +1397,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "MTP Pawilon 3|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/mtp-pawilon-3-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil talk",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Targi_z_Dworcowego_RB2.JPG",
+  "auto": "venue"
+ },
  "Marii Konopnickiej 28|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/marii-konopnickiej-28-krakow.jpg",
   "ratio": 1.7,
@@ -1325,6 +1445,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Miasto|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/miasto-poznan.png",
+  "ratio": 1,
+  "author": "Radomil at Polish Wikipedia",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84_dzielnica-Nowe_Miasto.png",
+  "auto": "venue"
  },
  "Miejski Stadion Piłkarski Raków|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/miejski-stadion-pilkarski-rakow-czestochowa.jpg",
@@ -1371,6 +1499,30 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Cytadela_(dron2).jpg",
   "auto": "venue"
+ },
+ "Muzyka na nowo|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Młyńska 12|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/mlynska-12-poznan.jpg",
+  "ratio": 0.75,
+  "author": "Subjectiveart",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_M%C5%82y%C5%84ska,_Pozna%C5%84.jpg",
+  "auto": "venue"
+ },
+ "NIEBO|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "NOCE KRK|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -1537,6 +1689,22 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Ośrodek Kultury Środa Wlkp.|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "P&J Live|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "PROZA|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -1642,6 +1810,22 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Poznań Uniwersytet Medyczny Aula|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Południk 2.0|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1706,6 +1890,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "RCK Rogoźno|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "RO Music Club|Wrocław": {
@@ -1845,6 +2037,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Rzymowskiego_w_Warszawie_2021.jpg",
   "auto": "venue"
  },
+ "SALA ZIEMI POZNAŃ CONGRESS CENTER|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "SARA sala teatralnowidowiskowa UCKiN UwB|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/sara-sala-teatralnowidowiskowa-uckin-uwb-bialystok.jpg",
   "ratio": 1.501,
@@ -1893,12 +2093,36 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Sala Ziemi MTP|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Scena Berlin|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Schron|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/schron-poznan.jpg",
+  "ratio": 1.501,
+  "author": "Azymut (Rafał M. Socha)",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Fallout_shelter_in_Pozna%C5%84.JPG",
+  "auto": "venue"
+ },
+ "Skorzęcin|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Slay Space|Kraków": {
@@ -2308,6 +2532,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Uniwersytet im. Adama Mickiewicza w Poznaniu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Urząd Gminy Liszki|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -2417,6 +2649,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Wojnowo 2|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Wratislavia Statek|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/wratislavia-statek-wroclaw.jpg",
   "ratio": 1.333,
@@ -2472,6 +2712,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Wrzesiński Ośrodek Kultury|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/wrzesinski-osrodek-kultury-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wrzesnia_dom_kultury_(1).jpg",
+  "auto": "venue"
  },
  "Wybrzeże Wyspiańskiego|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/wybrzeze-wyspianskiego-wroclaw.jpg",
@@ -2593,6 +2841,14 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Statuta_Casimiri_Magni._1501-1523_(160073203)_(cropped).jpg",
   "auto": "venue"
+ },
+ "w_sercu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Łąkowa 59 A|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/lakowa-59-a-gdynia.jpg",
