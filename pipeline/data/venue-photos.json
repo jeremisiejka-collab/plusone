@@ -178,6 +178,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Bartodzieje Małe|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bartodzieje-male-bydgoszcz.jpg",
+  "ratio": 1.27,
+  "author": "Metallographirt von C. Brügner, Berlin",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz_i_okolica_1857.jpg",
+  "auto": "venue"
+ },
  "Belwederska 44A|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -220,6 +228,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Blue_City_od_strony_Alej_Jerozolimskich_2018.jpg",
   "auto": "venue"
  },
+ "Blues Club Gdynia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Boardowa|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -227,6 +243,22 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Bohaterów Monte Cassino 54|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/bohaterow-monte-cassino-54-sopot.jpg",
+  "ratio": 1.333,
+  "author": "M.Minderhoud",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sopot_05.jpg",
+  "auto": "venue"
+ },
+ "Botanic Bydgoszcz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/botanic-bydgoszcz-bydgoszcz.jpg",
+  "ratio": 2.49,
+  "author": "Tournasol7",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Botanical_garden_of_UKW_Bydgoszcz_(4).jpg",
+  "auto": "venue"
  },
  "Breslavia|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -515,6 +547,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Dance Fusion|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Dereniowa 11|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/dereniowa-11-warszawa.jpg",
   "ratio": 1.631,
@@ -621,6 +661,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Dworek \"Oleńka\"|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Dworzec Pks Szczecin|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/dworzec-pks-szczecin-szczecin.jpg",
   "ratio": 1.333,
@@ -652,6 +700,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
+ },
+ "Długa 19|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/dluga-19-bydgoszcz.jpg",
+  "ratio": 1.501,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bydgoska_Aleja_Autograf%C3%B3w_2023.jpg",
+  "auto": "venue"
  },
  "EXBUD Arena|Kielce": {
   "image": "https://plusoneapp.pl/img/obiekty/exbud-arena-kielce.jpg",
@@ -735,6 +791,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Ergo Arena Skatepark|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Ergo Arena|Gdańsk": {
   "image": "https://plusoneapp.pl/img/obiekty/ergo-arena-gdansk.jpg",
   "ratio": 1.5,
@@ -772,6 +836,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Fabryka Kultury w Redzie|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
  "Filharmonia Zielonogórska|Zielona Góra": {
@@ -839,6 +911,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Galeria_Malta_-_Pozna%C5%84.JPG",
   "auto": "venue"
  },
+ "Galeria Rumia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Garage Pub|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -846,6 +926,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Gdynia Arena|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-arena-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "venue"
  },
  "Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
@@ -1152,6 +1240,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Hotel Haffner Resort & SPA|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Hotel Kolegiacki|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/hotel-kolegiacki-poznan.jpg",
   "ratio": 1.652,
@@ -1396,6 +1492,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Kino_Rialto_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
  },
+ "Kinoteatr Adria|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/kinoteatr-adria-bydgoszcz.jpg",
+  "ratio": 1.379,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Kinoteatr_Adria_Bydgoszcz_1.jpg",
+  "auto": "venue"
+ },
  "Kinoteatr Rialto|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/kinoteatr-rialto-katowice.jpg",
   "ratio": 1.342,
@@ -1426,6 +1530,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Klub Desdemona|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
  "Klub Fantastyki Druga Era|Poznań": {
@@ -1871,6 +1983,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:MTP_Poznan,_pav._8a.JPG",
   "auto": "venue"
  },
+ "Mamuszki 14|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Marii Konopnickiej 28|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/marii-konopnickiej-28-krakow.jpg",
   "ratio": 1.7,
@@ -1903,6 +2023,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:UlicaMeiselsa-WidokNaZach%C3%B3d-Kazimierz-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "Metalkas Pałac Bydgoszcz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
  },
  "Miasto i Gmina Jelcz-Laskowice|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -2054,6 +2182,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
+ "Nakielski Ośrodek Kultury|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Narodowe Forum Muzyki|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/narodowe-forum-muzyki-wroclaw.jpg",
   "ratio": 1.501,
@@ -2077,6 +2213,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Building_of_Polish_National_Radio_Symphony_Orchestra,_Katowice_01.jpg",
   "auto": "venue"
+ },
+ "Nałkowskiej 3|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "New Day Blues Pub|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -2136,6 +2280,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Nowy Harem Gdynia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Nowy Świat|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/nowy-swiat-warszawa.jpg",
@@ -2226,12 +2378,28 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Ogród Kreacji|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Okolice Krakowa|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Oksywie Górne|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
  "Orlen Stadion|Płock": {
@@ -2331,6 +2499,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "POINT Club|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "PROZA|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -2363,6 +2539,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Ko%C5%9Bci%C3%B3%C5%82Chrystusa_Odkupiciela.JPG",
   "auto": "venue"
+ },
+ "Park Mogilno|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
  },
  "Park Szczodre|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -2468,6 +2652,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w,_Rynek_Linia_A-B_-_fotopolska.eu_(338618).jpg",
   "auto": "city"
  },
+ "Podwórko.art|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Point Dance Studio|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -2482,6 +2674,22 @@
   "author": "Mariusz Nasieniewski",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia_Poland_hala_sportowo-widowiskowa_1.JPG"
+ },
+ "Port Gdynia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/port-gdynia-gdynia.jpg",
+  "ratio": 1.501,
+  "author": "Joymaster",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia_z_lotu_ptaka_-_081.JPG",
+  "auto": "venue"
+ },
+ "Portowa 9|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/portowa-9-gdynia.jpg",
+  "ratio": 0.812,
+  "author": "Starscream",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Relief_at_Portowa_4_Street_in_Gdynia.jpg",
+  "auto": "venue"
  },
  "Potem-o-tem|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/potem-o-tem-warszawa.jpg",
@@ -2572,6 +2780,14 @@
   "author": "Pawel Niemczuk",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala-gliwice-20170620.jpg"
+ },
+ "Primavera Jastrzębia Góra|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Progresja|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/progresja-warszawa.jpg",
@@ -2799,6 +3015,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw-RYNEK_-_panorama_z_ko%C5%9Bcio%C5%82a_p.w._%C5%9Bw._El%C5%BCbiety_-_panoramio.jpg",
   "auto": "venue"
  },
+ "Rytm|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Rzymowskiego 32|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/rzymowskiego-32-warszawa.jpg",
   "ratio": 1.333,
@@ -2862,6 +3086,14 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:PolskieRadioWroclaw-ulKarkonoska.jpg",
   "auto": "venue"
+ },
+ "Sala Koncertowa Rotterdamska 9|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Sala Witrażowa|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -2965,6 +3197,30 @@
   "author": "Adrian Tync",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Junior_Sokolska_31_2022.jpg",
+  "auto": "venue"
+ },
+ "Soleckie Centrum Kultury|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
+ "Sopot|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/sopot-sopot.jpg",
+  "ratio": 1.333,
+  "author": "Emptywords",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sopot_Molo_and_main_square_2024_aerial.jpg",
+  "auto": "city"
+ },
+ "Spodek|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/spodek-katowice.jpg",
+  "ratio": 1.501,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_Spodek_E_aerial_2026.jpg",
   "auto": "venue"
  },
  "Stadion Cracovii im. Józefa Piłsudskiego|Kraków": {
@@ -3324,6 +3580,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Teatr_Muzyczny_Capitol.jpg",
   "auto": "venue"
  },
+ "Teatr Muzyczny w Gdyni|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-muzyczny-w-gdyni-gdynia.jpg",
+  "ratio": 1.501,
+  "author": "Andrzej Otrębski",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia_Teatr_Muzyczny.jpg",
+  "auto": "venue"
+ },
  "Teatr Nowy Proxima w Krakowie|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-nowy-proxima-w-krakowie-krakow.jpg",
   "ratio": 0.75,
@@ -3338,6 +3602,14 @@
   "author": "Zygmunt Put",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Laznia_Nowa_Theater,_25_os._Szkolne,Nowa_Huta,Krakow,Poland.JPG",
+  "auto": "venue"
+ },
+ "Teatro Gdynia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatro-gdynia-gdynia.jpg",
+  "ratio": 1.333,
+  "author": "Darekm135",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kino_Gdynia_w_%C5%81odzi_(1).jpg",
   "auto": "venue"
  },
  "Terminal Kultury Gocław - filia CPK|Warszawa": {
@@ -3691,6 +3963,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Zamek Rzucewo|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Zamek Łeba Resort & SPA|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/zamek-leba-resort-spa-gdynia.jpg",
   "ratio": 2.27,
@@ -3698,6 +3978,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
+ },
+ "Zawiszy Czarnego 1|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/zawiszy-czarnego-1-gdynia.jpg",
+  "ratio": 1.333,
+  "author": "Ewa Jaros (czupirek)",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia,_Zawiszy_Czarnego_1_(1)_cz.JPG",
+  "auto": "venue"
  },
  "Zelwerowicza 18A|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -3723,6 +4011,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Zlote_Tarasy_(dron).jpg",
   "auto": "venue"
+ },
+ "halo kultura|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "klub Stodoła|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/klub-stodola-warszawa.jpg",
@@ -3844,6 +4140,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Pomnik_Luczniczka_2023.jpg",
   "auto": "venue"
  },
+ "Łuczniczka|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/luczniczka-bydgoszcz.jpg",
+  "ratio": 1.326,
+  "author": "Pit1233",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Brda_Bydgoszcz_zima_%C5%81uczniczka.jpg",
+  "auto": "venue"
+ },
  "Łąkowa 59 A|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/lakowa-59-a-gdynia.jpg",
   "ratio": 2.27,
@@ -3892,6 +4196,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "św. Trójcy 15|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Żabno 51A|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -3907,6 +4219,14 @@
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_%C5%BBelazna_przy_ulicy_Ogrodowej_w_Warszawie_2023.jpg",
   "auto": "venue"
+ },
+ "Żeromskiego 44|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Żniński Dom Kultury|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
