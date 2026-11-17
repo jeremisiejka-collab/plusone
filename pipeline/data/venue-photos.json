@@ -203,6 +203,15 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "BeerStation Żurawia|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Belwederska 44A|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -252,6 +261,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Bikershot Pub|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Bliss House Zakamycze|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/bliss-house-zakamycze-krakow.jpg",
@@ -317,6 +334,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Bulwar Kurlandzki vis-a-vis ul. Podgórska 16|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Bulwar Maurycego Beniowskiego 5|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
@@ -742,6 +767,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Dw%C3%B3r_Ko%C5%9Bciuszko,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Dwór w Tomaszowicach|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Dziekanowice 32|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -880,6 +913,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:DS_Eskulap_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
  },
+ "Estery 18|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/estery-18-krakow.jpg",
+  "ratio": 0.75,
+  "author": "tomasz przechlewski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Estery,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Evento Bydgoszcz|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -985,6 +1026,15 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Fryderyk Concert Hall Warsaw / Sala Koncertowa Fryderyk|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Fume Strefa Saun i SPA|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1010,6 +1060,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
+ },
+ "Galeria Bronowice|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/galeria-bronowice-krakow.jpg",
+  "ratio": 1.778,
+  "author": "Fandango_222",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Galeria_Bronowice_zima_2.jpg",
+  "auto": "venue"
  },
  "Galeria MM|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/galeria-mm-poznan.jpg",
@@ -1049,6 +1107,14 @@
   "author": "Stanisław Węsławski",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
+ "Globus Music Club Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
  "Gniezno|Poznań": {
@@ -1292,6 +1358,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Sportowa_Stulecia_w_Sopocie.JPG"
  },
+ "Hala Sportowa W Zielonkach|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Hala Stulecia|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-stulecia-wroclaw.jpg",
   "ratio": 1.537,
@@ -1364,6 +1438,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Hotel Domus Mater|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Hotel Haffner Resort & SPA|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -1371,6 +1453,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
+ },
+ "Hotel Kazimierz|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/hotel-kazimierz-krakow.jpg",
+  "ratio": 1.335,
+  "author": "Igor123121",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:City_Hall_of_the_former_City_of_Kazimierz,_1_Wolnica_square,_aerial_view_from_the_north_2025,_Kazimierz,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
  },
  "Hotel Kolegiacki|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/hotel-kolegiacki-poznan.jpg",
@@ -1438,6 +1528,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Congress_Centre_from_balloon_-_2.jpg",
   "auto": "venue"
  },
+ "Ignacego Prądzyńskiego 12/14|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Instytut Muzyki - Uniwersytet Rzeszowski|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
   "ratio": 0.75,
@@ -1462,6 +1561,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Jarzębinowa 2|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Jassmine|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -1535,6 +1642,14 @@
   "author": "Flyrecord",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lubin-Dialog-Arena-FlyRecord-2.jpg"
+ },
+ "KINO REGIS|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "KLUB Muzyczny Sześcian|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/klub-muzyczny-szescian-bialystok.jpg",
@@ -1697,6 +1812,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Klub Alchemia|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Klub Baza|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Klub Buda|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1804,6 +1935,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Klub Palladium|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Klub Podróżników - Namaste|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
   "ratio": 0.667,
@@ -1852,6 +1992,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Klub Stodoła|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/klub-stodola-warszawa.jpg",
+  "ratio": 1.877,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Klub_Stodo%C5%82a_w_Warszawie_2021.jpg",
+  "auto": "venue"
+ },
+ "Klub Studencki Żaczek|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Klub Szalonych|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -1892,6 +2048,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Klubokawiarnia OPO|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Klubokawiarnia Plotka|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -1924,6 +2088,23 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Konstanciński Dom Kultury \"Hugonówka\"|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Kontakt. Przestrzeń Ruchu|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Korzeniowskiego 7|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -1946,6 +2127,14 @@
   "author": "Lestat (Jan Mehlich)",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_-_Galeria_Krakowska_noc%C4%85.jpg",
+  "auto": "venue"
+ },
+ "Krakowski Teatr VARIETE|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakowski-teatr-variete-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_Teatr_Vari%C3%A9t%C3%A9_2022.jpg",
   "auto": "venue"
  },
  "Krakowskie Forum Kultury|Kraków": {
@@ -2197,6 +2386,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:UlicaMariiKonopnickiej-WidokNaP%C3%B3%C5%82noc-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Marszałkowska 28|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/marszalkowska-28-warszawa.jpg",
+  "ratio": 1.499,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Marsza%C5%82kowska_przy_Ho%C5%BCej_2017.jpg",
+  "auto": "venue"
+ },
  "Mazowiecka 2/4|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/mazowiecka-2-4-warszawa.jpg",
   "ratio": 1.007,
@@ -2340,6 +2537,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Myślenicki Ośrodek Kultury i Sportu|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Młyny Rothera|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/mlyny-rothera-bydgoszcz.jpg",
   "ratio": 1.501,
@@ -2452,6 +2657,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Nieduża 4|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Nietota|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -2730,12 +2943,29 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "PMDK Otwock|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "POINT Club|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
   "author": "Pit1233",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
+ "PROMINENT The Original Lounge Bar|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
  "PROZA|Wrocław": {
@@ -2794,6 +3024,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Party House Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/party-house-krakow-krakow.jpg",
+  "ratio": 1.768,
+  "author": "Józef Wincenty Kruszewski",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:J%C3%B3zef_Wincenty_Kruszewski_-_Dinner_party_at_a_wealthy_Jewish_house_in_Krak%C3%B3w_-_MP_2322_MNW_-_National_Museum_in_Warsaw.jpg",
+  "auto": "venue"
  },
  "Pasteura 17a/1|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/pasteura-17a-1-wroclaw.jpg",
@@ -2915,6 +3153,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Poli|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Polsat Plus Arena Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/polsat-plus-arena-gdynia-gdynia.jpg",
   "ratio": 1.5,
@@ -3030,6 +3276,15 @@
   "query": "Warsaw skyline"
  },
  "PraCoVnia Art-Club|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Pracownia Ochota|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
@@ -3327,6 +3582,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "SCENA RELAX|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/scena-relax-warszawa.jpg",
+  "ratio": 1.417,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Kino_Relax_w_Warszawie_2020.jpg",
+  "auto": "venue"
+ },
  "SCOUT CAMP Poznań|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -3512,6 +3775,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Spodek_E_aerial_2026.jpg",
   "auto": "venue"
  },
+ "Spółdzielnia Ogniwo|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Stadion Cracovii im. Józefa Piłsudskiego|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/stadion-cracovii-im-jozefa-pilsudskiego-krakow.jpg",
   "ratio": 1.494,
@@ -3572,6 +3843,14 @@
   "query": "Warsaw skyline"
  },
  "Stara Zajezdnia Kraków by DeSilva|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Stare Miasto ul. Biskupia 18|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
@@ -3666,6 +3945,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Centrum_Sztuki_%22Impart%22_-_fotopolska.eu_(114134).jpg",
   "auto": "venue"
+ },
+ "Strefa Nowa|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Strzeliński Ośrodek Kultury|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -4023,6 +4310,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
+ "Uniwersytet Muzyczny Fryderyka Chopina|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/uniwersytet-muzyczny-fryderyka-chopina-warszawa.jpg",
+  "ratio": 1.376,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Uniwersytet_Muzyczny_Fryderyka_Chopina_wej%C5%9Bcie_g%C5%82%C3%B3wne_2018.jpg",
+  "auto": "venue"
+ },
  "Uniwersytet im. Adama Mickiewicza w Poznaniu|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -4366,6 +4661,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Zlote_Tarasy_(dron).jpg",
   "auto": "venue"
  },
+ "empik (Klub Empik)|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/empik-klub-empik-warszawa.jpg",
+  "ratio": 1.429,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Pawilon_Cepelii_w_Warszawie_2025a.jpg",
+  "auto": "venue"
+ },
  "halo kultura|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -4485,6 +4788,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
+ },
+ "Łazienki Królewskie / Royal Lazienki|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/lazienki-krolewskie-royal-lazienki-warszawa.jpg",
+  "ratio": 1.538,
+  "author": "Marek and Ewa Wojciechowscy",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:4_Warszawa-Lazienki_Krolewskie_141.jpg",
+  "auto": "venue"
  },
  "Łuczniczka Hala Sportowo-Widowiskowa|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/luczniczka-hala-sportowo-widowiskowa-bydgoszcz.jpg",
