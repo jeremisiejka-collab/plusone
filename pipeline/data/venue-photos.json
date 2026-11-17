@@ -32,6 +32,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "ALOHA - Food|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "ATM Scena na Bielanach|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -186,6 +194,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz_i_okolica_1857.jpg",
   "auto": "venue"
  },
+ "Bazzart|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Belwederska 44A|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -202,6 +219,30 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Białostocki Ośrodek Kultury|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialostocki-osrodek-kultury-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Emkalina",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Cultural_Centre.jpg",
+  "auto": "venue"
+ },
+ "Bielany|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/bielany-warszawa.jpg",
+  "ratio": 1.333,
+  "author": "Monika from Warszawa/ Colchester, Poland/ UK",
+  "license": "CC BY-SA 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Bielany_plac_Konfederacji.JPG",
+  "auto": "venue"
+ },
+ "Bielsk Podlaski|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bielsk-podlaski-bialystok.jpg",
+  "ratio": 1.682,
+  "author": "Krzysztof Kundzicz",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Urz%C4%85d_Miejski_i_Starostwo_Powiatowe_w_Bielsku_Podlaskim_(cropped).JPG",
+  "auto": "venue"
  },
  "Big Book Cafe|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -334,6 +375,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Catering Fama|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/catering-fama-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "Centrum Jana Pawła II|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-jana-pawla-ii-krakow.jpg",
   "ratio": 1.333,
@@ -463,6 +512,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Procesja_Bo%C5%BCe_Cia%C5%82o_Pracze_Odrza%C5%84skie_Wroc%C5%82aw_(2026-06-04).jpg",
   "auto": "venue"
+ },
+ "Cicha4a|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
  },
  "Cielimowo|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
@@ -735,6 +792,15 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "East Side Dance Academy|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Egurrola Dance Studio Śródmieście|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -846,6 +912,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Fabryka Norblina|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/fabryka-norblina-warszawa.jpg",
+  "ratio": 0.481,
+  "author": "Qkiel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Fabryka_Norblina,_Warszawa_(4).jpg",
+  "auto": "venue"
+ },
+ "Filharmonia Podkarpacka im. Artura Malawskiego w Rzeszowie|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/filharmonia-podkarpacka-im-artura-malawskiego-w-rzeszowie-rzeszow.jpg",
+  "ratio": 1.333,
+  "author": "Patryk Duszkiewicz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Filharmonia_Podkarpacka.jpg",
+  "auto": "venue"
+ },
  "Filharmonia Zielonogórska|Zielona Góra": {
   "image": "https://plusoneapp.pl/img/obiekty/filharmonia-zielonogorska-zielona-gora.jpg",
   "ratio": 1.333,
@@ -860,6 +942,14 @@
   "author": "Kapitel",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_filharmonia_dron_(1).jpg",
+  "auto": "venue"
+ },
+ "Fircowskiego|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/fircowskiego-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "J-k",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w,_ulica_Fircowskiego.jpg",
   "auto": "venue"
  },
  "Forum Fun & Food|Kraków": {
@@ -885,6 +975,24 @@
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Fotoplastikon_Warszawski_2025a.jpg",
   "auto": "venue"
+ },
+ "Four Points by Sheraton Warsaw Mokotow|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Fume Strefa Saun i SPA|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "GLAM 2.0 CLUB|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -1161,6 +1269,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Hala Podpromie w Rzeszowie|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-podpromie-w-rzeszowie-rzeszow.jpg",
+  "ratio": 1.506,
+  "author": "Houx",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Hala_Podpromie.JPG",
+  "auto": "venue"
+ },
  "Hala Podpromie|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-podpromie-rzeszow.jpg",
   "ratio": 1.506,
@@ -1214,6 +1330,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Hard Rock Cafe Warsaw|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/hard-rock-cafe-warsaw-warszawa.jpg",
+  "ratio": 0.75,
+  "author": "Tugrul Kagan Ates",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Hard_Rock_Cafe,_Warsaw,_Poland,_2010_-_panoramio.jpg",
+  "auto": "venue"
+ },
  "Hashtag Lab|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1256,6 +1380,31 @@
   "source": "https://commons.wikimedia.org/wiki/File:Pl.Kolegiacki_Poznan.jpg",
   "auto": "venue"
  },
+ "Hotel Prezydencki Rzeszów|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
+ "Hotel Traugutta3 Białystok|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/hotel-traugutta3-bialystok-bialystok.jpg",
+  "ratio": 1.586,
+  "author": "Mariag36",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_ul._Traugutta_3,_sztab_koszar.jpg",
+  "auto": "venue"
+ },
+ "Humory|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Hydrozagadka|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1288,6 +1437,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Congress_Centre_from_balloon_-_2.jpg",
   "auto": "venue"
+ },
+ "Instytut Muzyki - Uniwersytet Rzeszowski|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
  },
  "Jabłeczna 18|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -1379,6 +1536,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Lubin-Dialog-Arena-FlyRecord-2.jpg"
  },
+ "KLUB Muzyczny Sześcian|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/klub-muzyczny-szescian-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "KMiTa Swing|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1443,6 +1608,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
+ },
+ "Kino FORUM|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-forum-bialystok.jpg",
+  "ratio": 1.333,
+  "author": "Henryk Borawski",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kino_Forum._Bia%C5%82ystok_(ul._Legionowa).jpg",
+  "auto": "venue"
  },
  "Kino Kijów.Centrum|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/kino-kijow-centrum-krakow.jpg",
@@ -1538,6 +1711,14 @@
   "author": "Stanisław Węsławski",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
+ "Klub Fama|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/klub-fama-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
  "Klub Fantastyki Druga Era|Poznań": {
@@ -1838,6 +2019,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Kurkowa_Street_in_Szczecin,_September_2022_01.jpg",
   "auto": "venue"
  },
+ "LKJ Zabajka|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "LOFToDANCE Łukasz Raś|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1863,6 +2052,15 @@
   "auto": "city"
  },
  "Legia Sports Bar&Rest|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Leśna Sauna Józefów|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
@@ -1997,6 +2195,14 @@
   "author": "Mach240390",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:UlicaMariiKonopnickiej-WidokNaP%C3%B3%C5%82noc-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
+ "Mazowiecka 2/4|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/mazowiecka-2-4-warszawa.jpg",
+  "ratio": 1.007,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Mazowiecka_przy_%C5%9Awi%C4%99tokrzyskiej_2018.jpg",
   "auto": "venue"
  },
  "Mazowiecki Instytut Kultury|Warszawa": {
@@ -2150,6 +2356,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_M%C5%82y%C5%84ska,_Pozna%C5%84.jpg",
   "auto": "venue"
  },
+ "NIE TEATR (Białystok|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/nie-teatr-bialystok-bialystok.jpg",
+  "ratio": 1.421,
+  "author": "Ra Boe",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bialystok_2000_-W%C4%99gierko_Drama_Theatre-_by_RaBoe001.jpg",
+  "auto": "venue"
+ },
  "NIEBO|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -2246,6 +2460,15 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Nora Pub|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Nora|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -2400,6 +2623,14 @@
   "author": "Stanisław Węsławski",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
+ "Opera i Filharmonia Podlaska - Europejskie Centrum Sztuki w Białymstoku|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/opera-i-filharmonia-podlaska-europejskie-centrum-sztuki-w-bialymstoku-.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
  "Orlen Stadion|Płock": {
@@ -2652,6 +2883,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w,_Rynek_Linia_A-B_-_fotopolska.eu_(338618).jpg",
   "auto": "city"
  },
+ "Pod Palmą|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
+ "Podlaska Adamczycha|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/podlaska-adamczycha-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "Podwórko.art|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -2690,6 +2937,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Relief_at_Portowa_4_Street_in_Gdynia.jpg",
   "auto": "venue"
+ },
+ "Posąg Światowida w Gajownikach|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/posag-swiatowida-w-gajownikach-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
  },
  "Potem-o-tem|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/potem-o-tem-warszawa.jpg",
@@ -2757,6 +3012,15 @@
   "auto": "city"
  },
  "Południk 2.0|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Południk Zero|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
@@ -3023,6 +3287,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Rzeszowskie Piwnice|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszowskie-piwnice-rzeszow.jpg",
+  "ratio": 1.336,
+  "author": "If you are willing to use this photo, please caption it as follows: author: Patr",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_(Rynek_10)_-_Rzeszowskie_Piwnice_-_tabliczka_informacyjna.jpg",
+  "auto": "venue"
+ },
+ "Rzeszów|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Rzymowskiego 32|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/rzymowskiego-32-warszawa.jpg",
   "ratio": 1.333,
@@ -3199,6 +3479,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Junior_Sokolska_31_2022.jpg",
   "auto": "venue"
  },
+ "Solec 81B|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Soleckie Centrum Kultury|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -3297,6 +3586,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
+ },
+ "Staromiejski Dom Kultury|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/staromiejski-dom-kultury-warszawa.jpg",
+  "ratio": 0.658,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Kamienica_Bornbachowska_w_Warszawie_2021.jpg",
+  "auto": "venue"
  },
  "Stary Klasztor|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -3718,6 +4015,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Underground Pub|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Uniwersytet im. Adama Mickiewicza w Poznaniu|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -3802,6 +4107,31 @@
   "auto": "venue"
  },
  "Warszawa|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Warszawska 34|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawska-34-bialystok.jpg",
+  "ratio": 1.333,
+  "author": "Pacyfa",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Warszawska_37.JPG",
+  "auto": "venue"
+ },
+ "Warszawska 6|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawska-6-bialystok.jpg",
+  "ratio": 1.778,
+  "author": "Rakoon",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:20200727_125217_Warszawska_Street_in_Bia%C5%82ystok.jpg",
+  "auto": "venue"
+ },
+ "Warszawski Dom Technika NOT|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
@@ -3923,6 +4253,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wrzesnia_dom_kultury_(1).jpg",
   "auto": "venue"
  },
+ "Wschodnioeuropejska Akademia Nauk Stosowanych w Białymstoku|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/wschodnioeuropejska-akademia-nauk-stosowanych-w-bialymstoku-bialystok.jpg",
+  "ratio": 1.333,
+  "author": "Adam-dalekie-pole",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_-_siedziba_Wy%C5%BCszej_Szko%C5%82y_Finans%C3%B3w_i_Zarz%C4%85dzania.JPG",
+  "auto": "venue"
+ },
  "Wybrzeże Wyspiańskiego|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/wybrzeze-wyspianskiego-wroclaw.jpg",
   "ratio": 1.506,
@@ -3949,6 +4287,14 @@
  },
  "ZEN COM Expo|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/zen-com-expo-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
+ "ZEN.COM EXPO ul. Jasionka 953|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
   "ratio": 0.75,
   "author": "SuperGlob",
   "license": "CC BY 3.0",
@@ -4003,6 +4349,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Zmiana Klimatu|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/zmiana-klimatu-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
  },
  "Złote Tarasy|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/zlote-tarasy-warszawa.jpg",
