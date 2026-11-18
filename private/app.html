@@ -367,6 +367,54 @@ canvas#confetti{position:absolute;inset:0;z-index:190;pointer-events:none;displa
 .wr>*:nth-child(5){animation-delay:.30s}.wr>*:nth-child(6){animation-delay:.37s}
 .wr>*:nth-child(7){animation-delay:.44s}
 #wrapwrap.paused span[style*="wfill"]{animation-play-state:paused}
+
+/* =========================================================
+   DOPRACOWANIE WYGLĄDU APLIKACJI (telefon): równe odstępy, nic nie nachodzi
+   ========================================================= */
+/* pasek „Kup bilet”: zawsze na dole ekranu, nad paskiem gestów; treść kończy się nad nim */
+@media (max-width:760px){
+  #view > .event-buy{position:fixed !important;left:0;right:0;bottom:0;z-index:45;
+    padding:12px 20px calc(12px + env(safe-area-inset-bottom)) !important;background:var(--bg);border-top:1px solid var(--line)}
+  #view > .event-buy .btn{height:54px}
+  .event-detail{padding-bottom:calc(104px + env(safe-area-inset-bottom)) !important}
+}
+@media (min-width:761px){
+  body:not(.demo) #view > .event-buy{position:static !important;max-width:1280px;margin:0 auto;padding:0 40px 40px !important}
+  /* podgląd w ramce telefonu na komputerze: pasek przyklejony do dołu ramki */
+  body.demo #view > .event-buy{position:sticky !important;bottom:0;padding:12px 20px 20px !important;background:var(--bg);border-top:1px solid var(--line)}
+  body.demo .event-detail{padding-bottom:24px !important}
+}
+/* Mam bilet / Zapisz / Kalendarz / Udostępnij: cztery równe przyciski */
+.mine-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.mine-acts .mine-act{min-height:68px;padding:12px 2px;min-width:0}
+.mine-acts .mine-act span{font-size:11.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:390px){ .mine-acts{gap:6px} .mine-acts .mine-act{padding:12px 0} .mine-acts .mine-act span{font-size:10.5px;letter-spacing:-.01em} }
+/* Obserwuj / Plan na wieczór i inne pary przycisków: tekst nie dotyka krawędzi */
+.event-info .row > .btn{padding:0 12px;gap:7px;white-space:nowrap;min-width:0}
+/* nagłówki z przyciskiem Wstecz: pełne tło, przewijany tekst nie prześwituje */
+.hdr{background:var(--bg) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important}
+/* podpowiedzi w wyszukiwarce */
+.search-wrap{position:relative;z-index:30}
+.sg{position:absolute;left:-1px;right:-1px;top:calc(100% + 6px);max-height:min(56vh,440px);overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--line-2);border-radius:16px;padding:6px 0 8px;box-shadow:0 24px 48px -18px rgba(0,0,0,.45)}
+.sg-h{display:block;padding:10px 16px 4px;font:500 11px/1 var(--m);letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+.sg-row{display:flex;gap:12px;align-items:center;width:100%;padding:8px 16px;text-align:left;color:var(--t1);background:none;border:0}
+.sg-row .col{min-width:0;flex:1}
+.sg-row b{font:600 15px/1.25 var(--d);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg-row .mono{margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg-row mark{background:transparent;color:var(--pink)}
+.sg-th{width:44px;height:44px;flex:none;border-radius:11px;overflow:hidden;background:var(--surface-3);display:grid;place-items:center}
+.sg-th img{width:100%;height:100%;object-fit:cover;display:block}
+.sg-ini{font:700 17px/1 var(--d);color:var(--t2)}
+/* strona miejsca */
+.place-photo{aspect-ratio:4/3;max-width:100%;border-radius:20px;overflow:hidden;background:var(--surface-2)}
+.place-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.place-name{font-size:34px;line-height:1.04;letter-spacing:-.03em;margin:0;text-wrap:balance}
+.place-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.place-btns .btn{height:50px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font:600 15px/1 var(--d)}
+.place-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.place-facts > div{background:var(--surface-2);border-radius:14px;padding:12px;display:grid;gap:5px;min-width:0}
+.place-facts b{font:700 19px/1.1 var(--d);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 <link rel="stylesheet" href="/app.css">
 <link rel="stylesheet" href="/admin.css">
@@ -628,7 +676,7 @@ function toast(msg, dark=false, ms=2200){
     setTimeout(()=>el.remove(),320);}, ms);
 }
 
-const ORDER = ['start','login','blik','home','list','invite','event','venue','select','checkout','success',
+const ORDER = ['start','login','blik','home','list','invite','event','place','venue','select','checkout','success',
   'tickets','ticket','release','transfer','transferDone','wallet','topup','nfc','scanpay','bar','scanner','wrapped',
   'auth','profile','admin','map','cities'];
 function appStaffMode(){ return effectiveRole()==='staff'; }
@@ -652,7 +700,7 @@ function go(s){
   if(s===S.screen) return;
   S.dir = ORDER.indexOf(s) >= ORDER.indexOf(S.screen) ? 'fwd' : 'bwd';
   S.prev = S.screen; S.screen = s; haptic(6); sfxTap();
-  $('#view').scrollTop = 0;
+  $('#view').scrollTop = 0; if(s!=='home') document.getElementById('installbar')?.remove();
   if(!DEMO && matchMedia('(min-width:761px)').matches) window.scrollTo(0,0);
   render();
 }
@@ -1315,10 +1363,13 @@ function weekendDays(){
   return out;
 }
 /* cena: brak ceny = płatne (sprzedaje serwis biletowy), 0 zł = bezpłatne */
-const PRICE = [['free','Bezpłatne'],['paid','Płatne']];
-const okPrice = e => S.price==='free' ? e.from===0 : S.price==='paid' ? e.from!==0 : true;
-const WHEN = [['all','Kiedykolwiek'],['today','Dziś'],['tomorrow','Jutro'],['weekend','Weekend'],['week','7 dni']];
+const PRICE = [['free','Bezpłatne'],['cheap','Do 100 zł'],['paid','Płatne']];
+const okPrice = e => S.price==='free' ? e.from===0 : S.price==='cheap' ? e.from!=null && e.from<=100 : S.price==='paid' ? e.from!==0 : true;
+const WHEN = [['all','Kiedykolwiek'],['tonight','Dziś wieczorem'],['today','Dziś'],['tomorrow','Jutro'],['weekend','Weekend'],['week','7 dni']];
+/* „Dziś wieczorem”: dzisiejsze od 17:00 (i trwające wydarzenia wielodniowe) */
+const tonight = e => e.day===localDay() ? (!e.time || e.time>='17:00' || e.multi) : !!e.ongoing;
 function okWhen(e){
+  if(S.when==='tonight') return tonight(e);
   if(S.when==='today') return e.day===localDay();
   if(S.when==='tomorrow') return e.day===addDays(1);
   if(S.when==='weekend') return weekendDays().includes(e.day);
@@ -1518,11 +1569,12 @@ const scList = () => {
   </div>
 
   <div class="pad search-wrap" style="padding-bottom:14px">
-    <div style="height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)">
+    <div style="position:relative;height:48px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;gap:10px;padding:0 16px;border:1px solid rgba(var(--fg),.07)">
       <span style="color:var(--t2);display:flex">${ic('search',17)}</span>
       <input id="q" aria-label="Szukaj wydarzeń, artystów i miejsc" placeholder="Szukaj wydarzeń, artystów, miejsc" value="${esc(S.query)}"
         style="flex:1;font:400 14px/1 var(--d);color:var(--t1)" autocomplete="off">
       ${S.query?`<span data-act="clearQ" style="color:var(--t3);display:flex">${ic('cross',16)}</span>`:''}
+      <section id="sg" class="sg" aria-label="Podpowiedzi" hidden></section>
     </div>
   </div>
 
@@ -1683,6 +1735,93 @@ const scSecret = (e) => {
 
 /* ---- EVENT ---- */
 /* prawdziwe wydarzenie: info + linki do sprzedawców biletów */
+/* =========================================================
+   MIEJSCA, PODPOWIEDZI W WYSZUKIWARCE, LINKI DO UDOSTĘPNIANIA (jak na stronie, w wyglądzie aplikacji)
+   ========================================================= */
+const slugify = s => fold(s).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80);
+/* ten sam adres co na stronie: plusoneapp.pl/miejsce/<nazwa>-<miasto> */
+const venueSlug = e => slugify(e.venue) + (fold(e.venue).includes(fold(e.city)) ? '' : '-'+slugify(e.city));
+const hasVenue = e => !!e.venue && e.venue!==e.city && !/^(tba|tbc|online)\b/i.test(e.venue);
+const upcoming = () => EVENTS.filter(x=>x.real && x.day>=localDay() && !ACC.hidden.has(x.id));
+function venueEvents(slug){ return upcoming().filter(x=>hasVenue(x) && venueSlug(x)===slug).sort((a,b)=>a.start.localeCompare(b.start)); }
+function openPlace(slug){ if(!slug) return; S.place=slug; if(S.screen==='place'){ render(); $('#view').scrollTop=0; } else go('place'); }
+const SITE = 'https://plusoneapp.pl';
+const eventUrl = e => SITE+'/e/'+encodeURIComponent(e.id);
+const venueUrl = slug => SITE+'/miejsce/'+slug;
+async function shareUrl(url, title, text){
+  if(navigator.share){ try{ await navigator.share({title, text, url}); return; }catch(x){ if(x && x.name==='AbortError') return; } }
+  try{ await navigator.clipboard.writeText(url); toast('Link skopiowany'); }catch(x){ toast(url, true, 5000); }
+}
+
+/* strona miejsca: zdjęcie, adres, dojazd, wszystkie nadchodzące wydarzenia */
+const scPlace = () => {
+  const list = venueEvents(S.place), e0 = list[0];
+  if(!e0) return `<div class="pg pad col" style="padding-top:120px;gap:14px;align-items:flex-start">
+    <span class="h3">To miejsce nie ma teraz nadchodzących wydarzeń</span>
+    <button class="btn p" data-act="go:list" style="height:50px;padding:0 20px;width:auto">Zobacz wszystkie wydarzenia</button></div>`;
+  const photo = (list.find(x=>x.image && x.image.includes('/img/obiekty/')) || list.find(x=>x.image))?.image;
+  const cats = [...new Set(list.map(x=>CAT_PL[x.cat]).filter(Boolean))].slice(0,3);
+  const prices = list.map(x=>x.from).filter(p=>p>0), col = collapse(list);
+  const d = new Date(e0.day+'T12:00');
+  return `
+<div class="pg place-page" style="padding:64px 0 112px">
+  <div class="pad row" style="gap:12px;padding-bottom:16px">
+    <button class="back" data-act="back" aria-label="Wróć">${ic('chevL',18)}</button>
+    <span class="mono" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(cats.join(' · ')||'Miejsce')}</span>
+    <button class="back" data-act="sharePlace" aria-label="Udostępnij">${ic('share',17)}</button>
+  </div>
+  <div class="pad col" style="gap:16px">
+    ${photo?`<div class="place-photo ds"><img src="${esc(photo)}" alt="" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></div>`:''}
+    <div class="col" style="gap:8px"><h1 class="h1 place-name">${esc(e0.venue)}</h1><span class="mono" style="line-height:1.5">${esc(e0.address||e0.city)}</span></div>
+    <div class="place-btns">
+      <a class="btn p" href="${mapsUrl(e0)}" target="_blank" rel="noopener">${ic('pin',17)} Dojazd</a>
+      <button class="btn g" data-act="sharePlace">${ic('share',17)} Udostępnij</button>
+    </div>
+    <div class="place-facts">
+      <div><span class="mono">Nadchodzące</span><b>${col.length}</b></div>
+      <div><span class="mono">Najbliższe</span><b>${e0.day===localDay()?'dziś':e0.day===addDays(1)?'jutro':d.getDate()+' '+MIES[d.getMonth()]}</b></div>
+      <div><span class="mono">Bilety od</span><b>${prices.length?zl(Math.min(...prices)):'—'}</b></div>
+    </div>
+    <span class="eyebrow" style="padding-top:8px">Nadchodzące wydarzenia</span>
+  </div>
+  <div class="pad">${col.slice(0,80).map(bigListRow).join('')}</div>
+</div>`;
+};
+
+/* podpowiedzi w wyszukiwarce: miejsca, wydarzenia, artyści */
+function hlText(s, fq){
+  const i = fold(s).indexOf(fq);
+  return i<0 ? esc(s) : esc(s.slice(0,i))+'<mark>'+esc(s.slice(i,i+fq.length))+'</mark>'+esc(s.slice(i+fq.length));
+}
+const nWyd = n => n===1 ? 'wydarzenie' : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 'wydarzenia' : 'wydarzeń';
+function suggestHtml(q){
+  const fq = fold(q.trim()); if(fq.length<2) return '';
+  const pool = upcoming(), mine = x => x.city===S.city ? 1 : 0;
+  const vm = new Map();
+  for(const e of pool){ if(!hasVenue(e) || !fold(e.venue).includes(fq)) continue;
+    const k = venueSlug(e), v = vm.get(k) || {k, name:e.venue, city:e.city, n:0, img:null};
+    v.n++; if(!v.img && e.image) v.img = e.image; vm.set(k, v); }
+  const venues = [...vm.values()].sort((a,b)=>mine(b)-mine(a) || b.n-a.n).slice(0,3);
+  const evs = collapse(pool.filter(e=>fold(e.name).includes(fq)).sort((a,b)=>mine(b)-mine(a) || (b.hot||0)-(a.hot||0) || a.start.localeCompare(b.start))).slice(0,5);
+  const am = new Map();
+  for(const e of pool) for(const a of e.lineup||[]) if(fold(a).includes(fq)){ const k=fold(a), o=am.get(k)||{a,n:0}; o.n++; am.set(k,o); }
+  const arts = [...am.values()].sort((a,b)=>b.n-a.n).slice(0,3);
+  if(!venues.length && !evs.length && !arts.length) return '';
+  const th = img => `<span class="sg-th">${img?`<img src="${esc(img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</span>`;
+  return (venues.length?`<span class="sg-h">Miejsca</span>`+venues.map(v=>`<button class="sg-row" data-act="place:${v.k}">${th(v.img)}<span class="col"><b>${hlText(v.name,fq)}</b><span class="mono">${v.n} ${nWyd(v.n)}${v.city!==S.city?' · '+esc(v.city):''}</span></span></button>`).join(''):'')
+    + (evs.length?`<span class="sg-h">Wydarzenia</span>`+evs.map(e=>`<button class="sg-row" data-act="ev:${e.id}">${th(e.image)}<span class="col"><b>${hlText(e.name,fq)}</b><span class="mono">${esc(e.when)} · ${esc(e.city!==S.city?e.city:e.venue)}</span></span></button>`).join(''):'')
+    + (arts.length?`<span class="sg-h">Artyści</span>`+arts.map(o=>`<button class="sg-row" data-act="qset:${encodeURIComponent(o.a)}"><span class="sg-th sg-ini">${esc(o.a[0])}</span><span class="col"><b>${hlText(o.a,fq)}</b><span class="mono">${o.n} ${nWyd(o.n)}</span></span></button>`).join(''):'');
+}
+function showSuggest(){
+  const q = $('#q'), box = $('#sg');
+  if(!q || !box) return;
+  const h = document.activeElement===q ? suggestHtml(q.value) : '';
+  box.innerHTML = h; box.hidden = !h;
+  if(h){ bind(box);
+    /* panel kończy się nad dolnym paskiem aplikacji i klawiaturą */
+    const nav = document.querySelector('#nav:not(.hide)'), bottom = Math.min(visualViewport?.height||innerHeight, nav && nav.getBoundingClientRect().top>0 ? nav.getBoundingClientRect().top - 40 : innerHeight);
+    box.style.maxHeight = Math.max(180, Math.min(440, bottom - box.getBoundingClientRect().top - 16))+'px'; }
+}
 const mapsUrl = e => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([e.venue,e.address||e.city].join(', '));
 const scLive = e => `
 <div class="pg event-detail" style="padding-bottom:118px">
@@ -1702,16 +1841,16 @@ const scLive = e => `
       <h1 class="h1" style="font-size:${e.name.length>48?26:e.name.length>28?30:36}px;line-height:1.08">${esc(e.name)}</h1>
     </div>
     <div class="card" style="padding:4px 16px">
-      ${[['clock', e.date+(e.time?', godz. '+e.time:''), e.multi?'wiele terminów':['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'][new Date(e.day+'T12:00').getDay()]+(e.day===localDay()?' · dziś':e.day===addDays(1)?' · jutro':'')],
-         ['pin', e.venue, (e.address||e.city)+' · pokaż na mapie', mapsUrl(e)],
+      ${[['clock', e.date.replace(' (wiele terminów)','')+(e.time?', godz. '+e.time:''), e.multi?'wiele terminów':['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'][new Date(e.day+'T12:00').getDay()]+(e.day===localDay()?' · dziś':e.day===addDays(1)?' · jutro':'')],
+         ['pin', e.venue, hasVenue(e) ? (e.address||e.city)+' · wszystkie wydarzenia tutaj' : (e.address||e.city)+' · pokaż na mapie', hasVenue(e) ? null : mapsUrl(e), hasVenue(e) ? 'place:'+venueSlug(e) : null],
          ['ticket', e.from==null?'Cena u sprzedawcy':e.from===0?'Wstęp wolny':'Bilety od '+zl(e.from), e.links.length>1?e.links.length+' sprzedawców':(SRC_PL[e.links[0].source]||'')]]
-        .map(([i,t,sub,href],k)=>`<${href?`a href="${href}" target="_blank" rel="noopener"`:'div'} class="row" style="gap:14px;padding:12px 0;color:inherit;text-decoration:none;${k?'border-top:1px solid var(--line)':''}">
+        .map(([i,t,sub,href,da],k)=>`<${href?`a href="${href}" target="_blank" rel="noopener"`:da?`div data-act="${da}"`:'div'} class="row" style="gap:14px;padding:12px 0;color:inherit;text-decoration:none;${k?'border-top:1px solid var(--line)':''}">
           <span style="width:36px;height:36px;border-radius:11px;background:var(--surface-3);display:grid;place-items:center;color:var(--t1);flex:none">${ic(i,17)}</span>
           <div class="col" style="min-width:0;flex:1"><span style="font:600 15px/1.25 var(--d)">${esc(t)}</span>${sub?`<span class="mono" style="margin-top:3px">${esc(sub)}</span>`:''}</div>
-          ${href?`<span style="color:var(--t3);display:flex">${ic('chevR',16)}</span>`:''}</${href?'a':'div'}>`).join('')}
+          ${href||da?`<span style="color:var(--t3);display:flex">${ic('chevR',16)}</span>`:''}</${href?'a':'div'}>`).join('')}
     </div>
-    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:8px">
-      ${[[MINE.going.has(e.id)?'Mam bilet ✓':'Mam bilet','ticket','mine:going:'+e.id, MINE.going.has(e.id), 'going'],
+    <div class="mine-acts">
+      ${[[MINE.going.has(e.id)?'Mam bilet':'Mam bilet','ticket','mine:going:'+e.id, MINE.going.has(e.id), 'going'],
          [MINE.saved.has(e.id)?'Zapisane':'Zapisz','heart','mine:saved:'+e.id, MINE.saved.has(e.id), 'saved'],
          ['Kalendarz','clock','calNext:'+e.id],['Udostępnij','share','share']]
         .map(([l,i,a,on,k])=>`<button class="mine-act ${on?'on':''} ${on&&S.popId===e.id+k?'pop':''}" data-act="${a}">${ic(i,18)}<span>${l}</span></button>`).join('')}
@@ -1752,11 +1891,11 @@ const scLive = e => `
         <span style="color:${PINK};display:flex">${ic('chevR',17)}</span>
       </a>`).join('')}
     </div>
-<div class="event-buy" style="position:absolute;bottom:0;left:0;right:0;padding:14px 20px 28px;background:linear-gradient(180deg,rgba(var(--bg-rgb),0),var(--bg) 30%);z-index:45">
+  </div>
+</div>
+<div class="event-buy" style="position:absolute;bottom:0;left:0;right:0;z-index:45">
   <a class="btn p" href="${esc(e.links[0].url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;text-decoration:none">
     ${e.from===0?'Szczegóły u organizatora':'Kup bilet'+(e.from!=null?' · '+price(e):' · '+esc(SRC_PL[e.links[0].source]||'u sprzedawcy'))}</a>
-</div>
-  </div>
 </div>`;
 
 const scEvent = () => {
@@ -2799,7 +2938,7 @@ const scScanpay = () => {
 };
 
 const SCREENS = {
-  login:scLogin, blik:scBlik, home:scHome, list:scList, invite:scInvite, event:scEvent, venue:scVenue,
+  login:scLogin, blik:scBlik, home:scHome, list:scList, invite:scInvite, event:scEvent, venue:scVenue, place:()=>scPlace(),
   select:scSelect, checkout:scCheckout, success:scSuccess, tickets:scMyTickets, ticket:scTicket,
   release:scRelease, transfer:scTransfer, transferDone:scTransferDone, wallet:scWallet, topup:scTopup,
   nfc:scNfc, bar:scBar, wrapped:scWrapped, scanpay:scScanpay,
@@ -3027,11 +3166,11 @@ function act(a){
     case 'payBar': payBar(); break;
     case 'noFunds': sfxErr(); haptic(30); toast('Za mało PLUSÓW — doładuj portfel',true); break;
     case 'share': shareSheet(); break;
-    case 'shareLink': { const e=ev(), url=e.links[0].url;
-      if(navigator.share) navigator.share({title:e.name, text:e.when+' · '+e.venue, url}).catch(()=>{});
-      else { try{navigator.clipboard.writeText(url)}catch(x){} toast('Link skopiowany'); }
-      closeSheet(); break; }
-    case 'copyLink': try{navigator.clipboard.writeText(ev().links[0].url)}catch(x){} toast('Link skopiowany'); closeSheet(); break;
+    case 'shareLink': { const e=ev(); closeSheet(); shareUrl(eventUrl(e), e.name, e.when+' · '+e.venue); break; }
+    case 'copyLink': { const u=eventUrl(ev()); try{navigator.clipboard.writeText(u); toast('Link skopiowany');}catch(x){ toast(u, true, 5000); } closeSheet(); break; }
+    case 'place': openPlace(p1); break;
+    case 'sharePlace': { const l=venueEvents(S.place); if(l[0]) shareUrl(venueUrl(S.place), l[0].venue, 'Nadchodzące wydarzenia · '+l[0].city); break; }
+    case 'qset': S.query=decodeURIComponent(p1||''); S.limit=40; S.dir=null; render(); break;
     case 'promo': promoSheet(); break;
     case 'splitSheet': splitSheet(); break;
     case 'sheetCity': citySheet(); break;
@@ -3513,8 +3652,11 @@ function attachGestures(){
 
   // szukajka
   const q=$('#q');
+  if(q){ q.onfocus = showSuggest; q.onblur = ()=>setTimeout(()=>{ const b=$('#sg'); if(b && document.activeElement!==$('#q')) b.hidden=true; }, 160);
+    q.onkeydown = ev2=>{ if(ev2.key==='Escape'){ const b=$('#sg'); if(b) b.hidden=true; } };
+    const sg=$('#sg'); if(sg) sg.onmousedown = ev2=>ev2.preventDefault(); showSuggest(); }
   if(q) q.oninput = ()=>{
-    S.query=q.value; const p=q.selectionStart;
+    S.query=q.value; const p=q.selectionStart; showSuggest();
     clearTimeout(S._qt);
     S._qt = setTimeout(()=>{ S.dir=null; render();
       const n=$('#q'); if(n){ n.focus(); n.setSelectionRange(p,p); } }, 220);
@@ -3659,7 +3801,8 @@ function installHint(){
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
   let skip = false; try{ skip = !!localStorage.getItem('installHintOff') }catch(e){}
   $('#installbar')?.remove();
-  if(standalone || skip || innerWidth>760 || (!INSTALL && !ios)) return;
+  /* nigdy w aplikacji z ikony / ze sklepu; tylko na Odkrywaj, sama znika po 12 s */
+  if(standalone || window.Capacitor || skip || innerWidth>760 || (!INSTALL && !ios) || S.screen!=='home') return;
   const el = document.createElement('div'); el.id='installbar';
   el.style.cssText='position:absolute;left:12px;right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:140;display:flex;gap:12px;align-items:center;padding:12px 12px 12px 14px;border-radius:18px;background:rgba(20,20,24,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.5);animation:pop .3s';
   el.innerHTML = `${LOGO(40,10)}<div class="col" style="flex:1;min-width:0"><span style="font:600 14px/1.2 var(--d)">Dodaj +1 do ekranu telefonu</span>
@@ -3668,6 +3811,7 @@ function installHint(){
     <button id="installx" aria-label="Zamknij" style="width:28px;height:28px;color:rgba(255,255,255,.6);font-size:18px">×</button>`;
   $('#shell').appendChild(el);
   $('#installx').onclick = ()=>{ try{localStorage.setItem('installHintOff','1')}catch(e){} el.remove(); };
+  setTimeout(()=>el.remove(), 12000);
   const g = $('#installgo'); if(g) g.onclick = async ()=>{ INSTALL.prompt(); await INSTALL.userChoice.catch(()=>{}); INSTALL=null; el.remove(); };
 }
 

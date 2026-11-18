@@ -496,7 +496,7 @@ const gatePage = ({ mode, user, email, token, note }) => {
 font:16px/1.5 'Space Grotesk',system-ui,-apple-system,sans-serif;padding:max(24px,env(safe-area-inset-top)) 22px max(24px,env(safe-area-inset-bottom))}
 main{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px}form{display:flex;flex-direction:column;gap:12px}
 svg{width:84px;height:84px;border-radius:22px;align-self:center;margin-bottom:6px}
-h1{font-size:40px;line-height:1.02;letter-spacing:-.035em;text-align:center;font-weight:700}h1 span{color:#FF0059}
+button,input{font-family:inherit}h1{font-size:40px;line-height:1.02;letter-spacing:-.035em;text-align:center;font-weight:700}h1 span{color:#FF0059}
 p{color:rgba(255,255,255,.66);text-align:center;font-size:15px}
 .reg{font-size:15px;color:rgba(255,255,255,.66);margin-top:4px}.reg a{color:#FF0059;font-weight:700;text-decoration:none;font-size:15px}
 a.site{color:rgba(255,255,255,.4);font:400 12px/1 'JetBrains Mono',ui-monospace,monospace;text-decoration:none;letter-spacing:.04em}
@@ -508,12 +508,12 @@ button:disabled{opacity:.6}.err{color:#ff7aa5;font-size:14px;text-align:center;m
 <svg viewBox="0 0 100 100"><rect width="100" height="100" fill="#000"/><g fill="#FF0059" transform="translate(6.45 8.3)"><rect x="13.7" y="34.8" width="40.1" height="14"/><rect x="27.4" y="22.9" width="13.2" height="37.6"/><rect x="59.4" y="22.9" width="14" height="37.6"/></g></svg>
 <h1>${mode === 'invite' ? 'Witaj w +1' : mode === 'change' || mode === 'reset' || mode === 'forgot' ? 'Nowe hasło' : mode === 'denied' ? 'Już prawie' : 'Gdzie dziś<br><span>idziemy?</span>'}</h1>
 ${forms[mode]}
-<p id="ios" style="display:none;font-size:13px">Dodaj +1 do ekranu: w Safari stuknij <b>Udostępnij</b> → <b>Do ekranu początkowego</b>.</p>
+<p id="ios" style="display:none;font-size:13px;line-height:1.55">Dodaj +1 do ekranu: w Safari stuknij <b style="white-space:nowrap">Udostępnij</b> →︎ <b style="white-space:nowrap">Do ekranu początkowego</b>.</p>
 ${mode === 'login' ? '<p class="reg">Nie masz konta? <a href="/?web&amp;register" target="_blank" rel="noopener">Zarejestruj się</a></p><p class="reg" style="margin-top:-6px"><a href="/app?forgot" style="color:rgba(255,255,255,.55);font-weight:500">Nie pamiętasz hasła?</a></p>' : ''}
 <a class="site" href="/?web" target="_blank" rel="noopener">plusoneapp.pl</a>
 </main><script>
 const $=id=>document.getElementById(id),f=$('f'),o=$('out');
-if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone) $('ios').style.display='block';
+if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!navigator.standalone&&!window.Capacitor&&!matchMedia('(display-mode: standalone)').matches) $('ios').style.display='block';
 const post=(u,d)=>fetch(u,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
   .then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Coś poszło nie tak.');return j;});
 if(f) f.onsubmit=async ev=>{ev.preventDefault();const b=$('b'),m=$('m'),k=f.dataset.mode;b.disabled=true;m.textContent='';

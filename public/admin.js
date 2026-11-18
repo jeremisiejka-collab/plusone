@@ -1248,10 +1248,10 @@ function liveSection(){
   const diff = D.prevVisitors ? Math.round((D.visitors-D.prevVisitors)/D.prevVisitors*100) : null;
   const mx = a => Math.max(1, ...a.map(r=>r.v ?? r.n ?? r[1] ?? 0));
   return `<section class="live-sec">
-  <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+  <div class="live-top">
     <h2 class="live-h"><i class="live-dot"></i>Ruch na stronie</h2>
-    ${[[1,'Dziś'],[7,'7 dni'],[30,'30 dni']].map(([d,l])=>`<button class="chip ${LIVEP.days===d?'on':''}" data-act="liveDays:${d}">${l}</button>`).join('')}
-    <span class="mono" style="margin-left:auto">Odświeża się co 10 s · ${new Date(D.now).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span></div>
+    <div class="live-rng">${[[1,'Dziś'],[7,'7 dni'],[30,'30 dni']].map(([d,l])=>`<button class="chip ${LIVEP.days===d?'on':''}" data-act="liveDays:${d}">${l}</button>`).join('')}</div>
+    <span class="mono live-ts">Odświeża się co 10 s · ${new Date(D.now).toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}</span></div>
   <div class="dkpis">
     <div class="dkpi live-kpi"><span class="dkpi-l"><i class="live-dot"></i>Teraz na stronie</span><b>${pl(L.length)}</b><span class="dkpi-s">${pl(L.filter(r=>r.app).length)} w aplikacji · ${pl(L.filter(r=>r.device==='telefon').length)} na telefonie</span></div>
     ${kpi('Odwiedzający · '+rng, D.visitors, diff===null?'pierwszy okres z danymi':`<em>${diff>=0?'+':''}${diff}%</em> względem poprzedniego okresu`, 'users')}

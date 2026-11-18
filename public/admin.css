@@ -323,3 +323,10 @@ button, [role="button"], .btn, .chip, summary, [data-act]:not(input):not(textare
 /* pola wpisywania (wyszukiwarka, formularze) bez różowej ramki fokusu — pole ma własne obramowanie;
    ramka zostaje tylko na przyciskach i linkach przy obsłudze klawiaturą */
 input:focus-visible, textarea:focus-visible, select:focus-visible { outline: none; }
+
+/* Ruch na stronie: tytuł, zakres (Dziś / 7 / 30 dni) i godzina odświeżenia w równych rzędach */
+.live-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin-bottom:14px}
+.live-top .live-h{margin:0}
+.live-rng{display:flex;gap:8px}
+.live-ts{margin-left:auto}
+@media (max-width:760px){ .live-top{flex-direction:column;align-items:flex-start} .live-ts{margin-left:0} }

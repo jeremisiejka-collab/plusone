@@ -209,7 +209,7 @@ function premiumEvent(e){
   if(!e?.real) return '';
   if(ACC.user && !PREM.crew[e.id]) setTimeout(()=>loadCrew(e.id), 0);
   const on = following('event', e.id);
-  return `<div class="row" style="gap:8px">
+  return `<div class="prem-btns">
       <button class="btn ${on?'w':'g'}" data-act="followEv:${esc(e.id)}" style="flex:1;height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:8px">${ic('bell',17)} ${on?'Obserwujesz':'Obserwuj'}</button>
       <button class="btn g" data-act="plan:${esc(e.id)}" style="flex:1;height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;gap:8px">${ic('pin',17)} Plan na wieczór</button></div>
     ${e.priceDrop?`<div class="card" style="padding:12px 14px;border-color:var(--pink-line)"><span class="h4" style="color:${PINK}">Taniej!</span> <span class="mono">było od ${pl(e.priceDrop.was)} zł, teraz od ${pl(e.from)} zł</span></div>`:''}
@@ -225,33 +225,47 @@ const PLAN_AMEN = {restaurant:'Restauracja', fast_food:'Szybkie jedzenie', cafe:
 async function planLoad(id){
   const e = EVENTS.find(x=>x.id===id); if(!e) return;
   const P = PREM.plan[id] = PREM.plan[id] || {state:'loading'};
+  // lokale z naszego serwera (worker/nearby.js: Nominatim, pamięć 7 dni) — Overpass z telefonu bywał niedostępny
   try{
-    const q = encodeURIComponent([e.venue, e.address || '', e.city].filter(Boolean).join(', '));
-    let g = await (await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=pl&q=${q}`)).json();
-    if(!g.length) g = await (await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=pl&q=${encodeURIComponent(e.venue+', '+e.city)}`)).json();
-    if(!g.length){ const c = (LIVE.geo||{})[e.city]; if(c && c[3]!=null) g = [{lat:c[3], lon:c[4], approx:true}]; }
-    if(!g.length) throw new Error('Nie znaleźliśmy miejsca na mapie.');
-    P.lat = +g[0].lat; P.lon = +g[0].lon; P.approx = !!g[0].approx;
-    const ql = `[out:json][timeout:20];node(around:900,${P.lat},${P.lon})[amenity~"^(restaurant|fast_food|cafe|bar|pub|biergarten|nightclub)$"][name];out 80;`;
-    const r = await (await fetch('https://overpass-api.de/api/interpreter', {method:'POST', body:'data='+encodeURIComponent(ql), headers:{'Content-Type':'application/x-www-form-urlencoded'}})).json();
-    const dist = (a,b,c,d) => { const R=Math.PI/180, x=(d-b)*R*Math.cos((a+c)/2*R), y=(c-a)*R; return Math.round(Math.sqrt(x*x+y*y)*6371000); };
-    P.places = (r.elements||[]).map(n=>({name:n.tags.name, type:n.tags.amenity, lat:n.lat, lon:n.lon, m:dist(P.lat,P.lon,n.lat,n.lon), cuisine:n.tags.cuisine}))
-      .sort((a,b)=>a.m-b.m);
+    const r = await fetch('/api/nearby?a='+encodeURIComponent(e.address&&e.address!==e.city?e.address:'')+'&c='+encodeURIComponent(e.city)+'&v='+encodeURIComponent(e.venue||''));
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.error || 'Nie udało się pobrać miejsc w okolicy.');
+    if(d.at){ P.lat = d.at.lat; P.lon = d.at.lon; }
+    else { const c = (LIVE.geo||{})[e.city]; if(c && c[3]!=null){ P.lat = c[3]; P.lon = c[4]; P.approx = true; } }
+    P.places = (d.food||[]).map(f=>({name:f.name, type:f.kind, lat:f.lat, lon:f.lon, m:Math.round(f.min*75), street:f.street, city:f.city}));
     P.state = 'ok';
   }catch(err){ P.state = 'error'; P.error = /fetch|network|load/i.test(err.message||'') ? 'Nie udało się pobrać miejsc w okolicy. Sprawdź połączenie i spróbuj ponownie.' : (err.message||'Brak połączenia.'); }
   if(S.screen==='plan' && S.planId===id){ S.dir=null; render(); }
 }
+/* późniejsze imprezy tej nocy w tym samym mieście (po wydarzeniu) */
+function laterTonight(e){
+  if(!e.time) return [];
+  const t0 = new Date(e.start).getTime(), seen = new Set();
+  return EVENTS.filter(x=>x.real && x.id!==e.id && x.city===e.city && x.time && !x.multi && !ACC.hidden.has(x.id) && x.venue!==e.venue && (()=>{
+      const t = new Date(x.start).getTime(); return t>=t0+90*60e3 && t<=t0+7*3600e3 && (x.cat==='Clubs' || x.time>='21:30' || x.time<'05:00'); })())
+    .sort((a,b)=>(b.hot||0)-(a.hot||0) || a.start.localeCompare(b.start))
+    .filter(x=>{ const k=x.name.toLowerCase(); if(seen.has(k)) return false; seen.add(k); return true; }).slice(0,3);
+}
 const gmaps = (lat, lon, mode='walking') => `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}&travelmode=${mode}`;
 const scPlan = () => {
-  const e = EVENTS.find(x=>x.id===S.planId); if(!e) return `<div class="pg pad" style="padding-top:120px"><span class="h3">Brak wydarzenia</span></div>`;
+  const e = EVENTS.find(x=>x.id===S.planId);
+  if(!e){
+    const mine = EVENTS.filter(x=>x.real && x.day>=localDay() && (MINE.going.has(x.id)||MINE.saved.has(x.id))).sort((a,b)=>a.start.localeCompare(b.start)).slice(0,6);
+    return `<div class="pg" style="padding:64px 0 112px"><div class="pad col" style="gap:14px">
+      <div class="h2">Plan na wieczór</div>
+      <p class="body">Wybierz wydarzenie, a ułożymy wieczór dookoła: gdzie zjeść przed, jak dojechać i dokąd iść po.</p>
+      ${mine.length ? `<span class="eyebrow" style="padding-top:6px">Twoje wydarzenia</span>${mine.map(x=>`<button class="planrow" data-act="plan:${esc(x.id)}"><span class="plandot">${ic('pin',16)}</span><span class="col" style="flex:1;min-width:0;text-align:left"><b>${esc(x.name)}</b><span class="mono">${esc(x.when)} · ${esc(x.venue)}</span></span><span style="color:var(--t3);display:flex">${ic('chevR',16)}</span></button>`).join('')}` : ''}
+      <button class="btn p" data-act="go:list" style="height:52px;font:600 15px/1 var(--d)">Wybierz wydarzenie</button>
+    </div></div>`;
+  }
   const P = PREM.plan[e.id];
   if(!P) setTimeout(()=>planLoad(e.id), 0);
   const t = e.time || '20:00', [hh,mm] = t.split(':').map(Number), at = d => { const m=(hh*60+mm+d+1440)%1440; return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'); };
-  const eat = (P?.places||[]).filter(p=>['restaurant','fast_food','cafe'].includes(p.type)).slice(0,5);
-  const drink = (P?.places||[]).filter(p=>['bar','pub','biergarten','nightclub'].includes(p.type)).slice(0,5);
-  const place = p => `<a class="planrow" href="${gmaps(p.lat,p.lon)}" target="_blank" rel="noopener">
+  const eat = (P?.places||[]).filter(p=>['restaurant','fast_food','cafe'].includes(p.type)).slice(0,10);
+  const drink = (P?.places||[]).filter(p=>['bar','pub','biergarten','nightclub'].includes(p.type)).slice(0,10);
+  const place = p => `<a class="planrow" href="${p.street ? 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent([p.name,p.street,p.city].filter(Boolean).join(', ')) : gmaps(p.lat,p.lon)}" target="_blank" rel="noopener">
     <span class="plandot">${ic(['bar','pub','biergarten','nightclub'].includes(p.type)?'beer':'coffee',16)}</span>
-    <span class="col" style="flex:1;min-width:0"><b>${esc(p.name)}</b><span class="mono">${esc(PLAN_AMEN[p.type]||'')}${p.cuisine?' · '+esc(p.cuisine.split(';')[0]):''}</span></span>
+    <span class="col" style="flex:1;min-width:0"><b>${esc(p.name)}</b><span class="mono">${esc(PLAN_AMEN[p.type]||'')}${p.street?' · '+esc(p.street):''}</span></span>
     <span class="mono" style="text-align:right">${p.m<1000?p.m+' m':(p.m/1000).toFixed(1)+' km'}<br>${Math.max(1,Math.round(p.m/80))} min</span></a>`;
   const loading = !P || P.state==='loading';
   return `
@@ -264,9 +278,9 @@ const scPlan = () => {
     <div class="plantl">
       <div><span class="mono">${at(-120)}</span><b>Jedzenie w okolicy</b></div>
       <div class="on"><span class="mono">${esc(t)}</span><b>${esc(e.name)}</b><span class="mono">${esc(e.venue)}</span></div>
-      <div><span class="mono">później</span><b>Bar na koniec</b></div>
+      ${(()=>{ const l = laterTonight(e)[0]; return l ? `<div data-act="ev:${esc(l.id)}" style="cursor:pointer"><span class="mono">${esc(l.time)}</span><b>${esc(l.name)}</b><span class="mono">${esc(l.venue)}</span></div>` : '<div><span class="mono">później</span><b>Bar na koniec</b></div>'; })()}
     </div>
-    ${P?.lat?`<div class="row" style="gap:8px">
+    ${P?.lat?`<div class="prem-btns go3">
       <a class="btn w" href="${gmaps(P.lat,P.lon,'transit')}" target="_blank" rel="noopener" style="flex:1;height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;text-decoration:none">Komunikacją</a>
       <a class="btn g" href="${gmaps(P.lat,P.lon,'walking')}" target="_blank" rel="noopener" style="flex:1;height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;text-decoration:none">Pieszo</a>
       <a class="btn g" href="https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=${P.lat}&dropoff[longitude]=${P.lon}&dropoff[nickname]=${encodeURIComponent(e.venue)}" target="_blank" rel="noopener" style="flex:1;height:48px;font:600 14px/1 var(--d);display:flex;align-items:center;justify-content:center;text-decoration:none">Taxi</a></div>`:''}
@@ -274,7 +288,8 @@ const scPlan = () => {
       ${P.approx?'<span class="mono">Nie znaleźliśmy dokładnego adresu — pokazujemy okolice centrum miasta.</span>':''}
       <span class="eyebrow">Przed: zjedz coś</span><div>${eat.map(place).join('')||'<span class="mono">Nic w pobliżu.</span>'}</div>
       <span class="eyebrow" style="padding-top:6px">Po: bar w okolicy</span><div>${drink.map(place).join('')||'<span class="mono">Nic w pobliżu.</span>'}</div>
-      <span class="mono" style="line-height:1.5">Miejsca z OpenStreetMap. Godziny otwarcia sprawdź przed wyjściem.</span>`}
+      ${laterTonight(e).length ? `<span class="eyebrow" style="padding-top:6px">Po: imprezy tej nocy</span><div>${laterTonight(e).map(x=>`<button class="planrow" data-act="ev:${esc(x.id)}"><span class="plandot">${ic('star',16)}</span><span class="col" style="flex:1;min-width:0;text-align:left"><b>${esc(x.name)}</b><span class="mono">${esc(x.time)} · ${esc(x.venue)}</span></span><span style="color:var(--t3);display:flex">${ic('chevR',16)}</span></button>`).join('')}</div>` : ''}
+      <span class="mono" style="line-height:1.5">Miejsca z OpenStreetMap, otwierają się w Google Maps. Godziny otwarcia sprawdź przed wyjściem.</span>`}
   </div>
 </div>`;
 };

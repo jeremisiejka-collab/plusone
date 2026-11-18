@@ -1,5 +1,5 @@
 /* „Plan na noc”: lokale w pobliżu miejsca wydarzenia (restauracje, bary, puby, kawiarnie) z OpenStreetMap.
-   GET /api/nearby?a=<adres>&c=<miasto>&v=<nazwa miejsca> → { food: [{ name, kind, street, lat, lon, city, min }] } (do 24, od najbliższych)
+   GET /api/nearby?a=<adres>&c=<miasto>&v=<nazwa miejsca> → { food: [{ name, kind, street, lat, lon, city, min }] (do 24, od najbliższych), at: { lat, lon } miejsca wydarzenia }
    Adres zamieniamy na współrzędne i szukamy lokali w pobliżu w Nominatim (Overpass nie odpowiada serwerom Cloudflare); wynik trzymamy w pamięci podręcznej Cloudflare
    przez 7 dni (zasady obu darmowych serwisów: mało zapytań, z identyfikacją aplikacji). */
 const UA = { 'User-Agent': 'plusoneapp.pl/1.0 (+https://plusoneapp.pl)', 'Accept-Language': 'pl' };
@@ -15,11 +15,11 @@ export async function nearby(req, env, json) {
   const clean = addr.replace(/\b\d{2}-\d{3}\b/g, '').replace(/\b(ul|al|pl|os|ulica|aleja|plac|osiedle)\.?\s+/gi, '').split(',').map(x => x.trim())
     .filter(x => x && fold(x) !== fold(city) && !/^(polska|poland)$/i.test(x))[0];
   const queries = [...new Set([clean && clean + ', ' + city, venue && venue + ', ' + city].filter(Boolean))];
-  const key = new Request('https://plusoneapp.pl/api/nearby?v=2&k=' + encodeURIComponent(fold(queries.join('|'))));
+  const key = new Request('https://plusoneapp.pl/api/nearby?v=3&k=' + encodeURIComponent(fold(queries.join('|'))));
   const cache = caches.default;
   const hit = await cache.match(key);
   if (hit) return hit;
-  let food = [];
+  let food = [], at = null;
   try {
     let g = [];
     for (const q of queries) {
@@ -30,6 +30,7 @@ export async function nearby(req, env, json) {
     }
     if (g[0]) {
       const lat = +g[0].lat, lon = +g[0].lon;
+      at = { lat: +lat.toFixed(6), lon: +lon.toFixed(6) };
       // lokale w prostokącie ok. 1 km wokół miejsca: Nominatim (Overpass nie odpowiada serwerom Cloudflare); odstęp 1,1 s — zasady Nominatim
       const vb = [lon - 0.007, lat + 0.0045, lon + 0.007, lat - 0.0045].map(x => x.toFixed(5)).join(',');
       const els = [];
@@ -54,7 +55,7 @@ export async function nearby(req, env, json) {
     return json({ food: [], error: 'Mapa chwilowo nie odpowiada.', detail: String(e?.message || e).slice(0, 80) }, 502, { 'Cache-Control': 'no-store' });
   }
   // pusty wynik pamiętamy krócej (dobę), pełny — tydzień
-  const res = json({ food }, 200, { 'Cache-Control': `public, max-age=${food.length ? 604800 : 86400}` });
+  const res = json({ food, at }, 200, { 'Cache-Control': `public, max-age=${food.length ? 604800 : 86400}` });
   try { await cache.put(key, res.clone()); } catch { /* bez pamięci podręcznej (np. lokalnie) */ }
   return res;
 }

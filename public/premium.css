@@ -200,3 +200,16 @@
 .wlist li:first-child { border-top: 0; }
 .wlist time { width: 54px; flex: none; font: 600 12px/1.2 var(--m); color: var(--pink); }
 .wlist b { font: 600 15px/1.2 var(--d); color: var(--t1); }
+/* wiersze planu jako przyciski (wydarzenia „Po”, lista wyboru wydarzenia) */
+button.planrow { width: 100%; background: none; border: 0; border-bottom: 1px solid var(--line); font: inherit; cursor: pointer; }
+.planrow b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.planrow .mono { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.plantl > div[data-act] b { color: var(--pink); }
+
+/* Obserwuj / Plan na wieczór: dwa równe przyciski, tekst mieści się na iPhonie SE */
+.prem-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.prem-btns .btn{min-width:0;padding:0 10px;white-space:nowrap;overflow:hidden}
+#crewbox .btn{min-width:0;padding:0 12px;white-space:nowrap}
+#crewbox .row{min-width:0}
+@media (max-width:390px){ .prem-btns .btn{font-size:13px !important;gap:6px !important;padding:0 8px} .prem-btns .btn svg{width:15px;height:15px} }
+.prem-btns.go3{grid-template-columns:repeat(3,minmax(0,1fr))}

@@ -79,7 +79,7 @@ export default async function pik() {
       id: 'pik-' + u.split('/').filter(Boolean).pop(),
       source: 'pik',
       // „Swae Lee | koncert w Warszawie - Bilety” → „Swae Lee”
-      title: e.title.replace(/\s*\|[^|]*(w Warszawie|bilety)[^|]*$/i, '').replace(/\s*-\s*bilety\s*$/i, '').trim(),
+      title: e.title.replace(/\s*\|[^|]*(w Warszawie|bilety)[^|]*$/i, '').replace(/\s*-\s*bilety\s*$/i, '').replace(/\s+\|\s+/g, ' – ').trim(),
       start,
       end: end && end.slice(0, 10) !== start.slice(0, 10) ? end : null,
       city: 'Warszawa',
