@@ -669,6 +669,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Dereniowa_w_Warszawie_2017.jpg",
   "auto": "venue"
  },
+ "Dolina Trzech Stawów - Sztauwajery - Muchowiec Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "Dolnobrzeski Ośrodek Kultury|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -912,6 +920,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Energy2000 Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
  "Ergo Arena Skatepark|Gdynia": {
@@ -1874,6 +1890,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Kino_Rialto_Pozna%C5%84_RB1.JPG",
+  "auto": "venue"
+ },
+ "Kino Światowid|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-swiatowid-katowice.jpg",
+  "ratio": 1.333,
+  "author": "Стоялов Максим",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kino_%C5%9Awiatowid_w_Katowicach_(%D0%B0%D0%B2%D1%82%D0%BE%D1%80_%D0%A1%D1%82%D0%BE%D1%8F%D0%BB%D0%BE%D0%B2_%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC_%D0%92%D0%B8%D0%BA%D1%82%D0%BE%D1%80%D0%BE%D0%B2%D0%B8%D1%87).jpg",
   "auto": "venue"
  },
  "Kinoteatr Adria|Bydgoszcz": {
@@ -4469,6 +4493,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Laznia_Nowa_Theater,_25_os._Szkolne,Nowa_Huta,Krakow,Poland.JPG",
   "auto": "venue"
  },
+ "Teatr_ Żelazny|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-zelazny-katowice.jpg",
+  "ratio": 1.333,
+  "author": "Kamil Czaiński",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_Piotrowice,_Teatr_%C5%BBelazny.jpg",
+  "auto": "venue"
+ },
  "Teatro Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/teatro-gdynia-gdynia.jpg",
   "ratio": 1.333,
@@ -4696,6 +4728,14 @@
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_Spire_2019.jpg",
+  "auto": "venue"
+ },
+ "Warszawa Główna|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-glowna-warszawa.jpg",
+  "ratio": 1.43,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Warszawa_G%C5%82%C3%B3wna_widziana_z_k%C5%82adki_2023.jpg",
   "auto": "venue"
  },
  "Warszawa|Warszawa": {
