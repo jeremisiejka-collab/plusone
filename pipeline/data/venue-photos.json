@@ -620,6 +620,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Cytadela by Night|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Czasoprzestrzeń|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -1470,6 +1478,22 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Hotel Bazar w Poznaniu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/hotel-bazar-w-poznaniu-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Gorofil",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84._Bazar_Pozna%C5%84ski_(5).jpg",
+  "auto": "venue"
+ },
+ "Hotel Bazar|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/hotel-bazar-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Gorofil",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84._Bazar_Pozna%C5%84ski_(5).jpg",
+  "auto": "venue"
+ },
  "Hotel Domus Mater|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1651,6 +1675,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Jezioro Jelonek (wenecja)|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Jezioro Rusałka|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/jezioro-rusalka-poznan.jpg",
   "ratio": 0.75,
@@ -1787,6 +1819,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Kino_Forum._Bia%C5%82ystok_(ul._Legionowa).jpg",
   "auto": "venue"
+ },
+ "Kino Halszka|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Kino Kijów.Centrum|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/kino-kijow-centrum-krakow.jpg",
@@ -2152,6 +2192,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Kolejowa 29|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/kolejowa-29-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Koefbac",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Stacja_kolejowa_Pozna%C5%84_G%C3%B3rczyn_-_lipiec_2018_-_1.jpg",
+  "auto": "venue"
+ },
  "Komuny Paryskiej 16|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/komuny-paryskiej-16-wroclaw.jpg",
   "ratio": 1.333,
@@ -2474,6 +2522,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:MTP_Poznan,_pav._8a.JPG",
   "auto": "venue"
  },
+ "Malta SKI|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/malta-ski-poznan.jpg",
+  "ratio": 1.778,
+  "author": "Bolando",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Malta_Ski_Pozna%C5%84_in_winter_2017.jpg",
+  "auto": "venue"
+ },
  "Mamuszki 14|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -2553,6 +2609,14 @@
   "author": "Radomil at Polish Wikipedia",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84_dzielnica-Nowe_Miasto.png",
+  "auto": "venue"
+ },
+ "Mickiewicza 33|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/mickiewicza-33-poznan.jpg",
+  "ratio": 0.75,
+  "author": "Ysbail",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:A430,_Pozna%C5%84,_kamienica_przy_ul._Mickiewicza_32_(4)._Ysbail.jpg",
   "auto": "venue"
  },
  "Miejski Stadion Piłkarski Raków|Częstochowa": {
@@ -3935,6 +3999,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Stade_J%C3%B3zef_Pi%C5%82sudski.jpg",
   "auto": "venue"
  },
+ "Stadion Miejski Legii Warszawa im. Marszałka J. Piłsudskiego|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Stadion Miejski Legii Warszawa im. Marszałka Józefa Piłsudskiego|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/stadion-miejski-legii-warszawa-im-marszalka-jozefa-pilsudski.jpg",
   "ratio": 1.333,
@@ -3955,6 +4028,22 @@
   "author": "Kapitel",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stadion_Miejski_dron_(1).jpg"
+ },
+ "Stadion Miejski im. Jana Furtoka|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/stadion-miejski-im-jana-furtoka-katowice.jpg",
+  "ratio": 1.501,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2025-04_Katowice_stadion_Arena_Katowice_(47).jpg",
+  "auto": "venue"
+ },
+ "Stadion Miejski w Gliwicach im. Piotra Wieczorka|Gliwice": {
+  "image": "https://plusoneapp.pl/img/obiekty/stadion-miejski-w-gliwicach-im-piotra-wieczorka-gliwice.jpg",
+  "ratio": 1.333,
+  "author": "Reytan",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:K%C5%82odnica.JPG",
+  "auto": "city"
  },
  "Stadion Miejski|Gliwice": {
   "image": "https://plusoneapp.pl/img/obiekty/stadion-miejski-gliwice.jpg",
@@ -4016,6 +4105,14 @@
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Kamienica_Bornbachowska_w_Warszawie_2021.jpg",
+  "auto": "venue"
+ },
+ "Stary Browar|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/stary-browar-poznan.jpg",
+  "ratio": 1.678,
+  "author": "autor nieznany",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Stary_Browar_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
  },
  "Stary Klasztor|Wrocław": {
@@ -4323,6 +4420,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Teatr_Atelier_de_Sopot_%C3%A0_l%27%C3%A9t%C3%A9_2017.jpg",
   "auto": "venue"
+ },
+ "Teatr Cortiqué Anny Niedźwiedź|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Teatr Komedii Impro|Łódź": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-komedii-impro-lodz.jpg",
@@ -4771,6 +4876,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:PL-DS,_Wroc%C5%82aw,_ul._Wystawowa_1;_Zesp%C3%B3%C5%82_Hali_Stulecia-_Hala_Stulecia;_A-5259-343-Wm.jpg",
   "auto": "venue"
+ },
+ "Yoga Academy Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "ZEN COM Expo|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/zen-com-expo-rzeszow.jpg",
