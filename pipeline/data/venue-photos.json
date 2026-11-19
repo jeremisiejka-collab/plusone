@@ -56,6 +56,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Akademia Górniczo-Hutnicza w Krakowie|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/akademia-gorniczo-hutnicza-w-krakowie-krakow.jpg",
+  "ratio": 1.461,
+  "author": "Maciej Talar / KSAF AGH",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gmach_g%C5%82%C3%B3wny_AGH.jpg",
+  "auto": "venue"
+ },
  "Akademia Muzyczna w Bydgoszczy|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/akademia-muzyczna-w-bydgoszczy-bydgoszcz.jpg",
   "ratio": 1.221,
@@ -153,12 +161,36 @@
   "source": "https://commons.wikimedia.org/wiki/File:Aula_UAM_Poznan.JPG",
   "auto": "venue"
  },
+ "Avangarda|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Awaria Prądu|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "BARdzo bardzo|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/bardzo-bardzo-warszawa.jpg",
+  "ratio": 0.717,
+  "author": "Limbourg brothers",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Folio_26r_-_The_Annunciation.jpg",
+  "auto": "venue"
+ },
+ "BILL HICKMAN|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
  "BWA Wrocław Główny|Wrocław": {
@@ -907,6 +939,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_(Elektrownia_Powi%C5%9Ble)_-_tablica.jpg",
   "auto": "venue"
  },
+ "Emilii Plater 31|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/emilii-plater-31-warszawa.jpg",
+  "ratio": 1.594,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Emilii_Plater_przy_ulicy_Wilczej_w_Warszawie_2026.jpg",
+  "auto": "venue"
+ },
  "Enea Arena|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/enea-arena-szczecin.jpg",
   "ratio": 1.501,
@@ -1000,6 +1040,15 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "FOOD TOWN w Fabryce Norblina|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Fabryczna 13|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -1330,6 +1379,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Hala Cracovia|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/hala-cracovia-krakow.jpg",
+  "ratio": 1.036,
+  "author": "Łęgprzem Sp. z o.o.",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Akt_Erekcyjny_Cracovia-R%C4%85czna-1_(cropped).jpg",
+  "auto": "venue"
  },
  "Hala Częstochowa|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-czestochowa-czestochowa.jpg",
@@ -1779,6 +1836,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "KINOMUZEUM|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "KLUB Muzyczny Sześcian|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/klub-muzyczny-szescian-bialystok.jpg",
   "ratio": 1.501,
@@ -1963,6 +2029,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Rialto.jpg",
   "auto": "venue"
+ },
+ "Klemensiewicza 3|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Klub - Piwnica \"Przepraszam\"|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -2817,6 +2891,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "NIEBO|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "NOCE KRK|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -3182,6 +3265,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "PGE Narodowy|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/pge-narodowy-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Fred Romero from Paris, France",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warszawa_-_Most_%C5%9Awi%C4%99tokrzyski_%26_PGE_Narodowy.jpg",
+  "auto": "venue"
  },
  "PMDK Otwock|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -3990,6 +4081,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:2024-09_Katowice-Za%C5%82%C4%99%C5%BCe_Scena_Gliwicka_120_(6).jpg",
   "auto": "venue"
  },
+ "Scena Relax|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/scena-relax-warszawa.jpg",
+  "ratio": 1.417,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Kino_Relax_w_Warszawie_2020.jpg",
+  "auto": "venue"
+ },
  "Schron|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/schron-poznan.jpg",
   "ratio": 1.501,
@@ -4403,6 +4502,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Szkoła Impro (Piwnica Resortu)|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Szkoła Muzyczna I i II st. im. Zygmunta Noskowskiego w Gdyni|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -4556,6 +4664,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Teatr Dramatyczny|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-dramatyczny-warszawa.jpg",
+  "ratio": 1.606,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Teatr_Dramatyczny_w_Warszawie_2023.jpg",
+  "auto": "venue"
  },
  "Teatr Komedii Impro|Łódź": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-komedii-impro-lodz.jpg",
@@ -4775,6 +4891,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Villa La Fleur|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "VooDoo Club|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -4915,6 +5040,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Westerplatte 20|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/westerplatte-20-krakow.jpg",
+  "ratio": 1.569,
+  "author": "Mach240390",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaWesterplatte-WidokNaPo%C5%82udnie-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
  },
  "Wiankowa 3|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
