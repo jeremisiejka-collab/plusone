@@ -310,6 +310,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Sopot_05.jpg",
   "auto": "venue"
  },
+ "Boso Dance Sopot|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/sopot-sopot.jpg",
+  "ratio": 1.333,
+  "author": "Emptywords",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sopot_Molo_and_main_square_2024_aerial.jpg",
+  "auto": "city"
+ },
  "Botanic Bydgoszcz|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/botanic-bydgoszcz-bydgoszcz.jpg",
   "ratio": 2.49,
@@ -416,6 +424,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "Centrum Handlowe Auchan Produkcyjna|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/centrum-handlowe-auchan-produkcyjna-bialystok.jpg",
+  "ratio": 1.333,
+  "author": "Zoliax",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Auchan_Bia%C5%82ystok.jpg",
+  "auto": "venue"
+ },
  "Centrum Jana Pawła II|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-jana-pawla-ii-krakow.jpg",
   "ratio": 1.333,
@@ -447,6 +463,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Centrum Kultury w Gminie Puck|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
  "Centrum Promocji Kultury|Warszawa": {
@@ -1155,6 +1179,14 @@
   "author": "Stanisław Węsławski",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
+ "Generała Józefa Bema 1A|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/sopot-sopot.jpg",
+  "ratio": 1.333,
+  "author": "Emptywords",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sopot_Molo_and_main_square_2024_aerial.jpg",
   "auto": "city"
  },
  "Globus Music Club Kraków|Kraków": {
@@ -4123,6 +4155,14 @@
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Radomiaka.jpg"
  },
+ "Stadion im. Braci Czachorów|Radom": {
+  "image": "https://plusoneapp.pl/img/obiekty/stadion-im-braci-czachorow-radom.jpg",
+  "ratio": 1.501,
+  "author": "UserPL123",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Stadion_Radomiaka.jpg",
+  "auto": "venue"
+ },
  "Stadion im. Ernesta Pohla|Zabrze": {
   "image": "https://plusoneapp.pl/img/obiekty/stadion-im-ernesta-pohla-zabrze.jpg",
   "ratio": 1.333,
@@ -4361,6 +4401,14 @@
   "author": "Kapitel",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Szkoła Muzyczna I i II st. im. Zygmunta Noskowskiego w Gdyni|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
  "Szkoła Podstawowa Nr 267 im. Juliusza Słowackiego w Warszawie|Warszawa": {
@@ -4852,6 +4900,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Wejherowskie Centrum Kultury|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Wesola Immersive|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -4980,6 +5036,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:PL-DS,_Wroc%C5%82aw,_ul._Wystawowa_1;_Zesp%C3%B3%C5%82_Hali_Stulecia-_Hala_Stulecia;_A-5259-343-Wm.jpg",
   "auto": "venue"
+ },
+ "Wójta Radtkego 36|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Yoga Academy Poznań|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
