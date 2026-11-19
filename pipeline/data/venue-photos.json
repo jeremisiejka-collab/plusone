@@ -1141,6 +1141,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "venue"
  },
+ "Gdynia Wiczlino|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-wiczlino-gdynia.jpg",
+  "ratio": 1.333,
+  "author": "headshot606",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Chwarzno-Wiczlino,_Gdynia,_Poland_-_panoramio.jpg",
+  "auto": "venue"
+ },
  "Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -1763,6 +1771,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Karczma Kaszubi i Górale|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Karkonosze|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
@@ -3369,6 +3385,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Polna 64|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/polna-64-sopot.jpg",
+  "ratio": 1.633,
+  "author": "Panek",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Polna_64_sopot.jpg",
+  "auto": "venue"
+ },
  "Polsat Plus Arena Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/polsat-plus-arena-gdynia-gdynia.jpg",
   "ratio": 1.5,
@@ -3415,6 +3439,14 @@
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Budynek_przy_ul._Nowolipki_2a_w_Warszawie_2025.jpg",
   "auto": "venue"
+ },
+ "Potęgówka wege Kaszuby|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Powiatowy Młodzieżowy Dom Kultury w Otwocku|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -3902,6 +3934,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Sambora 37|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/sambora-37-gdynia.jpg",
+  "ratio": 1.333,
+  "author": "Gdaniec",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia_Leszczynki,_ul._Sambora_37_-_Green_Loft.jpg",
+  "auto": "venue"
+ },
  "Scena Berlin|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -4219,6 +4259,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Strych w Młynie|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Strzeliński Ośrodek Kultury|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -4397,6 +4445,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "TRAFO Trafostacja Sztuki / TRAFO Center for Contemporary Art / Szczecin|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "TUTAJ mwk|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -4786,6 +4842,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Wejherowska 5 Dobrzewino|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
  "Wesola Immersive|Kraków": {
