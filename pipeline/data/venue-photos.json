@@ -234,6 +234,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Balance Klub|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "Bartodzieje Małe|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bartodzieje-male-bydgoszcz.jpg",
   "ratio": 1.27,
@@ -284,6 +292,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Cultural_Centre.jpg",
   "auto": "venue"
+ },
+ "Białystok|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
  },
  "Bielany|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/bielany-warszawa.jpg",
@@ -650,6 +666,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Procesja_Bo%C5%BCe_Cia%C5%82o_Pracze_Odrza%C5%84skie_Wroc%C5%82aw_(2026-06-04).jpg",
   "auto": "venue"
  },
+ "Cicha Woda Reda|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Cicha4a|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
   "ratio": 0.75,
@@ -772,6 +796,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Dereniowa_w_Warszawie_2017.jpg",
   "auto": "venue"
+ },
+ "Disco Shot's Rumia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Dolina Trzech Stawów - Sztauwajery - Muchowiec Katowice|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
@@ -1121,6 +1153,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Fabryczna 10|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Fabryczna 13|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -3189,6 +3229,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Niepodległości 712/1|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/sopot-sopot.jpg",
+  "ratio": 1.333,
+  "author": "Emptywords",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sopot_Molo_and_main_square_2024_aerial.jpg",
+  "auto": "city"
+ },
  "Nietota|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -4558,6 +4606,15 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_im._Ernesta_Pohla_w_Zabrzu_(2026).jpg"
  },
+ "Stalownia|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Stand-up Lokal|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -4954,6 +5011,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Tadeusza Kościuszki 16|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/tadeusza-kosciuszki-16-sopot.jpg",
+  "ratio": 0.973,
+  "author": "Starscream",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Reliefs_at_Tadeusza_Ko%C5%9Bciuszki_43_Street_in_Sopot_2.jpg",
+  "auto": "venue"
  },
  "Tajne Komplety. Prawdziwa księgarnia|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
