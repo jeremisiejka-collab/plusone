@@ -80,6 +80,24 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz,_Akademia_Muzyczna_-_fotopolska.eu_(330834).jpg",
   "auto": "venue"
  },
+ "Akademia Tańca Tomasza Potockiego|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Ale Sztuka|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Aleje Jerozolimskie 2|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/aleje-jerozolimskie-2-warszawa.jpg",
   "ratio": 1.565,
@@ -789,6 +807,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "DanceBook Academy Ochota|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Dereniowa 11|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/dereniowa-11-warszawa.jpg",
   "ratio": 1.631,
@@ -878,6 +905,15 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Dom_Tramwajarza_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
+ },
+ "Dos Mundos|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Drzwi Zwane Koniem|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/drzwi-zwane-koniem-katowice.jpg",
@@ -1405,6 +1441,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Gorąca Chata - sauna w plenerze|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Gościeradz|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
@@ -2221,6 +2266,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Klub Arco|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Klub Baza|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -3588,6 +3642,31 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ko%C5%9Bci%C3%B3%C5%82Chrystusa_Odkupiciela.JPG",
   "auto": "venue"
  },
+ "Parafia Ewangelicko-Augsburska Świętej Trójcy w Warszawie|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/parafia-ewangelicko-augsburska-swietej-trojcy-w-warszawie-warszawa.jpg",
+  "ratio": 1.382,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ko%C5%9Bci%C3%B3%C5%82_%C5%9Awi%C4%99tej_Tr%C3%B3jcy_w_Warszawie_2021.jpg",
+  "auto": "venue"
+ },
+ "Parafia Matki Bożej Królowej Polski|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/parafia-matki-bozej-krolowej-polski-warszawa.jpg",
+  "ratio": 0.897,
+  "author": "LoMit",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ko%C5%9Bci%C3%B3%C5%82_Matki_Bo%C5%BCej_Kr%C3%B3lowej_Polski_-_front.jpg",
+  "auto": "venue"
+ },
+ "Pardon|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Park Mogilno|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -3684,6 +3763,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Czerniejewo,_zespol_parkowo-palacowy,_palac_2.jpg",
   "auto": "venue"
  },
+ "Państwowe Muzeum Etnograficzne|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/panstwowe-muzeum-etnograficzne-warszawa.jpg",
+  "ratio": 1.316,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Gmach_Towarzystwa_Kredytowego_Ziemskiego_w_Warszawie_2024.jpg",
+  "auto": "venue"
+ },
  "Piastów 50a|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -3699,6 +3786,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
+ },
+ "Piwna Beczka|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Piwnica - Stary Klasztor Purkyniego 1|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -4378,6 +4474,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Salsa Libre|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Salsa Siempre|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -4433,6 +4538,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
+ },
+ "Skatepark Nowa Iwiczna|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Skorzęcin|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
@@ -4914,6 +5028,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Szkoła Podstawowa w Zamieniu|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Szkoła Tańca Katarzyna Pawlak|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -5066,6 +5189,15 @@
   "author": "Stadion Wrocław",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Wroclaw.jpg"
+ },
+ "Tawerna Korsarz|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Teatr Atelier Sopot|Sopot": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-atelier-sopot-sopot.jpg",
@@ -5532,6 +5664,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Wolska 75|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/wolska-75-warszawa.jpg",
+  "ratio": 1.333,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2025_Warszawa_Wolska,_przej%C5%9Bcie_podziemne,_2.jpg",
+  "auto": "venue"
+ },
  "Wratislavia Statek|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/wratislavia-statek-wroclaw.jpg",
   "ratio": 1.333,
@@ -5748,6 +5888,15 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Złota Milonga Klub Tanga Argentyńskiego|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Złote Tarasy|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/zlote-tarasy-warszawa.jpg",
