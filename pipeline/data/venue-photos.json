@@ -579,6 +579,22 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Centrum Kultury ZAMEK w Poznaniu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/centrum-kultury-zamek-w-poznaniu-poznan.jpg",
+  "ratio": 1.4,
+  "author": "Ziko",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:2008_Kaiserschloss_Posen_04.JPG",
+  "auto": "venue"
+ },
+ "Centrum Kultury ZAMEK|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/centrum-kultury-zamek-poznan.jpg",
+  "ratio": 1.4,
+  "author": "Ziko",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:2008_Kaiserschloss_Posen_04.JPG",
+  "auto": "venue"
+ },
  "Centrum Kultury i Rekreacji w Koziegłowach|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -2673,6 +2689,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Kowanowska 38a|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Kościuszki 69|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -2978,6 +3002,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:MTP_Poznan,_pav._8a.JPG",
   "auto": "venue"
  },
+ "MTP Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/mtp-poznan-poznan.jpg",
+  "ratio": 1.542,
+  "author": "nn",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Stomil_Pozna%C5%84_-_03,_MTP.jpg",
+  "auto": "venue"
+ },
  "Malta SKI|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/malta-ski-poznan.jpg",
   "ratio": 1.778,
@@ -3136,6 +3168,14 @@
   "author": "Marek Mróz",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_05.15_MCK_3.JPG",
+  "auto": "venue"
+ },
+ "Międzynarodowe Targi Poznańskie|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/miedzynarodowe-targi-poznanskie-poznan.jpg",
+  "ratio": 1.501,
+  "author": "Rafał M. Socha (Azymut)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:PWK_2014_(9).JPG",
   "auto": "venue"
  },
  "Momenty - klub muzyczny|Wrocław": {
@@ -3361,6 +3401,14 @@
   "author": "Emptywords",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Sopot_Molo_and_main_square_2024_aerial.jpg",
+  "auto": "city"
+ },
+ "Niepubliczna Szkoła Podstawowa Otwarte Drzwi - Premium|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Nietota|Wrocław": {
@@ -4216,6 +4264,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Ptasie Radio|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/ptasie-radio-poznan.jpg",
+  "ratio": 0.886,
+  "author": "Śryż",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ptasie_Radio,_mural_w_%C5%81odzi_(ul._Szpitalna_7a).jpg",
+  "auto": "venue"
+ },
  "Pub Korba katowice|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
   "ratio": 0.667,
@@ -4238,6 +4294,14 @@
   "author": "Kapitel",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Płotki 14|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "RCK Rogoźno|Poznań": {
@@ -5133,6 +5197,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Szkoła Podstawowa nr 1 im. Wojciecha Bogusławskiego|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Szkoła Podstawowa w Zamieniu|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -5189,6 +5261,14 @@
   "license": "CC BY 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:KopiecKo%C5%9BciuszkiOrazKaplicaB%C5%82Bronis%C5%82awy-WidokZPo%C5%82udnia-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "TAMA|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "TAURON Arena Kraków|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/tauron-arena-krakow-krakow.jpg",
