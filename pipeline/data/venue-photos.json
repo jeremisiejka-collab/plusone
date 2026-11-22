@@ -163,6 +163,14 @@
   "auto": "venue",
   "file": "2025-04 Katowice stadion Arena Katowice (47).jpg"
  },
+ "Areszt Śledczy Wrocław Ul.świebodzka 1|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/areszt-sledczy-wroclaw-ul-swiebodzka-1-wroclaw.jpg",
+  "ratio": 1.501,
+  "author": "Thyes",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-prison-154.JPG",
+  "auto": "venue"
+ },
  "Armii Krajowej 4|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/armii-krajowej-4-warszawa.png",
   "ratio": 1.274,
@@ -1869,6 +1877,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Hybrydy|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/hybrydy-warszawa.jpg",
+  "ratio": 1.529,
+  "author": "TerazAlboNigdy",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Modfunk_w_klubie_Hybrydy_(fot._Marcin_%C5%BBurawicz,_2000_Warszawa).jpg",
+  "auto": "venue"
+ },
  "Hydrozagadka|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -2994,6 +3010,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Marsza%C5%82kowska_przy_Ho%C5%BCej_2017.jpg",
   "auto": "venue"
  },
+ "MartiCeramics|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Mazowiecka 2/4|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/mazowiecka-2-4-warszawa.jpg",
   "ratio": 1.007,
@@ -3569,6 +3593,14 @@
  },
  "Oławska 13|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/olawska-13-wroclaw.jpg",
+  "ratio": 1.501,
+  "author": "Fred Romero from Paris, France",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw_-_Biurowiec_%22Quantum_O%C5%82awska%22.jpg",
+  "auto": "venue"
+ },
+ "Oławska 46|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/olawska-46-wroclaw.jpg",
   "ratio": 1.501,
   "author": "Fred Romero from Paris, France",
   "license": "CC BY 2.0",
