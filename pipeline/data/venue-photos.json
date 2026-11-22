@@ -497,6 +497,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa-nowy-swiat-2-CBF-1-jpg-lq_074.jpg",
   "auto": "venue"
  },
+ "CEL|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "CH NOWY TURZYN|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -2170,6 +2178,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_al._Korfantego_141c_2026.jpg",
   "auto": "venue"
+ },
+ "Katowice ul. Korfantego 68|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
  },
  "Katowice|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
@@ -4562,6 +4578,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "STK 47 WAREHOUSE|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "SZUM|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -5943,6 +5967,14 @@
   "author": "Neo[EZN]",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw_-_fotopolska.eu_(142599).jpg",
+  "auto": "venue"
+ },
+ "Wydział Prawa i Administracji UŚ|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/wydzial-prawa-i-administracji-us-katowice.jpg",
+  "ratio": 2.166,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_U%C5%9A_-_WPiA.jpg",
   "auto": "venue"
  },
  "Wyspa Słodowa 7|Wrocław": {
