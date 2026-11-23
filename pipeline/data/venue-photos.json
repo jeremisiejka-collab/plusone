@@ -565,6 +565,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "CAL na Przedmieściu Oławskim - Centrum na Przedmieściu|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "CBF Nowy Świat|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/cbf-nowy-swiat-warszawa.jpg",
   "ratio": 0.667,
@@ -598,6 +606,14 @@
   "auto": "city"
  },
  "CUKR - Ukrainian Centre for Culture and Development|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Cafe Freska|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
   "author": "Jar.ciurus",
@@ -1739,6 +1755,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hevre_Tehilim_Synagogue,_interior,_18_Dow_Ber_Meisels_Street,_Kazimierz,_Krak%C3%B3w,_Poland.jpg",
   "auto": "venue"
  },
+ "HOMEPARK Franowo|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "HOUSE Tęczowa|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -2016,6 +2040,14 @@
   "author": "Tugrul Kagan Ates",
   "license": "CC BY 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hard_Rock_Cafe,_Warsaw,_Poland,_2010_-_panoramio.jpg",
+  "auto": "venue"
+ },
+ "Hard Rock Cafe Wrocław|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/hard-rock-cafe-wroclaw-wroclaw.jpg",
+  "ratio": 0.451,
+  "author": "Dick Elbers",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Hard_Rock_cafe_wroclaw.jpg",
   "auto": "venue"
  },
  "Hashtag Lab|Warszawa": {
@@ -3088,6 +3120,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Kramarska 26|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Krupa Art Foundation|Wrocław": {
