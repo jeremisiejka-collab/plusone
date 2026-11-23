@@ -2273,6 +2273,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Jana III Sobieskiego 27|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/jana-iii-sobieskiego-27-katowice.jpg",
+  "ratio": 1.494,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice-%C5%9Ar%C3%B3dmie%C5%9Bcie_N_-_ul._Sobieskiego_(2).jpg",
+  "auto": "venue"
+ },
  "Jarzębinowa 2|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -3066,6 +3074,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_-_Galeria_Krakowska_noc%C4%85.jpg",
   "auto": "venue"
  },
+ "Krakowska 71-79|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Krakowski Szkolny Ośrodek Sportowy im. \"Szarych Szeregów\"|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -3284,6 +3300,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Libero Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/libero-katowice-katowice.jpg",
+  "ratio": 1.333,
+  "author": "KamilSikoora",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Galeria_Libero.jpg",
+  "auto": "venue"
  },
  "Liberty Cafe|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/liberty-cafe-krakow.jpg",
@@ -5918,6 +5942,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Szkoła Podstawowa w Janowcu Wielkopolskim|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
  "Szkoła Podstawowa w Zamieniu|Warszawa": {
