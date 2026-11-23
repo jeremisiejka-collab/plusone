@@ -1,6 +1,6 @@
 // Audyt wizualny aplikacji /app: każdy ekran × rozmiar iPhone'a × motyw. Zrzuty przewijanego widoku + automatyczne wykrywanie
 // tekstu poza ekranem, uciętego tekstu, nachodzących elementów i za małych przycisków.
-// Uruchomienie: tools/seed-local.sh, serwer lokalny (docs/PROGRAMISCI.md), potem:
+// Uruchomienie: tools/seed-local.sh, serwer lokalny (docs/PLUSONE.md), potem:
 //   node tools/audit-app.cjs [ekran,ekran]     zmienne: SIZES=se,13,max THEMES=light,dark OUT=katalog/ BASE=http://localhost:8799
 const { chromium, devices } = require('playwright');
 const fs = require('fs');

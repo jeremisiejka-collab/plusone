@@ -1,6 +1,6 @@
 # +1
 
-> **Dla programistów:** aktualna dokumentacja całego systemu jest w [`docs/PROGRAMISCI.md`](docs/PROGRAMISCI.md), a obowiązujące zasady projektu w [`CLAUDE.md`](CLAUDE.md). Ten plik jest częściowo historyczny.
+> **Dla programistów:** aktualna dokumentacja całego systemu jest w [`docs/PLUSONE.md`](docs/PLUSONE.md), a obowiązujące zasady projektu w [`CLAUDE.md`](CLAUDE.md). Ten plik jest częściowo historyczny.
 
 Aplikacja z wydarzeniami — imprezy, koncerty, teatr, stand-up, festiwale — najpierw w Warszawie, potem w całej Polsce.
 

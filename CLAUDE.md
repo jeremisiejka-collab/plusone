@@ -5,7 +5,7 @@
 - Komunikacja i teksty w aplikacji po polsku.
 - **Bez emoji na stronie i w aplikacji.** Dotyczy również tytułów i opisów pobieranych z zewnętrznych źródeł. Używaj tekstu lub istniejących ikon SVG; importowane treści muszą być oczyszczane z emoji. Także żadnych iPhonowych emoji: `esc()` (strona i aplikacja) usuwa emoji z każdego wyświetlanego tekstu, a ©®™ i strzałki dostają U+FE0E (wygląd tekstowy); `font-variant-emoji: text` w `public/admin.css`. Znaki z wariantem emoji w szablonach (↗ ↕ ✳ ⛶ ©) zawsze z U+FE0E.
 
-- **Dokumentacja dla programistów:** `docs/PROGRAMISCI.md` (architektura, dostępy, uruchomienie lokalne `tools/seed-local.sh`, audyt `tools/audit-app.cjs`, źródła, do zrobienia) — aktualizuj ją razem z dużymi zmianami.
+- **Dokumentacja dla programistów:** `docs/PLUSONE.md` (architektura, dostępy, uruchomienie lokalne `tools/seed-local.sh`, audyt `tools/audit-app.cjs`, źródła, do zrobienia) — aktualizuj ją razem z dużymi zmianami.
 - **Pobieranie non stop:** `events.yml` — każdy przebieg (zadanie `next`) zamawia następny ok. 55 min po swoim starcie (harmonogram GitHub co godzinę działa w praktyce co 6–9 h, zostaje jako zapas) i od razu zleca publikację; strażnik `pipeline/tools/health.mjs` otwiera/zamyka issue „Pobieranie wydarzeń: problem”, gdy źródło pada albo ma za mało wydarzeń (progi `MIN`).
 
 ## Grafiki wydarzeń

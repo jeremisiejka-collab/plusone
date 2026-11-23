@@ -1,4 +1,4 @@
-# +1 (plusoneapp.pl) — dokumentacja dla programistów
+# +1 (plusoneapp.pl) — dokumentacja projektu
 
 Ten plik to punkt startowy dla zespołu, który przejmuje projekt. **Zasady produktowe i każda decyzja „dlaczego tak, a nie inaczej” są w [`CLAUDE.md`](../CLAUDE.md)** — to obowiązujący regulamin projektu (np. brak emoji, brak słowa „Going”, zamrożony wygląd aplikacji, zakaz pasów wokół plakatów). Przeczytajcie go w całości przed pierwszą zmianą.
 
