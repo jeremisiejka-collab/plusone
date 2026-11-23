@@ -106,6 +106,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Akademicka 5|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/akademicka-5-warszawa.jpg",
+  "ratio": 0.75,
+  "author": "Qkiel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ul._Akademicka_3,_Warszawa_(5).jpg",
+  "auto": "venue"
+ },
  "Akademickie Centrum Sportu Politechniki Bydgoskiej|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -285,6 +293,15 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Backstreet Bar|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Balance Klub|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
   "ratio": 1.501,
@@ -300,6 +317,24 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz_i_okolica_1857.jpg",
   "auto": "venue"
+ },
+ "Bawialnia „W Chmurach”|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Bazar \"Namysłowska\"|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Bazzart|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -1003,6 +1038,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Dom_Tramwajarza_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
  },
+ "Dominikanie Służew|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Dos Mundos|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1018,6 +1062,14 @@
   "author": "Adrian Tync",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Warszawska_37_2018.jpg",
+  "auto": "venue"
+ },
+ "Duchnicka 3|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/duchnicka-3-warszawa.jpg",
+  "ratio": 1.333,
+  "author": "Cybularny",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2024_Warszawa_Duchnicka_3,_1.jpg",
   "auto": "venue"
  },
  "Dwie Zmiany|Sopot": {
@@ -1367,6 +1419,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Fort Sokolnickiego|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/fort-sokolnickiego-warszawa.jpg",
+  "ratio": 1.775,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Fort_Sokolnickiego_w_Warszawie_2023.jpg",
+  "auto": "venue"
+ },
  "Forum Fun & Food|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1467,6 +1527,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Galeria_Malta_-_Pozna%C5%84.JPG",
   "auto": "venue"
  },
+ "Galeria Projekt cafe|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Galeria Rumia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -1498,6 +1567,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Gdańska 6|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdanska-6-warszawa.jpg",
+  "ratio": 1.916,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Dworzec_Warszawa_Gda%C5%84ska_2014_01.JPG",
+  "auto": "venue"
  },
  "Gdynia Arena|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-arena-gdynia.jpg",
@@ -1538,6 +1615,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Gniazdo Piratów Warszawa|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Gniezno|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/gniezno-poznan.png",
@@ -1697,6 +1783,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Haberbuscha i Schielego 2|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Hala Cracovia|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-cracovia-krakow.jpg",
@@ -2056,6 +2151,15 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Instytut Fotografii Fort|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Instytut Grotowskiego|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/instytut-grotowskiego-wroclaw.jpg",
   "ratio": 1.495,
@@ -2316,6 +2420,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Kino Atlantic|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-atlantic-warszawa.jpg",
+  "ratio": 1.506,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Kino_Atlantic_w_Warszawie_2019.jpg",
+  "auto": "venue"
+ },
  "Kino FORUM|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/kino-forum-bialystok.jpg",
   "ratio": 1.333,
@@ -2354,6 +2466,14 @@
   "author": "Adrian Tync",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Kino_Kosmos_2026.jpg",
+  "auto": "venue"
+ },
+ "Kino Luna|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-luna-warszawa.jpg",
+  "ratio": 1.333,
+  "author": "Emptywords",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kino_Luna_Warsaw_2022.jpg",
   "auto": "venue"
  },
  "Kino Nowe Horyzonty|Wrocław": {
@@ -2818,6 +2938,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Sancygniow_PICT0254.JPG",
   "auto": "venue"
  },
+ "Koszykowa 63|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/koszykowa-63-warszawa.jpg",
+  "ratio": 1.46,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Koszykowa_przy_ulicy_Mokotowskiej_w_Warszawie_2024.jpg",
+  "auto": "venue"
+ },
  "Kowanowska 38a|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -2865,6 +2993,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Krakowskie Przedmieście 66|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakowskie-przedmiescie-66-warszawa.jpg",
+  "ratio": 2.23,
+  "author": "Slawek L",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Widok_na_krakowskie_przedmiescie_po_remoncie.jpg",
+  "auto": "venue"
  },
  "Kraków Stare Miasto|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-stare-miasto-krakow.jpg",
@@ -2960,6 +3096,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Kulturalna|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Kurkowa 4/1|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/kurkowa-4-1-szczecin.jpg",
@@ -3100,6 +3245,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Ludwika Narbutta 27a|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Lwowska 6|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
   "ratio": 0.75,
@@ -3131,6 +3285,15 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
+ },
+ "METAL CAVE KLUB Warszawa|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "MGOKiS Dobczyce|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -3195,6 +3358,23 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Stomil_Pozna%C5%84_-_03,_MTP.jpg",
   "auto": "venue"
+ },
+ "MYSIA 3|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/mysia-3-warszawa.jpg",
+  "ratio": 1.478,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Mysia_w_Warszawie_2021.jpg",
+  "auto": "venue"
+ },
+ "Madalińskiego 10/16|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Malta SKI|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/malta-ski-poznan.jpg",
@@ -3663,6 +3843,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Nowe Miejsce - wystawy|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Nowohuckie Centrum Kultury|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/nowohuckie-centrum-kultury-krakow.jpg",
   "ratio": 2.51,
@@ -3776,6 +3965,15 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Ogrody Ulricha|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Ogrody Śródmieście|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
@@ -4021,6 +4219,15 @@
   "auto": "venue"
  },
  "Pardon|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Park Czechowicki|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
@@ -4957,6 +5164,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia_Leszczynki,_ul._Sambora_37_-_Green_Loft.jpg",
   "auto": "venue"
  },
+ "Samo Centrum|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Scena Berlin|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -5372,6 +5588,15 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Studio Koncertowe Polskiego Radia im. Witolda Lutosławskiego|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Studio Kraków|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/studio-krakow-krakow.jpg",
@@ -5802,6 +6027,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Piotrowice,_Teatr_%C5%BBelazny.jpg",
   "auto": "venue"
  },
+ "Teatro Cubano Warsaw|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Teatro Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/teatro-gdynia-gdynia.jpg",
   "ratio": 1.333,
@@ -5809,6 +6043,15 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Kino_Gdynia_w_%C5%81odzi_(1).jpg",
   "auto": "venue"
+ },
+ "Technikum nr 7 d. \"Kolejówka\"|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Terminal Kultury Gocław - filia CPK|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -5955,6 +6198,15 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Ursynowskie Centrum Kultury „Alternatywy”|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Urząd Gminy Liszki|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -6203,6 +6455,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Wolna Wola Bar|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Wolska 75|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/wolska-75-warszawa.jpg",
   "ratio": 1.333,
@@ -6363,6 +6624,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
+ "ZODIAK Warszawski Pawilon Architektury|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Zaklęte Rewiry|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -6452,6 +6722,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Złota 44|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/zlota-44-warszawa.jpg",
+  "ratio": 0.641,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Z%C5%82ota_44_w_Warszawie_2023.jpg",
+  "auto": "venue"
+ },
  "Złota 9|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/zlota-9-warszawa.jpg",
   "ratio": 0.641,
@@ -6476,6 +6754,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Zlote_Tarasy_(dron).jpg",
   "auto": "venue"
+ },
+ "barStudio|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "empik (Klub Empik)|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/empik-klub-empik-warszawa.jpg",
