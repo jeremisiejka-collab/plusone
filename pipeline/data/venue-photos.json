@@ -1400,6 +1400,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Francuska 180A|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "Fryderyk Concert Hall Warsaw / Sala Koncertowa Fryderyk|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -2888,6 +2896,14 @@
   "author": "Kapitel",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Królestwo|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
  "Królicze Oczy|Kraków": {
@@ -4820,6 +4836,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Sala Audytorium MCK|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "Sala Gotycka w Starym Klasztorze|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -5682,6 +5706,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:%C5%81%C3%B3d%C5%BA,_Stare_Miasto_-_panoramio.jpg",
   "auto": "city"
  },
+ "Teatr Korez|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "Teatr Muzyczny Capitol|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-muzyczny-capitol-wroclaw.jpg",
   "ratio": 2.5,
@@ -6462,6 +6494,14 @@
   "auto": "venue"
  },
  "os. Oświecenia 59|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "os. Przyjaźni 136|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
   "author": "Radomil",
