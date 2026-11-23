@@ -3463,6 +3463,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Stomil_Pozna%C5%84_-_03,_MTP.jpg",
   "auto": "venue"
  },
+ "MY pod sceną|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "MYSIA 3|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/mysia-3-warszawa.jpg",
   "ratio": 1.478,
@@ -3567,6 +3575,14 @@
   "author": "Pit1233",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
+ "Metropol Hotel Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
  "Miasto i Gmina Jelcz-Laskowice|Wrocław": {
@@ -4281,6 +4297,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "POCO LOCO|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "POINT Club|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -4968,6 +4992,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Ratajczaka 44 (3 piętro)|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Rataje|Poznań": {
@@ -6614,6 +6646,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Wodna 13/4|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Wojnowo 2|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
