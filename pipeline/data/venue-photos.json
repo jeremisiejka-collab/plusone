@@ -318,6 +318,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz_i_okolica_1857.jpg",
   "auto": "venue"
  },
+ "Batorego 2|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/batorego-2-krakow.jpg",
+  "ratio": 1.691,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaStefanaBatorego-WidokNaWsch%C3%B3d-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Bawialnia „W Chmurach”|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1056,6 +1064,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Drzewo Życia - studio jogi we Wrocławiu|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Drzwi Zwane Koniem|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/drzwi-zwane-koniem-katowice.jpg",
   "ratio": 1.333,
@@ -1707,6 +1723,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Opole_-_katedra.jpg",
   "auto": "venue"
  },
+ "HALA Świebodzki - bar & food court|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "HEVRE|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/hevre-krakow.jpg",
   "ratio": 1.501,
@@ -1737,6 +1761,14 @@
   "author": "autor nieznany",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_sportowo_widowiskowa_globus,_lublin.jpg"
+ },
+ "HUTA|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "HWS Arena Ursynów|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/hws-arena-ursynow-warszawa.jpg",
@@ -1994,6 +2026,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Herbaciarnia K2|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Hilton Garden Inn Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Holistic Sport Center|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -2273,6 +2321,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Jezioro_Rusalka_Poznan.jpg",
   "auto": "venue"
+ },
+ "Judaistyka - Uniwersytet Wrocławski|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Józefa Dietla 91|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/jozefa-dietla-91-krakow.jpg",
@@ -2962,6 +3018,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Kościół św. Benedykta w Krakowie|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kosciol-sw-benedykta-w-krakowie-krakow.jpg",
+  "ratio": 1.499,
+  "author": "Januszk57",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_ul._Stawarza_ko%C5%9Bci%C3%B3%C5%82_%C5%9Bw._Benedykta_A-202M_(1).jpg",
+  "auto": "venue"
+ },
  "Krakowska 5|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakowska-5-krakow.jpg",
   "ratio": 1.501,
@@ -3520,6 +3584,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Budynki_mza_warszawa_braci_zaluskich.jpg",
   "auto": "venue"
  },
+ "Mikołajska 4/6|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/mikolajska-4-6-krakow.jpg",
+  "ratio": 1.734,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaMiko%C5%82ajska-WidokNaZach%C3%B3d-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Mikołajska 4|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/mikolajska-4-krakow.jpg",
   "ratio": 1.734,
@@ -3581,6 +3653,14 @@
   "author": "Radomil talk 13:42, 26 March 2007 (UTC)",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Muzeum_Etnograficzne_Pozna%C5%84_RB1.JPG",
+  "auto": "venue"
+ },
+ "Muzeum Sztuki i Techniki Japońskiej Manggha|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/muzeum-sztuki-i-techniki-japonskiej-manggha-krakow.jpg",
+  "ratio": 1.877,
+  "author": "Zygmunt Put Zetpe0202",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Manggha_Museum_of_Japanese_Art_and_Technology,_Krakow,_Poland.jpg",
   "auto": "venue"
  },
  "Muzeum Wejherowo|Gdynia": {
@@ -3957,6 +4037,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Ofiar Oświęcimskich 36|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/ofiar-oswiecimskich-36-wroclaw.jpg",
+  "ratio": 1.494,
+  "author": "Daviidos",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw_Breslau_Ulica_Ofiar_O%C5%9Bwi%C4%99cimskich.JPG",
+  "auto": "venue"
  },
  "Ognisko na fyrtlu (os. B. Chrobrego 105)|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
@@ -4899,6 +4987,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Ruska 46A|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Ruska 47/48a|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -5655,6 +5751,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Suwa%C5%82ki_Arena_od_wewn%C4%85trz.jpg",
   "auto": "venue"
  },
+ "Synagoga Pod Białym Bocianem we Wrocławiu|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/synagoga-pod-bialym-bocianem-we-wroclawiu-wroclaw.jpg",
+  "ratio": 1.499,
+  "author": "Isabelles Knowledge",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Synagoge_zum_Wei%C3%9Fen_Storch_Fotografin_Isabelle_Knispel.jpg",
+  "auto": "venue"
+ },
  "Synerise Arena - Stadion Miejski im. Henryka Reymana|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/synerise-arena-stadion-miejski-im-henryka-reymana-krakow.jpg",
   "ratio": 1.5,
@@ -5776,6 +5880,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Sławkowska 11|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/slawkowska-11-krakow.jpg",
+  "ratio": 1.586,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaS%C5%82awkowska-WidokNaP%C3%B3%C5%82nocnyWsch%C3%B3d-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
  },
  "Sławkowska 12|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/slawkowska-12-krakow.jpg",
@@ -5899,6 +6011,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Tarasowka|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Tarczyński Arena Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tarczynski-arena-wroclaw-wroclaw.jpg",
   "ratio": 1.78,
@@ -6010,6 +6130,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Teatr w Krakowie - im. Juliusza Słowackiego|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-w-krakowie-im-juliusza-slowackiego-krakow.jpg",
+  "ratio": 1.753,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:TeatrIm.JuliuszaS%C5%82owackiego-WidokZPlacu%C5%9Aw.Ducha-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
  },
  "Teatr Łaźnia Nowa|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-laznia-nowa-krakow.jpg",
@@ -6558,6 +6686,14 @@
   "author": "Lestat (Jan Mehlich)",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_U%C5%9A_-_WPiA.jpg",
+  "auto": "venue"
+ },
+ "Wydział Studiów Międzynarodowych i Politycznych UJ|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/wydzial-studiow-miedzynarodowych-i-politycznych-uj-krakow.jpg",
+  "ratio": 2,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wydzia%C5%82Studi%C3%B3wMi%C4%99dzynarodowychIPolitycznychUniwersytetuJagiello%C5%84skiego-UlicaW%C5%82adys%C5%82awaReymonta4-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
  "Wyspa Słodowa 7|Wrocław": {
