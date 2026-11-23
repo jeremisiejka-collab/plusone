@@ -64,6 +64,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "AfterDark|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Akacjowy Dwór|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1564,6 +1573,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Opole_-_katedra.jpg",
   "auto": "venue"
  },
+ "HEVRE|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/hevre-krakow.jpg",
+  "ratio": 1.501,
+  "author": "Jeremiah Z. Cockroach",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Hevre_Tehilim_Synagogue,_interior,_18_Dow_Ber_Meisels_Street,_Kazimierz,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
  "HOUSE Tęczowa|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -2729,6 +2746,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Kosciol Sw. sw. Piotra i Pawla|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kosciol-sw-sw-piotra-i-pawla-krakow.jpg",
+  "ratio": 1.335,
+  "author": "Pibwl",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sancygniow_PICT0254.JPG",
+  "auto": "venue"
+ },
  "Kowanowska 38a|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -2785,6 +2810,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Droga_do_Zamku_street,_Old_Town,_bird%27s_eye_view_2025,_Krak%C3%B3w,_Poland.jpg",
   "auto": "venue"
  },
+ "Kraków Sukiennice|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-sukiennice-krakow.jpg",
+  "ratio": 1.501,
+  "author": "Igor123121",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2025,_Krak%C3%B3w,_Sukiennice,_Rynek_G%C5%82%C3%B3wny_(15).jpg",
+  "auto": "venue"
+ },
  "Kraków|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -2815,6 +2848,14 @@
   "author": "Kapitel",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Królicze Oczy|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
  "Księcia Witolda 60/3|Wrocław": {
@@ -2863,6 +2904,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "LOLEK grill & bar|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "La Rosa Negra - Studio Tańca|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -2913,6 +2963,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:02022_0170_Cafe_Liberty_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "Lipowa 4D|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Lipowa 4|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/lipowa-4-krakow.jpg",
@@ -3891,6 +3949,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Park Świętokrzyski w Warszawie|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/park-swietokrzyski-w-warszawie-warszawa.jpg",
+  "ratio": 1.54,
+  "author": "A.Savin",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_07-13_img29_View_from_Palace_of_Culture_and_Science.jpg",
+  "auto": "venue"
+ },
  "Party House Kraków|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/party-house-krakow-krakow.jpg",
   "ratio": 1.768,
@@ -4020,6 +4086,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Piwnica pod Baranami|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/piwnica-pod-baranami-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Birczanin",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Piwnica5.JPG",
+  "auto": "venue"
+ },
  "Piąty Dom|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
   "ratio": 0.667,
@@ -4145,6 +4219,14 @@
   "author": "Stanisław Węsławski",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
+ "Powiatowy Kampus Kultury|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
  "Powiatowy Młodzieżowy Dom Kultury w Otwocku|Warszawa": {
@@ -5051,6 +5133,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Stary_Rynek_Pozna%C5%84.jpg",
   "auto": "venue"
  },
+ "Stary Rynek Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/stary-rynek-krakow-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Halina Frederiksen",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Stary_Rynek_-_panoramio.jpg",
+  "auto": "venue"
+ },
  "Stawowa 30|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/stawowa-30-wroclaw.jpg",
   "ratio": 0.75,
@@ -5738,6 +5828,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Vanaheim.pl|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Vertigo Jazz Club & Restaurant|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/vertigo-jazz-club-restaurant-wroclaw.jpg",
   "ratio": 1.501,
@@ -5836,6 +5934,14 @@
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_G%C5%82%C3%B3wna_widziana_z_k%C5%82adki_2023.jpg",
+  "auto": "venue"
+ },
+ "Warszawa Śródmieście|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-srodmiescie-warszawa.jpg",
+  "ratio": 1.509,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Dworzec_Warszawa_%C5%9Ar%C3%B3dmie%C5%9Bcie_2015_01.JPG",
   "auto": "venue"
  },
  "Warszawa|Warszawa": {
@@ -6178,6 +6284,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Złota 9|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/zlota-9-warszawa.jpg",
+  "ratio": 0.641,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Z%C5%82ota_44_w_Warszawie_2023.jpg",
+  "auto": "venue"
+ },
  "Złota Milonga Klub Tanga Argentyńskiego|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -6258,6 +6372,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "os. Szkolne 26|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/os-szkolne-26-krakow.jpg",
+  "ratio": 1.942,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:OsiedleSzkolne-WidokOdPo%C5%82udnia-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
  },
  "parkrun Jezioro Swarzędzkie|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
