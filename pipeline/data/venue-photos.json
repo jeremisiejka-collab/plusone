@@ -441,6 +441,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Boocker SV 62|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Boso Dance Sopot|Sopot": {
   "image": "https://plusoneapp.pl/img/obiekty/sopot-sopot.jpg",
   "ratio": 1.333,
@@ -1579,6 +1587,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Grudziądzka 1|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/grudziadzka-1-bydgoszcz.jpg",
+  "ratio": 1.359,
+  "author": "Wikibenchris",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Building_at_45_Grudziadzka_Bydgoszcz.jpg",
+  "auto": "venue"
  },
  "Grupa Moderator Arena|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/grupa-moderator-arena-bydgoszcz.jpg",
@@ -5946,6 +5962,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Velvet artcafe|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
  "Vertigo Jazz Club & Restaurant|Wrocław": {
