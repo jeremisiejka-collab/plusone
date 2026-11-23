@@ -586,6 +586,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Centrum_Kultury_%22Agora%22_wraz_z_Centrum_Informacyjno-Bibliotecznym_i_Restauracj%C4%85_-_fotopolska.eu_(221558).jpg",
   "auto": "venue"
  },
+ "Centrum Kultury Białoruskiej w Białymstoku/Цэнтр беларускай культуры|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "Centrum Kultury Ursus filia Kolorowa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -804,6 +812,14 @@
   "author": "Pit1233",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
+ "Cybermachina Rzeszów|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
  "Cytadela by Night|Poznań": {
@@ -2946,6 +2962,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Lwowska 6|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "M1 Poznań|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/m1-poznan-poznan.jpg",
   "ratio": 1.678,
@@ -3345,6 +3369,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
+ },
+ "Nadleśnictwo Hajnówka|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/nadlesnictwo-hajnowka-bialystok.jpg",
+  "ratio": 1.333,
+  "author": "Stormbringer76",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:G%C5%82%C4%99boki_K%C4%85t_2.JPG",
+  "auto": "venue"
  },
  "Nakielski Ośrodek Kultury|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
@@ -3995,6 +4027,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
+ },
+ "Piłsudskiego 4|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/pilsudskiego-4-rzeszow.jpg",
+  "ratio": 1.333,
+  "author": "Lowdown",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:WO%C5%9AP_footbridge_over_Pi%C5%82sudskiego_Street_in_Rzesz%C3%B3w_(2025)b.jpg",
+  "auto": "venue"
  },
  "Playhaus|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/playhaus-krakow.jpg",
