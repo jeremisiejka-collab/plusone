@@ -3403,6 +3403,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Muzeum_Etnograficzne_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
  },
+ "Muzeum Wejherowo|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Muzeum Wojska Polskiego|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/muzeum-wojska-polskiego-warszawa.jpg",
   "ratio": 1.501,
@@ -3588,6 +3596,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Niebo Nocą|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
  },
  "Nieduża 4|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -6547,6 +6563,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "pretzel|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
  "schody.wro|Wrocław": {
