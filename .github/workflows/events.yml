@@ -16,6 +16,10 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    permissions:
+      contents: write
+      actions: write
+      issues: write
     steps:
       - uses: actions/checkout@v4
 
@@ -28,6 +32,26 @@ jobs:
 
       - name: Sprawdź treści bez emoji
         run: npm test
+
+      - name: Strażnik źródeł (zgłoszenie na GitHubie, gdy coś przestaje działać)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          T="Pobieranie wydarzeń: problem"
+          P="$(node pipeline/tools/health.mjs || echo '- strażnik nie mógł odczytać events.json')"
+          N="$(gh issue list --repo "$REPO" --state open --search "\"$T\" in:title" --json number -q '.[0].number' || true)"
+          if [ -n "$P" ]; then
+            B="$(printf 'Przebieg: %s\n\n%s\n\nZgłoszenie zamknie się samo, gdy wszystkie źródła wrócą do normy.' "$RUN_URL" "$P")"
+            if [ -n "$N" ]; then
+              L="$(gh issue view "$N" --repo "$REPO" --json body,comments -q '(.comments[-1].body // .body)')"
+              case "$L" in *"$P"*) echo "Bez zmian w zgłoszeniu #$N";; *) gh issue comment "$N" --repo "$REPO" --body "$B";; esac
+            else gh issue create --repo "$REPO" --title "$T" --body "$B"; fi
+          elif [ -n "$N" ]; then
+            gh issue close "$N" --repo "$REPO" --comment "Wszystkie źródła działają ($RUN_URL)."
+          fi
 
       - name: Zapisz zmiany
         run: |
@@ -45,4 +69,30 @@ jobs:
             # w międzyczasie ktoś mógł wypchnąć zmiany kodu — dołączamy do nich zamiast przegrywać
             git pull --rebase origin main
             git push
+            # publikacja od razu (commit bota nie uruchamia „push”, a cały przebieg kończy się dopiero po zamówieniu następnego)
+            gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main
           fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  # GitHub uruchamia harmonogram „co godzinę” w praktyce co 6–9 godzin. Żeby dane odświeżały się naprawdę
+  # bez przerwy, każdy przebieg (także nieudany) sam zamawia następny ok. godzinę po swoim starcie.
+  # workflow_dispatch z GITHUB_TOKEN wolno uruchamiać; harmonogram zostaje jako zapas, gdyby łańcuch się urwał.
+  next:
+    needs: update
+    if: always() && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    permissions:
+      actions: write
+    steps:
+      - name: Zamów następny przebieg za ok. godzinę
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          started=$(gh api "repos/$REPO/actions/runs/$RUN_ID" -q .run_started_at)
+          wait=$(( $(date -d "$started" +%s) + 55*60 - $(date +%s) ))
+          if [ "$wait" -gt 0 ]; then echo "Czekam $wait s"; sleep "$wait"; fi
+          gh workflow run events.yml --repo "$REPO" --ref main

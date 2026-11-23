@@ -5,6 +5,9 @@
 - Komunikacja i teksty w aplikacji po polsku.
 - **Bez emoji na stronie i w aplikacji.** Dotyczy również tytułów i opisów pobieranych z zewnętrznych źródeł. Używaj tekstu lub istniejących ikon SVG; importowane treści muszą być oczyszczane z emoji. Także żadnych iPhonowych emoji: `esc()` (strona i aplikacja) usuwa emoji z każdego wyświetlanego tekstu, a ©®™ i strzałki dostają U+FE0E (wygląd tekstowy); `font-variant-emoji: text` w `public/admin.css`. Znaki z wariantem emoji w szablonach (↗ ↕ ✳ ⛶ ©) zawsze z U+FE0E.
 
+- **Dokumentacja dla programistów:** `docs/PROGRAMISCI.md` (architektura, dostępy, uruchomienie lokalne `tools/seed-local.sh`, audyt `tools/audit-app.cjs`, źródła, do zrobienia) — aktualizuj ją razem z dużymi zmianami.
+- **Pobieranie non stop:** `events.yml` — każdy przebieg (zadanie `next`) zamawia następny ok. 55 min po swoim starcie (harmonogram GitHub co godzinę działa w praktyce co 6–9 h, zostaje jako zapas) i od razu zleca publikację; strażnik `pipeline/tools/health.mjs` otwiera/zamyka issue „Pobieranie wydarzeń: problem”, gdy źródło pada albo ma za mało wydarzeń (progi `MIN`).
+
 ## Grafiki wydarzeń
 - **Zakaz „kaszet”**: żadnych rozmytych pasów, gradientów ani pustych pól wokół plakatu (góra/dół/boki) i żadnych gradientów nakładanych na grafikę.
 - Na stronie podglądy wydarzeń mają tylko dwa formaty: pionowy **3:4** i poziomy **4:3**, ze wspólną wysokością we wszystkich sekcjach. Kadruj przez `object-fit: cover`, bez rozciągania i pasów. Pełny plakat na stronie wydarzenia zachowuje oryginalne proporcje z `imageRatio` lub wczytanego obrazka.

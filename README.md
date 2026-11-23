@@ -1,5 +1,7 @@
 # +1
 
+> **Dla programistów:** aktualna dokumentacja całego systemu jest w [`docs/PROGRAMISCI.md`](docs/PROGRAMISCI.md), a obowiązujące zasady projektu w [`CLAUDE.md`](CLAUDE.md). Ten plik jest częściowo historyczny.
+
 Aplikacja z wydarzeniami — imprezy, koncerty, teatr, stand-up, festiwale — najpierw w Warszawie, potem w całej Polsce.
 
 ## Jak to działa
@@ -11,7 +13,7 @@ Aplikacja z wydarzeniami — imprezy, koncerty, teatr, stand-up, festiwale — n
    → public/index.html         apka wczytuje plik i pokazuje wydarzenia
 ```
 
-- **GitHub Actions** (`.github/workflows/events.yml`) uruchamia pipeline 2× dziennie (ok. 6:00 i 16:00) i commituje świeży `public/data/events.json`. Cloudflare publikuje nową wersję po każdym commicie na `main`.
+- **GitHub Actions** (`.github/workflows/events.yml`) uruchamia pipeline ok. co godzinę (każdy przebieg zamawia następny) i commituje świeży `public/data/events.json`. Cloudflare publikuje nową wersję po każdym commicie na `main`.
 - Ręczne uruchomienie: zakładka **Actions → Aktualizacja wydarzeń → Run workflow**.
 - Duplikaty (ten sam koncert w kilku serwisach) są łączone w jeden wpis z kilkoma linkami do biletów.
 
