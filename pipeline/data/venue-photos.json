@@ -436,6 +436,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "BlissHouse Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Blue City|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/blue-city-warszawa.jpg",
   "ratio": 1.494,
@@ -1258,6 +1266,14 @@
   "author": "Patryk Duszkiewicz",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_(Elektrownia_Powi%C5%9Ble)_-_tablica.jpg",
+  "auto": "venue"
+ },
+ "Emaus 20/4|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/emaus-20-4-krakow.jpg",
+  "ratio": 0.75,
+  "author": "Dwxn",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:20250429_174840_Public_bookcase_(Stowarzyszenie_Emaus),_Park_Krowoderski,_Pr%C4%85dnik_Bia%C5%82y,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
  "Emilii Plater 31|Warszawa": {
@@ -2306,6 +2322,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Jazdów 1|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/jazdow-1-warszawa.jpg",
+  "ratio": 1.407,
+  "author": "Nieznany/unknown",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Budowa_domk%C3%B3w_fi%C5%84skich_Warszawa_marzec_1945.jpg",
+  "auto": "venue"
+ },
  "Jazz Club Hipnoza (official venue profile)|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
   "ratio": 0.667,
@@ -3057,6 +3081,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Kościół Św. Katarzyny|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kosciol-sw-katarzyny-krakow.jpg",
+  "ratio": 1.197,
+  "author": "Jakub Hałun",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_kosciol_sw_Katarzyny_20070930_1522.jpg",
+  "auto": "venue"
  },
  "Kościół św. Benedykta w Krakowie|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/kosciol-sw-benedykta-w-krakowie-krakow.jpg",
