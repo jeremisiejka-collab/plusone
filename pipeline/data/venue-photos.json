@@ -97,6 +97,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Akademickie Centrum Sportu Politechniki Bydgoskiej|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Ale Sztuka|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -3606,6 +3614,22 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
+ },
+ "Opera Nova w Bydgoszczy|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/opera-nova-w-bydgoszczy-bydgoszcz.jpg",
+  "ratio": 1.47,
+  "author": "Marcin Białek",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz_opera.jpg",
+  "auto": "venue"
+ },
+ "Opera Nova|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/opera-nova-bydgoszcz.jpg",
+  "ratio": 1.501,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Opera-nova.jpg",
+  "auto": "venue"
  },
  "Opera i Filharmonia Podlaska - Europejskie Centrum Sztuki w Białymstoku|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/opera-i-filharmonia-podlaska-europejskie-centrum-sztuki-w-bialymstoku-.jpg",
