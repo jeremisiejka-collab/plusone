@@ -2476,6 +2476,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Karola Miarki 3a/u11|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Karowa 20|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/karowa-20-warszawa.jpg",
   "ratio": 1.499,
@@ -2798,6 +2806,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Klub_komediowy_warszawa.jpg",
   "auto": "venue"
+ },
+ "Klub Królestwo|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
  },
  "Klub Kwadrat|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
