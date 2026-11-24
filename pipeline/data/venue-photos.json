@@ -727,6 +727,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Centrum Kultury w Świeciu|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Centrum Promocji Kultury|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-promocji-kultury-warszawa.jpg",
   "ratio": 1.537,
@@ -1574,6 +1582,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Galeria_Malta_-_Pozna%C5%84.JPG",
   "auto": "venue"
+ },
+ "Galeria Miejska bwa w Bydgoszczy (Bydgoszcz)|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
  },
  "Galeria Projekt cafe|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
