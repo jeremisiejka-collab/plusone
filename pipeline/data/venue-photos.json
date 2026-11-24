@@ -931,6 +931,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "CoffeePlanet Wrocław|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Concordia Design Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/concordia-design-wroclaw-wroclaw.jpg",
   "ratio": 1.333,
@@ -1324,6 +1332,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:20250429_174840_Public_bookcase_(Stowarzyszenie_Emaus),_Park_Krowoderski,_Pr%C4%85dnik_Bia%C5%82y,_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "Embodiment studio|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Emilii Plater 31|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/emilii-plater-31-warszawa.jpg",
@@ -3964,6 +3980,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Muzeum_Etnograficzne_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
  },
+ "Muzeum Narodowe - Sukiennice|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/muzeum-narodowe-sukiennice-krakow.jpg",
+  "ratio": 0.762,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_2024_347_MNK_Sukiennice_Gallery.jpg",
+  "auto": "venue"
+ },
  "Muzeum Sztuki i Techniki Japońskiej Manggha|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/muzeum-sztuki-i-techniki-japonskiej-manggha-krakow.jpg",
   "ratio": 1.877,
@@ -6537,6 +6561,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
+ },
+ "Teatr Ludowy|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-ludowy-krakow.jpg",
+  "ratio": 1.766,
+  "author": "Zygmunt Put",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ludowy_(People%27s)_Theatre,_34_osiedle_Teatralne,_Nowa_Huta,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
  },
  "Teatr Muzyczny Capitol|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-muzyczny-capitol-wroclaw.jpg",
