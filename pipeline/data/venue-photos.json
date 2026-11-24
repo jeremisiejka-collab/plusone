@@ -694,6 +694,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "Centrum Kultury Podgórza - Ośrodek Ruczaj|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Centrum Kultury Ursus filia Kolorowa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1722,6 +1730,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Globus Music Club|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Gniazdo Piratów Warszawa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -2542,6 +2558,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Karmelicka 27|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/karmelicka-27-krakow.jpg",
+  "ratio": 1.766,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaKarmelicka-WidokNaP%C3%B3%C5%82nocnyZach%C3%B3d-Piasek-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Karola Miarki 3a/u11|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -3107,6 +3131,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Stacja_kolejowa_Pozna%C5%84_G%C3%B3rczyn_-_lipiec_2018_-_1.jpg",
   "auto": "venue"
  },
+ "Komuna Warszawa|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/komuna-warszawa-warszawa.jpg",
+  "ratio": 1.437,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Teatr_Komuna_Warszawa_przy_ulicy_Emilii_Plater_31_w_Warszawie_2026.jpg",
+  "auto": "venue"
+ },
  "Komuny Paryskiej 16|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/komuny-paryskiej-16-wroclaw.jpg",
   "ratio": 1.333,
@@ -3429,6 +3461,14 @@
   "author": "Łukasz Czyżykowski",
   "license": "CC BY 2.0",
   "source": "https://commons.wikimedia.org/wiki/File:New_bridge_(R%C4%99dzi%C5%84ski)2.jpg",
+  "auto": "venue"
+ },
+ "Las Zabierzowski|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/las-zabierzowski-krakow.jpg",
+  "ratio": 1.399,
+  "author": "Jerzy Opioła",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Walec_DK60.jpg",
   "auto": "venue"
  },
  "Lastriko|Kraków": {
@@ -4501,6 +4541,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "PROM Kultury Saska Kępa|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "PROMINENT The Original Lounge Bar|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -5076,6 +5125,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Prozak 2.0|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Przejście Garncarskie 2|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/przejscie-garncarskie-2-wroclaw.jpg",
   "ratio": 1.333,
@@ -5094,6 +5151,15 @@
  },
  "Przestrzeń Muzyki Współczesnej Hashtag Lab|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/przestrzen-muzyki-wspolczesnej-hashtag-lab-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Przychodnia Skłot|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
   "license": "CC BY-SA 4.0",
@@ -5204,6 +5270,14 @@
   "author": "Diana Łanda",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw-Polskie_Radio.jpg",
+  "auto": "venue"
+ },
+ "Rakowicka 27|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/rakowicka-27-krakow.jpg",
+  "ratio": 1.633,
+  "author": "Mach240390",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaRakowicka-WidokNaPo%C5%82udnie-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
  "Rancho Lavender - agroturystyka|Wrocław": {
@@ -5592,6 +5666,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Kino_Relax_w_Warszawie_2020.jpg",
   "auto": "venue"
+ },
+ "Scena Supernova|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Schron|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/schron-poznan.jpg",
@@ -7189,6 +7271,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Zielińskiego 22a|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Zmiana Klimatu|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/zmiana-klimatu-bialystok.jpg",
