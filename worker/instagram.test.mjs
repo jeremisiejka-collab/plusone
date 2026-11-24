@@ -144,6 +144,9 @@ test('brak grafiki JPEG: zadanie czeka z czytelnym stanem, nic nie idzie do Meta
   assert.equal(row.status, 'queued');
   assert.match(row.last_error, /czeka na grafikę JPEG/);
   assert.equal(m.calls.length, 0);
+  // „Publikuj teraz” mówi, na co czeka
+  const now = await igTick(f.env, { now: NOW, fx: m.fx, sleep: noSleep, forceId: row.id });
+  assert.match(now.skipped, /czeka na grafikę JPEG/);
   // pipeline pyta o tę grafikę
   const w = await (await igWanted(f.env, json)).json();
   assert.deepEqual(w.render, [{ key: await imageKey(EVENT.image), src: EVENT.image }]);

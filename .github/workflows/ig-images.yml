@@ -1,0 +1,39 @@
+name: Instagram — grafiki JPEG
+
+# Grafiki JPEG dla postów z kolejki (GET /api/ig/wanted → public/ig/), bez czekania na pełną aktualizację wydarzeń.
+# To samo robi co godzinę „Aktualizacja wydarzeń”. Ręcznie: Actions → ten workflow → Run workflow.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: ig-images
+  cancel-in-progress: false
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Grafiki
+        run: |
+          npm install --no-save --no-audit --no-fund sharp@0.33.5
+          node pipeline/tools/ig-images.mjs
+      - name: Zapisz i opublikuj
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "plusone-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -d public/ig ]; then git add -A public/ig; fi
+          if git diff --cached --quiet; then echo "Brak nowych grafik."; exit 0; fi
+          git commit -m "Grafiki dla Instagrama $(date -u +'%Y-%m-%d %H:%M') UTC"
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main

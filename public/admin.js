@@ -478,7 +478,7 @@ async function igLoad(force){
   IGP.busy = false; IGP.at = Date.now(); S.dir=null; render();
 }
 async function igCall(path, data, ok){
-  try{ const r = await apiCall(path, 'POST', data||{}); if(ok) toast(typeof ok==='function'?ok(r):ok, true); await igLoad(true); return r; }
+  try{ const r = await apiCall(path, 'POST', data||{}); if(ok) toast(typeof ok==='function'?ok(r):ok, true, typeof ok==='function'?5000:2200); await igLoad(true); return r; }
   catch(e){ toast(esc(e.message), true, 5000); return null; }
 }
 function igPostCard(p){
@@ -603,7 +603,7 @@ function igAct(cmd, p1, p2, a){
     }
     case 'igCheck': igCall('/api/admin/ig/check', {}, r=>r.ok?'Konto @'+r.username+' — token działa':'Konto: '+r.error); return true;
     case 'igSync': igCall('/api/admin/ig/sync', {}, r=>r.added?'Dodano do kolejki: '+r.added:(r.reason||'Brak nowych kandydatów')); return true;
-    case 'igNow': igCall('/api/admin/ig/tick', p1?{id:+p1}:{}, r=>r.sent?'Wysłano do Instagrama':(r.skipped||'Nic do wysłania')); return true;
+    case 'igNow': toast('Wysyłam…', true, 1500); igCall('/api/admin/ig/tick', p1?{id:+p1}:{}, r=>r.sent?'Wysłano do Instagrama':'Nie wysłano: '+esc(r.skipped||'nic do wysłania')); return true;
     case 'igCap': igCall('/api/admin/ig/post/'+p1, {action:'caption', caption:v('igc-'+p1)}, 'Podpis zapisany'); return true;
     case 'igDo': igCall('/api/admin/ig/post/'+p1, {action:p2}, {approve:'Zatwierdzone',skip:'Pominięte',requeue:'Wróciło do kolejki'}[p2]); return true;
     case 'igResolve': {

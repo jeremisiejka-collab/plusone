@@ -452,10 +452,11 @@ export async function igTick(env, { now = Date.now(), fx = fetch, sleep = ms => 
     for (const row of open.results) { if (await advance(env, cfg, row, now, fx, sleep)) out.sent++; cfg = await igConfig(env); if (cfg.authError) return out; }
     if (open.results.some(r => !isFinal(r.status))) {
       const still = await env.DB.prepare("SELECT COUNT(*) AS n FROM ig_posts WHERE ig_user = ? AND status IN ('container','publishing','unknown')").bind(cfg.igUserId).first();
-      if (still.n) return out;        // jeden post naraz
+      if (still.n) return { ...out, skipped: out.skipped || 'poprzedni post jest jeszcze w toku' };        // jeden post naraz
     }
     const u = await usage(env, cfg, now);
     const forced = forceId ? await env.DB.prepare("SELECT * FROM ig_posts WHERE id = ? AND status = 'queued'").bind(forceId).first() : null;
+    if (forceId && !forced) return { ...out, skipped: 'to zadanie nie czeka w kolejce' };
     if (!forced) {
       if (u.today >= cfg.dailyLimit || u.week >= cfg.weeklyLimit) return { ...out, skipped: 'limit' };
       if (!(await slotDue(env, cfg, now, u.dayStart))) return { ...out, skipped: 'poza godziną publikacji' };
@@ -466,6 +467,8 @@ export async function igTick(env, { now = Date.now(), fx = fetch, sleep = ms => 
       const sent = await advance(env, cfg, row, now, fx, sleep);
       if (sent) { out.sent++; break; }
     }
+    // „Publikuj teraz” bez wysyłki: powiedz dlaczego (np. grafika JPEG jeszcze nie gotowa)
+    if (forced && !out.sent) out.skipped = (await env.DB.prepare('SELECT last_error, status FROM ig_posts WHERE id = ?').bind(forced.id).first())?.last_error || 'nic nie wysłano';
     return out;
   } finally { await unlock(env); }
 }
