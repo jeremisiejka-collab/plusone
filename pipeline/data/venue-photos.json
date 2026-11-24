@@ -2774,6 +2774,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Klub B17|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Klub Baza|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -3881,6 +3889,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Cytadela_(dron2).jpg",
   "auto": "venue"
  },
+ "Muzeum Śląskie|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/muzeum-slaskie-katowice.jpg",
+  "ratio": 1.49,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_nowe_Muzeum_%C5%9Al%C4%85skie.JPG",
+  "auto": "venue"
+ },
  "Muzyka na nowo|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -4590,6 +4606,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_ul._Pasteura_17A,_tablica_pami%C4%85tkowa_ku_czci_profesora_J%C3%B3zefa_Dudka.jpg",
   "auto": "venue"
  },
+ "Pawilon|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/pawilon-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Lukasz pob",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84,_pawilon_%22Polska_za_Granic%C4%85%22,_ob._biblioteka_Akademii_Medycznej,_1929_01.JPG",
+  "auto": "venue"
+ },
  "Pałac Krzysztofory / Muzeum Krakowa|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/palac-krzysztofory-muzeum-krakowa-krakow.jpg",
   "ratio": 0.664,
@@ -5211,6 +5235,14 @@
   "author": "Igor123121",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Mogilskie_Roundabout._lower_level,_Grzeg%C3%B3rzki,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
+ "Roosevelta 42|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/roosevelta-42-poznan.jpg",
+  "ratio": 1.902,
+  "author": "Roweromaniak",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84_Roosevelta_860-25.jpg",
   "auto": "venue"
  },
  "Rozbrat|Poznań": {
