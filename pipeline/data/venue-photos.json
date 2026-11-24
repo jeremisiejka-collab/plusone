@@ -557,6 +557,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Buma Square|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Busweekend|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
   "ratio": 0.667,
@@ -2304,6 +2312,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Jagiellońska 10|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/jagiellonska-10-krakow.jpg",
+  "ratio": 1.501,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_Biblioteka_Jagiello%C5%84ska_2023.jpg",
+  "auto": "venue"
  },
  "Jagiellońska 82B|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -5108,6 +5124,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Radio Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/radio-krakow-krakow.jpg",
+  "ratio": 1.542,
+  "author": "mamik",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w,_Radio_Krak%C3%B3w_-_fotopolska.eu_(255440).jpg",
+  "auto": "venue"
+ },
  "Radio Wrocław Kultura|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -5528,6 +5552,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Skawińska 2|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/skawinska-2-krakow.jpg",
+  "ratio": 1.7,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaSkawi%C5%84ska-WidokNaZach%C3%B3d-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Skorzęcin|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -5774,6 +5806,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stary_Browar_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
+ },
+ "Stary Klasztor - Sala Gotycka|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Stary Klasztor|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
