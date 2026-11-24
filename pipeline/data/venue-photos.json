@@ -1483,6 +1483,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Fort_Sokolnickiego_w_Warszawie_2023.jpg",
   "auto": "venue"
  },
+ "Forteca Kręgliccy - Targ|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Forum Fun & Food|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -4517,6 +4526,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Park Szczęśliwicki|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/park-szczesliwicki-warszawa.jpg",
+  "ratio": 1.508,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Park_Szcz%C4%99%C5%9Bliwicki_w_Warszawie_2021a.jpg",
+  "auto": "venue"
+ },
  "Park przy Starym Browarze|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -6204,6 +6221,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "TangoVirri|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Tapeup.Art|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -7260,6 +7285,14 @@
   "author": "Unknown authorUnknown author",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Statuta_Casimiri_Magni._1501-1523_(160073203)_(cropped).jpg",
+  "auto": "venue"
+ },
+ "ul.noakowskiego 10|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/ul-noakowskiego-10-warszawa.jpg",
+  "ratio": 1.417,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Stanis%C5%82awa_Noakowskiego_w_Warszawie_2026.jpg",
   "auto": "venue"
  },
  "w_sercu|Poznań": {
