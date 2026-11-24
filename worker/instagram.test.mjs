@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
-import { igTick, syncQueue, enqueue, igConfig, mergeConfig, buildCaption, igReject, classify, imageKey, instagramApi, igWanted, _resetEventsCache, IG_DEFAULTS } from './instagram.js';
+import { igHealth, igTick, syncQueue, enqueue, igConfig, mergeConfig, buildCaption, igReject, classify, imageKey, instagramApi, igWanted, _resetEventsCache, IG_DEFAULTS } from './instagram.js';
 
 const NOW = Date.parse('2026-11-24T10:05:00Z');            // 11:05 w Polsce, tuż po godzinie publikacji 11:00
 const json = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
@@ -291,4 +291,20 @@ test('aktywacja: włączenie wyboru zapisuje moment — starsze wydarzenia nie w
   assert.equal(c.dailyLimit, 25);
   assert.deepEqual(c.slots, ['11:30', '19:00']);
   assert.equal(mergeConfig(c, { autoSelect: true }, NOW + 1).activatedAt, NOW);
+});
+
+test('stan połączenia: bez sekretów, Graph API najwyżej raz na 10 min', async t => {
+  const f = fixture(t);
+  const m = meta(OK);
+  const a = await (await igHealth(f.env, json, { fx: m.fx, now: NOW })).json();
+  assert.equal(a.ok, true); assert.equal(a.username, 'plusoneapp.pl'); assert.equal(a.token, true);
+  assert.ok(!JSON.stringify(a).includes('test-token'));
+  await igHealth(f.env, json, { fx: m.fx, now: NOW + 60e3 });
+  assert.equal(m.calls.length, 1);
+  const bad = meta({ 'GET /17841412007314040': { status: 400, body: { error: { message: 'Invalid OAuth access token', code: 190 } } } });
+  const b = await (await igHealth(f.env, json, { fx: bad.fx, now: NOW + 11 * 60e3 })).json();
+  assert.equal(b.ok, false); assert.equal(b.kind, 'auth');
+  const f2 = fixture(t, { token: null });
+  const c = await (await igHealth(f2.env, json, { fx: m.fx, now: NOW })).json();
+  assert.equal(c.token, false); assert.equal(c.ok, false);
 });

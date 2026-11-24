@@ -1,0 +1,15 @@
+name: Instagram — sprawdź połączenie
+
+# Ręcznie: czy Worker ma sekret IG_ACCESS_TOKEN i czy prowadzi on do @plusoneapp.pl (GET /api/ig/health, bez sekretów).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - run: curl -sS --max-time 40 https://plusoneapp.pl/api/ig/health; echo

@@ -176,6 +176,8 @@ Nowy plik w `pipeline/sources/` eksportujący `async () => [...]` z wydarzeniami
 
 **Token.** Graph API `graph.facebook.com/v25.0`, IG User ID `17841412007314040`, system-user token z `instagram_basic` i `instagram_content_publish` (bezterminowy, nie odświeżać jak tokenu Instagram Login; prefiks `IG` nie oznacza złego tokenu). Jedno miejsce: sekret Workera **`IG_ACCESS_TOKEN`** — Cloudflare → Workers & Pages → plusone → Settings → Variables and Secrets → Add → typ Secret (albo `npx wrangler secret put IG_ACCESS_TOKEN`). Wysyłany tylko w nagłówku `Authorization: Bearer`; nigdy w kodzie, logach, bazie ani przeglądarce. Oryginał jest w Google Apps Script (właściwość `IG_ACCESS_TOKEN`) na koncie marki. Starego harmonogramu Apps Script i masowej wysyłki archiwum nie uruchamiamy.
 
+**Sprawdzenie połączenia:** `GET /api/ig/health` (publiczne, bez sekretów: jest token, czy konto to @plusoneapp.pl; Graph API najwyżej raz na 10 min) albo Actions → „Instagram — sprawdź połączenie”.
+
 **Panel:** Panel administratora → Instagram (tylko właściciele): przełączniki Automatyczny wybór / Akceptacja / Wysyłka (domyślnie wszystko wyłączone poza akceptacją), kolejka (zatwierdź, popraw podpis, pomiń, publikuj teraz, rozstrzygnij „do sprawdzenia”), kandydaci z wynikiem i liczbą odrzuconych przez filtr, ręczne dodanie z podglądem, filtr i limity, szablon podpisu (`{tytul} {kiedy} {miejsce} {miasto} {opis} {cena} {link} {id} {hashtagi}`), wzorce stylu (zatwierdzone ręczne poprawki podpisów — materiał do nauki stylu), dziennik prób. API: `/api/admin/ig*`. Testy: `worker/instagram.test.mjs` (atrapy Graph API).
 
 ## 7. API Workera (skrót)

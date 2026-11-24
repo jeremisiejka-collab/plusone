@@ -479,6 +479,22 @@ export async function preview(env, cfg, e, ev, now = Date.now()) {
     caption: buildCaption(e, cfg), score, reasons, reject: igReject(e, cfg, { hidden: ev.hidden, ignoreActivation: true }, now), account: '@' + cfg.username, igUserId: cfg.igUserId };
 }
 
+/* publiczne: stan połączenia z Instagramem (bez sekretów: jest token, czy konto się zgadza, nazwa profilu).
+   Graph API pytamy najwyżej raz na 10 min — wynik trzymamy w settings.ig_health. */
+export async function igHealth(env, json, { fx = fetch, now = Date.now() } = {}) {
+  const cfg = await igConfig(env);
+  const row = await env.DB.prepare("SELECT value FROM settings WHERE key = 'ig_health'").first();
+  let h = null; try { h = row ? JSON.parse(row.value) : null; } catch {}
+  const token = !!env.IG_ACCESS_TOKEN;
+  if (!h || h.token !== token || now - h.at > 10 * 60e3) {
+    const r = await checkProfile(env, cfg, fx);
+    h = { at: now, token, ok: !!r.ok, username: r.username || null, error: r.ok ? null : r.msg, kind: r.ok ? null : r.kind || null };
+    await env.DB.prepare("INSERT INTO settings (key, value) VALUES ('ig_health', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").bind(JSON.stringify(h)).run();
+  }
+  return json({ account: '@' + cfg.username, token: h.token, ok: h.ok, username: h.username, error: h.error, kind: h.kind, checkedAt: new Date(h.at).toISOString(),
+    sendEnabled: cfg.sendEnabled, autoSelect: cfg.autoSelect }, 200, { 'Cache-Control': 'no-store' });
+}
+
 /* publiczne: lista grafik do przygotowania dla pipeline (tylko klucze i adresy publicznych plakatów) */
 export async function igWanted(env, json) {
   const rows = await env.DB.prepare(`SELECT image_key, image_src, status, published_at FROM ig_posts WHERE status IN ('review','queued','container','publishing','unknown','needs_check')

@@ -8,7 +8,7 @@ import { withSecurityHeaders, rateLimit } from './security.js';
 import { sharePage } from './share.js';
 import { nearby } from './nearby.js';
 import { track, liveStats, cleanupStats } from './stats.js';
-import { instagramApi, igWanted, igTick, IG_CRON } from './instagram.js';
+import { instagramApi, igWanted, igHealth, igTick, IG_CRON } from './instagram.js';
 import { premiumApi, welcomeInside, zoneInfo, scanGuest, crewInfo, forgotPassword, resetPassword, findReset, adminOrganizers, adminNewsletter, mailDetect, scheduled, guestTicketPage, initPremium } from './premium.js';
 
 const DAY = 864e5;
@@ -802,7 +802,8 @@ async function api(req, env) {
   if (path === '/api/feed/allevents' && m === 'GET') return allEventsProxy(url);
   if (path === '/api/nearby' && m === 'GET') return nearby(req, env, json);   // „Plan na noc”: lokale w pobliżu
   if (path === '/api/state' && m === 'GET') return publicState(env);
-  if (path === '/api/ig/wanted' && m === 'GET') return igWanted(env, json);   // grafiki JPEG do przygotowania (pipeline/tools/ig-images.mjs)
+  if (path === '/api/ig/wanted' && m === 'GET') return igWanted(env, json);
+  if (path === '/api/ig/health' && m === 'GET') return igHealth(env, json);   // stan połączenia z Instagramem (bez sekretów)   // grafiki JPEG do przygotowania (pipeline/tools/ig-images.mjs)
   if (path === '/api/auth/register' && m === 'POST') return register(req, env);
   if (path === '/api/auth/login' && m === 'POST') return login(req, env);
   if (path === '/api/auth/code' && m === 'POST') return sendLoginCode(req, env);
