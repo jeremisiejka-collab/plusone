@@ -872,6 +872,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "City Park Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/city-park-poznan-poznan.jpg",
+  "ratio": 1.618,
+  "author": "MOs810",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:City_Park_Poznan.JPG",
+  "auto": "venue"
+ },
  "City24|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -6960,6 +6968,14 @@
   "author": "Lestat (Jan Mehlich)",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_U%C5%9A_-_WPiA.jpg",
+  "auto": "venue"
+ },
+ "Wydział Prawa|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wydzial-prawa-wroclaw.jpg",
+  "ratio": 1.336,
+  "author": "Robert Niedźwiedzki",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw_University,_faculty_of_law.jpg",
   "auto": "venue"
  },
  "Wydział Studiów Międzynarodowych i Politycznych UJ|Kraków": {
