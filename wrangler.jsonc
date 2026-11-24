@@ -33,7 +33,7 @@
   },
   "observability": { "enabled": true },
   // alerty co 6 h (worker/premium.js → runAlerts) i newsletter w czwartek ok. 10:00 (NEWSLETTER_CRON)
-  "triggers": { "crons": ["17 */6 * * *", "3 8 * * 4", "*/10 * * * *"] },   // ostatni: Instagram (IG_CRON w worker/instagram.js)
+  "triggers": { "crons": ["17 */6 * * *", "3 8 * * 4"] },
   "workers_dev": true,           // zapasowy adres plusone.jeremi-3b8.workers.dev
   "preview_urls": false,
   // domena w Cloudflare (DNS i certyfikat ustawiają się same przy publikacji)

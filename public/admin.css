@@ -330,20 +330,3 @@ input:focus-visible, textarea:focus-visible, select:focus-visible { outline: non
 .live-rng{display:flex;gap:8px}
 .live-ts{margin-left:auto}
 @media (max-width:760px){ .live-top{flex-direction:column;align-items:flex-start} .live-ts{margin-left:0} }
-
-/* Panel admina → Instagram */
-.igpost { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
-.igpost > img { width: 84px; height: 112px; object-fit: cover; border-radius: 12px; flex: none; background: var(--surface-3); }
-.igpost textarea, .igsheet textarea, .igcap { font: 400 14px/1.45 var(--d); }
-.igpost textarea, .igsheet textarea { width: 100%; border-radius: 12px; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--t1); resize: vertical; }
-.igcap { white-space: pre-wrap; margin: 6px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); color: var(--t2); }
-.igcand { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
-.igcand > img { width: 48px; height: 64px; object-fit: cover; border-radius: 9px; flex: none; background: var(--surface-3); }
-.igfound { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 0; border-top: 1px solid var(--line); color: var(--t1); }
-.igtog { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); color: var(--t1); }
-.igtog i { width: 40px; height: 24px; flex: none; border-radius: 12px; background: var(--surface-3); position: relative; transition: background .2s; }
-.igtog i::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--t3); transition: transform .2s, background .2s; }
-.igtog.on i { background: var(--pink); }
-.igtog.on i::after { transform: translateX(16px); background: #fff; }
-.igprev { width: 100%; max-height: 60vh; object-fit: contain; border-radius: 14px; background: var(--surface-2); }
-@media (prefers-reduced-motion: reduce) { .igtog i, .igtog i::after { transition: none; } }

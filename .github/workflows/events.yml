@@ -33,12 +33,6 @@ jobs:
       - name: Sprawdź treści bez emoji
         run: npm test
 
-      - name: Grafiki JPEG dla Instagrama (kolejka z panelu admina, worker/instagram.js)
-        continue-on-error: true
-        run: |
-          npm install --no-save --no-audit --no-fund sharp@0.33.5
-          node pipeline/tools/ig-images.mjs
-
       - name: Strażnik źródeł (zgłoszenie na GitHubie, gdy coś przestaje działać)
         if: always()
         env:
@@ -68,7 +62,6 @@ jobs:
           if [ -f pipeline/data/sport-venues.json ]; then git add pipeline/data/sport-venues.json; fi
           git add pipeline/data/venue-photos.json public/img/obiekty pipeline/data/allevents.json pipeline/data/pik.json pipeline/data/kluby.json pipeline/data/link-check.json
           git add -A public/data/og
-          if [ -d public/ig ]; then git add -A public/ig; fi
           if git diff --cached --quiet; then
             echo "Brak zmian."
           else

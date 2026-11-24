@@ -2015,7 +2015,7 @@ function scDownloads(){
 function workNavHtml(){
   const cur = S.screen==='admin' ? 'admin:'+(S.adminTab||'stats') : S.screen;
   const items = workMode()==='admin'
-    ? [['go:dash','Pulpit',['dash']],['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:expo','Mapa targów 3D',['admin:expo']],['adm:venues','Obiekty 3D',['admin:venues']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']],['adm:ig','Instagram',['admin:ig']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
+    ? [['go:dash','Pulpit',['dash']],['adm:users','Użytkownicy',['admin:users']],['adm:orgs','Organizatorzy',['admin:orgs','org','orgEvents']],['adm:invites','Zaproszenia',['admin:invites']],['adm:expo','Mapa targów 3D',['admin:expo']],['adm:venues','Obiekty 3D',['admin:venues']],['adm:curation','Moderacja',['admin:curation']],...(isOwner()?[['adm:mail','E-mail',['admin:mail']]]:[]),['adm:data','Dane',['admin:data','admin:stats']]]
     : [['go:org','Pulpit',['org']],['go:orgEvents','Wydarzenia',['orgEvents']],['go:scan','Skaner',['scan']]];
   return items.map(([a,l,on])=>`<button data-act="${a}" ${on.includes(cur)?'aria-current="page"':''}>${l}</button>`).join('');
 }
@@ -2132,7 +2132,7 @@ function act(a){
     case 'deleteAccountSheet': deleteAccountSheet(); break;
     case 'deleteAccount': deleteAccount(); break;
     case 'adminTab': S.adminTab=p1; S.dir=null; render(); break;
-    case 'adminReload': ACC.admin=null; if(typeof IGP!=='undefined') IGP.at=0; S.dir=null; render(); break;
+    case 'adminReload': ACC.admin=null; S.dir=null; render(); break;
     case 'adminSearch': S.adminQ=$('#adm-q')?.value||''; adminLoad(); break;
     case 'curate': curate(p1, p2); break;
     case 'perms': permsSheet(p1); break;

@@ -3,5 +3,5 @@
   "private": true,
   "type": "module",
   "engines": { "node": ">=22.13" },
-  "scripts": { "events": "node pipeline/run.mjs", "test": "node --test pipeline/lib/normalize.test.mjs worker/social.test.mjs worker/instagram.test.mjs" }
+  "scripts": { "events": "node pipeline/run.mjs", "test": "node --test pipeline/lib/normalize.test.mjs worker/social.test.mjs" }
 }

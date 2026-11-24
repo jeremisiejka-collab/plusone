@@ -40,7 +40,6 @@ Repozytorium jest **publiczne**. Nie ma w nim żadnych haseł ani kluczy i tak m
 | Cloudflare: zaproszenie do konta (Manage Account → Members) z prawami Workers, D1, DNS | hosting, baza, domena, logi (Observability) | dash.cloudflare.com, konto `3b85c6d8…` |
 | Sekret repo `CLOUDFLARE_API_TOKEN` | publikacja z GitHub Actions (uprawnienia: Workers Scripts Edit, D1 Edit, Zone/Workers Routes Edit) | GitHub → Settings → Secrets → Actions |
 | Poczta (serwer SMTP) | wszystkie maile: kody logowania, zaproszenia, newsletter | Panel admina → Główny e-mail (zapis w tabeli `settings`). Awaryjnie sekrety Workera `RESEND_API_KEY` + `MAIL_FROM` |
-| Instagram: sekret Workera `IG_ACCESS_TOKEN` | publikacja na @plusoneapp.pl (pkt 7a) | Cloudflare → Workers → plusone → Settings → Variables and Secrets |
 | Klucz operacji (`OPS_KEY`) | `POST /api/ops/*` (linki do haseł administratorów) — w repo jest tylko jego sha256 | tylko u właściciela |
 | Lista administratorów | `ADMIN_EMAIL_SHA256` w `wrangler.jsonc` — sha256 adresów, nigdy adresy jawnie | `wrangler.jsonc` |
 | Domena `plusoneapp.pl` | DNS jest w Cloudflare, rejestrator — u właściciela | |
@@ -84,10 +83,8 @@ pipeline/
   data/                pamięci między przebiegami (commitowane przez bota)
   tools/health.mjs     strażnik źródeł
   venues/, venue3d/    generatory planów sal i modeli 3D
-social/                generator grafik postów i story (workflow „Posty na Instagram”, ręczne pobieranie)
-  (automatyczne posty: worker/instagram.js, pipeline/tools/ig-images.mjs, public/ig/ — patrz pkt 7a)
 tools/                 narzędzia programisty: seed-local.sh, audit-app.cjs
-.github/workflows/     events.yml (pobieranie), deploy.yml (publikacja), security.yml, social.yml
+.github/workflows/     events.yml (pobieranie), deploy.yml (publikacja), security.yml
 CLAUDE.md              zasady projektu (obowiązujące!)
 ```
 
@@ -111,7 +108,7 @@ npx wrangler@4 dev --local --port 8799 \
 - Strona: `http://localhost:8799/`, aplikacja: `/app` (na komputerze w ramce telefonu; najlepiej tryb urządzenia w DevTools), panel: `/admin`.
 - Lokalnie nie ma poczty — logowanie hasłem/kodem nie wyśle maila; używajcie sesji z `seed-local.sh`.
 - Pipeline lokalnie: `node pipeline/run.mjs` (całość, 5–10 min) albo `node pipeline/run.mjs --only=pik,kluby`. Zapisuje `public/data/events.json` — **nie commitujcie wyniku z lokalnego przebiegu**, robi to bot.
-- Testy: `npm test` (normalizacja danych, brak emoji, logika „social”, kolejka Instagrama).
+- Testy: `npm test` (normalizacja danych, brak emoji, logika „social”).
 - Audyt wyglądu aplikacji (wszystkie ekrany × iPhone SE / 13 / Pro Max × jasny / ciemny, wykrywa nachodzący i ucięty tekst, błędy JS, robi zrzuty): `node tools/audit-app.cjs` przy działającym serwerze. Kod wyjścia ≠ 0, gdy coś znajdzie.
 
 ## 5. Wdrożenie
@@ -161,24 +158,6 @@ Facebooka i Instagrama nie pobieramy bezpośrednio (wymagają logowania, regulam
 
 ### Dodanie źródła
 Nowy plik w `pipeline/sources/` eksportujący `async () => [...]` z wydarzeniami zrobionymi przez `makeEvent()` (format w `pipeline/lib/normalize.mjs`), wpis w `SOURCES` w `run.mjs`, próg w `pipeline/tools/health.mjs` → `MIN`, nowe pliki pamięci dopisać do `git add` w `events.yml`, opis w `CLAUDE.md`. Grzecznie: własny User-Agent bez danych osobowych, przerwy między zapytaniami, pamięć zamiast pobierania wszystkiego co godzinę.
-
-## 7a. Instagram @plusoneapp.pl (automatyczne posty)
-
-**Droga wydarzenia.** `pipeline/run.mjs` → `public/data/events.json` (commit bota) → `deploy.yml` (wrangler deploy). Wydarzenie jest **publiczne**, gdy jest w opublikowanym `events.json` i nie jest ukryte w moderacji (`curation`, akcja `hide`). Grafika, którą widzi użytkownik, to pole **`e.image`** (strona i aplikacja wstawiają je wprost do `<img>`; dla wydarzeń bez plakatu pipeline podstawia zdjęcie miejsca z `public/img/obiekty/`, którego na Instagram nie wysyłamy).
-
-**Gdzie to jest podpięte.** `worker/instagram.js`, cron `*/10 * * * *` (`IG_CRON`): czyta opublikowany `events.json` z ASSETS (czyli dopiero po wdrożeniu), filtruje i zapisuje trwałe zadania w D1 `ig_posts` (migracja `0016_instagram.sql`). Klucz unikalny: profil IG + `event_id`, zapasowo profil + tytuł/dzień/miasto (`dedup_key`); ten sam koncert z innego serwisu pod innym tytułem (miasto + dzień + pierwsze słowo) też nie dostaje drugiego posta. Powtórny import, edycja i równoległe przebiegi nie tworzą drugiego posta (`INSERT OR IGNORE` przy UNIQUE + blokada `ig_lock` w `settings`).
-
-**Filtr i wynik** (`igReject`, `igScore`): tylko prawdziwy plakat, wydarzenie nieukryte, od `leadMin` do `leadMax` dni przed terminem, kategorie i miasta z panelu, bez słów wykluczających, tylko wydarzenia dodane po aktywacji automatycznego wyboru (`activatedAt` vs `firstSeen`). Wynik = „Na topie” (`hot` z `pipeline/lib/hot.mjs`) + polecane przez redakcję +6 + duże wydarzenie +3 + 1,5 za każdy dodatkowy serwis + zapisy użytkowników (maks. +5); kara za brak godziny i wielotygodniowe wystawy. Próg `minScore`, z trasy w kilku miastach jeden termin.
-
-**Grafika dla Meta.** Meta przyjmuje tylko JPEG o proporcjach 4:5–1,91:1, a większość plakatów to WebP 3:4. `pipeline/tools/ig-images.mjs` (krok w `events.yml`, `sharp`) pyta `GET /api/ig/wanted`, pobiera dokładnie `e.image` i zapisuje `public/ig/<sha256(e.image)[0..24]>.jpg`: szerokość 1080, bez obcinania treści; gdy proporcje wychodzą poza zakres, jednolite tło w dominującym kolorze plakatu (bez rozmycia i gradientu) tylko tyle, ile wymaga Meta. Oryginał zostaje nietknięty. Plik żyje, dopóki zadanie jest w toku i 3 dni po publikacji. Brak pliku = zadanie „czeka na grafikę JPEG”. Od razu (bez czekania na aktualizację): Actions → „Instagram — grafiki JPEG”. Podgląd jednego wydarzenia: Actions → „Instagram — podgląd grafiki” (artefakt `instagram-podglad`).
-
-**Wysyłka** (`igTick`, tylko gdy włączona w panelu i jest sekret): sprawdzenie, że wydarzenie nadal jest publiczne, przyszłe i z tą samą grafiką → sprawdzenie profilu (`GET /{ig-user}?fields=username` = `plusoneapp.pl`) → kontener `POST /{ig-user}/media` (`image_url`, `caption`; ID zapisane od razu) → `status_code` FINISHED → punkt kontrolny `publishing` → `POST /{ig-user}/media_publish` → ID medium i permalink. Niejasny wynik `media_publish` (timeout, 5xx) = stan `unknown`; następny przebieg najpierw uzgadnia kontener: `PUBLISHED` → szuka medium na profilu po podpisie, `FINISHED` → bezpieczna ponowna publikacja, `EXPIRED` → nowy kontener, nie da się ustalić → `needs_check` (rozstrzyga admin). Błędy: `auth` (401, kod 190/10/2xx, zły profil) wstrzymuje całą wysyłkę do „Sprawdź konto”; `transient` (429, 5xx, kody 1/2/4/17/32/613/9007) — ponowienie z odstępem; `permanent` — zadanie `failed`. Limity dzienne/tygodniowe i godziny publikacji (czas polski) z panelu; jeden post naraz.
-
-**Token.** Graph API `graph.facebook.com/v25.0`, IG User ID `17841412007314040`, system-user token z `instagram_basic` i `instagram_content_publish` (bezterminowy, nie odświeżać jak tokenu Instagram Login; prefiks `IG` nie oznacza złego tokenu). Jedno miejsce: sekret Workera **`IG_ACCESS_TOKEN`** — Cloudflare → Workers & Pages → plusone → Settings → Variables and Secrets → Add → typ Secret (albo `npx wrangler secret put IG_ACCESS_TOKEN`). Wysyłany tylko w nagłówku `Authorization: Bearer`; nigdy w kodzie, logach, bazie ani przeglądarce. Oryginał jest w Google Apps Script (właściwość `IG_ACCESS_TOKEN`) na koncie marki. Starego harmonogramu Apps Script i masowej wysyłki archiwum nie uruchamiamy.
-
-**Sprawdzenie połączenia:** `GET /api/ig/health` (publiczne, bez sekretów: jest token, czy konto to @plusoneapp.pl; Graph API najwyżej raz na 10 min) albo Actions → „Instagram — sprawdź połączenie”.
-
-**Panel:** Panel administratora → Instagram (tylko właściciele): przełączniki Automatyczny wybór / Akceptacja / Wysyłka (domyślnie wszystko wyłączone poza akceptacją), kolejka (zatwierdź, popraw podpis, pomiń, publikuj teraz, rozstrzygnij „do sprawdzenia”), kandydaci z wynikiem i liczbą odrzuconych przez filtr, ręczne dodanie z podglądem, filtr i limity, szablon podpisu (`{tytul} {kiedy} {miejsce} {miasto} {opis} {cena} {link} {id} {hashtagi}`), wzorce stylu (zatwierdzone ręczne poprawki podpisów — materiał do nauki stylu), dziennik prób. API: `/api/admin/ig*`. Testy: `worker/instagram.test.mjs` (atrapy Graph API).
 
 ## 7. API Workera (skrót)
 

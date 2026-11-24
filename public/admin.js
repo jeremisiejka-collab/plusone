@@ -213,7 +213,6 @@ function adminAfterRender(){
 
 /* akcje z data-act obsługiwane w tym module; zwraca true, jeśli rozpoznano */
 function adminAct(cmd, p1, p2, a){
-  if(cmd.startsWith('ig') && igAct(cmd, p1, p2, a)) return true;
   switch(cmd){
     case 'perms': permsSheet(p1); return true;
     case 'savePerms': savePerms(p1); return true;
@@ -462,160 +461,6 @@ async function testMail(){
 }
 async function dropMail(){
   try{ ACC.admin.mail = await apiCall('/api/admin/mail','DELETE',{}); ACC.admin.at=0; toast('Poczta odłączona'); adminLoad(); }catch(e){ toast(esc(e.message),true); }
-}
-
-/* ---- PANEL ADMINA: Instagram @plusoneapp.pl (worker/instagram.js) ----
-   Kolejka postów z publicznych wydarzeń: automatyczny wybór (filtr + wynik), akceptacja, ręczne dodawanie,
-   limity, godziny publikacji, szablon podpisu i wzorce stylu. Rzeczywista wysyłka to osobny przełącznik. */
-const IGP = { data:null, at:0, busy:false, q:'', prev:null };
-const IG_ST = { review:['Do akceptacji',''], queued:['W kolejce',''], container:['Wysyłanie','off'], publishing:['Publikowanie','off'], unknown:['Sprawdzam wynik','off'],
-  needs_check:['Do sprawdzenia',''], published:['Opublikowane','off'], failed:['Błąd','off'], skipped:['Pominięte','off'] };
-const IG_CATS = [['Concerts','Koncerty'],['Festivals','Festiwale'],['Clubs','Kluby'],['Theatre','Teatr'],['Comedy','Stand-up'],['Sport','Sport'],['Culture','Kultura'],['Family','Dzieci'],['Other','Inne']];
-async function igLoad(force){
-  if(IGP.busy || (!force && IGP.data && Date.now()-IGP.at<30e3)) return;
-  IGP.busy = true;
-  try{ IGP.data = await apiCall('/api/admin/ig'); }catch(e){ IGP.data = {error:e.message}; }
-  IGP.busy = false; IGP.at = Date.now(); S.dir=null; render();
-}
-async function igCall(path, data, ok){
-  try{ const r = await apiCall(path, 'POST', data||{}); if(ok) toast(typeof ok==='function'?ok(r):ok, true, typeof ok==='function'?5000:2200); await igLoad(true); return r; }
-  catch(e){ toast(esc(e.message), true, 5000); return null; }
-}
-function igPostCard(p){
-  const [lbl, cls] = IG_ST[p.status] || [p.status,'off'];
-  const editable = ['review','queued'].includes(p.status);
-  const reasons = (()=>{ try{ return JSON.parse(p.reasons||'[]'); }catch(e){ return []; } })();
-  const img = p.status==='queued' ? (p.imageReady ? '<span class="badge off">grafika JPEG gotowa</span>' : '<span class="badge">czeka na grafikę JPEG</span>') : '';
-  return `<div class="igpost">
-    <img src="${esc(p.image_src)}" alt="" loading="lazy" referrerpolicy="no-referrer">
-    <div class="col" style="gap:6px;min-width:0;flex:1">
-      <div class="row" style="gap:6px;flex-wrap:wrap"><span class="badge ${cls}">${lbl}</span>${img}<span class="badge off">${p.origin==='manual'?'ręcznie':'auto'} · wynik ${p.score}</span></div>
-      <b class="h4 clamp2">${esc(p.title)}</b>
-      <span class="mono">${esc(p.event_start.replace('T',' '))} · ${esc(p.city||'')} · ${esc(p.event_id)}</span>
-      ${reasons.length?`<span class="mono" style="color:var(--t3)">${reasons.map(esc).join(' · ')}</span>`:''}
-      ${p.last_error?`<span class="dnote" style="margin:0;color:${p.status==='needs_check'||p.status==='failed'?PINK:'var(--t2)'}">${esc(p.last_error)}</span>`:''}
-      ${p.permalink?`<a class="chip" href="${esc(p.permalink)}" target="_blank" rel="noopener" style="align-self:flex-start">Zobacz post</a>`:''}
-      ${editable?`<textarea id="igc-${p.id}" rows="6" maxlength="2200">${esc(p.caption)}</textarea>`:`<details><summary class="mono">Podpis</summary><pre class="igcap">${esc(p.caption)}</pre></details>`}
-      <div class="row" style="gap:6px;flex-wrap:wrap">
-        ${editable?`<button class="chip" data-act="igCap:${p.id}">Zapisz podpis</button>`:''}
-        ${p.status==='review'?`<button class="chip on" data-act="igDo:${p.id}:approve">Zatwierdź</button>`:''}
-        ${p.status==='queued'&&IGP.data.cfg.sendEnabled?`<button class="chip on" data-act="igNow:${p.id}">Publikuj teraz</button>`:''}
-        ${editable||p.status==='failed'?`<button class="chip" data-act="igDo:${p.id}:skip">Pomiń</button>`:''}
-        ${['skipped','failed'].includes(p.status)?`<button class="chip" data-act="igDo:${p.id}:requeue">Wróć do kolejki</button>`:''}
-        ${p.status==='needs_check'?`<button class="chip on" data-act="igResolve:${p.id}:1">Post jest na profilu</button><button class="chip" data-act="igResolve:${p.id}:0">Posta nie ma</button>`:''}
-      </div>
-    </div></div>`;
-}
-const adminIgTab = () => {
-  if(!IGP.data || Date.now()-IGP.at>60e3) setTimeout(()=>igLoad(),0);
-  const D = IGP.data;
-  if(!D) return loadingBox();
-  if(D.error) return `<div class="err">${esc(D.error)}</div>`;
-  const c = D.cfg, posts = D.posts||[], by = s => posts.filter(p=>s.includes(p.status));
-  const tog = (k, on, label, note) => `<button class="igtog ${on?'on':''}" data-act="igTog:${k}"><span class="col" style="gap:3px;align-items:flex-start;text-align:left"><b>${label}</b><span class="mono">${note}</span></span><i></i></button>`;
-  const num = (k, label) => `<div class="field"><label>${label}</label><input id="ig-${k}" type="number" inputmode="numeric" value="${esc(c[k])}"></div>`;
-  const group = (title, list) => list.length ? `<div class="h4" style="padding:14px 0 6px">${title} · ${list.length}</div>${list.map(igPostCard).join('')}` : '';
-  const found = IGP.q.length>1 ? EVENTS.filter(e=>e.real && fold(e.name+' '+e.venue+' '+e.city).includes(fold(IGP.q))).slice(0,8) : [];
-  return `<div class="dgrid">
-  ${dcard('Konto i wysyłka', `
-    <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:12px">
-      <span class="badge">@${esc(c.username)}</span><span class="badge ${D.token?'off':''}">${D.token?'token w Workerze':'brak tokenu IG_ACCESS_TOKEN'}</span>
-      <span class="badge off">dziś ${D.usage.today}/${c.dailyLimit} · 7 dni ${D.usage.week}/${c.weeklyLimit}</span></div>
-    ${c.authError?`<div class="err" style="margin-bottom:10px">Wysyłka wstrzymana: ${esc(c.authError.msg)}</div>`:''}
-    <div class="col" style="gap:8px">
-      ${tog('autoSelect', c.autoSelect, 'Automatyczny wybór', c.activatedAt?'nowe wydarzenia od '+new Date(c.activatedAt).toLocaleString('pl-PL'):'po włączeniu tylko wydarzenia dodane od tej chwili')}
-      ${tog('requireApproval', c.requireApproval, 'Akceptacja przed publikacją', 'wybrane automatycznie czekają w „Do akceptacji”')}
-      ${tog('sendEnabled', c.sendEnabled, 'Wysyłka na Instagram', c.sendEnabled?'włączona — posty wychodzą w godzinach publikacji':'wyłączona — nic nie trafia do Meta')}
-    </div>
-    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:12px">
-      <button class="chip" data-act="igCheck">Sprawdź konto</button>
-      <button class="chip" data-act="igSync">Wybierz teraz</button>
-      ${c.sendEnabled?'<button class="chip" data-act="igNow:">Uruchom wysyłkę</button>':''}</div>
-    <p class="dnote">Token dodaje się raz jako sekret Workera <b style="color:var(--t1)">IG_ACCESS_TOKEN</b> (Cloudflare → Workers → plusone → Settings → Variables and Secrets). Nie wpisuj go nigdzie indziej.</p>`)}
-  ${dcard('Dodaj ręcznie', `
-    <div class="field"><input id="ig-q" placeholder="Szukaj wydarzenia po nazwie, miejscu, mieście" value="${esc(IGP.q)}" data-enter="igFind" autocapitalize="off"></div>
-    <div class="row" style="gap:6px;margin-top:8px"><button class="chip" data-act="igFind">Szukaj</button></div>
-    ${found.map(e=>`<button class="orow igfound" data-act="igPrev:${esc(e.id)}"><span class="col" style="min-width:0;flex:1;align-items:flex-start;text-align:left"><b class="clamp2">${esc(e.name)}</b><span class="mono">${esc(e.when)} · ${esc(e.city)}</span></span><span class="chip">Podgląd</span></button>`).join('')}
-    ${IGP.q.length>1&&!found.length?'<p class="dnote">Brak wyników.</p>':''}`)}
-  ${dcard('Kolejka', `${posts.length?'':'<p class="dnote" style="margin:0">Pusto. Włącz automatyczny wybór albo dodaj wydarzenie ręcznie.</p>'}
-    ${group('Do akceptacji', by(['review']))}${group('W kolejce', by(['queued']))}${group('W toku', by(['container','publishing','unknown']))}
-    ${group('Do sprawdzenia', by(['needs_check']))}${group('Opublikowane', by(['published']))}${group('Pominięte i błędy', by(['skipped','failed']))}`, '', 'span2')}
-  ${dcard('Kandydaci teraz', `<p class="dnote" style="margin:0 0 8px">Najlepsze wydarzenia według filtra i wyniku, jeszcze bez posta.</p>
-    ${(D.candidates||[]).map(x=>`<div class="orow igcand"><img src="${esc(x.image)}" alt="" loading="lazy" referrerpolicy="no-referrer">
-      <span class="col" style="min-width:0;flex:1;gap:3px"><b class="clamp2">${esc(x.title)}</b><span class="mono">${esc(x.when)} · ${esc(x.city)}</span>
-      <span class="mono" style="color:var(--t3)">wynik ${x.score} · ${x.reasons.map(esc).join(' · ')}${x.afterActivation?'':' · sprzed aktywacji'}</span></span>
-      <button class="chip" data-act="igPrev:${esc(x.id)}">Podgląd</button></div>`).join('') || '<p class="dnote">Żadne wydarzenie nie przechodzi filtra.</p>'}
-    ${Object.keys(D.rejected||{}).length?`<p class="dnote">Odrzucone przez filtr: ${Object.entries(D.rejected).sort((a,b)=>b[1]-a[1]).map(([k,n])=>esc(k)+' '+pl(n)).join(' · ')}</p>`:''}`)}
-  ${dcard('Filtr i limity', `
-    <div class="dstats">${num('minScore','MINIMALNY WYNIK')}${num('dailyLimit','POSTÓW DZIENNIE')}${num('weeklyLimit','POSTÓW W 7 DNI')}${num('perSync','NOWYCH NA PRZEBIEG')}${num('leadMin','DNI DO WYDARZENIA: OD')}${num('leadMax','DO')}</div>
-    <div class="field" style="margin-top:10px"><label>GODZINY PUBLIKACJI (CZAS POLSKI)</label><input id="ig-slots" value="${esc((c.slots||[]).join(', '))}" placeholder="11:00, 19:00"></div>
-    <div class="h4" style="padding:12px 0 6px">Kategorie</div>
-    <div class="row" style="gap:6px;flex-wrap:wrap">${IG_CATS.map(([k,l])=>`<button class="chip ${c.categories.includes(k)?'on':''}" data-act="igCat:${k}">${l}</button>`).join('')}</div>
-    <div class="field" style="margin-top:10px"><label>MIASTA (PUSTE = CAŁA POLSKA)</label><input id="ig-cities" value="${esc((c.cities||[]).join(', '))}" placeholder="Warszawa, Kraków"></div>
-    <div class="field"><label>SŁOWA WYKLUCZAJĄCE</label><input id="ig-exclude" value="${esc(c.excludeWords)}"></div>
-    <button class="btn p" data-act="igSave" style="margin-top:6px">Zapisz filtr i limity</button>
-    <p class="dnote">Wynik = „Na topie” z bazy + polecane przez redakcję (+6) + duże wydarzenie (+3) + kilka serwisów biletowych + zapisy użytkowników. Tylko prawdziwe plakaty, jeden termin z trasy.</p>`)}
-  ${dcard('Podpisy', `
-    <div class="field"><label>SZABLON</label><textarea id="ig-template" rows="8">${esc(c.template)}</textarea></div>
-    <p class="dnote" style="margin-top:0">Pola: {tytul} {kiedy} {miejsce} {miasto} {opis} {cena} {link} {id} {hashtagi}. Bez emoji; Instagram: do 2200 znaków i 30 hashtagów.</p>
-    <div class="field"><label>STAŁE HASHTAGI</label><input id="ig-hashtags" value="${esc(c.hashtags)}"></div>
-    <button class="btn p" data-act="igSave">Zapisz podpisy</button>
-    <div class="h4" style="padding:14px 0 6px">Wzorce stylu · ${(c.examples||[]).length}</div>
-    ${(c.examples||[]).map(x=>`<details><summary class="mono">${esc(x.title)}</summary><pre class="igcap">${esc(x.caption)}</pre></details>`).join('') || '<p class="dnote" style="margin:0">Poprawiony ręcznie i zatwierdzony podpis zapisuje się tu jako wzorzec do nauki stylu.</p>'}`)}
-  ${dcard('Dziennik', (D.log||[]).slice(0,20).map(l=>`<div class="orow"><span class="mono" style="flex:none">${new Date(l.at).toLocaleString('pl-PL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</span><span class="dnote" style="margin:0;flex:1">#${l.post_id} ${esc(l.kind)} · ${esc(l.msg||'')}</span></div>`).join('') || '<p class="dnote" style="margin:0">Jeszcze nic się nie wydarzyło.</p>')}
-  </div>`;
-};
-async function igPreview(id){
-  sheet(`<div class="col" style="gap:12px">${loadingBox()}</div>`);
-  let p; try{ p = await apiCall('/api/admin/ig/preview','POST',{eventId:id}); }catch(e){ closeSheet(); toast(esc(e.message),true); return; }
-  IGP.prev = p;
-  sheet(`<div class="col igsheet" style="gap:12px">
-    <span class="eyebrow pink">Podgląd posta · ${esc(p.account)}</span>
-    <span class="h3">${esc(p.title)}</span>
-    <span class="mono">${esc(p.eventId)} · ${esc(p.when)} · ${esc(p.venue||'')}, ${esc(p.city||'')}</span>
-    <img src="${esc(p.derivativeReady?p.derivative:p.image)}" alt="" class="igprev" referrerpolicy="no-referrer">
-    <span class="mono">${p.derivativeReady?'Grafika JPEG dla Meta gotowa':'Grafika z wydarzenia; wersja JPEG dla Meta powstanie po dodaniu do kolejki (do godziny)'} · wynik ${p.score}</span>
-    ${p.reject?`<span class="dnote" style="margin:0;color:${PINK}">Filtr automatyczny odrzuciłby: ${esc(p.reject)}. Ręcznie możesz je dodać.</span>`:''}
-    ${p.existing?`<span class="dnote" style="margin:0;color:${PINK}">To wydarzenie już jest w kolejce Instagrama (${esc((IG_ST[p.existing.status]||[p.existing.status])[0])}).</span>`:''}
-    <div class="field"><label>PODPIS</label><textarea id="ig-prevcap" rows="9" maxlength="2200">${esc(p.caption)}</textarea></div>
-    ${p.existing?'':`<button class="btn p" data-act="igAdd:${esc(p.eventId)}">Dodaj do kolejki</button>`}
-    <button class="btn g" data-act="closeSheet" style="height:48px;font:500 14px/1 var(--d)">Zamknij</button></div>`);
-}
-function igAct(cmd, p1, p2, a){
-  const v = id => $('#'+id)?.value ?? '';
-  switch(cmd){
-    case 'igReload': igLoad(true); return true;
-    case 'igTog': {
-      const k = p1, on = !IGP.data.cfg[k];
-      if(k==='sendEnabled' && on && !confirm('Włączyć rzeczywistą wysyłkę na Instagram @'+IGP.data.cfg.username+'? Posty z kolejki zaczną wychodzić w godzinach publikacji.')) return true;
-      igCall('/api/admin/ig/config', {[k]:on}, on?'Włączone':'Wyłączone'); return true;
-    }
-    case 'igCat': { const cs = new Set(IGP.data.cfg.categories); cs.has(p1)?cs.delete(p1):cs.add(p1); igCall('/api/admin/ig/config', {categories:[...cs]}); return true; }
-    case 'igSave': {
-      const split = s => s.split(',').map(x=>x.trim()).filter(Boolean);
-      const d = {}; for(const k of ['minScore','dailyLimit','weeklyLimit','perSync','leadMin','leadMax']) if($('#ig-'+k)) d[k] = +v('ig-'+k);
-      if($('#ig-slots')) d.slots = split(v('ig-slots')).map(s=>s.padStart(5,'0'));
-      if($('#ig-cities')) d.cities = split(v('ig-cities'));
-      if($('#ig-exclude')) d.excludeWords = v('ig-exclude');
-      if($('#ig-template')) d.template = v('ig-template');
-      if($('#ig-hashtags')) d.hashtags = v('ig-hashtags');
-      igCall('/api/admin/ig/config', d, 'Zapisano'); return true;
-    }
-    case 'igCheck': igCall('/api/admin/ig/check', {}, r=>r.ok?'Konto @'+r.username+' — token działa':'Konto: '+r.error); return true;
-    case 'igSync': igCall('/api/admin/ig/sync', {}, r=>r.added?'Dodano do kolejki: '+r.added:(r.reason||'Brak nowych kandydatów')); return true;
-    case 'igNow': toast('Wysyłam…', true, 1500); igCall('/api/admin/ig/tick', p1?{id:+p1}:{}, r=>r.sent?'Wysłano do Instagrama':'Nie wysłano: '+esc(r.skipped||'nic do wysłania')); return true;
-    case 'igCap': igCall('/api/admin/ig/post/'+p1, {action:'caption', caption:v('igc-'+p1)}, 'Podpis zapisany'); return true;
-    case 'igDo': igCall('/api/admin/ig/post/'+p1, {action:p2}, {approve:'Zatwierdzone',skip:'Pominięte',requeue:'Wróciło do kolejki'}[p2]); return true;
-    case 'igResolve': {
-      if(p2==='1'){ const link = prompt('Link do posta na Instagramie (opcjonalnie):')||''; igCall('/api/admin/ig/post/'+p1, {action:'resolve', published:true, permalink:link}, 'Oznaczone jako opublikowane'); }
-      else if(confirm('Na pewno posta nie ma na profilu? Zadanie wróci do kolejki.')) igCall('/api/admin/ig/post/'+p1, {action:'resolve', published:false}, 'Wróciło do kolejki');
-      return true;
-    }
-    case 'igFind': IGP.q = v('ig-q').trim(); S.dir=null; render(); return true;
-    case 'igPrev': igPreview(a.slice(7)); return true;
-    case 'igAdd': { const id = a.slice(6); igCall('/api/admin/ig/add', {eventId:id, caption:v('ig-prevcap')}, 'Dodano do kolejki').then(r=>{ if(r) closeSheet(); }); return true; }
-  }
-  return false;
 }
 
 /* ---- PANEL ADMINA: organizatorzy (sortowanie, wejście w konkretnego) ---- */
@@ -1626,7 +1471,7 @@ const scAdmin = () => {
         <span class="mono" style="margin-top:4px">${e?esc(e.when+' · '+e.city):'wydarzenie już minęło'}</span></div>
       <button class="chip" data-act="curate:${id}:clear" style="padding:7px 12px;font-size:12px">${lbl}</button></div>`}).join('') : `<span class="mono" style="display:block;padding:12px 0">Pusto.</span>`;
   const src = LIVE.sources||{}, wm = workMode()==='admin', inApp = typeof renderAppChrome==='function';
-  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],...(isOwner()?[['mail','Główny e-mail'],['ig','Instagram']]:[]),['curation','Moderacja'],['data','Dane']];
+  const TABS = [...(wm?[]:[['stats','Statystyki']]),['users','Użytkownicy'],['orgs','Organizatorzy'],['invites','Zaproszenia'],['expo','Mapa targów 3D'],['venues','Obiekty 3D'],...(isOwner()?[['mail','Główny e-mail']]:[]),['curation','Moderacja'],['data','Dane']];
   const chips = `<div class="sc" style="display:flex;gap:8px;overflow-x:auto;padding:${wm?'0 0 18px':'16px 20px'}">
     ${TABS.map(([k,l])=>`<button class="chip ${tab===k?'on':''}" data-act="adminTab:${k}">${l}</button>`).join('')}</div>`;
   // w trybie pulpitu: nagłówek jak na pulpicie; na stronie zakładki są już w górnym menu
@@ -1702,7 +1547,7 @@ function adminTabBody(A, tab, curList, src){
           .filter(Boolean).map((t,i)=>`<span class="badge ${i?'off':''}">${t}</span>`).join('')}<span class="mono">· od ${new Date(x.created_at).toLocaleDateString('pl-PL')}</span></span>
       </div>
       ${p.owner?'':`<button class="chip" data-act="perms:${x.id}" style="padding:7px 12px;font-size:12px">Rola</button>`}
-    </div>`; }).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='invites' ? adminInvitesTab(A) : tab==='orgs' ? adminOrgsTab(A) : tab==='mail' ? adminMailTab(A) : tab==='ig' ? adminIgTab() : tab==='curation' ? `
+    </div>`; }).join('') || '<span class="mono">Brak wyników.</span>'}` : tab==='invites' ? adminInvitesTab(A) : tab==='orgs' ? adminOrgsTab(A) : tab==='mail' ? adminMailTab(A) : tab==='curation' ? `
     <span class="body" style="display:block;padding-bottom:10px">Polecaj albo ukrywaj wydarzenia przyciskami na ekranie wydarzenia. Tu możesz to cofnąć.</span>
     <div class="h4" style="padding:10px 0 4px">Polecane</div>${curList(ACC.featured,'Usuń z polecanych')}
     <div class="h4" style="padding:20px 0 4px">Ukryte</div>${curList([...ACC.hidden],'Przywróć')}` : `

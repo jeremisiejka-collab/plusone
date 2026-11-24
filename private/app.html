@@ -2961,7 +2961,7 @@ const NAV = [
 const NAV_ON = ['home','list','tickets','ticket','wallet','bar','profile','mytickets','scan','people','meet','org','plan','mywrapped','dash','admin','orgEvents','guide','guideEdit','seatplan',...STAFF_SCREENS];
 /* administrator i organizator: własny pasek z pulpitem; środkowy przycisk uruchamia skaner */
 const ADMIN_NAV = [{k:'dash',ic:'bolt',l:'PULPIT'},{act:'adm:users',on:['admin:users','admin:invites'],ic:'users',l:'LUDZIE'},{fab:true},
-  {act:'adm:orgs',on:['admin:orgs','org','orgEvents'],ic:'star',l:'ORGANIZATORZY'},{act:'adm:curation',on:['admin:curation','admin:stats','admin:mail','admin:ig','admin:data'],ic:'shield',l:'PANEL'}];
+  {act:'adm:orgs',on:['admin:orgs','org','orgEvents'],ic:'star',l:'ORGANIZATORZY'},{act:'adm:curation',on:['admin:curation','admin:stats','admin:mail','admin:data'],ic:'shield',l:'PANEL'}];
 const ORG_NAV = [{k:'org',ic:'bolt',l:'PULPIT'},{fab:true},{k:'orgEvents',ic:'list',l:'WYDARZENIA'}];
 const STAFF_NAV = [{k:'staffStats',ic:'bolt',l:'STATYSTYKI'},{fab:true},{k:'staffActivity',ic:'clock',l:'HISTORIA'}];
 const FAB_SVG = `<svg width="38" height="38" viewBox="0 0 100 100" aria-hidden="true">${GLYPH('#000')}</svg>`;
@@ -3104,7 +3104,7 @@ function act(a){
     case 'deleteAccountSheet': deleteAccountSheet(); break;
     case 'deleteAccount': deleteAccount(); break;
     case 'adminTab': S.adminTab=p1; S.dir=null; render(); break;
-    case 'adminReload': ACC.admin=null; if(typeof IGP!=='undefined') IGP.at=0; S.dir=null; render(); break;
+    case 'adminReload': ACC.admin=null; S.dir=null; render(); break;
     case 'adminSearch': S.adminQ=$('#adm-q')?.value||''; adminLoad(); break;
     case 'curate': curate(p1, p2); break;
     case 'cat': S.cat = p1; S.limit=40; S.dir=null; haptic(5); sfxTap(); render(); break;
