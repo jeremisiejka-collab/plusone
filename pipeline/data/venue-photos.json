@@ -2550,6 +2550,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Kamienna 2-4|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kamienna-2-4-krakow.jpg",
+  "ratio": 1.618,
+  "author": "Igor123121",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kamienna_Street,_view_to_N,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
  "Karczma Kaszubi i Górale|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -3891,6 +3899,15 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:UlicaMiko%C5%82ajska-WidokNaZach%C3%B3d-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "Milonga Warszawska|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Międzynarodowe Centrum Kongresowe w Katowicach|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/miedzynarodowe-centrum-kongresowe-w-katowicach-katowice.jpg",
@@ -7311,6 +7328,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Ząbkowska 12|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/zabkowska-12-warszawa.jpg",
+  "ratio": 1.485,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Z%C4%85bkowska_przy_Targowej_2020.jpg",
+  "auto": "venue"
  },
  "Złota 44|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/zlota-44-warszawa.jpg",
