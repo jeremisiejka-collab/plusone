@@ -1657,6 +1657,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Gdańska 20|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdanska-20-bydgoszcz.jpg",
+  "ratio": 1.501,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Gdanska_-_Plac_Wolnosci_2023.jpg",
+  "auto": "venue"
+ },
  "Gdańska 6|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/gdanska-6-warszawa.jpg",
   "ratio": 1.916,
