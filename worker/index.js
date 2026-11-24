@@ -8,6 +8,7 @@ import { withSecurityHeaders, rateLimit } from './security.js';
 import { sharePage } from './share.js';
 import { nearby } from './nearby.js';
 import { track, liveStats, cleanupStats } from './stats.js';
+import { instagramApi, igWanted, igTick, IG_CRON } from './instagram.js';
 import { premiumApi, welcomeInside, zoneInfo, scanGuest, crewInfo, forgotPassword, resetPassword, findReset, adminOrganizers, adminNewsletter, mailDetect, scheduled, guestTicketPage, initPremium } from './premium.js';
 
 const DAY = 864e5;
@@ -801,6 +802,7 @@ async function api(req, env) {
   if (path === '/api/feed/allevents' && m === 'GET') return allEventsProxy(url);
   if (path === '/api/nearby' && m === 'GET') return nearby(req, env, json);   // „Plan na noc”: lokale w pobliżu
   if (path === '/api/state' && m === 'GET') return publicState(env);
+  if (path === '/api/ig/wanted' && m === 'GET') return igWanted(env, json);   // grafiki JPEG do przygotowania (pipeline/tools/ig-images.mjs)
   if (path === '/api/auth/register' && m === 'POST') return register(req, env);
   if (path === '/api/auth/login' && m === 'POST') return login(req, env);
   if (path === '/api/auth/code' && m === 'POST') return sendLoginCode(req, env);
@@ -849,6 +851,11 @@ async function api(req, env) {
     if (r && m === 'POST') return adminSetPerms(req, env, user, r[1]);
     if (path === '/api/admin/invites' && m === 'GET') return adminInvites(req, env);
     if (path === '/api/admin/organizers' && m === 'GET') return adminOrganizers(env);
+    if (path === '/api/admin/ig' || path.startsWith('/api/admin/ig/')) {
+      if (!isOwner(user)) return fail(403, 'Instagram obsługuje główny administrator.');
+      const r = await instagramApi(path, m, req, env, user, { json, fail, body });
+      if (r) return r;
+    }
     if (path === '/api/admin/newsletter' && m === 'POST') {
       if (!isOwner(user)) return fail(403, 'Newsletter wysyła główny administrator.');
       return adminNewsletter(req, env, user);
@@ -873,7 +880,11 @@ initPremium({ json, fail, body, sha256, randomToken, hashPassword, startSession,
   sendMail, hasMailer, savedIds, isAdmin, isOwner, isOrg, parseList, escHtml, ticketCode, warsawMidnight });
 
 const WORKER = {
-  scheduled(event, env, ctx) { ctx.waitUntil(scheduled(event, env)); if (env.DB) ctx.waitUntil(cleanupStats(env).catch(e => console.error('stats cleanup', e))); },
+  scheduled(event, env, ctx) {
+    // Instagram (worker/instagram.js): wybór do kolejki i wysyłka co 10 minut, osobno od alertów i newslettera
+    if (event.cron === IG_CRON) { ctx.waitUntil(igTick(env).then(r => console.log('instagram', JSON.stringify(r))).catch(e => console.error('instagram', e?.message))); return; }
+    ctx.waitUntil(scheduled(event, env)); if (env.DB) ctx.waitUntil(cleanupStats(env).catch(e => console.error('stats cleanup', e)));
+  },
   async route(req, env) {
     const url = new URL(req.url);
     // stary adres aplikacji testowej
