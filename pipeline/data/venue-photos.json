@@ -2517,6 +2517,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:SM_Jelcz-Laskowice_pa%C5%82ac_(2)_ID_596495.jpg",
   "auto": "venue"
  },
+ "Jeleniogórska 16|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Jezioro Głębokie / parking leśny w stronę Wołczkowa|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -2604,6 +2612,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "KS Koziołek Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Kalinowe Serce|Warszawa": {
@@ -5172,6 +5188,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84_G%C5%82%C3%B3wny_railway_station_entrance_building_seen_from_the_Stanis%C5%82awa_Matyi_street.jpg",
   "auto": "venue"
  },
+ "Poznań International Fair|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-international-fair-poznan.jpg",
+  "ratio": 0.75,
+  "author": "Mariochom",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84-signpost_near_Pozna%C5%84_International_Fair.jpg",
+  "auto": "venue"
+ },
  "Poznań Plaza|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-plaza-poznan.jpg",
   "ratio": 1.463,
@@ -5587,6 +5611,14 @@
   "license": "CC BY 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw-RYNEK_-_panorama_z_ko%C5%9Bcio%C5%82a_p.w._%C5%9Bw._El%C5%BCbiety_-_panoramio.jpg",
   "auto": "venue"
+ },
+ "Rynek Gniezno|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Rynek Główny 27|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/rynek-glowny-27-krakow.jpg",
@@ -7465,6 +7497,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
+ },
+ "Zamkowa 3|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/zamkowa-3-poznan.jpg",
+  "ratio": 1.186,
+  "author": "MOs810",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Zamkowa_St._Poznan.JPG",
+  "auto": "venue"
  },
  "Zawiszy Czarnego 1|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/zawiszy-czarnego-1-gdynia.jpg",
