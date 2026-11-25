@@ -7435,6 +7435,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Zielone Wzgórze|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Zmiana Klimatu|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/zmiana-klimatu-bialystok.jpg",
   "ratio": 1.501,
@@ -7717,6 +7725,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Św.Tomasza 24|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/sw-tomasza-24-krakow.jpg",
+  "ratio": 1.515,
+  "author": "Zygmunt Put",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:%C5%9Aw._Tomasza_Street_(W_part),_Old_Town,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
  },
  "Świdnica|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/swidnica-wroclaw.jpg",
