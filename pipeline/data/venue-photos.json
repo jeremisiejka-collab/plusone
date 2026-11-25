@@ -1136,6 +1136,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Dom Towarowy Bracia Jabłkowscy|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/dom-towarowy-bracia-jablkowscy-warszawa.jpg",
+  "ratio": 1.502,
+  "author": "Adrian Grycuk",
+  "license": "CC BY 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Plac_Pi%C4%99ciu_Rog%C3%B3w_w_Warszawie_2026.jpg",
+  "auto": "venue"
+ },
  "Dom Tramwajarza|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/dom-tramwajarza-poznan.jpg",
   "ratio": 1.6,
