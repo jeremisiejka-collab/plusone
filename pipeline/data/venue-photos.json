@@ -1674,6 +1674,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Galeria_Bronowice_zima_2.jpg",
   "auto": "venue"
  },
+ "Galeria Kazimierz|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/galeria-kazimierz-krakow.jpg",
+  "ratio": 0.75,
+  "author": "Astrorek",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Galeriakazimierzfoto1.jpg",
+  "auto": "venue"
+ },
  "Galeria MM|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/galeria-mm-poznan.jpg",
   "ratio": 1.582,
@@ -3092,6 +3100,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Klub Rock'n'Rolla Akrobatycznego Podwawelski Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Klub SPATiF|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/klub-spatif-warszawa.jpg",
   "ratio": 1.778,
@@ -3300,6 +3316,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Kościół pw. Przemienienia Pańskiego w Krakowie|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kosciol-pw-przemienienia-panskiego-w-krakowie-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Wuhazet",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_Wr%C3%B3blowice_-_Parish_Church_of_Transfiguration_of_Lord_No1.jpg",
+  "auto": "venue"
  },
  "Kościół Św. Katarzyny|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/kosciol-sw-katarzyny-krakow.jpg",
@@ -5854,6 +5878,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Sikalafą Freaky Neon Bar|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Skatepark Nowa Iwiczna|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -6050,6 +6082,14 @@
   "author": "Paweł Legend",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_im._Ernesta_Pohla_w_Zabrzu_(2026).jpg"
+ },
+ "Stakkato • Art Space|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Stalownia|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
