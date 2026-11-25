@@ -2759,6 +2759,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Kino_Kosmos_2026.jpg",
   "auto": "venue"
  },
+ "Kino Kosmos|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-kosmos-szczecin.jpg",
+  "ratio": 1.333,
+  "author": "Kapitel",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Kino_Kosmos.jpg",
+  "auto": "venue"
+ },
  "Kino Luna|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/kino-luna-warszawa.jpg",
   "ratio": 1.333,
