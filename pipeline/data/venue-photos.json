@@ -2815,6 +2815,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Kino_Luna_Warsaw_2022.jpg",
   "auto": "venue"
  },
+ "Kino Muza w Poznaniu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Kino Nowe Horyzonty|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/kino-nowe-horyzonty-wroclaw.jpg",
   "ratio": 1.778,
@@ -4359,6 +4367,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Niedziałkowskiego 30|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/niedzialkowskiego-30-poznan.jpg",
+  "ratio": 1.509,
+  "author": "Tomasta1",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84,_Szpital_%C5%9Aw._Lazarza,_ul._Niedzialkowskiego_30.JPG",
+  "auto": "venue"
+ },
  "Niepodległości 712/1|Sopot": {
   "image": "https://plusoneapp.pl/img/obiekty/sopot-sopot.jpg",
   "ratio": 1.333,
@@ -4882,6 +4898,14 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:J%C3%B3zef_Wincenty_Kruszewski_-_Dinner_party_at_a_wealthy_Jewish_house_in_Krak%C3%B3w_-_MP_2322_MNW_-_National_Museum_in_Warsaw.jpg",
   "auto": "venue"
+ },
+ "Pasterski Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Pasteura 17a/1|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/pasteura-17a-1-wroclaw.jpg",
@@ -7854,6 +7878,14 @@
   "author": "Adrian Grycuk",
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Stanis%C5%82awa_Noakowskiego_w_Warszawie_2026.jpg",
+  "auto": "venue"
+ },
+ "ul.Święty Marcin 75|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/ul-swiety-marcin-75-poznan.jpg",
+  "ratio": 1.778,
+  "author": "Igor123121",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:%C5%9Awi%C4%99ty_Marcin_street,_view_to_E,_Pozna%C5%84,_Poland.jpg",
   "auto": "venue"
  },
  "w_sercu|Poznań": {
