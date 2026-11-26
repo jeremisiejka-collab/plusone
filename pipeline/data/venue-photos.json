@@ -318,6 +318,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Bagno|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Balance Klub|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
   "ratio": 1.501,
@@ -6041,6 +6049,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
+ "Sala Balkon|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Sala Gotycka w Starym Klasztorze|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -6919,6 +6935,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "TBA|Gdańsk": {
+  "image": "https://plusoneapp.pl/img/obiekty/tba-gdansk.jpg",
+  "ratio": 1.333,
+  "author": "Thomas Woodtli from Zürich, Switzerland",
+  "license": "CC BY-SA 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gda%C5%84sk_Stare_Miasto_(50995218788).jpg",
+  "auto": "city"
  },
  "TBA|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/tba-warszawa.jpg",
