@@ -1225,6 +1225,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Dominikańska 9|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/dominikanska-9-poznan.jpg",
+  "ratio": 1.387,
+  "author": "Andrzej Błaszczak",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_DOMINIKA%C5%83SKA_3.jpg",
+  "auto": "venue"
+ },
  "Dos Mundos|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -2156,6 +2164,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Energia_(Be%C5%82chat%C3%B3w)_1.JPG"
  },
+ "Hala Gminy Oleśnica|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Hala Gryfia|Słupsk": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-gryfia-slupsk.jpg",
   "ratio": 1.5,
@@ -2498,6 +2514,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Iglica MTP|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/iglica-mtp-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil talk",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Targi_z_Dworcowego_RB2.JPG",
+  "auto": "venue"
  },
  "Ignacego Kłopotowskiego 5|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/ignacego-klopotowskiego-5-warszawa.jpg",
@@ -6297,6 +6321,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Scena Wspólna|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Schron|Poznań": {
