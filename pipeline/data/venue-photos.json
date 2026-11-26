@@ -1755,6 +1755,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Galeria Pomorska|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/galeria-pomorska-bydgoszcz.jpg",
+  "ratio": 1.357,
+  "author": "Pit1233",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Galeria_Pomorska_Bydg_01-2013.jpg",
+  "auto": "venue"
+ },
  "Galeria Projekt cafe|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -3455,6 +3463,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Sancygniow_PICT0254.JPG",
   "auto": "venue"
  },
+ "Kosmos|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/kosmos-szczecin.jpg",
+  "ratio": 1.333,
+  "author": "Kapitel",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Kino_Kosmos.jpg",
+  "auto": "venue"
+ },
  "Koszykowa 63|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/koszykowa-63-warszawa.jpg",
   "ratio": 1.46,
@@ -3876,6 +3892,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stary_Browar_Pozna%C5%84_RB1.JPG",
   "auto": "venue"
+ },
+ "MDK Barcin|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
  },
  "MDK Bogucice - Zawodzie|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/mdk-bogucice-zawodzie-katowice.jpg",
