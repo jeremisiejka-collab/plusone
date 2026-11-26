@@ -6066,6 +6066,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Solec Kujawski|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/solec-kujawski-bydgoszcz.png",
+  "ratio": 0.976,
+  "author": "Stanisław Józef Radziński (pl.wiki - en.wiki)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz_County_-_Solec_Kujawski.PNG",
+  "auto": "venue"
+ },
  "Soleckie Centrum Kultury|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
