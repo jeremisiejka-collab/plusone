@@ -404,6 +404,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Beyond Music Club & Mundo 71 Music Club|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Beyond Music Club|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -743,6 +751,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "Centrum Kultury Podgórza - Klub Wola Duchacka|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Centrum Kultury Podgórza - Ośrodek Ruczaj|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1042,6 +1058,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Czuła jest noc|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
  "DCF - Dolnośląskie Centrum Filmowe|Wrocław": {
@@ -2961,6 +2985,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Kino_Nowe_Horyzonty.jpg",
   "auto": "venue"
  },
+ "Kino Paradox na ul. Krupniczej|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Kino Pod Baranami|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/kino-pod-baranami-krakow.jpg",
   "ratio": 0.75,
@@ -3454,6 +3486,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Kopernika 17a|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kopernika-17a-krakow.jpg",
+  "ratio": 1.47,
+  "author": "Januszk57",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_ul._Kopernika_19_budynek_d._kuchni_szpitalnej_A-1541M_(2).jpg",
+  "auto": "venue"
  },
  "Korzeniowskiego 7|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
@@ -4127,6 +4167,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:UlicaMeiselsa-WidokNaZach%C3%B3d-Kazimierz-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "Messa Marina|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Metalkas Pałac Bydgoszcz|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
@@ -5100,6 +5148,14 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:J%C3%B3zef_Wincenty_Kruszewski_-_Dinner_party_at_a_wealthy_Jewish_house_in_Krak%C3%B3w_-_MP_2322_MNW_-_National_Museum_in_Warsaw.jpg",
   "auto": "venue"
+ },
+ "Pasterska 2b|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Pasterski Poznań|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
