@@ -744,6 +744,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:2008_Kaiserschloss_Posen_04.JPG",
   "auto": "venue"
  },
+ "Centrum Kultury i Biblioteka Publiczna Gminy Suchy Las|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Centrum Kultury i Rekreacji w Koziegłowach|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -1902,6 +1910,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Opole_-_katedra.jpg",
   "auto": "venue"
  },
+ "Głogowska 35|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "HALA Świebodzki - bar & food court|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -2709,6 +2725,14 @@
   "author": "Marek Mróz",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice-%C5%9Ar%C3%B3dmie%C5%9Bcie_S_-_pl._Sejmu_%C5%9Al%C4%85skiego_(7).jpg",
+  "auto": "venue"
+ },
+ "Katowice Plac Miarki|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-plac-miarki-katowice.jpg",
+  "ratio": 1.249,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_plac_Miarki_8_2026.jpg",
   "auto": "venue"
  },
  "Katowice Rynek Plac Nad Rawą Jarmark Bożonarodzeniowy|Katowice": {
@@ -6449,6 +6473,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Strefa_Forum_Krak%C3%B3w_na_NieKongresie_Animator%C3%B3w_Kultury_2016_(28200071415).jpg",
   "auto": "venue"
  },
+ "Strefa Centralna|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "Strefa Kultury Firlej|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/strefa-kultury-firlej-wroclaw.jpg",
   "ratio": 1.711,
@@ -6975,6 +7007,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Teatr_Nowy_Proxima,_41_Krakowska_Street_in_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Teatr Polski w Poznaniu od 1875|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Teatr asz.teatr|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -7032,6 +7072,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Teoria|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
  },
  "Terminal Kultury Gocław - filia CPK|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
