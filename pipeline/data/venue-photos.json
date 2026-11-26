@@ -89,6 +89,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gmach_g%C5%82%C3%B3wny_AGH.jpg",
   "auto": "venue"
  },
+ "Akademia Muzyczna im. Karola Szymanowskiego w Katowicach|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/akademia-muzyczna-im-karola-szymanowskiego-w-katowicach-katowice.jpg",
+  "ratio": 1.333,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_Karol_Szymanowski_Academy_of_Music.jpg",
+  "auto": "venue"
+ },
  "Akademia Muzyczna w Bydgoszczy|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/akademia-muzyczna-w-bydgoszczy-bydgoszcz.jpg",
   "ratio": 1.221,
@@ -3925,6 +3933,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Mariacka 13|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/mariacka-13-katowice.jpg",
+  "ratio": 1.483,
+  "author": "Photograph by Mike Peel (www.mikepeel.net).",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:At_Katowice_2024_078.jpg",
+  "auto": "venue"
+ },
  "Marii Konopnickiej 28|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/marii-konopnickiej-28-krakow.jpg",
   "ratio": 1.7,
@@ -5662,6 +5678,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Restauracja Zatoka|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Retro Dance Studio|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -7037,6 +7061,14 @@
   "author": "Zygmunt Put",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Laznia_Nowa_Theater,_25_os._Szkolne,Nowa_Huta,Krakow,Poland.JPG",
+  "auto": "venue"
+ },
+ "Teatr Śląski|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-slaski-katowice.jpg",
+  "ratio": 1.455,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Teatr_%C5%9Al%C4%85ski_im._St._Wyspia%C5%84skiego_01.jpg",
   "auto": "venue"
  },
  "Teatr_ Żelazny|Katowice": {
