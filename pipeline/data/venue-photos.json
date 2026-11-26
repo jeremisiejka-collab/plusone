@@ -1934,6 +1934,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bdg_Artego_Arena_2_09-2014.jpg",
   "auto": "venue"
  },
+ "Grzybowska 61B|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Górki Szymona|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -2808,6 +2817,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
+ "Kawiarnia Literacka|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kawiarnia-literacka-krakow.jpg",
+  "ratio": 1.664,
+  "author": "Zygmunt Put",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Badeni_Palace,_7-9_Pijarska_street,_Old_Town,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
  "Kazimierza Wielkiego 19a-21|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -3042,6 +3059,14 @@
   "auto": "city"
  },
  "Klub Baza|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Klub Bilardowy PIK|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
   "author": "Ingo Mehling",
@@ -4198,6 +4223,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Multikino_Ursynow_Warsaw_2022_aerial.jpg",
   "auto": "venue"
  },
+ "Muzeum Historii Polski|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/muzeum-historii-polski-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Cytadela_(dron2).jpg",
+  "auto": "venue"
+ },
  "Muzeum Kultur Świata w Poznaniu|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/muzeum-kultur-swiata-w-poznaniu-poznan.jpg",
   "ratio": 1.333,
@@ -4539,6 +4572,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Nowogrodzka 31|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/nowogrodzka-31-warszawa.jpg",
+  "ratio": 1.073,
+  "author": "Panek",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Nowogrodzka_73_warszawa.jpg",
+  "auto": "venue"
+ },
  "Nowohuckie Centrum Kultury|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/nowohuckie-centrum-kultury-krakow.jpg",
   "ratio": 2.51,
@@ -4701,6 +4742,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
+ },
+ "Opera Krakowska|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/opera-krakowska-krakow.jpg",
+  "ratio": 1.858,
+  "author": "Zygmunt Put Zetpe0202",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_Opera_house,_2008_by_arch._Romuald_Loegler,_48_Lubicz_street,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
  },
  "Opera Nova w Bydgoszczy|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/opera-nova-w-bydgoszczy-bydgoszcz.jpg",
@@ -5100,6 +5149,14 @@
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Gmach_Towarzystwa_Kredytowego_Ziemskiego_w_Warszawie_2024.jpg",
   "auto": "venue"
+ },
+ "Piastowska 47|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Piastów 50a|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
@@ -5826,6 +5883,14 @@
  },
  "Rynek Główny 27|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/rynek-glowny-27-krakow.jpg",
+  "ratio": 1.468,
+  "author": "Jorge Lascar",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sukiennice_and_Main_Market_Square_Krakow_Poland.JPG",
+  "auto": "venue"
+ },
+ "Rynek Główny 28|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-glowny-28-krakow.jpg",
   "ratio": 1.468,
   "author": "Jorge Lascar",
   "license": "CC BY 2.0",
