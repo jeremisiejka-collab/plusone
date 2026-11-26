@@ -180,6 +180,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Anielewicza 6|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/anielewicza-6-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2023_Warszawa_prace_archeologiczne_przy_Anielewicza,_6.jpg",
+  "auto": "venue"
+ },
  "Arena Gorzów|Gorzów Wielkopolski": {
   "image": "https://plusoneapp.pl/img/obiekty/arena-gorzow-gorzow-wielkopolski.jpg",
   "ratio": 1.778,
@@ -1673,6 +1681,15 @@
   "query": "Warsaw skyline"
  },
  "Fume Strefa Saun i SPA|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Furtka do lasu|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
@@ -7780,6 +7797,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Zakroczymska 12|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/zakroczymska-12-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Cybularny",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:2024_Warszawa_Zakroczymska-Jeziora%C5%84skiego,_1.jpg",
+  "auto": "venue"
  },
  "Zalew Smaków restauracja w SuliCamp|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
