@@ -1192,6 +1192,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Dom Słowian|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Dom Technika|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -4216,6 +4224,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
+ "Miasto Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/miasto-poznan-poznan.jpg",
+  "ratio": 1.243,
+  "author": "anonymous",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Miasto_Pozna%C5%84_daje_dodatkowe_uposa%C5%BCenie_Kolegium_Jezuickiemu,_1571.jpg",
+  "auto": "venue"
+ },
  "Miasto i Gmina Jelcz-Laskowice|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -4254,6 +4270,14 @@
   "author": "Carl92",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Stadion_Rak%C3%B3w_otwarcie.jpg"
+ },
+ "Miejskie Centrum Kultury i Sztuki w Chrzanowie|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
  },
  "Miejskie Centrum Kultury w Bydgoszczy|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/miejskie-centrum-kultury-w-bydgoszczy-bydgoszcz.jpg",
@@ -6201,6 +6225,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Sala Koncertowa POSM|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Sala Koncertowa Radia Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/sala-koncertowa-radia-wroclaw-wroclaw.jpg",
   "ratio": 1.333,
@@ -6395,6 +6427,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Skłodowskiej-Curie 20|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/sklodowskiej-curie-20-katowice.jpg",
+  "ratio": 1.333,
+  "author": "Gabriel Wilk",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Zabrze_Curie-Sk%C5%82odowskiej.jpg",
+  "auto": "venue"
  },
  "Slay Space|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -8457,6 +8497,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Św. Michała 62|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Św.Tomasza 24|Kraków": {
