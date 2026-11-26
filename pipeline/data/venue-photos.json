@@ -2871,6 +2871,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Rialto.jpg",
   "auto": "venue"
  },
+ "Kinoteka PKiN|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/kinoteka-pkin-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Sławomir Milejski",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:SM_Warszawa_PKiN_2023_(6).jpg",
+  "auto": "venue"
+ },
  "Klemensiewicza 3|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -4054,6 +4062,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Mostowa 2|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/mostowa-2-krakow.jpg",
+  "ratio": 1.335,
+  "author": "Igor123121",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mostowa_street,_view_to_N,_Kazimierz,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
  "Motor Lublin Arena|Lublin": {
   "image": "https://plusoneapp.pl/img/obiekty/motor-lublin-arena-lublin.jpg",
   "ratio": 1.333,
@@ -4883,6 +4899,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_2024_281_Krzysztofory_Palace_-_Portico_Clock.jpg",
   "auto": "venue"
  },
+ "Pałac Kultury i Nauki Sala Starzyńskiego|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Pałac Kultury i Nauki Warszawa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/palac-kultury-i-nauki-warszawa-warszawa.jpg",
   "ratio": 0.503,
@@ -5075,6 +5100,15 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Poleczki 58|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Poli|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -6254,6 +6288,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Stolarska 13|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/stolarska-13-krakow.jpg",
+  "ratio": 1.641,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaStolarska-WidokNaP%C3%B3%C5%82noc-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Stolmat Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -7255,6 +7297,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "William Rabbit & Co. - Magic Spot|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Wodna 13/4|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
