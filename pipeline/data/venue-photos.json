@@ -2385,6 +2385,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Ignacego Kłopotowskiego 5|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/ignacego-klopotowskiego-5-warszawa.jpg",
+  "ratio": 1.499,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ul._ks._Ignacego_K%C5%82opotowskiego_w_Warszawie_2017.jpg",
+  "auto": "venue"
+ },
  "Ignacego Prądzyńskiego 12/14|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -4141,6 +4149,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Manggha_Museum_of_Japanese_Art_and_Technology,_Krakow,_Poland.jpg",
   "auto": "venue"
  },
+ "Muzeum Warszawskiej Pragi|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/muzeum-warszawskiej-pragi-warszawa.jpg",
+  "ratio": 2.048,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Muzeum_Warszawskiej_Pragi_2015.jpg",
+  "auto": "venue"
+ },
  "Muzeum Wejherowo|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -5427,6 +5443,15 @@
   "query": "Warsaw skyline"
  },
  "Przychodnia Skłot|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Przyjaciele|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
