@@ -501,6 +501,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Bohaterów Monte Cassino 31|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/bohaterow-monte-cassino-31-sopot.jpg",
+  "ratio": 1.333,
+  "author": "Koefbac",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sopot,_ul._Bohater%C3%B3w_Monte_Cassino_31_-_kamienica.jpg",
+  "auto": "venue"
+ },
  "Bohaterów Monte Cassino 54|Sopot": {
   "image": "https://plusoneapp.pl/img/obiekty/bohaterow-monte-cassino-54-sopot.jpg",
   "ratio": 1.333,
@@ -1308,6 +1316,14 @@
  },
  "Długa 19|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/dluga-19-bydgoszcz.jpg",
+  "ratio": 1.501,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bydgoska_Aleja_Autograf%C3%B3w_2023.jpg",
+  "auto": "venue"
+ },
+ "Długa 36|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/dluga-36-bydgoszcz.jpg",
   "ratio": 1.501,
   "author": "Mariusz Guć",
   "license": "CC BY-SA 4.0",
