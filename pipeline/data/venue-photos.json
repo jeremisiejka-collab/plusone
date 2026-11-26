@@ -7628,6 +7628,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Warsztat Rzeszów - Rock|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Warsztatowa5|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -8361,6 +8369,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Świlcza 336|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
  "Święty Marcin 49|Poznań": {
