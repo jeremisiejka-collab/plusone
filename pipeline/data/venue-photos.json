@@ -5435,6 +5435,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Przystanek Monciak|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Prądzyńskiego 39A|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
