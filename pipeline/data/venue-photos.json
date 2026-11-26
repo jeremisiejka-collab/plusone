@@ -1934,6 +1934,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Gromadzka 46|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Grudziądzka 1|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/grudziadzka-1-bydgoszcz.jpg",
   "ratio": 1.359,
@@ -4063,6 +4071,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Mashroom|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Mazowiecka 2/4|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/mazowiecka-2-4-warszawa.jpg",
   "ratio": 1.007,
@@ -5132,6 +5148,14 @@
   "author": "Marcin Białek",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Pa%C5%82ac_Kultury_i_Nauki_2009.jpg",
+  "auto": "venue"
+ },
+ "Pałac Kultury i Nauki|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/palac-kultury-i-nauki-warszawa.jpg",
+  "ratio": 0.735,
+  "author": "Nnb",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:PKiN_widziany_z_WFC.jpg",
   "auto": "venue"
  },
  "Pałac Młodzieży w Bydgoszczy|Bydgoszcz": {
