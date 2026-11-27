@@ -244,6 +244,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Atelier-Kulisy Wypożyczalnia Kostiumów|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Auditorium Maximum Uniwersytetu Jagiellońskiego|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/auditorium-maximum-uniwersytetu-jagiellonskiego-krakow.jpg",
   "ratio": 1.501,
@@ -920,6 +928,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "ChillSpot|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Chmielna 10/23|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/chmielna-10-23-warszawa.jpg",
   "ratio": 0.75,
@@ -1183,12 +1199,28 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Dobrostan - studio jogi w Luboniu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Dolina Trzech Stawów - Sztauwajery - Muchowiec Katowice|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
   "ratio": 0.667,
   "author": "Lestat (Jan Mehlich)",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
+ "Dolna Wilda 89|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Dolnobrzeski Ośrodek Kultury|Wrocław": {
@@ -2954,6 +2986,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Karowa_w_Warszawie_2019.jpg",
   "auto": "venue"
  },
+ "Kasztanowa 1|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Katowice Miasto Ogrodów|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-miasto-ogrodow-katowice.jpg",
   "ratio": 1.494,
@@ -4393,6 +4433,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:MdkKoszutka.jpg",
   "auto": "venue"
  },
+ "Miejski Dom Kultury w Wągrowcu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Miejski Ośrodek Kultury w Gnieźnie|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Miejski Stadion Piłkarski Raków|Częstochowa": {
   "image": "https://plusoneapp.pl/img/obiekty/miejski-stadion-pilkarski-rakow-czestochowa.jpg",
   "ratio": 1.333,
@@ -4504,6 +4560,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Multikino_Ursynow_Warsaw_2022_aerial.jpg",
   "auto": "venue"
  },
+ "Murowana Goślina gmina|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Muzeum Historii Polski|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/muzeum-historii-polski-warszawa.jpg",
   "ratio": 1.501,
@@ -4535,6 +4599,22 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Budynek_Muzeum_Gda%C5%84ska_4_w_Bydgoszczy_2023.jpg",
   "auto": "venue"
+ },
+ "Muzeum Sztuk Użytkowych w Poznaniu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/muzeum-sztuk-uzytkowych-w-poznaniu-poznan.jpg",
+  "ratio": 1.272,
+  "author": "Mirand",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84_Zamek_Przemys%C5%82awa.JPG",
+  "auto": "venue"
+ },
+ "Muzeum Sztuk Użytkowych w Zamku Królewskim w Poznaniu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Muzeum Sztuki i Techniki Japońskiej Manggha|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/muzeum-sztuki-i-techniki-japonskiej-manggha-krakow.jpg",
@@ -4623,6 +4703,14 @@
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_M%C5%82y%C5%84ska,_Pozna%C5%84.jpg",
   "auto": "venue"
+ },
+ "Mściszewska 10|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "NIE TEATR (Białystok|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/nie-teatr-bialystok-bialystok.jpg",
@@ -8063,6 +8151,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Wiosło i Widelec|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Wodna 13/4|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -8361,6 +8457,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Zamkowa 3/4|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/zamkowa-3-4-poznan.jpg",
+  "ratio": 1.186,
+  "author": "MOs810",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Zamkowa_St._Poznan.JPG",
+  "auto": "venue"
+ },
  "Zamkowa 3|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/zamkowa-3-poznan.jpg",
   "ratio": 1.186,
@@ -8541,6 +8645,14 @@
   "auto": "venue"
  },
  "os. Oświecenia 59|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "os. Powstańców Warszawy 3d|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
   "author": "Radomil",
