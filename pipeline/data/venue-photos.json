@@ -8621,6 +8621,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:12-11-2015_Towarowa_37,_Pozna%C5%84_(2).jpg",
   "auto": "venue"
  },
+ "Tramwajowa 1-3|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tramwajowa-1-3-wroclaw.jpg",
+  "ratio": 1.542,
+  "author": "Neo[EZN]",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Zajezdnia_tramwajowa_nr_1_-_Gaj_-_fotopolska.eu_(209085).jpg",
+  "auto": "venue"
+ },
  "Transformator|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/transformator-wroclaw.jpg",
   "ratio": 1.399,
@@ -9069,6 +9077,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Wrocławska 21|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/wroclawska-21-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Magda Felis",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84_-_Mur_obronny,_ul._Wroc%C5%82awska_25_-_MF-IMG_1518.JPG",
+  "auto": "venue"
  },
  "Wrocławska Akademia Baletu|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
