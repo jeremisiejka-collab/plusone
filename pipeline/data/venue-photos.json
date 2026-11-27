@@ -146,6 +146,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Albigowa 300|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Ale Sztuka|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -468,6 +476,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "Białówny 9/1|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialowny-9-1-bialystok.jpg",
+  "ratio": 1.778,
+  "author": "Rakoon",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:20200509_182918_Bia%C5%82%C3%B3wny_Street_in_Bia%C5%82ystok_May_2020.jpg",
+  "auto": "venue"
+ },
  "Bielany|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/bielany-warszawa.jpg",
   "ratio": 1.333,
@@ -580,6 +596,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Sopot_05.jpg",
   "auto": "venue"
+ },
+ "Boisko sportowe - Osiedle Niwa w Głogowie Małopolskim|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
  },
  "Bonobo Księgarnia Kawiarnia Podróżnicza|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -3162,6 +3186,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
+ "Kawaleryjska 19|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/kawaleryjska-19-bialystok.jpg",
+  "ratio": 1.333,
+  "author": "Henryk Borawski",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Marketplace_urban_in_Bia%C5%82ystok_(Kawaleryjska).jpg",
+  "auto": "venue"
+ },
  "Kawiarnia Literacka|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/kawiarnia-literacka-krakow.jpg",
   "ratio": 1.664,
@@ -3473,6 +3505,14 @@
   "author": "Ingo Mehling",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
+ "Klub Gwint|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
  "Klub Hormon Szczecin|Szczecin": {
@@ -4447,6 +4487,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:UlicaMariiKonopnickiej-WidokNaP%C3%B3%C5%82noc-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "Marii Skłodowskiej-Curie 14B lok. 4|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
  },
  "Marszałkowska 28|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/marszalkowska-28-warszawa.jpg",
@@ -5540,6 +5588,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ko%C5%9Bci%C3%B3%C5%82_Matki_Bo%C5%BCej_Kr%C3%B3lowej_Polski_-_front.jpg",
   "auto": "venue"
  },
+ "Parafia pw. Trójcy Przenajświętszej w Głogowie Małopolskim|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Pardon|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -5823,6 +5879,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
+ },
+ "Piękna|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/piekna-bialystok.jpg",
+  "ratio": 1.333,
+  "author": "Henryk Borawski",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:BO%C5%9A_Bia%C5%82ystok_(Pi%C4%99kna_1).JPG",
+  "auto": "venue"
  },
  "Piłsudskiego 4|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/pilsudskiego-4-rzeszow.jpg",
@@ -6294,6 +6358,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_ul._Purkyniego_2021-03-03_foto_nr_03.jpg",
   "auto": "venue"
+ },
+ "Pustelnia Rzeszów|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
  },
  "Pyrzycki Dom Kultury|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
@@ -7054,6 +7126,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Spodek_E_aerial_2026.jpg",
   "auto": "venue"
  },
+ "Spodki Białystok|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/spodki-bialystok-bialystok.jpg",
+  "ratio": 1.333,
+  "author": "Henryk Borawski",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok._Spodki.jpg",
+  "auto": "venue"
+ },
  "Spółdzielnia Ogniwo|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -7631,6 +7711,14 @@
   "author": "Lestat (Jan Mehlich)",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
+ "Szpitalna 5|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
  "Sztuka Na Miejscu|Wrocław": {
