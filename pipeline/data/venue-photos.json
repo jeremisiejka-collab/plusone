@@ -1376,6 +1376,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Dom Kultury Stokłosy|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Dom Kultury Słowianin|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -4657,6 +4666,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:At_Katowice_2024_078.jpg",
   "auto": "venue"
  },
+ "Marii Kazimiery 20/1|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Marii Konopnickiej 28|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/marii-konopnickiej-28-krakow.jpg",
   "ratio": 1.7,
@@ -4800,6 +4818,14 @@
   "author": "Radomil at Polish Wikipedia",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84_dzielnica-Nowe_Miasto.png",
+  "auto": "venue"
+ },
+ "Miasto|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/miasto-warszawa.jpg",
+  "ratio": 1.499,
+  "author": "Arkadiusz Zarzecki",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rynek_Nowego_Miasta_w_Warszawie_2016.jpg",
   "auto": "venue"
  },
  "Mickiewicza 33|Poznań": {
@@ -6908,6 +6934,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Podg%C3%B3rski_Market_Square,_view_from_S,_Podg%C3%B3rze,_Krak%C3%B3w,_Poland.jpg",
   "auto": "venue"
  },
+ "Rynek Starego Miasta 28|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-starego-miasta-28-warszawa.jpg",
+  "ratio": 1.524,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_Old_Town_Market_Square_10.JPG",
+  "auto": "venue"
+ },
  "Rynek w Katowicach|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/rynek-w-katowicach-katowice.jpg",
   "ratio": 1.289,
@@ -7311,6 +7345,15 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Skład Butelek|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Skłodowskiej-Curie 20|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/sklodowskiej-curie-20-katowice.jpg",
