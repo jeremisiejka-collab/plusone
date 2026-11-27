@@ -920,6 +920,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Centrum Kultury i Edukacji Bakara|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Centrum Kultury i Rekreacji w Koziegłowach|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -4455,6 +4463,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Lodowisko Orbita Spartan|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Lokum Stonewall|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -5099,6 +5115,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Cytadela_(dron2).jpg",
   "auto": "venue"
+ },
+ "Muzeum i Centrum Ruchu Harcerskiego / Muzeum Krakowa|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Muzeum Śląskie|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/muzeum-slaskie-katowice.jpg",
@@ -5773,6 +5797,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "PUB Pod Ziemią - Kraków|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
  "PUB Sportowy Wembley|Wrocław": {
@@ -8424,6 +8456,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Teatr Studio|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-studio-warszawa.jpg",
+  "ratio": 1.397,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Teatr_Studio_w_Warszawie_2016.jpg",
+  "auto": "venue"
  },
  "Teatr asz.teatr|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
