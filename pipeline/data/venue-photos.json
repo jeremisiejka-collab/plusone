@@ -105,6 +105,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Karol_Szymanowski_Academy_of_Music.jpg",
   "auto": "venue"
  },
+ "Akademia Muzyczna im. Krzysztofa Pendereckiego w Krakowie|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/akademia-muzyczna-im-krzysztofa-pendereckiego-w-krakowie-krakow.jpg",
+  "ratio": 1.513,
+  "author": "Zygmunt Put",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Building_of_the_Academy_of_Music_in_Krak%C3%B3w,_1921_design._Ludwik_Wojtyczko,_43_%C5%9Awi%C4%99tego_Tomasza_street,_Old_Town,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
  "Akademia Muzyczna w Bydgoszczy|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/akademia-muzyczna-w-bydgoszczy-bydgoszcz.jpg",
   "ratio": 1.221,
@@ -1043,6 +1051,15 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Community Cup|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Concordia Design Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/concordia-design-wroclaw-wroclaw.jpg",
@@ -3071,6 +3088,14 @@
   "author": "Emptywords",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Kino_Luna_Warsaw_2022.jpg",
+  "auto": "venue"
+ },
+ "Kino Mikro|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/kino-mikro-krakow.jpg",
+  "ratio": 1.501,
+  "author": "Franek Vetulani",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mikro_01_Vetulani.jpg",
   "auto": "venue"
  },
  "Kino Muza w Poznaniu|Poznań": {
@@ -5551,6 +5576,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Podwale_w_Bydgoszczy_2023.jpg",
   "auto": "venue"
  },
+ "Podwale 6|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/podwale-6-krakow.jpg",
+  "ratio": 1.333,
+  "author": "Mach240390",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaPodwale-WidokNaP%C3%B3%C5%82noc-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Podwórko.art|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -6281,6 +6314,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "SNY|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "SOHO Cracow|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -6826,6 +6867,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Starostwo Powiatu Warszawskiego Zachodniego ul. Poznańska 129/133|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Starowiślna 16|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/starowislna-16-krakow.jpg",
@@ -8498,6 +8548,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:OsiedleSzkolne-WidokOdPo%C5%82udnia-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "otwarta.art|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "parkrun Jezioro Swarzędzkie|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -8684,6 +8742,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:%C5%9Awidnica,_Linia_kolejowa_nr_285_Wroc%C5%82aw_G%C5%82%C3%B3wny_-_Jedlina_Zdr%C3%B3j._-_fotopolska.eu_(159939).jpg",
   "auto": "venue"
  },
+ "Świdnicka 40|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/swidnicka-40-wroclaw.jpg",
+  "ratio": 1.52,
+  "author": "Ausir",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw_Swidnicka_2005_1.jpg",
+  "auto": "venue"
+ },
  "Świdnicka 8B|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -8699,6 +8765,14 @@
   "license": "CC BY 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
+ },
+ "Świętego Krzyża 14|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/swietego-krzyza-14-krakow.jpg",
+  "ratio": 1.044,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Bazylika_%C5%9Awi%C4%99tego_Krzy%C5%BCa_w_Warszawie_2021.jpg",
+  "auto": "venue"
  },
  "Święty Marcin 49|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/swiety-marcin-49-poznan.jpg",
