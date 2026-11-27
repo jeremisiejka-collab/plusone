@@ -8126,6 +8126,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Szkoła Podstawowa Sióstr Misjonarek Świętej Rodziny ul. Adama Mickiewicza 43|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "Szkoła Podstawowa im. ks. Wawrzyńca Bochenka w Czeszowie|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
