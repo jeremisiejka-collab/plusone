@@ -342,6 +342,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "Baldachówka|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Bartodzieje Małe|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bartodzieje-male-bydgoszcz.jpg",
   "ratio": 1.27,
@@ -1644,6 +1652,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Fabryka_Norblina,_Warszawa_(4).jpg",
   "auto": "venue"
+ },
+ "Fabryka Smaku Rzeszów|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
  },
  "Filharmonia Podkarpacka im. Artura Malawskiego w Rzeszowie|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/filharmonia-podkarpacka-im-artura-malawskiego-w-rzeszowie-rzeszow.jpg",
@@ -3864,6 +3880,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
+ "LOFT CLUB|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "LOFToDANCE Łukasz Raś|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -5422,6 +5446,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Piknik Nauki|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Pinokio 3.0 - Łączy Pokolenia|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -6534,6 +6566,14 @@
  },
  "Smolna 38|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/smolna-38-warszawa.jpg",
+  "ratio": 1.317,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Smolna_w_Warszawie_2017.jpg",
+  "auto": "venue"
+ },
+ "Smolna 9|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/smolna-9-warszawa.jpg",
   "ratio": 1.317,
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
@@ -8579,6 +8619,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:4_Warszawa-Lazienki_Krolewskie_141.jpg",
   "auto": "venue"
+ },
+ "Łańcut|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
  },
  "Łuczniczka Hala Sportowo-Widowiskowa|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/luczniczka-hala-sportowo-widowiskowa-bydgoszcz.jpg",
