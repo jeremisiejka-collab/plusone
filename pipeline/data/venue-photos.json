@@ -750,6 +750,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
+ "CENTRALNA 32|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "CH NOWY TURZYN|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -1205,6 +1213,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Czeski Film|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Czuła jest noc|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -1277,6 +1293,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Dobra 490|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
  "Dobrostan - studio jogi w Luboniu|Poznań": {
@@ -2960,6 +2984,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Jatki 3/4|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/jatki-3-4-wroclaw.jpg",
+  "ratio": 1.332,
+  "author": "Palickap",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Jatki_(3).jpg",
+  "auto": "venue"
+ },
  "Jazdów 1|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/jazdow-1-warszawa.jpg",
   "ratio": 1.407,
@@ -4106,6 +4138,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Krzywoustego 286|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Krzywy Gryf|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -4244,6 +4284,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Lanckorona|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Las Osobowicki|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/las-osobowicki-wroclaw.jpg",
   "ratio": 1.502,
@@ -4276,6 +4324,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Leśna 6|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Leśna Sauna Józefów|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -4713,6 +4769,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Miejski Ośrodek Kultury i Sztuki w Oleśnicy|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
  "Miejski Ośrodek Kultury w Gnieźnie|Poznań": {
@@ -5849,6 +5913,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Czerniejewo,_zespol_parkowo-palacowy,_palac_2.jpg",
   "auto": "venue"
  },
+ "Pałacyk Sokół|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Państwowe Muzeum Etnograficzne|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/panstwowe-muzeum-etnograficzne-warszawa.jpg",
   "ratio": 1.316,
@@ -6042,6 +6114,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Politechnika Wrocławska|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/politechnika-wroclawska-wroclaw.jpg",
+  "ratio": 1.494,
+  "author": "Barbara Maliszewska",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:8731viki_Politechnika_Wroc%C5%82awska_ul._Wybrze%C5%BCe_Wyspia%C5%84skiego._Foto_Barbara_Maliszewska.jpg",
+  "auto": "venue"
  },
  "Poli|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -6660,6 +6740,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:2018_Rzesz%C3%B3w,_ul._Matejki_2_i_Rynek_22-25,_Kamienice.jpg",
   "auto": "venue"
  },
+ "Rynek 56/57|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-56-57-wroclaw.jpg",
+  "ratio": 1.506,
+  "author": "fot. Slawek Ilski",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw-RYNEK_-_panorama_z_ko%C5%9Bcio%C5%82a_p.w._%C5%9Bw._El%C5%BCbiety_-_panoramio.jpg",
+  "auto": "venue"
+ },
  "Rynek 58|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/rynek-58-wroclaw.jpg",
   "ratio": 1.506,
@@ -7225,6 +7313,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Stacja Dialog - Kawiarnia|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Stadion Cracovii im. Józefa Piłsudskiego|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/stadion-cracovii-im-jozefa-pilsudskiego-krakow.jpg",
   "ratio": 1.494,
@@ -7350,6 +7446,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Stara Biblioteka|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Stara Zajezdnia Kraków by DeSilva|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -7543,6 +7647,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Centrum_Sztuki_%22Impart%22_-_fotopolska.eu_(114134).jpg",
   "auto": "venue"
+ },
+ "Strefa Kultury Studenckiej|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Strefa Kultury Wrocław|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/strefa-kultury-wroclaw-wroclaw.jpg",
@@ -8052,6 +8164,14 @@
   "author": "Adrian Grycuk",
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Teatr_Dramatyczny_w_Warszawie_2023.jpg",
+  "auto": "venue"
+ },
+ "Teatr Groteska|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-groteska-krakow.jpg",
+  "ratio": 1.06,
+  "author": "Mach240390",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:TeatrGroteska-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
  "Teatr Komedii Impro|Łódź": {
@@ -8803,6 +8923,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:PL-DS,_Wroc%C5%82aw,_ul._Wystawowa_1;_Zesp%C3%B3%C5%82_Hali_Stulecia-_Hala_Stulecia;_A-5259-343-Wm.jpg",
   "auto": "venue"
  },
+ "Wyścigi konne. Wrocław|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wyscigi-konne-wroclaw-wroclaw.jpg",
+  "ratio": 0.79,
+  "author": "Qkiel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Puchar_za_wy%C5%9Bcigi_konne,_Wroc%C5%82aw_1839,_Muzeum_Miejskie,_Wroc%C5%82aw.jpg",
+  "auto": "venue"
+ },
  "Wzgórza Niemczańsko-Strzelińskie|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/wzgorza-niemczansko-strzelinskie-wroclaw.jpg",
   "ratio": 1.948,
@@ -8972,6 +9100,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Zespół Szkolno Przedszkolny w Długołęce. Długołęka ul. Szkolna 40|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Zespół Szkół Elektryczno-Elektronicznych (ZSEE/TME)|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -9012,6 +9148,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
+ },
+ "Zwycięska 8|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/zwycieska-8-wroclaw.jpg",
+  "ratio": 0.953,
+  "author": "Aw58",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_ul._Zwyci%C4%99ska_-_15.12.2022.jpg",
+  "auto": "venue"
  },
  "Zwycięstwa 11|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -9353,6 +9497,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Św. Wincentego 21|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/sw-wincentego-21-wroclaw.jpg",
+  "ratio": 0.759,
+  "author": "vorwerk",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_%C5%9Bw._Wincentego_33_-_fotopolska.eu_(258842).jpg",
+  "auto": "venue"
  },
  "Św.Tomasza 24|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/sw-tomasza-24-krakow.jpg",
