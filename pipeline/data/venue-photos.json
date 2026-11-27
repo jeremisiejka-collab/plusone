@@ -89,6 +89,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gmach_g%C5%82%C3%B3wny_AGH.jpg",
   "auto": "venue"
  },
+ "Akademia Muzyczna im. Feliksa Nowowiejskiego w Bydgoszczy|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/akademia-muzyczna-im-feliksa-nowowiejskiego-w-bydgoszczy-bydgoszcz.jpg",
+  "ratio": 1.322,
+  "author": "Pit1233",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bdg_AkadMuz_4_07-2013.jpg",
+  "auto": "venue"
+ },
  "Akademia Muzyczna im. Karola Szymanowskiego w Katowicach|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/akademia-muzyczna-im-karola-szymanowskiego-w-katowicach-katowice.jpg",
   "ratio": 1.333,
@@ -872,6 +880,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Chełmno Rynek|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Chicago Jazz|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1436,6 +1452,14 @@
   "author": "Patryk Duszkiewicz",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Warszawa_(Elektrownia_Powi%C5%9Ble)_-_tablica.jpg",
+  "auto": "venue"
+ },
+ "Eljazz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/eljazz-bydgoszcz.jpg",
+  "ratio": 0.75,
+  "author": "This file was added by User Joymaster Ten plik został dodany przez Wikipedystę J",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:ElJazz_-_Trytony,_Bydgoszcz_-_001.JPG",
   "auto": "venue"
  },
  "Emaus 20/4|Kraków": {
@@ -2727,6 +2751,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Jezioro_Rusalka_Poznan.jpg",
   "auto": "venue"
  },
+ "Jezuicka 24|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/jezuicka-24-bydgoszcz.jpg",
+  "ratio": 1.501,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Jezuicka_w_Bydgoszczy_2023.jpg",
+  "auto": "venue"
+ },
  "Judaistyka - Uniwersytet Wrocławski|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -3758,6 +3790,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Księdza Piotra Ściegiennego 29|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "Kujawsko-Pomorska Arena Toruń|Toruń": {
@@ -4927,6 +4967,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "Orkiestra Dęta OSP Osiek nad Notecią|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Orlen Stadion|Płock": {
   "image": "https://plusoneapp.pl/img/obiekty/orlen-stadion-plock.jpg",
   "ratio": 2.226,
@@ -5334,6 +5382,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Pierwszej Brygady 35|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Pieśniarze|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -5493,6 +5549,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Pomorska 80-86|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
  "Port Gdynia|Gdynia": {
@@ -7079,6 +7143,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Szubiński Dom Kultury|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Sławkowska 11|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/slawkowska-11-krakow.jpg",
   "ratio": 1.586,
@@ -7918,6 +7990,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw_G%C5%82%C3%B3wny_(Breslau_Hauptbahnhof)_by_night.JPG",
   "auto": "venue"
  },
+ "Wroclawska 3 · Bydgoszcz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Wroclaw|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -8442,6 +8522,15 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:%C5%9Awi%C4%99ty_Marcin_street,_view_to_E,_Pozna%C5%84,_Poland.jpg",
   "auto": "venue"
+ },
+ "underiolo|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "w_sercu|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
