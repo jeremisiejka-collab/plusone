@@ -1973,6 +1973,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Gminna Hala Widowiskowo-Sportowa ul. 3 Maja 6|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Gniazdo Piratów Warszawa|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -3365,6 +3373,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Klub Momenty|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
  },
  "Klub Muzyczny B17|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
