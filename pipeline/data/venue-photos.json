@@ -1016,6 +1016,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Chicago Bar|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Chicago Jazz|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -1162,6 +1170,15 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Club Fair Play|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Club Stereo|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -5084,6 +5101,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_2024_347_MNK_Sukiennice_Gallery.jpg",
   "auto": "venue"
  },
+ "Muzeum Narodowe w Warszawie|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/muzeum-narodowe-w-warszawie-warszawa.jpg",
+  "ratio": 1.66,
+  "author": "Muzeum Narodowe w Warszawie",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Muzeum_Narodowe_w_Warszawie.jpg",
+  "auto": "venue"
+ },
  "Muzeum Okręgowe im. Leona Wyczółkowskiego w Bydgoszczy|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/muzeum-okregowe-im-leona-wyczolkowskiego-w-bydgoszczy-bydgoszcz.jpg",
   "ratio": 1.501,
@@ -5244,6 +5269,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "NIĆ. Kawiarnio-księgarnia|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "NOCE KRK|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
