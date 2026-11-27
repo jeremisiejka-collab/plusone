@@ -212,6 +212,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:2023_Warszawa_prace_archeologiczne_przy_Anielewicza,_6.jpg",
   "auto": "venue"
  },
+ "Arche Cukrownia Żnin|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Arena Gorzów|Gorzów Wielkopolski": {
   "image": "https://plusoneapp.pl/img/obiekty/arena-gorzow-gorzow-wielkopolski.jpg",
   "ratio": 1.778,
@@ -1366,6 +1374,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Dom_Kultury_Krzemien_(1).jpg",
   "auto": "venue"
+ },
+ "Dom Kultury 13 Muz|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "Dom Kultury CK|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -6340,6 +6356,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Porcelanowa 23|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "Port Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/port-gdynia-gdynia.jpg",
   "ratio": 1.501,
@@ -8988,6 +9012,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:UlicaWesterplatte-WidokNaPo%C5%82udnie-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Wełniany Rynek 11|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Wiankowa 3|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -9302,6 +9334,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Zaciszna Cafe|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "Zaklęte Rewiry|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
