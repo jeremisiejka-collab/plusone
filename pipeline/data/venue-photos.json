@@ -316,6 +316,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "BRONX Bouldering|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "BWA Wrocław Główny|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -374,12 +382,28 @@
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
+ "Barbakan w Krakowie|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/barbakan-w-krakowie-krakow.jpg",
+  "ratio": 1.572,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Barbakan-WidokZUlicyBasztowej-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
  "Bartodzieje Małe|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bartodzieje-male-bydgoszcz.jpg",
   "ratio": 1.27,
   "author": "Metallographirt von C. Brügner, Berlin",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Bydgoszcz_i_okolica_1857.jpg",
+  "auto": "venue"
+ },
+ "Batorego 1|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/batorego-1-krakow.jpg",
+  "ratio": 1.691,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaStefanaBatorego-WidokNaWsch%C3%B3d-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
  "Batorego 2|Kraków": {
@@ -1948,6 +1972,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "GOKiS Wiśniowa|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Galeria Bronowice|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/galeria-bronowice-krakow.jpg",
   "ratio": 1.778,
@@ -2608,6 +2640,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Hard_Rock_cafe_wroclaw.jpg",
   "auto": "venue"
  },
+ "Harris Piano Jazz Bar|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
+ },
  "Hashtag Lab|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -2927,6 +2967,15 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Budowa_domk%C3%B3w_fi%C5%84skich_Warszawa_marzec_1945.jpg",
   "auto": "venue"
+ },
+ "Jazdów 3/5|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Jazz Club Hipnoza (official venue profile)|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
@@ -3928,6 +3977,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_ul._Stawarza_ko%C5%9Bci%C3%B3%C5%82_%C5%9Bw._Benedykta_A-202M_(1).jpg",
   "auto": "venue"
  },
+ "Krakowska 2|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakowska-2-krakow.jpg",
+  "ratio": 1.509,
+  "author": "Zygmunt Put",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakowska_street,_view_to_N,_Kazimierz,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
  "Krakowska 5|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakowska-5-krakow.jpg",
   "ratio": 1.501,
@@ -4632,6 +4689,15 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:A430,_Pozna%C5%84,_kamienica_przy_ul._Mickiewicza_32_(4)._Ysbail.jpg",
   "auto": "venue"
+ },
+ "Miedzy Nami|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Miejski Dom Kultury \"Koszutka\"|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/miejski-dom-kultury-koszutka-katowice.jpg",
@@ -6834,6 +6900,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Sala Widowiskowa Bemowskiego Centrum Kultury|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Sala Witrażowa|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -6899,6 +6974,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Saska Kępa|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/saska-kepa-warszawa.jpg",
+  "ratio": 1.574,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Francuska_na_wysoko%C5%9Bci_ulicy_Obro%C5%84c%C3%B3w_2016.jpg",
+  "auto": "venue"
  },
  "Scena Berlin|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
@@ -9100,6 +9183,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "pub Nora|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "schody.wro|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -9293,6 +9385,15 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Świetlica Wolności|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
  },
  "Świlcza 336|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
