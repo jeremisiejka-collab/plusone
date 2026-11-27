@@ -64,6 +64,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Adamskiego 11|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "AfterDark|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -4618,6 +4626,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "MK Bowling Szczecin Hit2Fit|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "MNK Gmach Główny|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -4911,6 +4927,14 @@
   "query": "Warsaw skyline"
  },
  "Miejski Dom Kultury \"Koszutka\"|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/miejski-dom-kultury-koszutka-katowice.jpg",
+  "ratio": 1.225,
+  "author": "Karolinape",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:MdkKoszutka.jpg",
+  "auto": "venue"
+ },
+ "Miejski Dom Kultury Koszutka|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/miejski-dom-kultury-koszutka-katowice.jpg",
   "ratio": 1.225,
   "author": "Karolinape",
