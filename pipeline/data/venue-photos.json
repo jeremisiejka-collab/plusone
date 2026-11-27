@@ -1245,6 +1245,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
+ "DS Hanka UAM|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "DZIK - Dom Zabawy i Kultury|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -1765,6 +1773,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Estery,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Eugeniusza Paukszty 1|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Evento Bydgoszcz|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -2157,6 +2173,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Gdyńska 47|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Generała Józefa Bema 1A|Sopot": {
   "image": "https://plusoneapp.pl/img/obiekty/sopot-sopot.jpg",
   "ratio": 1.333,
@@ -2314,6 +2338,14 @@
   "auto": "venue"
  },
  "Głogowska 35|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "HAH Poznań|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
   "author": "Radomil",
@@ -3977,6 +4009,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Kościuszki 55|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/kosciuszki-55-poznan.jpg",
+  "ratio": 1.456,
+  "author": "MOs810",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Kosciuszki_Poznan.JPG",
+  "auto": "venue"
+ },
  "Kościuszki 69|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -4160,6 +4200,14 @@
   "author": "Lestat (Jan Mehlich)",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
+ "Królewskie Morsy Gniezno|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Królicze Oczy|Kraków": {
@@ -5328,6 +5376,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Nowowiejskiego 8|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/nowowiejskiego-8-poznan.jpg",
+  "ratio": 1.333,
+  "author": "MOs810",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Nowowiejski_Museum_Poznan.jpg",
+  "auto": "venue"
+ },
  "Nowy Harem Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -5734,6 +5790,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Park 600-lecia Wągrowiec|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Park Czechowicki|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -6243,6 +6307,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Ul.Powstancow.Sl.na.polnoc.jpg",
   "auto": "venue"
  },
+ "Poznan|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Poznań Congress Center|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -6480,6 +6552,14 @@
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:Ptasie_Radio,_mural_w_%C5%81odzi_(ul._Szpitalna_7a).jpg",
   "auto": "venue"
+ },
+ "Pub Dziupla Gniezno|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Pub Korba katowice|Katowice": {
   "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
@@ -6868,6 +6948,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "SARP Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "SCENA RELAX|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/scena-relax-warszawa.jpg",
   "ratio": 1.417,
@@ -7119,6 +7207,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Fallout_shelter_in_Pozna%C5%84.JPG",
   "auto": "venue"
  },
+ "Sheraton Poznan Hotel|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/sheraton-poznan-hotel-poznan.jpg",
+  "ratio": 1.335,
+  "author": "Radomil talk",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sheraton_Pozna%C5%84_RB1.JPG",
+  "auto": "venue"
+ },
  "Siedlecka 1a|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
   "ratio": 1.805,
@@ -7159,6 +7255,14 @@
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:UlicaSkawi%C5%84ska-WidokNaZach%C3%B3d-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
+ },
+ "Skoki gmina|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Skorzęcin|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
@@ -7686,6 +7790,14 @@
   "author": "Jar.ciurus",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
+ "Strzeszyńska 269|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
  "Studio Koncertowe Polskiego Radia im. Witolda Lutosławskiego|Warszawa": {
@@ -8386,6 +8498,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Towarowa 53|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/towarowa-53-poznan.jpg",
+  "ratio": 0.559,
+  "author": "Kapsuglan",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:12-11-2015_Towarowa_37,_Pozna%C5%84_(2).jpg",
+  "auto": "venue"
+ },
  "Transformator|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/transformator-wroclaw.jpg",
   "ratio": 1.399,
@@ -8639,6 +8759,14 @@
   "license": "CC0",
   "source": "https://commons.wikimedia.org/wiki/File:20200727_125217_Warszawska_Street_in_Bia%C5%82ystok.jpg",
   "auto": "venue"
+ },
+ "Warszawska 93/95|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Warszawski Dom Technika NOT|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
