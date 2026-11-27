@@ -735,6 +735,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Auchan_Bia%C5%82ystok.jpg",
   "auto": "venue"
  },
+ "Centrum Handlowe Kaszuby|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Centrum Jana Pawła II|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-jana-pawla-ii-krakow.jpg",
   "ratio": 1.333,
@@ -2305,6 +2313,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Sportowa_Stulecia_w_Sopocie.JPG"
  },
+ "Hala Sportowa ACS ul. Wiejska 41|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "Hala Sportowa W Zielonkach|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -2358,6 +2374,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Hale Targowe Gdynia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/hale-targowe-gdynia-gdynia.jpg",
+  "ratio": 1.333,
+  "author": "This file was added by User Joymaster Ten plik został dodany przez Wikipedystę J",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Miejskie_Hale_Targowe_S.A.,_Gdynia_-_002.JPG",
+  "auto": "venue"
  },
  "Hard Rock Cafe Warsaw|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/hard-rock-cafe-warsaw-warszawa.jpg",
