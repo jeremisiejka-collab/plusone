@@ -2110,6 +2110,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Galeria Sztuki Współczesnej BWA w Katowicach|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/galeria-sztuki-wspolczesnej-bwa-w-katowicach-katowice.jpg",
+  "ratio": 1.333,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_BWA_2022.jpg",
+  "auto": "venue"
+ },
  "Galeria Turzyn|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/galeria-turzyn-szczecin.jpg",
   "ratio": 1.501,
@@ -5020,6 +5028,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Multikino_Ursynow_Warsaw_2022_aerial.jpg",
   "auto": "venue"
  },
+ "MurAle Cafè|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Murowana Goślina gmina|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -5855,6 +5871,14 @@
   "license": "CC BY 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
+ },
+ "Parafia św. Rocha w Poznaniu|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/parafia-sw-rocha-w-poznaniu-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil talk",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ko%C5%9Bci%C3%B3%C5%82_Rocha_Pozna%C5%84_RB1.JPG",
+  "auto": "venue"
  },
  "Pardon|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
