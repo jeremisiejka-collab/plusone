@@ -6106,6 +6106,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w,_Rynek_Linia_A-B_-_fotopolska.eu_(338618).jpg",
   "auto": "city"
  },
+ "Plażowa 1|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Pod Blankami 6/3a|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -6738,6 +6746,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Rondo Kaponiera|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/rondo-kaponiera-poznan.jpg",
+  "ratio": 1.333,
+  "author": "MOs810",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:View_feom_New_Baltic_in_Poznan_Restaurace_(2).jpg",
+  "auto": "venue"
  },
  "Rondo Mogilskie 1|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/rondo-mogilskie-1-krakow.jpg",
