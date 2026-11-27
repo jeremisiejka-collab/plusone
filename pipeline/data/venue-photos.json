@@ -1347,6 +1347,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Warszawska_37_2018.jpg",
   "auto": "venue"
  },
+ "Drzymały 9|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/drzymaly-9-katowice.jpg",
+  "ratio": 1.501,
+  "author": "Krzysztof Popławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Crossing_%C5%BBwirki_i_Wigury_and_Drzyma%C5%82y_streets,_Katowice,_February_2023.jpg",
+  "auto": "venue"
+ },
  "Duchnicka 3|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/duchnicka-3-warszawa.jpg",
   "ratio": 1.333,
@@ -1434,6 +1442,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Dyrekcyjna 4|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/dyrekcyjna-4-katowice.jpg",
+  "ratio": 1.494,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2023-07_Katowice_ul._Dyrekcyjna_(4).jpg",
+  "auto": "venue"
  },
  "Dziekanowice 32|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
@@ -1842,6 +1858,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "GAC Partner ZPD Katowice|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
  },
  "GLAM 2.0 CLUB|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -2480,6 +2504,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Helios Katowice Libero|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
  },
  "Herbaciarnia K2|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -3897,6 +3929,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Książnica Pomorska|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/ksiaznica-pomorska-szczecin.jpg",
+  "ratio": 1.501,
+  "author": "Kapitel",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ksiaznica_Pomorska_w_Szczecinie_(3).jpg",
+  "auto": "venue"
+ },
  "Książęca 1|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -4200,6 +4240,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "MOSiR \"Spodek\" Al. Korfantego 35|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "MOSiR Globus|Lublin": {
   "image": "https://plusoneapp.pl/img/obiekty/mosir-globus-lublin.jpg",
   "ratio": 1.333,
@@ -4479,6 +4527,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Budynki_mza_warszawa_braci_zaluskich.jpg",
   "auto": "venue"
+ },
+ "Mieszka I 73|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
  },
  "Mikołajska 4/6|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/mikolajska-4-6-krakow.jpg",
@@ -5980,6 +6036,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Prywatka Szczecin|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Przejście Garncarskie 2|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/przejscie-garncarskie-2-wroclaw.jpg",
   "ratio": 1.333,
@@ -6193,6 +6257,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "Restauracja Lokalna Szczecin|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Restauracja Zatoka|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
   "ratio": 3.422,
@@ -6336,6 +6408,14 @@
   "author": "Zygmunt Put",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Podg%C3%B3rski_Market_Square,_view_from_S,_Podg%C3%B3rze,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
+ "Rynek w Katowicach|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-w-katowicach-katowice.jpg",
+  "ratio": 1.289,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_Rynek_aerial_2026.jpg",
   "auto": "venue"
  },
  "Rynek-Ratusz 27|Wrocław": {
@@ -6749,6 +6829,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Katowice_Junior_Sokolska_31_2022.jpg",
   "auto": "venue"
  },
+ "Sokolska 66|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/sokolska-66-katowice.jpg",
+  "ratio": 1.501,
+  "author": "Adrian Tync",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_Junior_Sokolska_31_2022.jpg",
+  "auto": "venue"
+ },
  "Solec 81B|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -6868,6 +6956,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:K%C5%82odnica.JPG",
   "auto": "city"
  },
+ "Stadion Miejski w Gryfinie|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Stadion Miejski|Gliwice": {
   "image": "https://plusoneapp.pl/img/obiekty/stadion-miejski-gliwice.jpg",
   "ratio": 1.509,
@@ -6955,6 +7051,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
+ },
+ "Staromiejska 13|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/staromiejska-13-katowice.jpg",
+  "ratio": 1.501,
+  "author": "Marek Mróz",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2024-08_Katowice_ul._Staromiejska_(2).jpg",
+  "auto": "venue"
  },
  "Staromiejski Dom Kultury|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/staromiejski-dom-kultury-warszawa.jpg",
@@ -7180,6 +7284,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Studio Tańca Anna Kowalska|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "Studio Tańca Rytm|Warszawa": {
@@ -8497,6 +8609,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "Zespół Szkół Elektryczno-Elektronicznych (ZSEE/TME)|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Zgrany Wawer|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -8763,6 +8883,14 @@
   "author": "Adrian Grycuk",
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Ulica_Stanis%C5%82awa_Noakowskiego_w_Warszawie_2026.jpg",
+  "auto": "venue"
+ },
+ "ul.złota 1|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/ul-zlota-1-katowice.jpg",
+  "ratio": 1.333,
+  "author": "Michał Bulsa",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Ulica_Z%C5%82ota.JPG",
   "auto": "venue"
  },
  "ul.Święty Marcin 75|Poznań": {
