@@ -2459,6 +2459,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Gościniec Rzeszów|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Grabiszyńska 241|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
