@@ -887,6 +887,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Centrum Konferencyjne WIL|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Centrum Kultury Agora|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-kultury-agora-wroclaw.jpg",
   "ratio": 1.501,
@@ -2214,6 +2222,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Garncarska 3|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/garncarska-3-poznan.jpg",
+  "ratio": 1.485,
+  "author": "MOs810",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Garncarska,_Poznan,_8.3.1993.jpg",
+  "auto": "venue"
  },
  "Gawędy 5 (1 piętro|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
@@ -7046,6 +7062,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Rewiry|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Rondo Kaponiera|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/rondo-kaponiera-poznan.jpg",
   "ratio": 1.333,
@@ -7095,6 +7119,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Rusałka Restauracja - widok ze smakiem|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Ruska 46A|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -7133,6 +7165,14 @@
   "author": "Mach240390",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Rynek-POL,_Rzesz%C3%B3w.jpg",
+  "auto": "venue"
+ },
+ "Rynek 10|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-10-wroclaw.jpg",
+  "ratio": 1.506,
+  "author": "fot. Slawek Ilski",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw-RYNEK_-_panorama_z_ko%C5%9Bcio%C5%82a_p.w._%C5%9Bw._El%C5%BCbiety_-_panoramio.jpg",
   "auto": "venue"
  },
  "Rynek 1|Rzeszów": {
@@ -7288,6 +7328,14 @@
   "auto": "city"
  },
  "SARP Poznań|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "SARP social club|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
   "author": "Radomil",
@@ -9729,6 +9777,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
   "auto": "city"
  },
+ "Zwierzyniecka 3|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/zwierzyniecka-3-poznan.jpg",
+  "ratio": 1.506,
+  "author": "MOs810",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gajowa,_Poznan,_tram_and_Fiat_125p_(2).JPG",
+  "auto": "venue"
+ },
  "Zwycięska 8|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/zwycieska-8-wroclaw.jpg",
   "ratio": 0.953,
@@ -9915,6 +9971,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "rondo Kaponiera|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/rondo-kaponiera-poznan.jpg",
+  "ratio": 1.333,
+  "author": "MOs810",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:View_feom_New_Baltic_in_Poznan_Restaurace_(2).jpg",
+  "auto": "venue"
  },
  "schody.wro|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
