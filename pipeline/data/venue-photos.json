@@ -2467,6 +2467,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Graniczna 27|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/graniczna-27-katowice.jpg",
+  "ratio": 1.494,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Os._Paderewskiego-Muchowiec_193.jpg",
+  "auto": "venue"
+ },
+ "Graniczna|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/graniczna-katowice.jpg",
+  "ratio": 1.821,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Ul._Graniczna_32.jpg",
+  "auto": "venue"
+ },
  "Gromadzka 24c|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -3045,6 +3061,14 @@
   "author": "SuperGlob",
   "license": "CC BY 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
+ "Hotel Riviera Mierzyn|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
  "Hotel Traugutta3 Białystok|Białystok": {
@@ -6718,6 +6742,14 @@
   "author": "Pit1233",
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
+ "Porcelanowa 23/B214|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
   "auto": "city"
  },
  "Porcelanowa 23|Katowice": {
