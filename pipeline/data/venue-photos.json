@@ -2508,6 +2508,15 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Grójecka 109|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Górki Szymona|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -3120,6 +3129,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Instytut Bliskiego i Dalekiego Wschodu UJ|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/instytut-bliskiego-i-dalekiego-wschodu-uj-krakow.jpg",
+  "ratio": 1.333,
+  "author": "G S P Dibbler",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Institute_of_the_Middle_and_Far_East_of_the_Jagiellonian_University.jpg",
+  "auto": "venue"
  },
  "Instytut Fotografii Fort|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -4348,6 +4365,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Krakowskie Przedmieście 21/23|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakowskie-przedmiescie-21-23-warszawa.jpg",
+  "ratio": 0.739,
+  "author": "Petroniusz",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warszawa,_Krakowskie_Przedmie%C5%9Bcie_10_-_fotopolska.eu_(227102).jpg",
+  "auto": "venue"
  },
  "Krakowskie Przedmieście 24|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/krakowskie-przedmiescie-24-warszawa.jpg",
@@ -7659,6 +7684,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Salute 21|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Sambora 37|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/sambora-37-gdynia.jpg",
   "ratio": 1.333,
@@ -8924,6 +8958,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Teatr im. Stefana Jaracza w Otwocku|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Teatr w Krakowie - im. Juliusza Słowackiego|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/teatr-w-krakowie-im-juliusza-slowackiego-krakow.jpg",
   "ratio": 1.753,
@@ -9495,6 +9538,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Katowice-%C5%9Ar%C3%B3dmie%C5%9Bcie_S_-_ul._Wita_Stwosza_(3).jpg",
   "auto": "venue"
+ },
+ "Wiśniowa|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Wodna 13/4|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
