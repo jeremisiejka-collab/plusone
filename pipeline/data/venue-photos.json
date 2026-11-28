@@ -9087,6 +9087,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Teatr_Nowy_Proxima,_41_Krakowska_Street_in_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
+ "Teatr Old Timers Garage|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-old-timers-garage-katowice.jpg",
+  "ratio": 1.333,
+  "author": "Michał Bulsa",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Old_Times_Garage.jpg",
+  "auto": "venue"
+ },
  "Teatr Polski w Poznaniu od 1875|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -10523,6 +10531,14 @@
   "author": "Szczecinolog",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:%C5%9Al%C4%85ska_Street_in_Szczecin,_2021.jpg",
+  "auto": "venue"
+ },
+ "Św. Marcin 80/82|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/sw-marcin-80-82-poznan.jpg",
+  "ratio": 1.49,
+  "author": "Maatex",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:A_213_Zamek_cesarski,_ob._CK_Zamek_Marcin_%C5%9Aw._ul._80_82_Pozna%C5%84_MM.jpg",
   "auto": "venue"
  },
  "Św. Michała 62|Poznań": {
