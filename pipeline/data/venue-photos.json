@@ -2668,6 +2668,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Hades Pool Bilard & Karaoke Club|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Hala Cracovia|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-cracovia-krakow.jpg",
   "ratio": 1.036,
@@ -2799,6 +2807,14 @@
   "license": "Public domain",
   "source": "https://commons.wikimedia.org/wiki/File:Hala_Podpromie.JPG",
   "auto": "venue"
+ },
+ "Hala Sporowa Swarzędz Ul. Św. Marcin 1|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
  },
  "Hala Sportowa 100-lecia Sopotu|Sopot": {
   "image": "https://plusoneapp.pl/img/obiekty/hala-sportowa-100-lecia-sopotu-sopot.jpg",
@@ -4707,6 +4723,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Lizawka|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Lodowisko Orbita Spartan|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -6278,6 +6302,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_07-13_img29_View_from_Palace_of_Culture_and_Science.jpg",
   "auto": "venue"
  },
+ "Park|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Party House Kraków|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/party-house-krakow-krakow.jpg",
   "ratio": 1.768,
@@ -7079,6 +7111,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
   "auto": "city"
  },
+ "Półwiejska 47|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/polwiejska-47-poznan.jpg",
+  "ratio": 0.842,
+  "author": "Аимаина хикари",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:P%C3%B3%C5%82wiejska_10_Pozna%C5%84_Piero%C5%BCak.jpg",
+  "auto": "venue"
+ },
  "Płotki 14|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -7218,6 +7258,14 @@
   "auto": "city"
  },
  "Rewiry|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Rondo Kaponiera poz -2 lok.9.4|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
   "author": "Radomil",
@@ -8520,6 +8568,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Szkolna 16|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/szkolna-16-poznan.jpg",
+  "ratio": 1.385,
+  "author": "Andrzej Błaszczak",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_SZKOLNA_3.jpg",
+  "auto": "venue"
  },
  "Szkolna 1|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
