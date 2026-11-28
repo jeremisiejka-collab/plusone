@@ -4990,6 +4990,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Miejski Dom Kultury w Łańcucie|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
+ },
  "Miejski Ośrodek Kultury i Sztuki w Oleśnicy|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -5036,6 +5044,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Budynki_mza_warszawa_braci_zaluskich.jpg",
   "auto": "venue"
+ },
+ "Miejsko Gminny Dom Kultury im. Franciszka Kotuli|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
+  "auto": "city"
  },
  "Mieszka I 73|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
@@ -8608,6 +8624,14 @@
   "author": "Mach240390",
   "license": "CC BY 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:TeatrGroteska-POL,_Krak%C3%B3w.jpg",
+  "auto": "venue"
+ },
+ "Teatr Kamienica|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/teatr-kamienica-warszawa.jpg",
+  "ratio": 0.75,
+  "author": "Hiuppo",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:POl_Warsaw_Kamienica_Theatre.jpg",
   "auto": "venue"
  },
  "Teatr Komedii Impro|Łódź": {
