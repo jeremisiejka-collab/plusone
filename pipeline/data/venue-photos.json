@@ -3309,6 +3309,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Kamienna_Street,_view_to_N,_Krak%C3%B3w,_Poland.jpg",
   "auto": "venue"
  },
+ "Kamionka (ul. Mazowiecka 26|Sopot": {
+  "image": "https://plusoneapp.pl/img/obiekty/sopot-sopot.jpg",
+  "ratio": 1.333,
+  "author": "Emptywords",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Sopot_Molo_and_main_square_2024_aerial.jpg",
+  "auto": "city"
+ },
  "Karczma Kaszubi i Górale|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -3833,6 +3841,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Klub Piękny Pies|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Klub Pod Kolumnami|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
@@ -5788,6 +5804,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Oskara Sosnowskiego 9|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "Otwock|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -6382,6 +6406,14 @@
   "auto": "venue"
  },
  "Podwórko.art|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
+ "Podziemia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
   "author": "Stanisław Węsławski",
@@ -7055,6 +7087,22 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroc%C5%82aw,_Ryneczek_Jemio%C5%82owa_2021-03-02_nr_04.jpg",
   "auto": "venue"
  },
+ "Rynek 10|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-10-rzeszow.jpg",
+  "ratio": 1.59,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rynek-POL,_Rzesz%C3%B3w.jpg",
+  "auto": "venue"
+ },
+ "Rynek 1|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-1-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "Kroton",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:PL-PK_Rzesz%C3%B3w,_Rynek_19_2016-08-30--10-40-06-001.jpg",
+  "auto": "venue"
+ },
  "Rynek 26|Rzeszów": {
   "image": "https://plusoneapp.pl/img/obiekty/rynek-26-rzeszow.jpg",
   "ratio": 1.501,
@@ -7457,6 +7505,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Fallout_shelter_in_Pozna%C5%84.JPG",
   "auto": "venue"
+ },
+ "Sekta Selekta|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Sheraton Poznan Hotel|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/sheraton-poznan-hotel-poznan.jpg",
@@ -9044,6 +9100,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Warszawska 1A|Białystok": {
+  "image": "https://plusoneapp.pl/img/obiekty/bialystok-bialystok.jpg",
+  "ratio": 1.501,
+  "author": "Szymon Staniec",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
  "Warszawska 34|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawska-34-bialystok.jpg",
   "ratio": 1.333,
@@ -9180,6 +9244,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "Wojewódzki Dom Kultury w Rzeszowie|Rzeszów": {
+  "image": "https://plusoneapp.pl/img/obiekty/rzeszow-rzeszow.jpg",
+  "ratio": 0.75,
+  "author": "SuperGlob",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
  "Wojnowo 2|Poznań": {
