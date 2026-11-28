@@ -2117,6 +2117,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Fundacja Przyjaźni Polsko-Japońskiej NAMI ポーランド日本親善友好財団 波|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
+  "auto": "city"
+ },
  "Furtka do lasu|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -7482,6 +7490,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Rynek Główny 20|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/rynek-glowny-20-krakow.jpg",
+  "ratio": 0.667,
+  "author": "Igor123121",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:2025,_Krak%C3%B3w,_Rynek_G%C5%82%C3%B3wny_4_(3).jpg",
+  "auto": "venue"
  },
  "Rynek Główny 27|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/rynek-glowny-27-krakow.jpg",
