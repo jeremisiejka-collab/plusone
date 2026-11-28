@@ -3023,6 +3023,15 @@
   "source": "https://commons.wikimedia.org/wiki/File:Pozna%C5%84._Bazar_Pozna%C5%84ski_(5).jpg",
   "auto": "venue"
  },
+ "Hotel Boss|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
  "Hotel Domus Mater|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -3462,6 +3471,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "KZ Sienna|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/kz-sienna-warszawa.jpg",
+  "ratio": 0.783,
+  "author": "Adrian Grycuk",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Sienna_Warszawa.JPG",
+  "auto": "venue"
  },
  "Kalinowe Serce|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
@@ -4269,6 +4286,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_ul._Kopernika_19_budynek_d._kuchni_szpitalnej_A-1541M_(2).jpg",
   "auto": "venue"
+ },
+ "Kornatka 137|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
+  "ratio": 2.706,
+  "author": "Ingo Mehling",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
+  "auto": "city"
  },
  "Korzeniowskiego 7|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
@@ -7321,6 +7346,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Mogilskie_Roundabout._lower_level,_Grzeg%C3%B3rzki,_Krak%C3%B3w,_Poland.jpg",
   "auto": "venue"
  },
+ "Rondo ONZ 1|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/rondo-onz-1-warszawa.jpg",
+  "ratio": 1.501,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warszawa_Rondo_ONZ_(dron).jpg",
+  "auto": "venue"
+ },
  "Roosevelta 42|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/roosevelta-42-poznan.jpg",
   "ratio": 1.902,
@@ -9364,6 +9397,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
+ "Vienna House Andel's (Kraków)|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/vienna-house-andel-s-krakow-krakow.jpg",
+  "ratio": 1.335,
+  "author": "Igor123121",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Vienna_House_Andel%E2%80%99s_Cracow,_aerial_view,_2025,_Krak%C3%B3w,_Poland.jpg",
+  "auto": "venue"
+ },
  "Villa La Fleur|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
@@ -9676,6 +9717,15 @@
   "auto": "venue"
  },
  "Wolna Wola Bar|Warszawa": {
+  "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
+  "ratio": 1.504,
+  "author": "Scotch Mist",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
+  "auto": "city",
+  "query": "Warsaw skyline"
+ },
+ "Wolny Jazdów|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/warszawa-warszawa.jpg",
   "ratio": 1.504,
   "author": "Scotch Mist",
