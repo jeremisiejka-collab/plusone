@@ -356,6 +356,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
+ "BZG - Port Lotniczy Bydgoszcz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bzg-port-lotniczy-bydgoszcz-bydgoszcz.png",
+  "ratio": 1.723,
+  "author": "Mathiasrex, Maciej Szczepańczyk",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Instrument_landing_system_plate_in_Bydgoszcz_Ignacy_Jan_Paderewski_Airport.PNG",
+  "auto": "venue"
+ },
  "BaRock Club|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
   "ratio": 1.333,
@@ -853,6 +861,14 @@
   "author": "Szymon Staniec",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
+ "Centrum Chrześcijańskie Dobra Nowina|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
  "Centrum Handlowe Auchan Bydgoszcz|Bydgoszcz": {
@@ -3088,6 +3104,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
+ "Izba Regionalna Ziemi Świeckiej|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
+  "auto": "city"
+ },
  "Jabłeczna 18|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
   "ratio": 1.711,
@@ -3102,6 +3126,14 @@
   "author": "Adrian Tync",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krak%C3%B3w_Biblioteka_Jagiello%C5%84ska_2023.jpg",
+  "auto": "venue"
+ },
+ "Jagiellońska 46|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/jagiellonska-46-bydgoszcz.jpg",
+  "ratio": 1.778,
+  "author": "Kazimierz Mendlik",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Budynki_dawnej_rze%C5%BAni_miejskiej._Obecnie_Centrum_Handlowe_Focus_Park.Jagiello%C5%84ska,_Bydgoszcz,_Polska_._Widok_z_ulicyJagielo%C5%84skiej_-_panoramio.jpg",
   "auto": "venue"
  },
  "Jagiellońska 82B|Warszawa": {
@@ -4107,6 +4139,14 @@
   "auto": "city",
   "query": "Warsaw skyline"
  },
+ "Konstytucji 3 Maja 26|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Konsulat Kultury Gdynia|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
   "ratio": 2.27,
@@ -4996,6 +5036,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Rynek_Nowego_Miasta_w_Warszawie_2016.jpg",
   "auto": "venue"
+ },
+ "Mickiewicza 3/111|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
  },
  "Mickiewicza 33|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/mickiewicza-33-poznan.jpg",
@@ -6445,6 +6493,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
+ "Podbórzańska|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/podborzanska-szczecin.jpg",
+  "ratio": 1.501,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Osiedle_Podborzanska_(5).jpg",
+  "auto": "venue"
+ },
  "Podlaska Adamczycha|Białystok": {
   "image": "https://plusoneapp.pl/img/obiekty/podlaska-adamczycha-bialystok.jpg",
   "ratio": 1.501,
@@ -6629,6 +6685,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Sopot_Molo_and_main_square_2024_aerial.jpg",
   "auto": "city"
+ },
+ "Powstańców Wielkopolskich 16|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/powstancow-wielkopolskich-16-bydgoszcz.jpg",
+  "ratio": 1.778,
+  "author": "Kazimierz Mendlik",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Widok_z_parkingu_przy_Alei_Powsta%C5%84c%C3%B3w_Wielkopolskich_Bydgoszcz-%C5%9Ar%C3%B3dmie%C5%9Bcie_-_panoramio.jpg",
+  "auto": "venue"
  },
  "Powstańców Śląskich 95|Wrocław": {
   "image": "https://plusoneapp.pl/img/obiekty/powstancow-slaskich-95-wroclaw.jpg",
@@ -9293,6 +9357,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Welecka 13b|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Wesola Immersive|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -10108,6 +10180,14 @@
   "author": "Kapitel",
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
+ "Łabiszyjski Dom Kultury|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
  "Łazienki Królewskie / Royal Lazienki|Warszawa": {
