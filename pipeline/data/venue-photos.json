@@ -332,6 +332,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
  },
+ "BOSO|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "BRONX Bouldering|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -837,6 +845,14 @@
   "author": "Szymon Staniec",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Bia%C5%82ystok_Rynek_Ko%C5%9Bciuszki.jpg",
+  "auto": "city"
+ },
+ "Centrum Handlowe Auchan Bydgoszcz|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
+  "ratio": 3.422,
+  "author": "Pit1233",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Panorama_SM_Bydgoszcz_soft.jpg",
   "auto": "city"
  },
  "Centrum Handlowe Auchan Produkcyjna|Białystok": {
@@ -4115,6 +4131,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "Kościół Baptystów w Szczecinie - Stoisława|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/szczecin-szczecin.jpg",
+  "ratio": 1.805,
+  "author": "Kapitel",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Stare_Miasto_dron_(1).jpg",
+  "auto": "city"
+ },
  "Kościół pw. Przemienienia Pańskiego w Krakowie|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/kosciol-pw-przemienienia-panskiego-w-krakowie-krakow.jpg",
   "ratio": 1.333,
@@ -5061,6 +5085,14 @@
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
+ },
+ "Monte Cassino 6|Szczecin": {
+  "image": "https://plusoneapp.pl/img/obiekty/monte-cassino-6-szczecin.jpg",
+  "ratio": 2.116,
+  "author": "Kapitel",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Szczecin_Plac_Mariacki_szkola.jpg",
+  "auto": "venue"
  },
  "Mostowa 2|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/mostowa-2-krakow.jpg",
@@ -6292,6 +6324,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Pod Blankami 33|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/pod-blankami-33-bydgoszcz.jpg",
+  "ratio": 0.8,
+  "author": "Mariusz Guć",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Ulica_Pod_Blankami_w_Bydgoszczy_2023.jpg",
+  "auto": "venue"
  },
  "Pod Blankami 6/3a|Bydgoszcz": {
   "image": "https://plusoneapp.pl/img/obiekty/bydgoszcz-bydgoszcz.jpg",
@@ -8718,6 +8758,14 @@
   "license": "CC BY-SA 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Krakow_-_Downtown_from_balloon_-_2.jpg",
   "auto": "city"
+ },
+ "Toruńska 18|Bydgoszcz": {
+  "image": "https://plusoneapp.pl/img/obiekty/torunska-18-bydgoszcz.jpg",
+  "ratio": 1.333,
+  "author": "Pit1233",
+  "license": "CC0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bdg_ulTorunska_07-2013.jpg",
+  "auto": "venue"
  },
  "Torwar|Warszawa": {
   "image": "https://plusoneapp.pl/img/obiekty/torwar-warszawa.jpg",
