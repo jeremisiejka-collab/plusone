@@ -653,6 +653,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Rzesz%C3%B3w_-_Stare_Miasto,_pomnik_Tadeusza_Nalepy.jpg",
   "auto": "city"
  },
+ "Bolechowo|Poznań": {
+  "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
+  "ratio": 1.333,
+  "author": "Radomil",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
  "Bonobo Księgarnia Kawiarnia Podróżnicza|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -7359,6 +7367,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
  },
+ "SIP ZIP|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/katowice-katowice.jpg",
+  "ratio": 0.667,
+  "author": "Lestat (Jan Mehlich)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice_-_Rynek_7.jpg",
+  "auto": "city"
+ },
  "SNY|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
   "ratio": 2.706,
@@ -9341,6 +9357,14 @@
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
   "auto": "city"
+ },
+ "Wita Stwosza 17a|Katowice": {
+  "image": "https://plusoneapp.pl/img/obiekty/wita-stwosza-17a-katowice.jpg",
+  "ratio": 1.494,
+  "author": "Marek Mróz",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Katowice-%C5%9Ar%C3%B3dmie%C5%9Bcie_S_-_ul._Wita_Stwosza_(3).jpg",
+  "auto": "venue"
  },
  "Wodna 13/4|Poznań": {
   "image": "https://plusoneapp.pl/img/obiekty/poznan-poznan.jpg",
