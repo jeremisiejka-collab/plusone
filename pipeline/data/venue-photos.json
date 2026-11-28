@@ -895,6 +895,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
   "auto": "city"
  },
+ "Centrum Handlowe Port Rumia|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
+ },
  "Centrum Jana Pawła II|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/centrum-jana-pawla-ii-krakow.jpg",
   "ratio": 1.333,
@@ -2285,6 +2293,14 @@
   "author": "Stanisław Węsławski",
   "license": "CC BY 4.0",
   "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "venue"
+ },
+ "Gdynia Bulwar Nadmorski|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-bulwar-nadmorski-gdynia.jpg",
+  "ratio": 1.333,
+  "author": "t.przechlewski",
+  "license": "CC BY 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia,_Bulwar_Nadmorski_-_panoramio.jpg",
   "auto": "venue"
  },
  "Gdynia Plac Górnośląski|Gdynia": {
@@ -6652,6 +6668,14 @@
   "license": "CC BY 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Budynek_przy_ul._Nowolipki_2a_w_Warszawie_2025.jpg",
   "auto": "venue"
+ },
+ "Potęgowo (gmina)|Gdynia": {
+  "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
+  "ratio": 2.27,
+  "author": "Stanisław Węsławski",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Gdynia-centrum.jpg",
+  "auto": "city"
  },
  "Potęgówka wege Kaszuby|Gdynia": {
   "image": "https://plusoneapp.pl/img/obiekty/gdynia-gdynia.jpg",
