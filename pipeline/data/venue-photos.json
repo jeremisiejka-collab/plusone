@@ -2118,6 +2118,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Galeria_Bronowice_zima_2.jpg",
   "auto": "venue"
  },
+ "Galeria Dominikańska|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/galeria-dominikanska-wroclaw.jpg",
+  "ratio": 1.336,
+  "author": "Szczepan1990 18:46, 13 August 2006 (UTC)",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Galeria_Dominika%C5%84ska_(wewn%C4%85trz).JPG",
+  "auto": "venue"
+ },
  "Galeria Handlowa Turzyn|Szczecin": {
   "image": "https://plusoneapp.pl/img/obiekty/galeria-handlowa-turzyn-szczecin.jpg",
   "ratio": 1.501,
@@ -2441,6 +2449,14 @@
   "author": "Radomil",
   "license": "CC BY-SA 3.0",
   "source": "https://commons.wikimedia.org/wiki/File:Komisariat_Pozna%C5%84-Stare_Miasto_RB1.JPG",
+  "auto": "city"
+ },
+ "H241|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/tutaj-mwk-wroclaw.jpg",
+  "ratio": 1.711,
+  "author": "Jar.ciurus",
+  "license": "CC BY-SA 3.0 pl",
+  "source": "https://commons.wikimedia.org/wiki/File:Wroclaw-_Kosciol_sw._Elzbiety.jpg",
   "auto": "city"
  },
  "HAH Poznań|Poznań": {
@@ -4582,6 +4598,14 @@
   "author": "Adrian Grycuk",
   "license": "CC BY-SA 3.0 pl",
   "source": "https://commons.wikimedia.org/wiki/File:Lotnisko_Chopina_w_Warszawie_2018b.jpg",
+  "auto": "venue"
+ },
+ "Lubicz 17 J|Kraków": {
+  "image": "https://plusoneapp.pl/img/obiekty/lubicz-17-j-krakow.jpg",
+  "ratio": 1.818,
+  "author": "Mach240390",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:UlicaLubicz-WidokNaWsch%C3%B3d-POL,_Krak%C3%B3w.jpg",
   "auto": "venue"
  },
  "Lubicz 17|Kraków": {
@@ -9245,6 +9269,14 @@
   "source": "https://commons.wikimedia.org/wiki/File:Warsaw_2023_039_Palace_Cathedral_Skyline.jpg",
   "auto": "city",
   "query": "Warsaw skyline"
+ },
+ "Wilczyce|Wrocław": {
+  "image": "https://plusoneapp.pl/img/obiekty/wilczyce-wroclaw.jpg",
+  "ratio": 2.535,
+  "author": "nucek",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mostek_i_nowe_osiedle_-_nucek_-_panoramio.jpg",
+  "auto": "venue"
  },
  "William Rabbit & Co. - Magic Spot|Kraków": {
   "image": "https://plusoneapp.pl/img/obiekty/krakow-krakow.jpg",
